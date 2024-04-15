@@ -1,15 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
     <meta charset="UTF-8">
     <title>롯데ON::관리자 페이지</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
-    <script src="https://kit.fontawesome.com/20962f3e4b.js" crossorigin="anonymous"></script>    
-    <script src="../js/gnb.js"></script>
-    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"/>
-    <link rel="stylesheet" href="../css/admin.css">
+    <script th:src="@{https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js}"></script>
+    <script th:src="@{https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js}"></script>
+    <script th:src="@{https://kit.fontawesome.com/20962f3e4b.js}" crossorigin="anonymous"></script>
+    <script th:src="@{/js/gnb.js}"></script>
+    <link rel="stylesheet" th:href="@{https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css}">
+    <link rel="stylesheet" th:href="@{https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
     <style>
         .ui-tabs .ui-tabs-panel {
             padding: 16px 0 0;
@@ -90,7 +90,7 @@
             float: right;
             width: 30px;
             height: 30px;
-            background-image: url('../../images/ico_sprites.png');
+            background-image: url('/images/ico_sprites.png');
             background-color: transparent;
             background-position: 227px -25px;
             border: none;
@@ -188,7 +188,7 @@
     <div id="admin-wrapper">
         <header>
             <div>
-                <a href="../index.html" class="logo"><img src="../images/admin_logo.png" alt="admin_logo"/></a>
+                <a th:href="@{/index}" class="logo"><img th:src="@{/images/admin_logo.png}" alt="admin_logo"/></a>
                 <p>
                     <span>홍길동님 반갑습니다.</span>
                     <a href="#">HOME |</a>
@@ -291,7 +291,7 @@
                             <tr>
                                 <td><input type="checkbox" name="배너번호"/></td>
                                 <td>201603292</td>
-                                <td><img src="../../images/topBanner1.png" class="thumb"></td>                            
+                                <td><img th:src="@{/images/topBanner1.png}" class="thumb"></td>
                                 <td>
                                     <ul>
                                         <li class="name">배너이름</li>
@@ -314,7 +314,7 @@
                             <tr>
                                 <td><input type="checkbox" name="배너번호"/></td>
                                 <td>201603292</td>
-                                <td><img src="../../images/topBanner2.png" class="thumb"></td>                            
+                                <td><img th:src="@{/images/topBanner2.png}" class="thumb"></td>
                                 <td>
                                     <ul>
                                         <li class="name">배너이름</li>
@@ -363,7 +363,7 @@
                             <tr>
                                 <td><input type="checkbox" name="배너번호"/></td>
                                 <td>201603292</td>
-                                <td><img src="../../images/slider_item1.jpg" class="thumb"></td>                            
+                                <td><img th:src="@{/images/slider_item1.jpg}" class="thumb"></td>
                                 <td>
                                     <ul>
                                         <li class="name">배너이름</li>
@@ -385,7 +385,7 @@
                             <tr>
                                 <td><input type="checkbox" name="배너번호"/></td>
                                 <td>201603292</td>
-                                <td><img src="../../images/slider_item2.jpg" class="thumb"></td>                            
+                                <td><img th:src="@{/images/slider_item2.jpg}" class="thumb"></td>
                                 <td>
                                     <ul>
                                         <li class="name">배너이름</li>
@@ -407,7 +407,7 @@
                             <tr>
                                 <td><input type="checkbox" name="배너번호"/></td>
                                 <td>201603292</td>
-                                <td><img src="../../images/slider_item3.jpg" class="thumb"></td>                            
+                                <td><img th:src="@{/images/slider_item3.jpg}" class="thumb"></td>
                                 <td>
                                     <ul>
                                         <li class="name">배너이름</li>
@@ -429,7 +429,7 @@
                             <tr>
                                 <td><input type="checkbox" name="배너번호"/></td>
                                 <td>201603292</td>
-                                <td><img src="../../images/slider_item4.jpg" class="thumb"></td>                            
+                                <td><img th:src="@{/images/slider_item4.jpg}" class="thumb"></td>
                                 <td>
                                     <ul>
                                         <li class="name">배너이름</li>
@@ -476,7 +476,7 @@
                             <tr>
                                 <td><input type="checkbox" name="배너번호"/></td>
                                 <td>201603292</td>
-                                <td><img src="../../images/vip_plcc_banner.png" class="thumb"></td>                            
+                                <td><img th:src="@{images/vip_plcc_banner.png}" class="thumb"></td>
                                 <td>
                                     <ul>
                                         <li class="name">배너이름</li>
@@ -523,7 +523,7 @@
                             <tr>
                                 <td><input type="checkbox" name="배너번호"/></td>
                                 <td>201603292</td>
-                                <td><img src="/member/images/member_login_banner.jpg" class="thumb"></td>                            
+                                <td><img th:src="@{/member/images/member_login_banner.jpg}" class="thumb"></td>
                                 <td>
                                     <ul>
                                         <li class="name">배너이름</li>
@@ -570,7 +570,7 @@
                             <tr>
                                 <td><input type="checkbox" name="배너번호"/></td>
                                 <td>201603292</td>
-                                <td><img src="/my/images/my_banner1.jpg" class="thumb"></td>                            
+                                <td><img th:src="@{/my/images/my_banner1.jpg}" class="thumb"></td>
                                 <td>
                                     <ul>
                                         <li class="name">배너이름</li>
@@ -592,7 +592,7 @@
                             <tr>
                                 <td><input type="checkbox" name="배너번호"/></td>
                                 <td>201603292</td>
-                                <td><img src="/my/images/my_banner2.png" class="thumb"></td>                            
+                                <td><img th:src="@{/my/images/my_banner2.png}" class="thumb"></td>
                                 <td>
                                     <ul>
                                         <li class="name">배너이름</li>

@@ -1,0 +1,91 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <title>롯데ON::관리자 페이지</title>
+    <script th:src="@{https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js}"></script>
+    <script th:src="@{https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js}"></script>
+    <script th:src="@{https://kit.fontawesome.com/20962f3e4b.js}" crossorigin="anonymous"></script>
+    <script th:src="@{/templates/admin/js/gnb.js}"></script>
+    <link rel="stylesheet" th:href="@{https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css}">
+    <link rel="stylesheet" th:href="@{https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+<div id="admin-wrapper">
+    <header>
+        <div>
+            <a th:href="@{/index}" class="logo"><img th:src="@{/templates/admin/images/admin_logo.png}" alt="admin_logo"/></a>
+            <p>
+                <span>홍길동님 반갑습니다.</span>
+                <a href="#">HOME |</a>
+                <a href="#">로그아웃 |</a>
+                <a href="#">고객센터</a>
+            </p>
+        </div>
+    </header>
+    <main>
+        <aside>
+            <!-- Global Navigation Bar -->
+            <ul id="gnb">
+                <li>
+                    <a href="#"><i class="fa fa-cogs" aria-hidden="true"></i>환경설정</a>
+                    <ol>
+                        <li><a th:href="@{/config/info}">기본환경정보</a></li>
+                        <li><a th:href="@{/config/banner}">배너관리</a></li>
+                    </ol>
+                </li>
+                <li>
+                    <a href="#"><i class="fas fa-store" aria-hidden="true"></i>상점관리</a>
+                    <ol>
+                        <li><a th:href="@{/admin/}">판매자현황</a></li>
+                        <li><a th:href="@{/admin/}">재고관리</a></li>
+                    </ol>
+                </li>
+                <li>
+                    <a href="#"><i class="fa fa-users" aria-hidden="true"></i>회원관리</a>
+                    <ol>
+                        <li><a th:href="@{/admin/}">회원현황</a></li>
+                        <li><a th:href="@{/admin/}">포인트관리</a></li>
+                        <li><a th:href="@{/admin/}">비회원관리</a></li>
+                        <li><a th:href="@{/admin/}">접속자집계</a></li>
+                    </ol>
+                </li>
+                <li>
+                    <a href="#"><i class="fas fa-box-open" aria-hidden="true"></i>상품관리</a>
+                    <ol>
+                        <li><a th:href="@{/product/list}">상품현황</a></li>
+                        <li><a th:href="@{/product/register}">상품등록</a></li>
+                        <li><a href="#">재고관리</a></li>
+                    </ol>
+                </li>
+                <li>
+                    <a href="#"><i class="fa fa-credit-card" aria-hidden="true"></i>주문관리</a>
+                    <ol>
+                        <li><a href="#">주문현황</a></li>
+                        <li><a href="#">매출현황</a></li>
+                        <li><a href="#">결제관리</a></li>
+                        <li><a href="#">배송관리</a></li>
+                    </ol>
+                </li>
+                <li>
+                    <a href="#"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>게시판관리</a>
+                    <ol>
+                        <li><a href="#">게시판현황</a></li>
+                        <li><a href="#">고객문의</a></li>
+                    </ol>
+                </li>
+            </ul>
+        </aside>
+            <section layout:fragment="content">
+                <!-- 내용 -->
+            </section>
+        </main>
+        <footer>
+            <div>
+                <p>Copyright ©lotteon.com All rights reserved. ADMINISTRATOR Version 5.4.1.2</p>
+            </div>
+        </footer>
+    </div>    
+</body>
+</html>
