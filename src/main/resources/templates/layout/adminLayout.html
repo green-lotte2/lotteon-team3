@@ -6,7 +6,7 @@
     <script th:src="@{https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js}"></script>
     <script th:src="@{https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js}"></script>
     <script th:src="@{https://kit.fontawesome.com/20962f3e4b.js}" crossorigin="anonymous"></script>
-    <script th:src="@{/templates/admin/js/gnb.js}"></script>
+    <script th:src="@{/admin/js/gnb.js}"></script>
     <link rel="stylesheet" th:href="@{https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css}">
     <link rel="stylesheet" th:href="@{https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css}"/>
     <link rel="stylesheet" th:href="@{/css/admin.css}">
@@ -15,12 +15,12 @@
 <div id="admin-wrapper">
     <header>
         <div>
-            <a th:href="@{/index}" class="logo"><img th:src="@{/templates/admin/images/admin_logo.png}" alt="admin_logo"/></a>
+            <a th:href="@{/admin/index}" class="logo"><img th:src="@{/admin/images/admin_logo.png}" alt="admin_logo"/></a>
             <p>
                 <span>홍길동님 반갑습니다.</span>
-                <a href="#">HOME |</a>
-                <a href="#">로그아웃 |</a>
-                <a href="#">고객센터</a>
+                <a th:href="@{/}">HOME |</a>
+                <a th:href="@{/member/logout}">로그아웃 |</a>
+                <a th:href="@{#}">고객센터</a>
             </p>
         </div>
     </header>
@@ -31,8 +31,8 @@
                 <li>
                     <a href="#"><i class="fa fa-cogs" aria-hidden="true"></i>환경설정</a>
                     <ol>
-                        <li><a th:href="@{/config/info}">기본환경정보</a></li>
-                        <li><a th:href="@{/config/banner}">배너관리</a></li>
+                        <li><a th:href="@{/admin/config/info}">기본환경정보</a></li>
+                        <li><a th:href="@{/admin/config/banner}">배너관리</a></li>
                     </ol>
                 </li>
                 <li>
@@ -54,8 +54,8 @@
                 <li>
                     <a href="#"><i class="fas fa-box-open" aria-hidden="true"></i>상품관리</a>
                     <ol>
-                        <li><a th:href="@{/product/list}">상품현황</a></li>
-                        <li><a th:href="@{/product/register}">상품등록</a></li>
+                        <li><a th:href="@{/admin/product/list}">상품현황</a></li>
+                        <li><a th:href="@{/admin/product/register}">상품등록</a></li>
                         <li><a href="#">재고관리</a></li>
                     </ol>
                 </li>
