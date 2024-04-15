@@ -3,16 +3,16 @@
   <head>
     <meta charset="UTF-8" />
     <title>롯데ON::롯데 온라인 쇼핑몰</title>
-    <link rel="shortcut icon" type="image/x-icon" href="./images/favicon.ico" />
-    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css"/>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"/>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.css"/>
-    <link rel="stylesheet" href="./css/common.css" />
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
-    <script src="https://kit.fontawesome.com/20962f3e4b.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.min.js"></script>
-    <script src="./js/index.js"></script>
+    <link rel="shortcut icon" type="image/x-icon" th:href="@{./images/favicon.ico}" />
+    <link rel="stylesheet" th:href="@{https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css}"/>
+    <link rel="stylesheet" th:href="@{https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css}"/>
+    <link rel="stylesheet" th:href="@{https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.css}"/>
+    <link rel="stylesheet" th:href="@{/css/common.css}" />
+    <script th:src="@{https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js}"></script>
+    <script th:src="@{https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js}"></script>
+    <script th:src="@{https://kit.fontawesome.com/20962f3e4b.js" crossorigin="anonymous"}></script>
+    <script th:src="@{https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.min.js}"></script>
+    <script th:src="@{./js/index.js}"></script>
     <style>
       #bannerTop {
         display: none;
@@ -61,7 +61,7 @@
   <body>
     <div id="bannerTop" class="on" style="background: #e4dfdf;">
       <article>
-        <a href="#"><img src="./images/topBanner1.png"/></a>
+        <a th:href="@{#}"><img th:src="@{/images/topBanner1.png}"/></a>
         <button class="btnClose">close</button>
       </article>
     </div>
@@ -69,10 +69,10 @@
       <header>
         <div class="top">
           <div>
-            <a href="./member/login.html">로그인</a>
-            <a href="#">회원가입</a>
-            <a href="#">마이페이지</a>
-            <a href="#"
+            <a th:href="@{/member/login.html}">로그인</a>
+            <a th:href="@{#}">회원가입</a>
+            <a th:href="@{#}">마이페이지</a>
+            <a th:href="@{#}"
               ><i class="fa fa-shopping-cart" aria-hidden="true"></i
               >&nbsp;장바구니</a
             >
@@ -80,8 +80,8 @@
         </div>
         <div class="logo">
           <div>
-            <a href="#"><img src="./images/header_logo.png" alt="로고" /></a>
-            <form action="#">
+            <a th:href="@{#}"><img th:src="@{/images/header_logo.png}" alt="로고" /></a>
+            <form th:action="@{#}">
               <input type="text" name="search" />
               <button><i class="fa fa-search"></i></button>
             </form>
@@ -90,17 +90,17 @@
         <div class="menu">
           <div>
             <ul>
-              <li><a href="#">히트상품</a></li>
-              <li><a href="#">추천상품</a></li>
-              <li><a href="#">최신상품</a></li>
-              <li><a href="#">인기상품</a></li>
-              <li><a href="#">할인상품</a></li>
+              <li><a th:href="@{#}">히트상품</a></li>
+              <li><a th:href="@{#}">추천상품</a></li>
+              <li><a th:href="@{#}">최신상품</a></li>
+              <li><a th:href="@{#}">인기상품</a></li>
+              <li><a th:href="@{#}">할인상품</a></li>
             </ul>
             <ul>
-              <li><a href="#">공지사항</a></li>
-              <li><a href="#">자주묻는질문</a></li>
-              <li><a href="#">문의하기</a></li>
-              <li><a href="#">고객센터</a></li>
+              <li><a th:href="@{#}">공지사항</a></li>
+              <li><a th:href="@{#}">자주묻는질문</a></li>
+              <li><a th:href="@{#}">문의하기</a></li>
+              <li><a th:href="@{#}">고객센터</a></li>
             </ul>
           </div>
         </div>
@@ -112,55 +112,55 @@
           <ul class="category">
             <li><i class="fa fa-bars" aria-hidden="true"></i>카테고리</li>
             <li>
-              <a href="#"
+              <a th:href="@{#}"
                 ><i class="fas fa-tshirt"></i>패션·의류·뷰티<i
                   class="fas fa-angle-right"
                 ></i
               ></a>
               <ol>
-                <li><a href="#">남성의류</a></li>
-                <li><a href="#">여성의류</a></li>
-                <li><a href="#">잡화</a></li>
-                <li><a href="#">뷰티</a></li>
+                <li><a th:href="@{#}">남성의류</a></li>
+                <li><a th:href="@{#}">여성의류</a></li>
+                <li><a th:href="@{#}">잡화</a></li>
+                <li><a th:href="@{#}">뷰티</a></li>
               </ol>
             </li>
             <li>
-              <a href="#"
+              <a th:href="@{#}"
                 ><i class="fas fa-laptop"></i>가전·디지털<i
                   class="fas fa-angle-right"
                 ></i
               ></a>
               <ol>
-                <li><a href="#">노트북/PC</a></li>
-                <li><a href="#">가전</a></li>
-                <li><a href="#">휴대폰</a></li>
-                <li><a href="#">기타</a></li>
+                <li><a th:href="@{#}">노트북/PC</a></li>
+                <li><a th:href="@{#}">가전</a></li>
+                <li><a th:href="@{#}">휴대폰</a></li>
+                <li><a th:href="@{#}">기타</a></li>
               </ol>
             </li>
             <li>
-              <a href="#"
+              <a th:href="@{#}"
                 ><i class="fas fa-utensils"></i>식품·생필품<i
                   class="fas fa-angle-right"
                 ></i
               ></a>
               <ol>
-                <li><a href="#">신선식품</a></li>
-                <li><a href="#">가공식품</a></li>
-                <li><a href="#">건강식품</a></li>
-                <li><a href="#">생필품</a></li>
+                <li><a th:href="@{#}">신선식품</a></li>
+                <li><a th:href="@{#}">가공식품</a></li>
+                <li><a th:href="@{#}">건강식품</a></li>
+                <li><a th:href="@{#}">생필품</a></li>
               </ol>
             </li>
             <li>
-              <a href="#"
+              <a th:href="@{#}"
                 ><i class="fas fa-home"></i>홈·문구·취미<i
                   class="fas fa-angle-right"
                 ></i
               ></a>
               <ol>
-                <li><a href="#">가구/DIY</a></li>
-                <li><a href="#">침구·커튼</a></li>
-                <li><a href="#">생활용품</a></li>
-                <li><a href="#">사무용품</a></li>
+                <li><a th:href="@{#}">가구/DIY</a></li>
+                <li><a th:href="@{#}">침구·커튼</a></li>
+                <li><a th:href="@{#}">생활용품</a></li>
+                <li><a th:href="@{#}">사무용품</a></li>
               </ol>
             </li>
           </ul>
@@ -170,10 +170,10 @@
             <h1><i class="fas fa-crown"></i>베스트상품</h1>
             <ol>
               <li>
-                <a href="#">
+                <a th:href="@{#}">
                   <div class="thumb">
                     <i>1</i>
-                    <img src="https://via.placeholder.com/230" alt="item1" />
+                    <img th:src="@{https://via.placeholder.com/230}" alt="item1" />
                   </div>
                   <h2>상품명</h2>
                   <div class="org_price">
@@ -186,10 +186,10 @@
                 </a>
               </li>
               <li>
-                <a href="#">
+                <a th:href="@{#}">
                   <div class="thumb">
                     <i>2</i>
-                    <img src="https://via.placeholder.com/50" alt="item1" />
+                    <img th:src="@{https://via.placeholder.com/50}" alt="item1" />
                   </div>
                   <article>
                     <h2>상품명</h2>
@@ -204,10 +204,10 @@
                 </a>
               </li>
               <li>
-                <a href="#">
+                <a th:href="@{#}">
                   <div class="thumb">
                     <i>3</i>
-                    <img src="https://via.placeholder.com/50" alt="item1" />
+                    <img th:src="@{https://via.placeholder.com/50}" alt="item1" />
                   </div>
                   <article>
                     <h2>상품명</h2>
@@ -222,10 +222,10 @@
                 </a>
               </li>
               <li>
-                <a href="#">
+                <a th:href="@{#}">
                   <div class="thumb">
                     <i>4</i>
-                    <img src="https://via.placeholder.com/50" alt="item1" />
+                    <img th:src="@{https://via.placeholder.com/50}" alt="item1" />
                   </div>
                   <article>
                     <h2>상품명</h2>
@@ -240,10 +240,10 @@
                 </a>
               </li>
               <li>
-                <a href="#">
+                <a th:href="@{#}">
                   <div class="thumb">
                     <i>5</i>
-                    <img src="https://via.placeholder.com/50" alt="item1" />
+                    <img th:src="@{https://via.placeholder.com/50}" alt="item1" />
                   </div>
                   <article>
                     <h2>상품명</h2>
@@ -265,28 +265,28 @@
           <section class="slider">
             <ul>
               <li>
-                <a href="#"
-                  ><img src="https://via.placeholder.com/985x447" alt="item1"
+                <a th:href="@{#}"
+                  ><img th:src="@{https://via.placeholder.com/985x447}" alt="item1"
                 /></a>
               </li>
               <li>
-                <a href="#"
+                <a th:href="@{#}"
                   ><img src="https://via.placeholder.com/985x447" alt="item2"
                 /></a>
               </li>
               <li>
-                <a href="#"
-                  ><img src="https://via.placeholder.com/985x447" alt="item3"
+                <a th:href="@{#}"
+                  ><img th:src="@{https://via.placeholder.com/985x447}" alt="item3"
                 /></a>
               </li>
               <li>
-                <a href="#"
-                  ><img src="https://via.placeholder.com/985x447" alt="item4"
+                <a th:href="@{#}"
+                  ><img th:src="@{https://via.placeholder.com/985x447}" alt="item4"
                 /></a>
               </li>
               <li>
-                <a href="#"
-                  ><img src="https://via.placeholder.com/985x447" alt="item5"
+                <a th:href="@{#}"
+                  ><img th:src="@{https://via.placeholder.com/985x447}" alt="item5"
                 /></a>
               </li>
             </ul>
@@ -295,9 +295,9 @@
           <section class="hit">
             <h3><span>히트상품</span></h3>
             <article>
-              <a href="#">
+              <a th:href="@{#}">
                 <div class="thumb">
-                  <img src="https://via.placeholder.com/230x230" alt="t1" />
+                  <img th:src="@{https://via.placeholder.com/230x230}" alt="t1" />
                 </div>
                 <h2>상품명</h2>
                 <p>간단한 상품 설명</p>
@@ -312,9 +312,9 @@
               </a>
             </article>
             <article>
-              <a href="#">
+              <a th:href="@{#}">
                 <div class="thumb">
-                  <img src="https://via.placeholder.com/230x230" alt="t1" />
+                  <img th:src="@{https://via.placeholder.com/230x230}" alt="t1" />
                 </div>
                 <h2>상품명</h2>
                 <p>간단한 상품 설명</p>
@@ -329,9 +329,9 @@
               </a>
             </article>
             <article>
-              <a href="#">
+              <a th:href="@{#}">
                 <div class="thumb">
-                  <img src="https://via.placeholder.com/230x230" alt="t1" />
+                  <img th:src="@{https://via.placeholder.com/230x230}" alt="t1" />
                 </div>
                 <h2>상품명</h2>
                 <p>간단한 상품 설명</p>
@@ -346,9 +346,9 @@
               </a>
             </article>
             <article>
-              <a href="#">
+              <a th:href="@{#}">
                 <div class="thumb">
-                  <img src="https://via.placeholder.com/230x230" alt="t1" />
+                  <img th:src="@{https://via.placeholder.com/230x230}" alt="t1" />
                 </div>
                 <h2>상품명</h2>
                 <p>간단한 상품 설명</p>
@@ -363,9 +363,9 @@
               </a>
             </article>
             <article>
-              <a href="#">
+              <a th:href="@{#}">
                 <div class="thumb">
-                  <img src="https://via.placeholder.com/230x230" alt="t1" />
+                  <img th:src="@{https://via.placeholder.com/230x230}" alt="t1" />
                 </div>
                 <h2>상품명</h2>
                 <p>간단한 상품 설명</p>
@@ -380,9 +380,9 @@
               </a>
             </article>
             <article>
-              <a href="#">
+              <a th:href="@{#}">
                 <div class="thumb">
-                  <img src="https://via.placeholder.com/230x230" alt="t1" />
+                  <img th:src="@{https://via.placeholder.com/230x230}" alt="t1" />
                 </div>
                 <h2>상품명</h2>
                 <p>간단한 상품 설명</p>
@@ -397,9 +397,9 @@
               </a>
             </article>
             <article>
-              <a href="#">
+              <a th:href="@{#}">
                 <div class="thumb">
-                  <img src="https://via.placeholder.com/230x230" alt="t1" />
+                  <img th:src="@{https://via.placeholder.com/230x230}" alt="t1" />
                 </div>
                 <h2>상품명</h2>
                 <p>간단한 상품 설명</p>
@@ -414,9 +414,9 @@
               </a>
             </article>
             <article>
-              <a href="#">
+              <a th:href="@{#}">
                 <div class="thumb">
-                  <img src="https://via.placeholder.com/230x230" alt="t1" />
+                  <img th:src="@{https://via.placeholder.com/230x230}" alt="t1" />
                 </div>
                 <h2>상품명</h2>
                 <p>간단한 상품 설명</p>
@@ -435,9 +435,9 @@
           <section class="recommend">
             <h3><span>추천상품</span></h3>
             <article>
-              <a href="#">
+              <a th:href="@{#}">
                 <div class="thumb">
-                  <img src="https://via.placeholder.com/230x230" alt="t1" />
+                  <img th:src="@{https://via.placeholder.com/230x230}" alt="t1" />
                 </div>
                 <h2>상품명</h2>
                 <p>간단한 상품 설명</p>
@@ -452,9 +452,9 @@
               </a>
             </article>
             <article>
-              <a href="#">
+              <a th:href="@{#}">
                 <div class="thumb">
-                  <img src="https://via.placeholder.com/230x230" alt="t1" />
+                  <img th:src="@{https://via.placeholder.com/230x230}" alt="t1" />
                 </div>
                 <h2>상품명</h2>
                 <p>간단한 상품 설명</p>
@@ -469,9 +469,9 @@
               </a>
             </article>
             <article>
-              <a href="#">
+              <a th:href="@{#}">
                 <div class="thumb">
-                  <img src="https://via.placeholder.com/230x230" alt="t1" />
+                  <img th:src="@{https://via.placeholder.com/230x230}" alt="t1" />
                 </div>
                 <h2>상품명</h2>
                 <p>간단한 상품 설명</p>
@@ -486,9 +486,9 @@
               </a>
             </article>
             <article>
-              <a href="#">
+              <a th:href="@{#}">
                 <div class="thumb">
-                  <img src="https://via.placeholder.com/230x230" alt="t1" />
+                  <img th:src="@{https://via.placeholder.com/230x230}" alt="t1" />
                 </div>
                 <h2>상품명</h2>
                 <p>간단한 상품 설명</p>
@@ -503,9 +503,9 @@
               </a>
             </article>
             <article>
-              <a href="#">
+              <a th:href="@{#}">
                 <div class="thumb">
-                  <img src="https://via.placeholder.com/230x230" alt="t1" />
+                  <img th:src="@{https://via.placeholder.com/230x230}" alt="t1" />
                 </div>
                 <h2>상품명</h2>
                 <p>간단한 상품 설명</p>
@@ -520,9 +520,9 @@
               </a>
             </article>
             <article>
-              <a href="#">
+              <a th:href="@{#}">
                 <div class="thumb">
-                  <img src="https://via.placeholder.com/230x230" alt="t1" />
+                  <img th:src="@{https://via.placeholder.com/230x230}" alt="t1" />
                 </div>
                 <h2>상품명</h2>
                 <p>간단한 상품 설명</p>
@@ -537,9 +537,9 @@
               </a>
             </article>
             <article>
-              <a href="#">
+              <a th:href="@{#}">
                 <div class="thumb">
-                  <img src="https://via.placeholder.com/230x230" alt="t1" />
+                  <img th:src="@{https://via.placeholder.com/230x230}" alt="t1" />
                 </div>
                 <h2>상품명</h2>
                 <p>간단한 상품 설명</p>
@@ -554,9 +554,9 @@
               </a>
             </article>
             <article>
-              <a href="#">
+              <a th:href="@{#}">
                 <div class="thumb">
-                  <img src="https://via.placeholder.com/230x230" alt="t1" />
+                  <img th:src="@{https://via.placeholder.com/230x230}" alt="t1" />
                 </div>
                 <h2>상품명</h2>
                 <p>간단한 상품 설명</p>
@@ -575,9 +575,9 @@
           <section class="new">
             <h3><span>최신상품</span></h3>
             <article>
-              <a href="#">
+              <a th:href="@{#}">
                 <div class="thumb">
-                  <img src="https://via.placeholder.com/230x230" alt="t1" />
+                  <img th:src="@{https://via.placeholder.com/230x230}" alt="t1" />
                 </div>
                 <h2>상품명</h2>
                 <p>간단한 상품 설명</p>
@@ -592,9 +592,9 @@
               </a>
             </article>
             <article>
-              <a href="#">
+              <a th:href="@{#}">
                 <div class="thumb">
-                  <img src="https://via.placeholder.com/230x230" alt="t1" />
+                  <img th:src="@{https://via.placeholder.com/230x230}" alt="t1" />
                 </div>
                 <h2>상품명</h2>
                 <p>간단한 상품 설명</p>
@@ -609,9 +609,9 @@
               </a>
             </article>
             <article>
-              <a href="#">
+              <a th:href="@{#}">
                 <div class="thumb">
-                  <img src="https://via.placeholder.com/230x230" alt="t1" />
+                  <img th:src="@{https://via.placeholder.com/230x230}" alt="t1" />
                 </div>
                 <h2>상품명</h2>
                 <p>간단한 상품 설명</p>
@@ -626,9 +626,9 @@
               </a>
             </article>
             <article>
-              <a href="#">
+              <a th:href="@{#}">
                 <div class="thumb">
-                  <img src="https://via.placeholder.com/230x230" alt="t1" />
+                  <img th:src="@{https://via.placeholder.com/230x230}" alt="t1" />
                 </div>
                 <h2>상품명</h2>
                 <p>간단한 상품 설명</p>
@@ -643,9 +643,9 @@
               </a>
             </article>
             <article>
-              <a href="#">
+              <a th:href="@{#}">
                 <div class="thumb">
-                  <img src="https://via.placeholder.com/230x230" alt="t1" />
+                  <img th:src="@{https://via.placeholder.com/230x230}" alt="t1" />
                 </div>
                 <h2>상품명</h2>
                 <p>간단한 상품 설명</p>
@@ -660,9 +660,9 @@
               </a>
             </article>
             <article>
-              <a href="#">
+              <a th:href="@{#}">
                 <div class="thumb">
-                  <img src="https://via.placeholder.com/230x230" alt="t1" />
+                  <img th:src="@{https://via.placeholder.com/230x230}" alt="t1" />
                 </div>
                 <h2>상품명</h2>
                 <p>간단한 상품 설명</p>
@@ -677,9 +677,9 @@
               </a>
             </article>
             <article>
-              <a href="#">
+              <a th:href="@{#}">
                 <div class="thumb">
-                  <img src="https://via.placeholder.com/230x230" alt="t1" />
+                  <img th:src="@{https://via.placeholder.com/230x230}" alt="t1" />
                 </div>
                 <h2>상품명</h2>
                 <p>간단한 상품 설명</p>
@@ -694,9 +694,9 @@
               </a>
             </article>
             <article>
-              <a href="#">
+              <a th:href="@{#}">
                 <div class="thumb">
-                  <img src="https://via.placeholder.com/230x230" alt="t1" />
+                  <img th:src="@{https://via.placeholder.com/230x230}" alt="t1" />
                 </div>
                 <h2>상품명</h2>
                 <p>간단한 상품 설명</p>
@@ -715,9 +715,9 @@
           <section class="discount">
             <h3><span>할인상품</span></h3>
             <article>
-              <a href="#">
+              <a th:href="@{#}">
                 <div class="thumb">
-                  <img src="https://via.placeholder.com/230x230" alt="t1" />
+                  <img th:src="@{https://via.placeholder.com/230x230}" alt="t1" />
                 </div>
                 <h2>상품명</h2>
                 <p>간단한 상품 설명</p>
@@ -732,9 +732,9 @@
               </a>
             </article>
             <article>
-              <a href="#">
+              <a th:href="@{#}">
                 <div class="thumb">
-                  <img src="https://via.placeholder.com/230x230" alt="t1" />
+                  <img th:src="@{https://via.placeholder.com/230x230}" alt="t1" />
                 </div>
                 <h2>상품명</h2>
                 <p>간단한 상품 설명</p>
@@ -749,9 +749,9 @@
               </a>
             </article>
             <article>
-              <a href="#">
+              <a th:href="@{#}">
                 <div class="thumb">
-                  <img src="https://via.placeholder.com/230x230" alt="t1" />
+                  <img th:src="@{https://via.placeholder.com/230x230}" alt="t1" />
                 </div>
                 <h2>상품명</h2>
                 <p>간단한 상품 설명</p>
@@ -766,9 +766,9 @@
               </a>
             </article>
             <article>
-              <a href="#">
+              <a th:href="@{#}">
                 <div class="thumb">
-                  <img src="https://via.placeholder.com/230x230" alt="t1" />
+                  <img th:src="@{https://via.placeholder.com/230x230}" alt="t1" />
                 </div>
                 <h2>상품명</h2>
                 <p>간단한 상품 설명</p>
@@ -783,9 +783,9 @@
               </a>
             </article>
             <article>
-              <a href="#">
+              <a th:href="@{#}">
                 <div class="thumb">
-                  <img src="https://via.placeholder.com/230x230" alt="t1" />
+                  <img th:src="@{https://via.placeholder.com/230x230}" alt="t1" />
                 </div>
                 <h2>상품명</h2>
                 <p>간단한 상품 설명</p>
@@ -800,9 +800,9 @@
               </a>
             </article>
             <article>
-              <a href="#">
+              <a th:href="@{#}">
                 <div class="thumb">
-                  <img src="https://via.placeholder.com/230x230" alt="t1" />
+                  <img th:src="@{https://via.placeholder.com/230x230}" alt="t1" />
                 </div>
                 <h2>상품명</h2>
                 <p>간단한 상품 설명</p>
@@ -817,9 +817,9 @@
               </a>
             </article>
             <article>
-              <a href="#">
+              <a th:href="@{#}">
                 <div class="thumb">
-                  <img src="https://via.placeholder.com/230x230" alt="t1" />
+                  <img th:src="@{https://via.placeholder.com/230x230}" alt="t1" />
                 </div>
                 <h2>상품명</h2>
                 <p>간단한 상품 설명</p>
@@ -834,9 +834,9 @@
               </a>
             </article>
             <article>
-              <a href="#">
+              <a th:href="@{#}">
                 <div class="thumb">
-                  <img src="https://via.placeholder.com/230x230" alt="t1" />
+                  <img th:src="@{https://via.placeholder.com/230x230}" alt="t1" />
                 </div>
                 <h2>상품명</h2>
                 <p>간단한 상품 설명</p>
@@ -855,13 +855,13 @@
       </main>
       <footer>
         <ul>
-          <li><a href="#">회사소개</a></li>
-          <li><a href="#">서비스이용약관</a></li>
-          <li><a href="#">개인정보처리방침</a></li>
-          <li><a href="#">전자금융거래약관</a></li>
+          <li><a th:href="@{#}">회사소개</a></li>
+          <li><a th:href="@{#}">서비스이용약관</a></li>
+          <li><a th:href="@{#}">개인정보처리방침</a></li>
+          <li><a th:href="@{#}">전자금융거래약관</a></li>
         </ul>
         <div>
-          <p><img src="./images/footer_logo.png" alt="로고" /></p>
+          <p><img th:src="@{/images/footer_logo.png}" alt="로고" /></p>
           <p>
             <strong>(주)롯데ON</strong><br />
             서울특별시 송파구 올림픽로 300 롯데월드타워 26층 (역삼동 강남파이낸스센터)<br />
