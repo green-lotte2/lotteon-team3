@@ -36,9 +36,9 @@ public class CsController {
         return "/cs/notice/list";
     }
     // 공지사항 보기 페이지 매핑
-    @GetMapping("/cs/qna/view")
+    @GetMapping("/cs/notice/view")
     public String noticeView(){
-        return "/cs/qna/view";
+        return "/cs/notice/view";
     }
     // FAQ list 페이지 매핑
     @GetMapping("/cs/faq/list")
