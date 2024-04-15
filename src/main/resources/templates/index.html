@@ -69,10 +69,10 @@
       <header>
         <div class="top">
           <div>
-            <a th:href="@{/member/login.html}">로그인</a>
-            <a th:href="@{#}">회원가입</a>
-            <a th:href="@{#}">마이페이지</a>
-            <a th:href="@{#}"
+            <a th:href="@{/member/login}">로그인</a>
+            <a th:href="@{/member/join}">회원가입</a>
+            <a th:href="@{/my/home}">마이페이지</a>
+            <a th:href="@{/product/cart}"
               ><i class="fa fa-shopping-cart" aria-hidden="true"></i
               >&nbsp;장바구니</a
             >
@@ -80,7 +80,7 @@
         </div>
         <div class="logo">
           <div>
-            <a th:href="@{#}"><img th:src="@{/images/header_logo.png}" alt="로고" /></a>
+            <a th:href="@{/index}"><img th:src="@{/images/header_logo.png}" alt="로고" /></a>
             <form th:action="@{#}">
               <input type="text" name="search" />
               <button><i class="fa fa-search"></i></button>
@@ -90,17 +90,17 @@
         <div class="menu">
           <div>
             <ul>
-              <li><a th:href="@{#}">히트상품</a></li>
-              <li><a th:href="@{#}">추천상품</a></li>
-              <li><a th:href="@{#}">최신상품</a></li>
-              <li><a th:href="@{#}">인기상품</a></li>
-              <li><a th:href="@{#}">할인상품</a></li>
+              <li><a th:href="@{/product/list}">히트상품</a></li>
+              <li><a th:href="@{/product/list}">추천상품</a></li>
+              <li><a th:href="@{/product/list}">최신상품</a></li>
+              <li><a th:href="@{/product/list}">인기상품</a></li>
+              <li><a th:href="@{/product/list}">할인상품</a></li>
             </ul>
             <ul>
-              <li><a th:href="@{#}">공지사항</a></li>
-              <li><a th:href="@{#}">자주묻는질문</a></li>
-              <li><a th:href="@{#}">문의하기</a></li>
-              <li><a th:href="@{#}">고객센터</a></li>
+              <li><a th:href="@{/cs/notice/list}">공지사항</a></li>
+              <li><a th:href="@{/cs/faq/list}">자주묻는질문</a></li>
+              <li><a th:href="@{/cs/qna/list}">문의하기</a></li>
+              <li><a th:href="@{/cs/index}">고객센터</a></li>
             </ul>
           </div>
         </div>
@@ -118,49 +118,49 @@
                 ></i
               ></a>
               <ol>
-                <li><a th:href="@{#}">남성의류</a></li>
-                <li><a th:href="@{#}">여성의류</a></li>
-                <li><a th:href="@{#}">잡화</a></li>
-                <li><a th:href="@{#}">뷰티</a></li>
+                <li><a th:href="@{/product/list}">남성의류</a></li>
+                <li><a th:href="@{/product/list}">여성의류</a></li>
+                <li><a th:href="@{/product/list}">잡화</a></li>
+                <li><a th:href="@{/product/list}">뷰티</a></li>
               </ol>
             </li>
             <li>
-              <a th:href="@{#}"
+              <a th:href="@{/product/list}"
                 ><i class="fas fa-laptop"></i>가전·디지털<i
                   class="fas fa-angle-right"
                 ></i
               ></a>
               <ol>
-                <li><a th:href="@{#}">노트북/PC</a></li>
-                <li><a th:href="@{#}">가전</a></li>
-                <li><a th:href="@{#}">휴대폰</a></li>
-                <li><a th:href="@{#}">기타</a></li>
+                <li><a th:href="@{/product/list}">노트북/PC</a></li>
+                <li><a th:href="@{/product/list}">가전</a></li>
+                <li><a th:href="@{/product/list}">휴대폰</a></li>
+                <li><a th:href="@{/product/list}">기타</a></li>
               </ol>
             </li>
             <li>
-              <a th:href="@{#}"
+              <a th:href="@{/product/list}"
                 ><i class="fas fa-utensils"></i>식품·생필품<i
                   class="fas fa-angle-right"
                 ></i
               ></a>
               <ol>
-                <li><a th:href="@{#}">신선식품</a></li>
-                <li><a th:href="@{#}">가공식품</a></li>
-                <li><a th:href="@{#}">건강식품</a></li>
-                <li><a th:href="@{#}">생필품</a></li>
+                <li><a th:href="@{/product/list}">신선식품</a></li>
+                <li><a th:href="@{/product/list}">가공식품</a></li>
+                <li><a th:href="@{/product/list}">건강식품</a></li>
+                <li><a th:href="@{/product/list}">생필품</a></li>
               </ol>
             </li>
             <li>
-              <a th:href="@{#}"
+              <a th:href="@{/product/list}"
                 ><i class="fas fa-home"></i>홈·문구·취미<i
                   class="fas fa-angle-right"
                 ></i
               ></a>
               <ol>
-                <li><a th:href="@{#}">가구/DIY</a></li>
-                <li><a th:href="@{#}">침구·커튼</a></li>
-                <li><a th:href="@{#}">생활용품</a></li>
-                <li><a th:href="@{#}">사무용품</a></li>
+                <li><a th:href="@{/product/list}">가구/DIY</a></li>
+                <li><a th:href="@{/product/list}">침구·커튼</a></li>
+                <li><a th:href="@{/product/list}">생활용품</a></li>
+                <li><a th:href="@{/product/list}">사무용품</a></li>
               </ol>
             </li>
           </ul>
@@ -170,7 +170,7 @@
             <h1><i class="fas fa-crown"></i>베스트상품</h1>
             <ol>
               <li>
-                <a th:href="@{#}">
+                <a th:href="@{/product/view}">
                   <div class="thumb">
                     <i>1</i>
                     <img th:src="@{https://via.placeholder.com/230}" alt="item1" />
@@ -186,7 +186,7 @@
                 </a>
               </li>
               <li>
-                <a th:href="@{#}">
+                <a th:href="@{/product/view}">
                   <div class="thumb">
                     <i>2</i>
                     <img th:src="@{https://via.placeholder.com/50}" alt="item1" />
@@ -204,7 +204,7 @@
                 </a>
               </li>
               <li>
-                <a th:href="@{#}">
+                <a th:href="@{/product/view}">
                   <div class="thumb">
                     <i>3</i>
                     <img th:src="@{https://via.placeholder.com/50}" alt="item1" />
@@ -222,7 +222,7 @@
                 </a>
               </li>
               <li>
-                <a th:href="@{#}">
+                <a th:href="@{/product/view}">
                   <div class="thumb">
                     <i>4</i>
                     <img th:src="@{https://via.placeholder.com/50}" alt="item1" />
@@ -240,7 +240,7 @@
                 </a>
               </li>
               <li>
-                <a th:href="@{#}">
+                <a th:href="@{/product/view}">
                   <div class="thumb">
                     <i>5</i>
                     <img th:src="@{https://via.placeholder.com/50}" alt="item1" />
@@ -265,27 +265,27 @@
           <section class="slider">
             <ul>
               <li>
-                <a th:href="@{#}"
+                <a th:href="@{/product/view}"
                   ><img th:src="@{https://via.placeholder.com/985x447}" alt="item1"
                 /></a>
               </li>
               <li>
-                <a th:href="@{#}"
+                <a th:href="@{/product/view}"
                   ><img src="https://via.placeholder.com/985x447" alt="item2"
                 /></a>
               </li>
               <li>
-                <a th:href="@{#}"
+                <a th:href="@{/product/view}"
                   ><img th:src="@{https://via.placeholder.com/985x447}" alt="item3"
                 /></a>
               </li>
               <li>
-                <a th:href="@{#}"
+                <a th:href="@{/product/view}"
                   ><img th:src="@{https://via.placeholder.com/985x447}" alt="item4"
                 /></a>
               </li>
               <li>
-                <a th:href="@{#}"
+                <a th:href="@{/product/view}"
                   ><img th:src="@{https://via.placeholder.com/985x447}" alt="item5"
                 /></a>
               </li>
@@ -295,7 +295,7 @@
           <section class="hit">
             <h3><span>히트상품</span></h3>
             <article>
-              <a th:href="@{#}">
+              <a th:href="@{/product/view}">
                 <div class="thumb">
                   <img th:src="@{https://via.placeholder.com/230x230}" alt="t1" />
                 </div>
@@ -312,7 +312,7 @@
               </a>
             </article>
             <article>
-              <a th:href="@{#}">
+              <a th:href="@{/product/view}">
                 <div class="thumb">
                   <img th:src="@{https://via.placeholder.com/230x230}" alt="t1" />
                 </div>
@@ -329,7 +329,7 @@
               </a>
             </article>
             <article>
-              <a th:href="@{#}">
+              <a th:href="@{/product/view}">
                 <div class="thumb">
                   <img th:src="@{https://via.placeholder.com/230x230}" alt="t1" />
                 </div>
@@ -346,7 +346,7 @@
               </a>
             </article>
             <article>
-              <a th:href="@{#}">
+              <a th:href="@{/product/view}">
                 <div class="thumb">
                   <img th:src="@{https://via.placeholder.com/230x230}" alt="t1" />
                 </div>
@@ -363,7 +363,7 @@
               </a>
             </article>
             <article>
-              <a th:href="@{#}">
+              <a th:href="@{/product/view}">
                 <div class="thumb">
                   <img th:src="@{https://via.placeholder.com/230x230}" alt="t1" />
                 </div>
@@ -380,7 +380,7 @@
               </a>
             </article>
             <article>
-              <a th:href="@{#}">
+              <a th:href="@{/product/view}">
                 <div class="thumb">
                   <img th:src="@{https://via.placeholder.com/230x230}" alt="t1" />
                 </div>
@@ -397,7 +397,7 @@
               </a>
             </article>
             <article>
-              <a th:href="@{#}">
+              <a th:href="@{/product/view}">
                 <div class="thumb">
                   <img th:src="@{https://via.placeholder.com/230x230}" alt="t1" />
                 </div>
@@ -414,7 +414,7 @@
               </a>
             </article>
             <article>
-              <a th:href="@{#}">
+              <a th:href="@{/product/view}">
                 <div class="thumb">
                   <img th:src="@{https://via.placeholder.com/230x230}" alt="t1" />
                 </div>
@@ -435,7 +435,7 @@
           <section class="recommend">
             <h3><span>추천상품</span></h3>
             <article>
-              <a th:href="@{#}">
+              <a th:href="@{/product/view}">
                 <div class="thumb">
                   <img th:src="@{https://via.placeholder.com/230x230}" alt="t1" />
                 </div>
