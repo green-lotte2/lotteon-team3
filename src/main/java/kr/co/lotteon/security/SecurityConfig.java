@@ -35,8 +35,8 @@ public class SecurityConfig {
         ///////////배포전 인가 수정하기/////////
         httpSecurity.authorizeHttpRequests(authorize -> authorize
                                                         .requestMatchers("/").permitAll()
-                                                        .requestMatchers("/member/**").permitAll()
-                                                        .requestMatchers("/admin/**").hasAuthority("ADMIN")
+                                                        //.requestMatchers("/member/**").permitAll()
+                                                        //.requestMatchers("/admin/**").hasAuthority("ADMIN")
                                                         .anyRequest().permitAll());
 
         // 사이트 위변조 방지 설정

@@ -134,7 +134,7 @@ header {
   float: left;
   width: 97px;
   height: 71px;
-  background-image: url("../images/member_btn_login.gif");
+  background-image: url("../../templates/member/images/member_btn_login.gif");
   font-size: 0;
   border: none;
 }
@@ -521,7 +521,7 @@ header {
   float: left;
   width: 97px;
   height: 71px;
-  background-image: url("../images/member_btn_login.gif");
+  background-image: url("../../templates/member/images/member_btn_login.gif");
   font-size: 0;
   border: none;
 }
