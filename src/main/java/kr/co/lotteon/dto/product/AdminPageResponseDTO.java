@@ -4,8 +4,11 @@ import lombok.*;
 
 import java.util.List;
 
-// 상품 리스트 페이징 처리를 위한 PageResponseDTO
-@Getter @Setter @ToString @AllArgsConstructor
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
 public class AdminPageResponseDTO {
     private List<ProductDTO> dtoList;
     private int pg;
