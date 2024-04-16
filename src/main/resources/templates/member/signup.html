@@ -2,13 +2,59 @@
 xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{/layout/memberLayout}">
         <main id="member" layout:fragment="content">
+			<script>
+				document.addEventListener('DOMContentLoaded', function() {
+					document.querySelector('.agree').addEventListener('click', function(e) {
+						const agree1 = document.querySelector('input[name="agree1"]');
+						const agree2 = document.querySelector('input[name="agree2"]');
+						const agree3 = document.querySelector('input[name="agree3"]');
+
+						if (!agree1.checked) {
+							e.preventDefault();
+							alert('사이트 이용약관에 동의를 하셔야 회원가입하실 수 있습니다.');
+						} else if (!agree2.checked) {
+							e.preventDefault();
+							alert('전자금융거래 이용약관에 동의를 하셔야 회원가입하실 수 있습니다.');
+						} else if (!agree3.checked) {
+							e.preventDefault();
+							alert('개인정보 수집동의에 동의를 하셔야 회원가입하실 수 있습니다.');
+						}
+					});
+
+					// 체크박스 전체 선택
+					document.querySelector('input[name="agreeAll"]').addEventListener('click', function() {
+						const isChecked = this.checked; // 전체 선택 체크박스의 상태를 가져옴
+						const checkboxes = document.querySelectorAll('.checkboxes input[type="checkbox"]');
+						checkboxes.forEach(function(checkbox) {
+							checkbox.checked = isChecked; // 모든 체크박스의 상태를 전체 선택 체크박스와 동일하게 설정
+						});
+					});
+
+					// 개별 체크박스 선택 시 전체 선택 체크박스 상태 갱신
+					document.querySelectorAll('.checkboxes input[type="checkbox"]').forEach(function(checkbox) {
+						checkbox.addEventListener('click', function() {
+							const checkboxes = document.querySelectorAll('.checkboxes input[type="checkbox"]');
+							let allChecked = true;
+							checkboxes.forEach(function(checkbox) {
+								if (!checkbox.checked) {
+									allChecked = false;
+								}
+							});
+							document.querySelector('input[name="agreeAll"]').checked = allChecked;
+						});
+					});
+				});
+
+			</script>
+
+
 			<form th:action="@{/member/register}" method="get">
 				<input type="hidden" th:name="type" th:value="${type}">
 				<div class="signup">
 					<nav>
 						<h1>약관동의</h1>
 					</nav>
-					<section>
+					<section class="checkboxes">
 						<h3 th:if="${type == 'normal'}" class="normal">
 							이용약관, 개인정보 수집, 전자금융거래 이용약관, 위치정보 이용약관(선택)에 <span>모두 동의</span>합니다.
 						</h3>
@@ -28,16 +74,16 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 
 						<h3><span class="essential">(필수)</span>개인정보 수집동의</h3>
 						<textarea class="privacy" readonly th:text="${terms.privacy}"></textarea>
-						<label><input type="checkbox" name="agree3" />동의합니다.</label>
+						<label><input type="checkbox" name="agree3"/>동의합니다.</label>
 					</section>
 
 					<section th:if="${type=='normal'}">
 						<h3><span class="optional">(선택)</span>위치정보 이용약관</h3>
 						<textarea class="location" readonly th:text="${terms.location}"></textarea>
-						<label><input type="checkbox" name="agree4" />동의합니다.</label>
+						<label><input type="checkbox" name="agree4"/>동의합니다.</label>
 					</section>
 					<div>
-						<input type="button" class="agree" value="동의하기" />
+						<input type="submit" class="agree" value="동의하기" />
 					</div>
 				</div>
 			</form>

@@ -22,10 +22,11 @@ public class MemberController {
     public String signup(Model model,@RequestParam String type){
 
         log.info("type = "+type);
+
+        //type로 일반회원(normal)인지 판매자(seller)인지 구분
         model.addAttribute("type",type);
         Terms terms = termsService.findByTerms();
         model.addAttribute("terms",terms);
-
 
         return "/member/signup";
     }
