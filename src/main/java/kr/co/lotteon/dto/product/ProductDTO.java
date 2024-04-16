@@ -20,8 +20,6 @@ public class ProductDTO {
     private int hit;
     private int point;
     private int price;
-    private int prodCate1;
-    private int prodCate2;
     private int review;
     private int score;
     private int sold;
