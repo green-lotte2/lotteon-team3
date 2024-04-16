@@ -62,3 +62,17 @@ tasks.named('test') {
 springBoot {
 	buildInfo()
 }
+// QueryDSL 설정 - main 하위에 Querydsl 생성 설정
+def querydslDir = "src/main/generated"
+
+sourceSets {
+	main.java.srcDir querydslDir
+}
+// Qclass 파일 생성 위치 설정
+tasks.withType(JavaCompile) {
+	options.generatedSourceOutputDirectory = file(querydslDir)
+}
+
+clean {
+	delete file(querydslDir)
+}

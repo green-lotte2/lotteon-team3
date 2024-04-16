@@ -2,7 +2,11 @@ package kr.co.lotteon.config;
 
 import lombok.*;
 
-@Getter @Setter @AllArgsConstructor @NoArgsConstructor @ToString @Builder
+@Getter
+@Setter
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor
 public class AppInfo {
 
     private String name;
