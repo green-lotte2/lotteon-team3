@@ -102,9 +102,11 @@ file:
   upload:
     path: uploads/
 
+
 img:
   upload:
     path: src/main/resources/static/product
+
 
 logging:
   level:
