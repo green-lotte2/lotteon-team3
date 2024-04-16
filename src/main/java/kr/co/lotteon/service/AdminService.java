@@ -8,6 +8,7 @@ import kr.co.lotteon.entity.product.Cate2;
 import kr.co.lotteon.entity.product.Product;
 import kr.co.lotteon.repository.Cate1Repository;
 import kr.co.lotteon.repository.Cate2Repository;
+import kr.co.lotteon.repository.product.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
@@ -28,6 +29,7 @@ import java.util.stream.Collectors;
 @Service
 public class AdminService {
 
+    private final ProductRepository productRepository;
     private final Cate1Repository cate1Repository;
     private final Cate2Repository cate2Repository;
     private final ModelMapper modelMapper;
@@ -53,13 +55,13 @@ public class AdminService {
         return ResponseEntity.ok().body(cate2List);
     }
     // 관리자 상품 등록 - DB insert
-    public void insertProduct(ProductDTO productDTO, MultipartFile thumb190, MultipartFile thumb230, MultipartFile thumb456, MultipartFile detail940){
+    public void insertProduct(ProductDTO productDTO, MultipartFile thumb190, MultipartFile thumb230, MultipartFile thumb456, MultipartFile detail860){
 
         log.info("관리자 상품 등록 service1 productDTO : " + productDTO.toString());
         log.info("관리자 상품 등록 service2 thumb190 : " + thumb190);
         log.info("관리자 상품 등록 service3 thumb230 : " + thumb230);
         log.info("관리자 상품 등록 service4 thumb456 : " + thumb456);
-        log.info("관리자 상품 등록 service5 detail940 : " + detail940);
+        log.info("관리자 상품 등록 service5 detail860 : " + detail860);
 
         // 이미지 파일 등록 : 해당 디렉토리 없을 경우 자동 생성
         File file = new File(imgUploadPath);
@@ -68,8 +70,8 @@ public class AdminService {
         }
         String path = file.getAbsolutePath();
 
-        String orgPath = path + "/orgImage";
         // 원본 파일 폴더 자동 생성
+        String orgPath = path + "/orgImage";
         File orgFile = new File(orgPath);
         if(!orgFile.exists()){
             orgFile.mkdir();
@@ -78,22 +80,22 @@ public class AdminService {
         Product saveProduct = new Product();
 
         // 이미지 리사이징
-        if(!thumb190.isEmpty() && !thumb230.isEmpty() && !thumb456.isEmpty() && !detail940.isEmpty()){
+        if(!thumb190.isEmpty() && !thumb230.isEmpty() && !thumb456.isEmpty() && !detail860.isEmpty()){
             // oName, sName 구하기
             String oName190 = thumb190.getOriginalFilename();
             String oName230 = thumb230.getOriginalFilename();
             String oName456 = thumb456.getOriginalFilename();
-            String oName940 = detail940.getOriginalFilename();
+            String oName860 = detail860.getOriginalFilename();
 
             String ext190 = oName190.substring(oName190.lastIndexOf("."));
             String ext230 = oName230.substring(oName230.lastIndexOf("."));
             String ext456 = oName456.substring(oName456.lastIndexOf("."));
-            String ext940 = oName940.substring(oName940.lastIndexOf("."));
+            String ext860 = oName860.substring(oName860.lastIndexOf("."));
 
             String sName190 = UUID.randomUUID().toString() + ext190;
             String sName230 = UUID.randomUUID().toString() + ext230;
             String sName456 = UUID.randomUUID().toString() + ext456;
-            String sName940 = UUID.randomUUID().toString() + ext940;
+            String sName860 = UUID.randomUUID().toString() + ext860;
 
             log.info("관리자 상품 등록 service6 oName190 : " + oName190);
             log.info("관리자 상품 등록 service7 sName190 : " + sName190);
@@ -103,13 +105,13 @@ public class AdminService {
                 thumb190.transferTo(new File(orgFile, sName190));
                 thumb230.transferTo(new File(orgFile, sName230));
                 thumb456.transferTo(new File(orgFile, sName456));
-                detail940.transferTo(new File(orgFile, sName940));
+                detail860.transferTo(new File(orgFile, sName860));
 
                 // 파일 이름 DTO에 저장
                 productDTO.setThumb1(sName190);
                 productDTO.setThumb2(sName230);
                 productDTO.setThumb3(sName456);
-                productDTO.setDetail(sName940);
+                productDTO.setDetail(sName860);
 
                 // 리사이징
                 Thumbnails.of(new File(orgPath, sName190)) // 원본 파일 (경로, 이름)
@@ -121,15 +123,16 @@ public class AdminService {
                 Thumbnails.of(new File(orgPath, sName456))
                         .size(456,456)
                         .toFile(new File(path, sName456));
-                Thumbnails.of(new File(orgPath, sName940))
-                        .size(940,940)
-                        .toFile(new File(path, sName940));
+                Thumbnails.of(new File(orgPath, sName860))
+                        .width(860) // 너비 860 * 높이 제한 없음
+                        .toFile(new File(path, sName860));
 
                 // 상품 정보 DB 저장
                 Product product = modelMapper.map(productDTO, Product.class);
-                log.info("파일 업로드 service8 product : " + product.toString());
-                /////savedProduct = marketRepository.save(product);
-                /////log.info("파일 업로드 service9 savedProduct : " + savedProduct.toString());
+                log.info("관리자 상품 등록 service8 product : " + product.toString());
+                saveProduct = productRepository.save(product);
+                log.info("관리자 상품 등록 service9 savedProduct : " + saveProduct.toString());
+
             } catch (IOException e) {
                 log.error(e.getMessage());
             }
