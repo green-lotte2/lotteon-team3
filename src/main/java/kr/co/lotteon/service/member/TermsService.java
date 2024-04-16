@@ -1,7 +1,7 @@
-package kr.co.lotteon.service;
+package kr.co.lotteon.service.member;
 
 import kr.co.lotteon.entity.member.Terms;
-import kr.co.lotteon.repository.TermsRepository;
+import kr.co.lotteon.repository.member.TermsRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
