@@ -134,7 +134,7 @@ header > .logo a {
   width: 18px;
   height: 18px;
   content: "";
-  background: url("../images/cs_sprites.png") no-repeat;
+  background: url("../cs/images/cs_sprites.png") no-repeat;
   background-position: -230px -276px;
   background-size: 750px auto;
   vertical-align: top;
@@ -179,7 +179,7 @@ header > .logo a {
   height: 90px;
   box-sizing: border-box;
   text-align: center;
-  background-image: url("../images/cs_sprites.png");
+  background-image: url("../cs/images/cs_sprites.png");
   background-repeat: no-repeat;
   background-size: 750px auto;
 }
@@ -532,12 +532,12 @@ footer p > strong {
 }
 #cs > .notice > .list > article > .page > .prev {
   font-size: 0;
-  background-image: url('../images/cs_sprites.png');
+  background-image: url('../cs/images/cs_sprites.png');
   background-position: -706px -652px;
 }
 #cs > .notice > .list > article > .page > .next {
   font-size: 0;
-  background-image: url('../images/cs_sprites.png');
+  background-image: url('../cs/images/cs_sprites.png');
   background-position: -628px -652px;
 }
 #cs > .notice > .list > article > .page > .num {}
@@ -881,12 +881,12 @@ footer p > strong {
 }
 #cs > .qna > .list > article > .page > .prev {
   font-size: 0;
-  background-image: url('../images/cs_sprites.png');
+  background-image: url('../cs/images/cs_sprites.png');
   background-position: -706px -652px;
 }
 #cs > .qna > .list > article > .page > .next {
   font-size: 0;
-  background-image: url('../images/cs_sprites.png');
+  background-image: url('../cs/images/cs_sprites.png');
   background-position: -628px -652px;
 }
 #cs > .qna > .list > article > .page > .num {}
