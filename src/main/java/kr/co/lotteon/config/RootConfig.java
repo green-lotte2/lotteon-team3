@@ -1,5 +1,6 @@
 package kr.co.lotteon.config;
 
+
 import lombok.Getter;
 import lombok.Setter;
 import org.modelmapper.ModelMapper;
@@ -15,6 +16,8 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 @Setter
 @Configuration
 @EnableAspectJAutoProxy
+
+@Configuration
 public class RootConfig {
 
     @Autowired

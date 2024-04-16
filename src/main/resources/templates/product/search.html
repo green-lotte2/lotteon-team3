@@ -1,12 +1,11 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{/product/common/layouts/defaultLayout}"
-      layout:fragment="Content">
+      layout:decorate="~{/layout/productLayout}">
 <html>
 
         <!-- 상품검색 화면 시작 -->
-        <section class="search">
+        <section class="search" layout:fragment="content">
 
           <!-- 제목, 페이지 네비게이션 -->
           <nav>

@@ -8,6 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AppInfo {
+
     private String name;
     private String version;
 }
