@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{/product/common/layouts/defaultLayout}"
-      layout:fragment="Content">
+      layout:decorate="~{/layout/productLayout}">
 
 <body>
     <div id="wrapper">
@@ -11,7 +10,7 @@
 
 
             <!-- 장바구니 페이지 시작 -->
-            <section class="cart">
+            <section class="cart" layout:fragment="content">
               
               <!-- 제목, 페이지 네비게이션 -->
               <nav>

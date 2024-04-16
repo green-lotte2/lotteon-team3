@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{/product/common/layouts/defaultLayout}"
-      layout:fragment="Content">
+      layout:decorate="~{/layout/productLayout}">
 
-            <section class="list">              
+            <section class="list" layout:fragment="content">
               <!-- 제목, 페이지 네비게이션 -->
               <nav>
                 <h1>상품목록</h1>
@@ -13,21 +12,22 @@
 
               <!-- 정렬 메뉴 -->
               <ul class="sort">
-                  <li><a href="#" class="on">판매많은순</a></li>
-                  <li><a href="#">낮은가격순</a></li>
-                  <li><a href="#">높은가격순</a></li>
-                  <li><a href="#">평점높은순</a></li>
-                  <li><a href="#">후기많은순</a></li>
-                  <li><a href="#">최근등록순</a></li>
+                  <li><a th:href="@{#}" class="on">판매많은순</a></li>
+                  <li><a th:href="@{#}">낮은가격순</a></li>
+                  <li><a th:href="@{#}">높은가격순</a></li>
+                  <li><a th:href="@{#}">평점높은순</a></li>
+                  <li><a th:href="@{#}">후기많은순</a></li>
+                  <li><a th:href="@{#}">최근등록순</a></li>
               </ul>
 
               <!-- 상품목록 -->              
-              <table border="0">                  
+              <table border="0">
+
                 <tr>
-                  <td><a href="#" class="thumb"><img src="https://via.placeholder.com/120x120" alt="상품이미지"/></a></td>
+                  <td><a th:href="@{#}" class="thumb"><img src="https://via.placeholder.com/120x120" alt="상품이미지"/></a></td>
                   <td>
                     <h3 class="name">상품명</h3>
-                    <a href="#" class="desc">상품설명</a>
+                    <a th:href="@{#}" class="desc">상품설명</a>
                   </td>
                   <td>
                     <ul>
@@ -45,101 +45,17 @@
                     <h6 class="rating star1">상품평</h6>
                   </td>
                 </tr>
-                <tr>
-                  <td><a href="#" class="thumb"><img src="https://via.placeholder.com/120x120" alt="상품이미지"/></a></td>
-                  <td>
-                    <h3 class="name">상품명</h3>
-                    <a href="#" class="desc">상품설명</a>
-                  </td>
-                  <td>
-                    <ul>
-                      <li><ins class="dis-price">27,000</ins></li>
-                      <li>
-                        <del class="org-price">30,000</del>
-                        <span class="discount">10%</span>
-                      </li>
-                      <li><span class="free-delivery">무료배송</span></li>
-                    </ul>
-                  </td>
-                  <td>
-                    <h4 class="seller"><i class="fas fa-home"></i>&nbsp;판매자</h4>
-                    <h5 class="badge power">판매자등급</h5>
-                    <h6 class="rating star2">상품평</h6>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a href="#" class="thumb"><img src="https://via.placeholder.com/120x120" alt="상품이미지"/></a></td>
-                  <td>
-                    <h3 class="name">상품명</h3>
-                    <a href="#" class="desc">상품설명</a>
-                  </td>
-                  <td>
-                    <ul>
-                      <li><ins class="dis-price">27,000</ins></li>
-                      <li>
-                        <del class="org-price">30,000</del>
-                        <span class="discount">10%</span>
-                      </li>
-                      <li><span class="free-delivery">무료배송</span></li>
-                    </ul>
-                  </td>
-                  <td>
-                    <h4 class="seller"><i class="fas fa-home"></i>&nbsp;판매자명</h4>
-                    <h5 class="badge power">판매자등급</h5>
-                    <h6 class="rating star3">상품평</h6>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a href="#" class="thumb"><img src="https://via.placeholder.com/120x120" alt="상품이미지"/></a></td>
-                  <td>
-                    <h3 class="name">상품명</h3>
-                    <a href="#" class="desc">상품설명</a>
-                  </td>
-                  <td>
-                    <ul>
-                      <li><ins class="dis-price">27,000</ins></li>
-                      <li>
-                        <del class="org-price">30,000</del>
-                        <span class="discount">10%</span>
-                      </li>
-                      <li><span class="free-delivery">무료배송</span></li>
-                    </ul>
-                  </td>
-                  <td>
-                    <h4 class="seller"><i class="fas fa-home"></i>&nbsp;판매자명</h4>
-                    <h5 class="badge power">판매자등급</h5>
-                    <h6 class="rating star4">상품평</h6>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a href="#" class="thumb"><img src="https://via.placeholder.com/120x120" alt="상품이미지"/></a></td>
-                  <td>
-                    <h3 class="name">상품명</h3>
-                    <a href="#" class="desc">상품설명</a>
-                  </td>
-                  <td>
-                    <ul>
-                      <li><ins class="dis-price">27,000</ins></li>
-                      <li>
-                        <del class="org-price">30,000</del>
-                        <span class="discount">10%</span>
-                      </li>
-                      <li><span>배송비 2500</span></li>
-                    </ul>
-                  </td>
-                  <td>
-                    <h4 class="seller"><i class="fas fa-home"></i>&nbsp;판매자명</h4>
-                    <h5 class="badge power">판매자등급</h5>
-                    <h6 class="rating star5">상품평</h6>
-                  </td>
-                </tr>
+
+
+
+
                 
               </table>            
 
               <!-- 상품목록 페이지번호 -->
               <div class="paging">
                 <span class="prev">
-                  <a href="#"><&nbsp;이전</a>
+                  <a th:href="@{#}"><&nbsp;이전</a>
                 </span>
                 <span class="num">
                   <a href="#" class="on">1</a>
@@ -157,31 +73,3 @@
 
             </section>
         </main>
-        <footer>
-          <ul>
-            <li><a href="#">회사소개</a></li>
-            <li><a href="#">서비스이용약관</a></li>
-            <li><a href="#">개인정보처리방침</a></li>
-            <li><a href="#">전자금융거래약관</a></li>
-          </ul>
-          <div>
-            <p><img src="../images/footer_logo.png" alt="로고" /></p>
-            <p>
-              <strong>(주)롯데ON</strong><br />
-              서울특별시 송파구 올림픽로 300 롯데월드타워 26층 (역삼동 강남파이낸스센터)<br />
-              대표이사 : 김사무엘상현, 정준호, 강성현<br />
-              사업자등록번호 : 529-85-00774(롯데쇼핑(주) e커머스사업부)<br />
-              통신판매업 신고 : 서울송파 제0158호<br>
-              호스팅 서비스사업자 : 롯데쇼핑(주) e커머스사업부
-            </p>
-            <p>
-              <strong>고객센터</strong><br />
-              Tel : 1899-7000(유료) (평일 09:00~18:00)<br />
-              Fax : 051-123-4567 | E-mail : lotteon@lotte.net<br />
-            </p>
-          </div>
-        </footer>
-        <button type="button" id="top">상단이동</button>
-    </div>    
-</body>
-</html>
