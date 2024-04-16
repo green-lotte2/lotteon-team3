@@ -1,14 +1,22 @@
 package kr.co.lotteon.controller;
 
+import kr.co.lotteon.dto.cs.CsPageRequestDTO;
+import kr.co.lotteon.dto.cs.CsPageResponseDTO;
+
+import kr.co.lotteon.service.cs.CsCateService;
+import kr.co.lotteon.service.cs.CsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Slf4j
 @RequiredArgsConstructor
 @Controller
 public class CsController {
+
+    private final CsService csService;
 
     // cs index 페이지 매핑
     @GetMapping(value = {"/cs","/cs/index"})
@@ -30,11 +38,24 @@ public class CsController {
     public String qnaWrite(){
         return "/cs/qna/write";
     }
-    // 공지사항 list 페이지 매핑
+
     @GetMapping("/cs/notice/list")
-    public String noticeList(){
+    public String noticeList(Model model, CsPageRequestDTO csPageRequestDTO) {
+        CsPageResponseDTO csPageResponseDTO = csService.findByCate(csPageRequestDTO);
+
+        log.info("csPageResponseDTO pg : "+ csPageResponseDTO.getPg());
+        log.info("csPageResponseDTO size : "+ csPageResponseDTO.getSize());
+        log.info("csPageResponseDTO total : "+ csPageResponseDTO.getTotal());
+        log.info("csPageResponseDTO start : "+ csPageResponseDTO.getStart());
+        log.info("csPageResponseDTO end : "+ csPageResponseDTO.getEnd());
+        log.info("csPageResponseDTO prev : "+ csPageResponseDTO.isPrev());
+        log.info("csPageResponseDTO next : "+ csPageResponseDTO.isNext());
+
+        model.addAttribute(csPageResponseDTO);
+        model.addAttribute("cate", csPageRequestDTO.getCate());
         return "/cs/notice/list";
     }
+
     // 공지사항 보기 페이지 매핑
     @GetMapping("/cs/notice/view")
     public String noticeView(){
@@ -50,4 +71,5 @@ public class CsController {
     public String faqView(){
         return "/cs/faq/view";
     }
+
 }

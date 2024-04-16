@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html"
-      xmlns:layout="http://www.w3.org/1999/xhtml"
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head>
     <meta charset="UTF-8" />
     <title>롯데ON::고객센터</title>
-    <link rel="shortcut icon" type="image/x-icon" th:href="@{../../cs/images/favicon.ico}" />
-    <link rel="stylesheet" th:href="@{../../cs/css/style.css}" />
+    <link rel="shortcut icon" type="image/x-icon" th:href="@{images/favicon.ico}" />
+    <link rel="stylesheet" th:href="@{/css/csStyle.css}" />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
@@ -39,14 +39,16 @@
 
     <div layout:fragment="content">
 
+
+
     </div>
 
     <footer>
         <ul>
-            <li><a th:href="@{#}">회사소개</a></li>
-            <li><a th:href="@{#}">서비스이용약관</a></li>
-            <li><a th:href="@{#}">개인정보처리방침</a></li>
-            <li><a th:href="@{#}">전자금융거래약관</a></li>
+            <li><a href="#">회사소개</a></li>
+            <li><a href="#">서비스이용약관</a></li>
+            <li><a href="#">개인정보처리방침</a></li>
+            <li><a href="#">전자금융거래약관</a></li>
         </ul>
         <div>
             <p><img th:src="@{../../images/footer_logo.png}" alt="로고" /></p>
