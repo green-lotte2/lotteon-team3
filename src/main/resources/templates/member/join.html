@@ -10,7 +10,7 @@ layout:decorate="~{/layout/memberLayout}">
                         <div class="txt">
                             <img th:src="@{/member/images/member_join_txt_normal.gif}" alt="개인 구매회원">
                             <!-- 구매회원 약관 페이지로 매핑할 예정 -->
-                            <a th:href="@{/member/signup}"><img th:src="@{/member/images/member_join_btn1.gif}" alt="회원가입"></a>
+                            <a th:href="@{/member/signup(type=normal)}"><img th:src="@{/member/images/member_join_btn1.gif}" alt="회원가입"></a>
                         </div>
                     </div>
                     <div class="seller">
@@ -18,7 +18,7 @@ layout:decorate="~{/layout/memberLayout}">
                         <div class="txt">
                             <img th:src="@{/member/images/member_join_txt_seller.gif}" alt="개인 구매회원">
                             <!-- 판매회원 약관 페이지로 매핑할 예정 -->
-                            <a th:href="@{/member/signup}"><img th:src="@{/member/images/member_join_btn2.gif}" alt="회원가입"></a>
+                            <a th:href="@{/member/signup(type=seller)}"><img th:src="@{/member/images/member_join_btn2.gif}" alt="회원가입"></a>
                         </div>
                     </div>
                 </div>
