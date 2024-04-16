@@ -3,6 +3,7 @@ package kr.co.lotteon.controller;
 import kr.co.lotteon.dto.cs.CsPageRequestDTO;
 import kr.co.lotteon.dto.cs.CsPageResponseDTO;
 import kr.co.lotteon.service.cs.CsCateService;
+import kr.co.lotteon.service.cs.CsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class CsController {
 
-    //private final CsService csService;
+    private final CsService csService;
 
     // cs index 페이지 매핑
     @GetMapping(value = {"/cs","/cs/index"})
@@ -37,7 +38,6 @@ public class CsController {
         return "/cs/qna/write";
     }
 
-    /*
     @GetMapping("/cs/notice/list")
     public String noticeList(Model model, CsPageRequestDTO csPageRequestDTO) {
         CsPageResponseDTO csPageResponseDTO = csService.findByCate(csPageRequestDTO);
@@ -46,7 +46,7 @@ public class CsController {
         model.addAttribute("cate", csPageRequestDTO.getCate());
         return "/cs/notice/list";
     }
-*/
+
     // 공지사항 보기 페이지 매핑
     @GetMapping("/cs/notice/view")
     public String noticeView(){

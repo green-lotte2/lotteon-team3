@@ -29,9 +29,8 @@ public class CsService {
     private final CsRepository csRepository;
     private final BoardTypeRepository typeRepository;
     private final BoardCateRepository boardCateRepository;
-    //private final ModelMapper modelMapper;
+    private final ModelMapper modelMapper;
 
-/*
     // 글목록, 페이지(카테고리별)
     public CsPageResponseDTO findByCate(CsPageRequestDTO csPageRequestDTO) {
 
@@ -81,6 +80,4 @@ public class CsService {
                 .build();
 
     }
-
- */
 }
