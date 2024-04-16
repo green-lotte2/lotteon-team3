@@ -64,6 +64,7 @@ main > aside {
 #gnb > li {
     width: 100%;
     min-height: 66px;
+    background-color: #232228;
     border-top: 1px solid #c0c0c0;
     box-sizing: border-box;
 }
@@ -75,7 +76,7 @@ main > aside {
     height: 66px;
     font-size: 14px;
     font-weight: bold;
-    color: #222;            
+    color: #F0F4F9;
     line-height: 66px;
     text-indent: 10px;
 }
@@ -97,11 +98,9 @@ main > aside {
     display: block;
     width: 100%;
     height: 100%;
+    color: #d3d6d8;
     text-indent: 52px;
 }        
-
-
-
 main > section {
     float: right;
     width: 1130px;
@@ -183,7 +182,7 @@ main table span {
 footer {
     width: 100%;
     height: 60px;
-    background: #0d3a46;
+    background: #30303a;
 }
 
 footer > div {
@@ -541,6 +540,46 @@ button[type=submit] {
     vertical-align: middle;
     box-sizing: border-box;
     cursor: pointer;
+}
+/* 배너 tabs */
+#tabs{
+    position: relative;
+    margin: 3rem 0;
+}
+#tabs::before,
+#tabs::after {
+    content: "";
+    display: table;
+}
+#tabs::after {
+    clear: both;
+}
+#tabUl {
+    background: #fff;
+    border: none;
+
+}
+#tabUl > .ui-tab {
+    position: relative;
+    display: block;
+    line-height: 2.75em;
+    height: 3em;
+    padding: 0 1.618em;
+    border-right: 2px solid #d6d7d8;
+    border-left: 2px solid #d6d7d8;
+    border-top: 2px solid #d6d7d8;
+    color: #fff;
+    cursor: pointer;
+    top: 0;
+    transition: all 0.25s;
+}
+#tabUl > .ui-tab > .ui-tabs-anchor {
+    font-size: 14px;
+}
+#tabUl > .ui-tab:hover {
+}
+.tab-switch {
+    display: none;
 }
 /* 배너 등록 */
 .popup {

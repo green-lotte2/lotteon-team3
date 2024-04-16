@@ -7,6 +7,7 @@
     <script th:src="@{https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js}"></script>
     <script th:src="@{https://kit.fontawesome.com/20962f3e4b.js}" crossorigin="anonymous"></script>
     <script th:src="@{/admin/js/gnb.js}"></script>
+    <script th:src="@{/admin/js/util.js}"></script>
     <link rel="stylesheet" th:href="@{https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css}">
     <link rel="stylesheet" th:href="@{https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css}"/>
     <link rel="stylesheet" th:href="@{/css/admin.css}">
@@ -39,7 +40,7 @@
                     <a href="#"><i class="fas fa-store" aria-hidden="true"></i>상점관리</a>
                     <ol>
                         <li><a th:href="@{/admin/}">판매자현황</a></li>
-                        <li><a th:href="@{/admin/}">재고관리</a></li>
+                        <li><a th:href="@{/admin/product/list}">재고관리</a></li>
                     </ol>
                 </li>
                 <li>
@@ -56,7 +57,7 @@
                     <ol>
                         <li><a th:href="@{/admin/product/list}">상품현황</a></li>
                         <li><a th:href="@{/admin/product/register}">상품등록</a></li>
-                        <li><a href="#">재고관리</a></li>
+                        <li><a th:href="@{/admin/product/list}">상품현황</a></li>
                     </ol>
                 </li>
                 <li>
@@ -71,8 +72,9 @@
                 <li>
                     <a href="#"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>게시판관리</a>
                     <ol>
-                        <li><a href="#">게시판현황</a></li>
-                        <li><a href="#">고객문의</a></li>
+                        <li><a th:href="@{/admin/}">공지사항</a></li>
+                        <li><a th:href="@{/admin/}">자주묻는질문</a></li>
+                        <li><a th:href="@{/admin/}">고객문의</a></li>
                     </ol>
                 </li>
             </ul>

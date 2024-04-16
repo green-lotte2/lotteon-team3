@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<!-- 공통 JS, CSS 관리 -->
+<head> </head>
+
+<body>
+    <!-- header 영역 관리 -->
+    <header th:replace="~{/product/common/fragments/header}"> </header>
+
+    <!-- content 영역 관리 -->
+    <th:block layout:fragment="Content"></th:block>
+</body>
+
+
+<!-- footer 영역 관리 -->
+<footer th:replace="~{/product/common/fragments/footer :: FooterFramgent}"> </footer>
+
+</html>

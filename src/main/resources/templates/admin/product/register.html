@@ -2,6 +2,22 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{/layout/adminLayout}">
 <section id="admin-product-register" layout:fragment="content">
+    <script>
+        // cate1 선택 시 cate2 조회
+        async function findCate2(cate1){
+            const cate2Select = document.getElementById('cate2');
+            console.log(cate1);
+            const cate2s = await fetchGet(`/lotteon/admin/product/register/${cate1}`)
+            // 기존 <option> 태그들 삭제
+            cate2Select.innerHTML = "";
+            for(const cate2 of cate2s){
+                const cate2Option = `<option value="${cate2.cate2}">${cate2.c2Name}</option>`;
+                console.log("cate2Option : " + cate2Option);
+                // 태그 문자열 삽입
+                cate2Select.insertAdjacentHTML('beforeend', cate2Option);
+            }
+        }
+    </script>
                 <nav>
                     <h3>상품등록</h3>
                     <p>
@@ -22,24 +38,18 @@
                                 <tr>
                                     <td>1차 분류</td>
                                     <td>
-                                        <select name="category1">
-                                            <option value="cate0">1차 분류 선택</option>
-                                            <option value="cate11">패션·의류·뷰티</option>
-                                            <option value="cate12">가전·디지털</option>
-                                            <option value="cate13">식품·생필품</option>
-                                            <option value="cate14">홈·문구·취미</option>                                                
+                                        <select name="cate1" id="cate1" onchange="findCate2(this.value)">
+                                            <th:block th:each="cate1, loop :${cate1List}">
+                                                <option th:value="${cate1.cate1}">[[${cate1.c1Name}]]</option>
+                                            </th:block>
                                         </select>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>2차 분류</td>
                                     <td>
-                                        <select name="category2">
-                                            <option value="cate0">2차 분류 선택</option>
-                                            <option value="cate21">남성의류</option>
-                                            <option value="cate22">여성의류</option>
-                                            <option value="cate23">잡화</option>
-                                            <option value="cate24">뷰티</option>                                                
+                                        <select name="cate2" id="cate2">
+                                            <option value="0">2차 분류 선택</option>
                                         </select>
                                     </td>
                                 </tr>
