@@ -15,21 +15,25 @@ public class MemberController {
     public String join(){
         return "/member/join";
     }
+
     // login 페이지 매핑
     @GetMapping("/member/login")
     public String login(){
         return "/member/login";
     }
+
     // register 페이지 매핑
     @GetMapping("/member/register")
     public String register(){
         return "/member/register";
     }
+
     // registerSeller (판매자 가입) 페이지 매핑
     @GetMapping("/member/registerSeller")
     public String registerSeller(){
         return "/member/registerSeller";
     }
+
     // signup (약관 동의) 페이지 매핑
     @GetMapping("/member/signup")
     public String signup(){
