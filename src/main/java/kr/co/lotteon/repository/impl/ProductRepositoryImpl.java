@@ -13,10 +13,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Slf4j
+@Repository
 @RequiredArgsConstructor
 public class ProductRepositoryImpl implements ProductRepositoryCustom {
 
@@ -25,7 +27,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
 
     // 관리자 - 상품 목록 기본 조회
     @Override
-    public Page<Product> adminSelectProducts(AdminPageRequestDTO adminPageRequestDTO, Pageable pageable){
+    public Page<Product> selectProducts(AdminPageRequestDTO adminPageRequestDTO, Pageable pageable){
         log.info("상품 목록 기본 조회 Impl 1 : " + adminPageRequestDTO);
         QueryResults<Product> results = jpaQueryFactory
                 .select(qProduct)
@@ -34,15 +36,20 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetchResults();
+
         long total = results.getTotal();
         log.info("상품 목록 기본 조회 Impl 2 : " + total);
         List<Product> productList = results.getResults();
         log.info("상품 목록 기본 조회 Impl 3 : " + productList);
         return new PageImpl<>(productList, pageable, total);
     }
+
     // 관리자 - 상품 목록 검색 조회
     @Override
-    public Page<Product> adminSearchProducts(AdminPageRequestDTO adminPageRequestDTO, Pageable pageable){
+    public Page<Product> searchProducts(AdminPageRequestDTO adminPageRequestDTO, Pageable pageable){
         return null;
     }
+
 }
+
+

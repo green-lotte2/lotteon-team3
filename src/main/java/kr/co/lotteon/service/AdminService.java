@@ -61,7 +61,7 @@ public class AdminService {
         Pageable pageable = adminPageRequestDTO.getPageable("no");
 
         // DB 조회
-        Page<Product> pageProducts = productRepository.adminSelectProducts(adminPageRequestDTO, pageable);
+        Page<Product> pageProducts = productRepository.selectProducts(adminPageRequestDTO, pageable);
         log.info("관리자 상품 목록 조회 Serv 2 : "+ pageProducts);
 
         // Page<Product>을 List<ProductDTO>로 변환
@@ -81,6 +81,7 @@ public class AdminService {
                 .build();
 
     }
+
     // 관리자 상품 등록 - DB insert
     public void insertProduct(ProductDTO productDTO, MultipartFile thumb190, MultipartFile thumb230, MultipartFile thumb456, MultipartFile detail860){
 
