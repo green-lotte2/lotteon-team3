@@ -1,14 +1,36 @@
 package kr.co.lotteon.controller;
 
+import kr.co.lotteon.entity.member.Terms;
+import kr.co.lotteon.service.TermsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Slf4j
-@RequiredArgsConstructor
 @Controller
+@RequiredArgsConstructor
 public class MemberController {
+
+    private final TermsService termsService;
+
+    // signup (약관 동의) 페이지 매핑
+    @GetMapping("/member/signup")
+    public String signup(Model model,@RequestParam String type){
+
+        log.info("type = "+type);
+        model.addAttribute("type",type);
+        Terms terms = termsService.findByTerms();
+        model.addAttribute("terms",terms);
+
+
+        return "/member/signup";
+    }
+
+
 
     // join (회원 가입 구분) 페이지 매핑
     @GetMapping("/member/join")
@@ -34,9 +56,5 @@ public class MemberController {
         return "/member/registerSeller";
     }
 
-    // signup (약관 동의) 페이지 매핑
-    @GetMapping("/member/signup")
-    public String signup(){
-        return "/member/signup";
-    }
+
 }

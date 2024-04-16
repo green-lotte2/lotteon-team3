@@ -10,13 +10,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Slf4j @Controller @RequiredArgsConstructor
 public class MainController {
 
-    private final AppInfo appInfo;
 
     // 메인페이지 매핑
     @GetMapping(value = {"/","/index"})
     public String index(Model model){
 
-        model.addAttribute("appInfo", appInfo);
         return "/index";
     }
 

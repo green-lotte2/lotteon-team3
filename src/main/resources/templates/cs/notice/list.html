@@ -21,13 +21,17 @@
             <article>
                 <nav>
                     <span th:switch="${cate}">
+                      
                         <span th:case="'null'" style="font-size: 26px; font-weight: bold;" >전체</span>
                         <span th:case="cs" style="font-size: 26px; font-weight: bold;">고객서비스</span>
                         <span th:case="safe" style="font-size: 26px; font-weight: bold;">안전거래</span>
                         <span th:case="dangerProd" style="font-size: 26px; font-weight: bold;">위해상품</span>
                         <span th:case="event" style="font-size: 26px; font-weight: bold;">이벤트당첨</span>
                     </span>
+
                     <h2>공지사항 <span th:utext="${(cate eq 'null') ? '전체' : (cate eq 'cs') ? '고객서비스' : (cate eq 'safe') ? '안전거래' : (cate eq 'dangerProd') ? '위해상품' : '이벤트당첨'}" style="font-size: 20px;"></span> 내용입니다.</h2>
+
+
                 </nav>
 
                 <table>
@@ -71,6 +75,7 @@
                         <td><a href="#">[안내] 씨티은행 시스템 점검에 따른 계좌, 체크카드결제 서비스 일시 중단</a></td>
                         <td>2022.11.21</td>
                     </tr>
+
                 </table>
 
                 <div class="page">

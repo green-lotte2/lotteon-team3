@@ -1,0 +1,89 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>구매회원 약관</title>
+    <link rel="stylesheet" th:href="@{https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css}"/>
+    <link rel="stylesheet" th:href="@{https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css}"/>
+    <link rel="stylesheet" th:href="@{https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.css}"/>
+    <link rel="stylesheet" th:href="@{/css/common.css}" />
+    <link rel="stylesheet" th:href="@{/css/policy.css}" />
+    <script th:src="@{https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js}"></script>
+    <script th:src="@{https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js}"></script>
+    <script th:src="@{https://kit.fontawesome.com/20962f3e4b.js}" crossorigin="anonymous"></script>
+    <script th:src="@{https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.min.js}"></script>
+</head>
+<body>
+<div id="wrapper">
+    <header>
+        <div class="top">
+            <div>
+                <a th:href="@{/member/login}">로그인</a>
+                <a th:href="@{/member/join}">회원가입</a>
+                <a th:href="@{/my/home}">마이페이지</a>
+                <a th:href="@{/product/cart}"><i class="fa fa-shopping-cart" aria-hidden="true"></i>&nbsp;장바구니</a>
+            </div>
+        </div>
+        <div class="logo">
+            <div>
+                <a th:href="@{/}"><img th:src="@{/images/header_logo.png}" alt="로고" /></a>
+                <form action="#">
+                    <input type="text" name="search"/>
+                    <button><i class="fa fa-search"></i></button>
+                </form>
+            </div>
+        </div>
+        <div class="menu">
+            <div>
+                <ul>
+                    <li><a th:href="@{/product}">히트상품</a></li>
+                    <li><a th:href="@{/product}">추천상품</a></li>
+                    <li><a th:href="@{/product}">최신상품</a></li>
+                    <li><a th:href="@{/product}">인기상품</a></li>
+                    <li><a th:href="@{/product}">할인상품</a></li>
+                </ul>
+                <ul>
+                    <li><a th:href="@{/cs/notice/list}">공지사항</a></li>
+                    <li><a th:href="@{/cs/faq/list}">자주묻는질문</a></li>
+                    <li><a th:href="@{/cs/qna/list}">문의하기</a></li>
+                    <li><a th:href="@{/cs/index}">고객센터</a></li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <main layout:fragment="content">
+        <!-- 내용 -->
+    </main>
+
+
+
+    <footer>
+        <ul>
+            <li><a th:href="@{/company/introduce}">회사소개</a></li>
+            <li><a th:href="@{/policy/seller}">서비스이용약관</a></li>
+            <li><a th:href="@{/policy/privacy}">개인정보처리방침</a></li>
+            <li><a th:href="@{/policy/finance}">전자금융거래약관</a></li>
+        </ul>
+        <div>
+            <p><img th:src="@{/images/footer_logo.png}" alt="로고" /></p>
+            <p>
+                <strong>(주)롯데ON</strong><br />
+                서울특별시 송파구 올림픽로 300 롯데월드타워 26층 (역삼동 강남파이낸스센터)<br />
+                대표이사 : 김사무엘상현, 정준호, 강성현<br />
+                사업자등록번호 : 529-85-00774(롯데쇼핑(주) e커머스사업부)<br />
+                통신판매업 신고 : 서울송파 제0158호<br>
+                호스팅 서비스사업자 : 롯데쇼핑(주) e커머스사업부
+            </p>
+            <p>
+                <strong>고객센터</strong><br />
+                Tel : 1899-7000(유료) (평일 09:00~18:00)<br />
+                Fax : 051-123-4567 | E-mail : lotteon@lotte.net<br />
+            </p>
+        </div>
+    </footer>
+</div>
+</body>
+</html>
