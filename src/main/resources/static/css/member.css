@@ -226,36 +226,36 @@ header {
 }
 
 /* member > .signup */
-#member > .signup {
+#member  .signup {
   width: 900px;
   margin: 0 auto;
   box-sizing: border-box;
 }
 
-#member > .signup > nav {
+#member  .signup > nav {
   border-bottom: 2px solid #ef2a23;
 }
 
-#member > .signup > nav > h1 {
+#member .signup > nav > h1 {
   font-size: 24px;
   margin-bottom: 6px;
 }
 
-#member > .signup h3 {
+#member .signup h3 {
   font-size: 14px;
   margin-top: 26px;
   margin-bottom: 6px;
 }
-#member > .signup h3 > span.essential {
+#member .signup h3 > span.essential {
   color: #ef3f43;
   margin-right: 5px;
 }
-#member > .signup h3 > span.optional {
+#member .signup h3 > span.optional {
   color: #01c1c4;
   margin-right: 5px;
 }
 
-#member > .signup textarea {
+#member .signup textarea {
   width: 100%;
   height: 160px;
   margin-bottom: 10px;
@@ -263,18 +263,18 @@ header {
   box-sizing: border-box;
   resize: none;
 }
-#member > .signup label {
+#member .signup label {
   float: right;
   font-size: 14px;
 }
-#member > .signup input[type="checkbox"] {
+#member .signup input[type="checkbox"] {
   width: 16px;
   height: 16px;
   margin-right: 6px;
   vertical-align: bottom;
 }
 
-#member > .signup input.agree {
+#member .signup input.agree {
   display: block;
   background: #ef3f43;
   color: #fff;
