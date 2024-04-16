@@ -68,7 +68,7 @@ public class AdminController {
                                   @RequestParam("thumb190") MultipartFile thumb190,
                                   @RequestParam("thumb230") MultipartFile thumb230,
                                   @RequestParam("thumb456") MultipartFile thumb456,
-                                  @RequestParam("detail940") MultipartFile detail940){
+                                  @RequestParam("detail860") MultipartFile detail860){
         productDTO.setIp(httpServletRequest.getRemoteAddr());
 
         // 현재 로그인 중인 사용자 정보 불러오기
@@ -85,7 +85,7 @@ public class AdminController {
         }
         log.info("관리자 상품 등록 Cont " + productDTO);
 
-        adminService.insertProduct(productDTO, thumb190, thumb230, thumb456, detail940);
+        adminService.insertProduct(productDTO, thumb190, thumb230, thumb456, detail860);
         return "redirect:/admin/product/list";
     }
 }
