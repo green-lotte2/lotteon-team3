@@ -2,6 +2,8 @@ package kr.co.lotteon.controller;
 
 import kr.co.lotteon.dto.cs.CsPageRequestDTO;
 import kr.co.lotteon.dto.cs.CsPageResponseDTO;
+
+import kr.co.lotteon.service.cs.CsCateService;
 import kr.co.lotteon.service.cs.CsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @RequiredArgsConstructor
 @Controller
 public class CsController {
+
     private final CsService csService;
 
     // cs index 페이지 매핑
