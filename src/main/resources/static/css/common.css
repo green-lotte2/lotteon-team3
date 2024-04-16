@@ -173,7 +173,7 @@ main > aside > .category > li {
   height: 40px;
   line-height: 40px;
   color: #111;
-  font-size: 13px;    
+  font-size: 13px;
   box-sizing: border-box;
 }
 main > aside > .category > li:first-child {
@@ -185,11 +185,11 @@ main > aside > .category > li > a {
   display: block;
   padding: 0 20px;
   line-height: 40px;
-  color: #111;  
+  color: #111;
   text-decoration: none;
   font-size: 1em;
 }
-main > aside > .category > li > a:hover {  
+main > aside > .category > li > a:hover {
   color: #ef2a23;
 }
 
@@ -245,7 +245,7 @@ main > aside > .best {
   width: 215px;
   height: auto;
   margin-top: 6px;
-  border: 1px solid #dbdbdb;  
+  border: 1px solid #dbdbdb;
   box-sizing: border-box;
   box-shadow: 0 0 5px rgba(55, 55, 5, 0.2);
 }
