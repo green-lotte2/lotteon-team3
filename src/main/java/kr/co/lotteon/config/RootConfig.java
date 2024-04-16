@@ -16,8 +16,6 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 @Setter
 @Configuration
 @EnableAspectJAutoProxy
-
-@Configuration
 public class RootConfig {
 
     @Autowired

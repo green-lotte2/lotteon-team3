@@ -8,7 +8,7 @@
             const cate2Select = document.getElementById('cate2');
             console.log(cate1);
             const cate2s = await fetchGet(`/lotteon/admin/product/register/${cate1}`)
-            // 기존 <option> 태그들 삭제 
+            // 기존 <option> 태그들 삭제
             cate2Select.innerHTML = "";
             for(const cate2 of cate2s){
                 const cate2Option = `<option value="${cate2.cate2}">${cate2.c2Name}</option>`;
