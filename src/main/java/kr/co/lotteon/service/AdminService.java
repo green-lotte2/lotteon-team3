@@ -1,8 +1,6 @@
 package kr.co.lotteon.service;
 
-import kr.co.lotteon.dto.product.Cate1DTO;
-import kr.co.lotteon.dto.product.Cate2DTO;
-import kr.co.lotteon.dto.product.ProductDTO;
+import kr.co.lotteon.dto.product.*;
 import kr.co.lotteon.entity.product.Cate1;
 import kr.co.lotteon.entity.product.Cate2;
 import kr.co.lotteon.entity.product.Product;
@@ -14,6 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -53,6 +53,33 @@ public class AdminService {
                 .collect(Collectors.toList());;
 
         return ResponseEntity.ok().body(cate2List);
+    }
+    // 관리자 상품 목록 조회
+    public AdminPageResponseDTO adminSelectProducts(AdminPageRequestDTO adminPageRequestDTO){
+        log.info("관리자 상품 목록 조회 Serv 1 : "+ adminPageRequestDTO);
+
+        Pageable pageable = adminPageRequestDTO.getPageable("no");
+
+        // DB 조회
+        Page<Product> pageProducts = productRepository.adminSelectProducts(adminPageRequestDTO, pageable);
+        log.info("관리자 상품 목록 조회 Serv 2 : "+ pageProducts);
+
+        // Page<Product>을 List<ProductDTO>로 변환
+        List<ProductDTO> dtoList = pageProducts.getContent().stream()
+                .map(product -> modelMapper.map(product, ProductDTO.class))
+                .toList();
+        log.info("관리자 상품 목록 조회 Serv 3 : " +dtoList );
+
+        // total 값
+        int total = (int) pageProducts.getTotalElements();
+
+        // List<ProductDTO>와 page 정보 리턴
+        return AdminPageResponseDTO.builder()
+                .adminPageRequestDTO(adminPageRequestDTO)
+                .dtoList(dtoList)
+                .total(total)
+                .build();
+
     }
     // 관리자 상품 등록 - DB insert
     public void insertProduct(ProductDTO productDTO, MultipartFile thumb190, MultipartFile thumb230, MultipartFile thumb456, MultipartFile detail860){
