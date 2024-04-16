@@ -126,6 +126,7 @@ public class AdminService {
                 Thumbnails.of(new File(orgPath, sName860))
                         .width(860) // 너비 860 * 높이 제한 없음
                         .toFile(new File(path, sName860));
+                log.info("리사이징 끝");
 
                 // 상품 정보 DB 저장
                 Product product = modelMapper.map(productDTO, Product.class);
