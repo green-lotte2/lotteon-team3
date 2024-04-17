@@ -25,56 +25,40 @@
               </ul>
 
               <!-- 상품목록 -->
-              <div th:each="product : ${pageResponseDTO.dtoList}" class="card" style="width: 18rem;">
-                <img th:src="@{|/product/${product.thumb1}|}" class="card-img-top" alt="...">
-                <div class="card-body">
-                  <p class="card-text">gdgdgdgdgd</p>
-                </div>
+              <div class="row row-cols-md-2">
+                    <div th:each="product : ${pageResponseDTO.dtoList}" class="card card h-100" style="width: 18rem; margin-right: 10px;">
+                        <a th:href="@{/product/view(prodNo=${product.prodNo},cate1=${product.cate1},cate2=${product.cate2})}" class="thumb">
+                            <img th:src="@{|/product/${product.thumb1}|}" class="card-img-top" style="width: 100%;" alt="상품이미지">
+                              <div class="card-body">
+                                <h4 class="seller"><i class="fas fa-home"></i>&nbsp;[[${product.company}]]</h4>
+                                <p class="card-text">[[${product.descript}]]</p>
+                                <p>[[${product.price}]]원</p>
+                                <ul>
+                                  <li><ins class="dis-price">[[${product.price}]]</ins></li>
+                                  <li>
+                                    <span class="discount">[[${product.discount}]]% 할인</span>
+                                    <del class="org-price">[[${product.price}]]</del>
+                                  </li>
+                                  <li><span class="free-delivery">무료배송</span></li>
+                                </ul>
+                              </div>
+                        </a>
+                    </div>
               </div>
-
-              <table border="0">
-                <tr th:each="product : ${pageResponseDTO.dtoList}">
-                  <td><a th:href="@{#}" class="thumb"><img th:src="@{|/product/${product.thumb1}|}" alt="상품이미지"/></a></td>
-                  <td>
-                    <h3 class="name">상품명</h3>
-                    <a th:href="@{#}" class="desc">[[${product.descript}]]</a>
-                  </td>
-                  <td>
-                    <ul>
-                      <li><ins class="dis-price">[[${product.price}]]</ins></li>
-                      <li>
-                        <del class="org-price">[[${product.price}]]</del>
-                        <span class="discount">[[${product.discount}]]%</span>
-                      </li>
-                      <li><span class="free-delivery">무료배송</span></li>
-                    </ul>
-                  </td>
-                  <td>
-                    <h4 class="seller"><i class="fas fa-home"></i>&nbsp;[[${product.company}]]</h4>
-                    <h5 class="badge power">판매자등급</h5>
-                    <h6 class="rating star1">상품평</h6>
-                  </td>
-                </tr>
-              </table>
 
               <!-- 상품목록 페이지번호 -->
               <div class="paging">
-                <span class="prev">
-                  <a th:href="@{#}"><&nbsp;이전</a>
+                <span class="prev" th:if="${pageResponseDTO.prev}">
+                  <a th:href="@{/product/list(cate1=${pageResponseDTO.cate1},cate2=${pageResponseDTO.cate2},pg=${pageResponseDTO.start - 1})}"><&nbsp;이전</a>
                 </span>
-                <span class="num">
-                  <a href="#" class="on">1</a>
-                  <a href="#">2</a>
-                  <a href="#">3</a>
-                  <a href="#">4</a>
-                  <a href="#">5</a>
-                  <a href="#">6</a>
-                  <a href="#">7</a>
+                <span th:each="num : ${#numbers.sequence(pageResponseDTO.start, pageResponseDTO.end)}" class="num">
+                  <a th:classappend="${pageResponseDTO.pg eq num ? 'on' : 'off'}" th:href="@{/product/list(cate1=${pageResponseDTO.cate1},cate2=${pageResponseDTO.cate2},pg=${num})}">
+                      [[${num}]]
+                  </a>
                 </span>
-                <span class="next">
-                  <a href="#">다음&nbsp;></a>
+                <span class="next" th:if="${pageResponseDTO.next}">
+                  <a th:href="@{/product/list(cate1=${pageResponseDTO.cate1},cate2=${pageResponseDTO.cate2},pg=${pageResponseDTO.end + 1})}">다음&nbsp;></a>
                 </span>
               </div>
-
             </section>
         </main>
