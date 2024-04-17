@@ -13,4 +13,6 @@ public interface BoardRepositoryCustom {
 
     public List<Tuple> adminSelectBoards(String group);
 
+    public Page<BoardEntity> selectBoardsByGroup(String group);
+
 }

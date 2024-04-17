@@ -2,10 +2,13 @@ package kr.co.lotteon.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import kr.co.lotteon.dto.cs.BoardDTO;
+import kr.co.lotteon.dto.cs.CsPageRequestDTO;
+import kr.co.lotteon.dto.cs.CsPageResponseDTO;
 import kr.co.lotteon.dto.product.*;
 import kr.co.lotteon.entity.product.Cate1;
 import kr.co.lotteon.security.MyUserDetails;
 import kr.co.lotteon.service.AdminService;
+import kr.co.lotteon.service.cs.CsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -72,6 +75,17 @@ public class AdminController {
         log.info("관리자 상품 등록 Cont : "+cate1List);
         model.addAttribute("cate1List", cate1List);
         return "/admin/product/register";
+    }
+
+    // 관리자 게시판 목록 페이지 매핑
+    @GetMapping("/admin/cs/list")
+    public String csList(Model model, CsPageRequestDTO csPageRequestDTO) {
+
+        CsPageResponseDTO csPageResponseDTO = adminService.findBoardByGroup(csPageRequestDTO);
+        log.info("관리자 게시판 목록 Cont : " +csPageResponseDTO);
+        model.addAttribute(csPageResponseDTO);
+        model.addAttribute("group", csPageRequestDTO.getGroup());
+        return "/admin/cs/list";
     }
 
     // 관리자 상품 목록 검색 - cate1을 type으로 선택 시 cate1 조회

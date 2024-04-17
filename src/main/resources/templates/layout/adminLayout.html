@@ -72,9 +72,9 @@
                 <li>
                     <a href="#"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>게시판관리</a>
                     <ol>
-                        <li><a th:href="@{/admin/}">공지사항</a></li>
-                        <li><a th:href="@{/admin/}">자주묻는질문</a></li>
-                        <li><a th:href="@{/admin/}">고객문의</a></li>
+                        <li><a th:href="@{/admin/cs/list(group='notice', cate=null)}">공지사항</a></li>
+                        <li><a th:href="@{/admin/cs/list(group='faq', cate=null)}">자주묻는질문</a></li>
+                        <li><a th:href="@{/admin/cs/list(group='qna', cate=null)}">고객문의</a></li>
                     </ol>
                 </li>
             </ul>
