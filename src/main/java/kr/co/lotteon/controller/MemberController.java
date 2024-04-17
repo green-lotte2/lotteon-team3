@@ -62,7 +62,7 @@ public class MemberController {
         
         return "/member/register";
     }
-
+    // 회원 가입 처리 - DB 전송
     @PostMapping("/member/register")
     public String register(MemberDTO memberDTO, HttpServletRequest request, HttpServletResponse response){
 

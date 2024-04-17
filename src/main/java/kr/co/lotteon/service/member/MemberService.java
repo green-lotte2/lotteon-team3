@@ -19,6 +19,7 @@ public class MemberService {
     private final ModelMapper modelMapper;
     private final MemberRepository memberRepository;
     
+    // 회원 가입 - DB 입력
     public void save(MemberDTO memberDTO){
         // 비밀번호 암호화
         memberDTO.setPass1(passwordEncoder.encode(memberDTO.getPass1())); 

@@ -3,6 +3,7 @@ package kr.co.lotteon.repository.impl;
 
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.co.lotteon.dto.product.AdminPageRequestDTO;
 import kr.co.lotteon.entity.product.Product;
@@ -27,7 +28,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
 
     // 관리자 - 상품 목록 기본 조회
     @Override
-    public Page<Product> selectProducts(AdminPageRequestDTO adminPageRequestDTO, Pageable pageable){
+    public Page<Product> adminSelectProducts(AdminPageRequestDTO adminPageRequestDTO, Pageable pageable){
         log.info("상품 목록 기본 조회 Impl 1 : " + adminPageRequestDTO);
         QueryResults<Product> results = jpaQueryFactory
                 .select(qProduct)
@@ -46,10 +47,55 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
 
     // 관리자 - 상품 목록 검색 조회
     @Override
-    public Page<Product> searchProducts(AdminPageRequestDTO adminPageRequestDTO, Pageable pageable){
-        return null;
-    }
+    public Page<Product> adminSearchProducts(AdminPageRequestDTO adminPageRequestDTO, Pageable pageable){
+        log.info("상품 목록 키워드 검색 impl 1 : " + adminPageRequestDTO.getKeyword());
+        String type = adminPageRequestDTO.getType();
+        String keyword = adminPageRequestDTO.getKeyword();
 
+        BooleanExpression expression = null;
+
+        // 검색 종류에 따른 where절 표현식 생성
+        if(type.equals("prodName")){
+            expression = qProduct.prodName.contains(keyword);
+            log.info("prodName 검색 : " + expression);
+
+        }else if(type.equals("prodNo")){
+            // 입력된 키워드를 정수형으로 변환
+            int prodNo = Integer.parseInt(keyword);
+            expression = qProduct.prodNo.eq(prodNo);
+            log.info("prodNo 검색 : " + expression);
+
+        }else if(type.equals("cate1")){
+            int cate1 = Integer.parseInt(keyword);
+            expression = qProduct.cate1.eq(cate1);
+            log.info("cate1 검색 : " + expression);
+
+        }else if(type.equals("company")){
+            expression = qProduct.company.contains(keyword);
+            log.info("company 검색 : " + expression);
+
+        }else if(type.equals("seller")){
+            expression = qProduct.seller.contains(keyword);
+            log.info("seller 검색 : " + expression);
+        }
+        // DB 조회
+        QueryResults<Product> results = jpaQueryFactory
+                .select(qProduct)
+                .from(qProduct)
+                .where(expression)
+                .orderBy(qProduct.prodNo.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetchResults();
+
+        long total = results.getTotal();
+        log.info("상품 목록 검색 조회 Impl 2 : " + total);
+
+        // QueryResults<> -> List<>
+        List<Product> productList = results.getResults();
+        log.info("상품 목록 검색 조회 Impl 3 : " + productList);
+        return new PageImpl<>(productList, pageable, total);
+    }
 }
 
 
