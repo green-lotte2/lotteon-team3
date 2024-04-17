@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @ToString
 @Builder
 @Entity
-@Table
+@Table(name = "cs_boardfile")
 public class BoardFileEntity {
 
     @Id

@@ -21,11 +21,9 @@ public class QBoardTypeEntity extends EntityPathBase<BoardTypeEntity> {
 
     public final StringPath cate = createString("cate");
 
-    public final NumberPath<Integer> no = createNumber("no", Integer.class);
-
-    public final NumberPath<Integer> type = createNumber("type", Integer.class);
-
     public final StringPath typeName = createString("typeName");
+
+    public final NumberPath<Integer> typeNo = createNumber("typeNo", Integer.class);
 
     public QBoardTypeEntity(String variable) {
         super(BoardTypeEntity.class, forVariable(variable));
