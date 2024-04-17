@@ -7,21 +7,42 @@
               <!-- 제목, 페이지 네비게이션 -->
               <nav>
                 <h1>상품목록</h1>
-                <p>HOME > <span>패션·의류·뷰티</span> > <strong>남성의류</strong></p>
+                <p>HOME > <span>[[${c1Name}]]</span> > <strong>[[${c2Name}]]</strong></p>
               </nav>
 
               <!-- 정렬 메뉴 -->
               <ul class="sort">
                   <li>
-                    <a th:href="@{/product/list/(cate1=${pageResponseDTO.cate1},cate2=${pageResponseDTO.cate2},how=${pageResponseDTO.sort})}" class="on">
+                    <a th:href="@{/product/list(cate1=${pageResponseDTO.cate1},cate2=${pageResponseDTO.cate2}, sort='sold', how='DESC')}"
+                       th:class="${pageResponseDTO.sort eq 'sold'? 'on' : 'off'}">
                       판매많은순
                     </a>
                   </li>
-                  <li><a th:href="@{#}">낮은가격순</a></li>
-                  <li><a th:href="@{#}">높은가격순</a></li>
-                  <li><a th:href="@{#}">평점높은순</a></li>
-                  <li><a th:href="@{#}">후기많은순</a></li>
-                  <li><a th:href="@{#}">최근등록순</a></li>
+                  <li>
+                      <a th:href="@{/product/list(cate1=${pageResponseDTO.cate1},cate2=${pageResponseDTO.cate2}, sort='price', how='ASC')}">
+                      낮은가격순
+                      </a>
+                  </li>
+                  <li>
+                      <a th:href="@{/product/list(cate1=${pageResponseDTO.cate1},cate2=${pageResponseDTO.cate2}, sort='price', how='DESC')}">
+                          높은가격순
+                      </a>
+                  </li>
+                  <li>
+                      <a th:href="@{/product/list(cate1=${pageResponseDTO.cate1},cate2=${pageResponseDTO.cate2}, sort='score', how='DESC')}">
+                          평점높은순
+                      </a>
+                  </li>
+                  <li>
+                      <a th:href="@{#}">
+                          후기많은순
+                      </a>
+                  </li>
+                  <li>
+                      <a th:href="@{#}">
+                          최근등록순
+                      </a>
+                  </li>
               </ul>
 
               <!-- 상품목록 -->
@@ -29,20 +50,23 @@
                     <div th:each="product : ${pageResponseDTO.dtoList}" class="card card h-100" style="width: 18rem; margin-right: 10px;">
                         <a th:href="@{/product/view(prodNo=${product.prodNo},cate1=${product.cate1},cate2=${product.cate2})}" class="thumb">
                             <img th:src="@{|/product/${product.thumb1}|}" class="card-img-top" style="width: 100%;" alt="상품이미지">
-                              <div class="card-body">
-                                <h4 class="seller"><i class="fas fa-home"></i>&nbsp;[[${product.company}]]</h4>
-                                <p class="card-text">[[${product.descript}]]</p>
-                                <p>[[${product.price}]]원</p>
-                                <ul>
-                                  <li><ins class="dis-price">[[${product.price}]]</ins></li>
-                                  <li>
-                                    <span class="discount">[[${product.discount}]]% 할인</span>
-                                    <del class="org-price">[[${product.price}]]</del>
-                                  </li>
-                                  <li><span class="free-delivery">무료배송</span></li>
-                                </ul>
-                              </div>
                         </a>
+                              <div class="card-body">
+                                  <a th:href="@{/product/view(prodNo=${product.prodNo},cate1=${product.cate1},cate2=${product.cate2})}" class="thumb">
+                                    <h4 class="seller"><i class="fas fa-home"></i>&nbsp;[[${product.company}]]</h4>
+                                    <p class="card-text">[[${product.descript}]]</p>
+                                    <p>[[${product.price}]]원</p>
+                                    <ul>
+                                      <li><ins class="dis-price">[[${product.price}]]</ins></li>
+                                      <li>
+                                        <span class="discount">[[${product.discount}]]% 할인</span>
+                                        <del class="org-price">[[${product.price}]]</del>
+                                      </li>
+                                      <li><span class="free-delivery">무료배송</span></li>
+                                    </ul>
+                                  </a>
+                              </div>
+
                     </div>
               </div>
 
