@@ -29,15 +29,6 @@ jobs:
         with:
           distribution: 'oracle'
           java-version: '17'
-          
-      # 버전이 0.1이 아니라면 삭제하고 새로운 폴더로 생성
-      - uses: Delete folder
-        run: lotteon
-        if: steps.version.outputs.new_version != '0.1'
-
-      - uses: Create folder
-        run: lotteon
-        if: steps.version.outputs.new_version != '0.1'
 
       # application.properties를 프로젝트에 포함
       - name: add Application.properties
