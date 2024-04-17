@@ -1,3 +1,15 @@
+/* 내가 추가한 CSS */
+.card {
+    margin-bottom: 20px;
+    transition : transform 0.3s;
+}
+.card:hover{
+    transform : scale(1.02);
+}
+
+.row > *{
+    padding: inherit;
+}
 /* product 공통 */
 #product {}
 #product > section {
