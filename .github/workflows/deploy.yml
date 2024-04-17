@@ -1,6 +1,7 @@
 # workflow의 이름
 name: Deploy
 
+
 # 해당 workflow가 언제 실행될 것인지에 대한 트리거를 지정
 on:
   push:
@@ -30,6 +31,13 @@ jobs:
           distribution: 'oracle'
           java-version: '17'
 
+      # 작업 스크립트에서 환경 파일에 값을 설정
+      - name: Set output variable
+        run:  echo "OUTPUT_VARIABLE=value" >> $GITHUB_ENV
+
+      - name: Use Output variable
+        run: echo "The value is ${{ env.OUTPUT_VARIABLE }}"
+
       # application.properties를 프로젝트에 포함
       - name: add Application.yml
         run: touch ./src/main/resources/application.yml
@@ -55,7 +63,9 @@ jobs:
         shell: bash
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+      - uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
