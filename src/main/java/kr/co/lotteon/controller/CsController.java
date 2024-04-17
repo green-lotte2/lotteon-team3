@@ -24,14 +24,30 @@ public class CsController {
     public String cs(){
         return "/cs/index";
     }
-    // QnA list 페이지 매핑
+
     @GetMapping("/cs/qna/list")
-    public String qnaList(){
+    public String qnaList(Model model, CsPageRequestDTO csPageRequestDTO) {
+        // cate가 null이거나 빈 문자열인 경우 "member" 카테고리로 설정합니다.
+        if (csPageRequestDTO.getCate() == null || csPageRequestDTO.getCate().isEmpty()) {
+            csPageRequestDTO.setCate("member");
+        }
+
+        CsPageResponseDTO csPageResponseDTO = csService.findByCate(csPageRequestDTO);
+
+        model.addAttribute(csPageResponseDTO);
+        model.addAttribute("cate", csPageRequestDTO.getCate());
         return "/cs/qna/list";
     }
+
     // QnA 보기 페이지 매핑
+    // 공지사항 보기 페이지 매핑
     @GetMapping("/cs/qna/view")
-    public String qnaView(){
+    public String qnaView(Model model, int bno, String cate){
+        BoardDTO boardDTO = csService.findByBnoForBoard(bno);
+
+        model.addAttribute("boardDTO", boardDTO);
+        model.addAttribute("cate", cate);
+
         return "/cs/qna/view";
     }
     // QnA 쓰기 페이지 매핑
@@ -42,6 +58,9 @@ public class CsController {
 
     @GetMapping("/cs/notice/list")
     public String noticeList(Model model, CsPageRequestDTO csPageRequestDTO) {
+        if (csPageRequestDTO.getCate() == null) {
+            csPageRequestDTO.setCate("null");
+        }
         CsPageResponseDTO csPageResponseDTO = csService.findByCate(csPageRequestDTO);
 
         model.addAttribute(csPageResponseDTO);

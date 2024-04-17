@@ -11,7 +11,7 @@ import kr.co.lotteon.entity.cs.BoardTypeEntity;
 import kr.co.lotteon.repository.cs.BoardCateRepository;
 import kr.co.lotteon.repository.cs.BoardFileRepository;
 import kr.co.lotteon.repository.cs.BoardTypeRepository;
-import kr.co.lotteon.repository.cs.CsRepository;
+import kr.co.lotteon.repository.cs.BoardRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -28,7 +28,7 @@ import java.util.Map;
 @Service
 public class CsService {
 
-    private final CsRepository csRepository;
+    private final BoardRepository boardRepository;
     private final BoardTypeRepository typeRepository;
     private final BoardCateRepository boardCateRepository;
     private final ModelMapper modelMapper;
@@ -57,7 +57,7 @@ public class CsService {
             cateMap.put(boardCateEntity.getCate(), typeMap);
         }
 
-        Page<BoardEntity> result = csRepository.findByGroupAndCate(csPageRequestDTO.getGroup(), csPageRequestDTO.getCate(), pageable);
+        Page<BoardEntity> result = boardRepository.findByGroupAndCate(csPageRequestDTO.getGroup(), csPageRequestDTO.getCate(), pageable);
 
         List<BoardDTO> dtoList = result.getContent()
                 .stream()
@@ -87,7 +87,7 @@ public class CsService {
     // 글보기
     public BoardDTO findByBnoForBoard(int bno) {
 
-        BoardEntity boardEntity = csRepository.findById(bno).get();
+        BoardEntity boardEntity = boardRepository.findById(bno).get();
 
         List<BoardFileDTO> boardFileDTOS = fileRepository.findByBno(bno)
                 .stream()
