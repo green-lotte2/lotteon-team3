@@ -3,7 +3,43 @@
       layout:decorate="~{/layout/adminLayout}">
 <section id="admin-product-list" layout:fragment="content">
     <script>
+        // type 상품 분류 선택 시 cate1 조회후 select 태그 추가
+        async function findCate(type){
+            console.log(type);
+            if(type == 'cate1') {
+                const searchForm = document.getElementById('searchForm');
+                const keywordInput = document.getElementById('keywordInput');
+                console.log(type);
 
+                const cate1s = await fetchGet('/lotteon/admin/findCate1')
+                // 기존 <input> 태그 삭제
+                keywordInput.remove();
+
+                // cate1용 <select> 태그 생성
+                let cate2Option = `<select name="keyword" id="keywordInput">`;
+
+                // cate1 갯수만큼  <option> 태그 추가
+                for (const cate1 of cate1s) {
+                    cate2Option += `<option value="${cate1.cate1}">${cate1.c1Name}</option>`;
+                }
+                cate2Option += `</select>`;
+                console.log("cate2Option : " + cate2Option);
+                // 태그 문자열 삽입
+                searchForm.insertAdjacentHTML('beforeend', cate2Option);
+            }else{
+                const searchForm = document.getElementById('searchForm');
+                const keywordInput = document.getElementById('keywordInput');
+                console.log(type);
+
+                // 기존 <input> 태그 삭제
+                keywordInput.remove();
+
+                const keywordInputTag = `<input type="text" name="keyword" placeholder="검색어를 입력하세요" id="keywordInput"/>`;
+                console.log("keywordInputTag : " + keywordInputTag);
+                // 태그 문자열 삽입
+                searchForm.insertAdjacentHTML('beforeend', keywordInputTag);
+            }
+        }
     </script>
                 <nav>
                     <h3>상품목록</h3>
@@ -13,15 +49,15 @@
                 </nav>
                 <!-- 상품목록 컨텐츠 시작 -->                                
                 <section>
-                    <form th:action="@{/admin/product/list}" method="get">
-                        <select name="type">
+                    <form th:action="@{/admin/product/list}" method="get" id="searchForm">
+                        <select name="type" onchange="findCate(this.value)">
                             <option value="prodName">상품명</option>
                             <option value="prodNo">상품코드</option>
-                            <option value="cate1">상품분류</option>
+                            <option value="cate1" >상품분류</option>
                             <option value="company">제조사</option>
                             <option value="seller">판매자</option>
                         </select>
-                        <input type="text" name="keyword" placeholder="검색어를 입력하세요"/>
+                        <input type="text" name="keyword" placeholder="검색어를 입력하세요" id="keywordInput"/>
                     </form>
                     <table>
                         <form id="formCheck" th:action="@{/admin/product/delete}" method="get">
@@ -34,7 +70,7 @@
                                 <th>할인율</th>
                                 <th>포인트</th>
                                 <th>재고</th>
-                                <th>판매자</th>
+                                <th>제조사</th>
                                 <th>조회</th>
                                 <th>관리</th>
                             </tr>
@@ -51,9 +87,9 @@
                                     <td th:text="${product.price}">가격</td>
                                     <td th:text="${product.discount}">할인율</td>
                                     <td th:text="${product.point}">적립금</td>
-                                    <td th:text="${product.review}">리뷰수</td>
-                                    <td th:text="${product.company}">판매자</td>
-                                    <td th:text="${product.stock}">재고량</td>
+                                    <td th:text="${product.stock}">재고</td>
+                                    <td th:text="${product.company}">제조사</td>
+                                    <td th:text="${product.hit}">조회</td>
                                     <td>
                                         <a href="#">[삭제]</a>
                                         <a href="#">[수정]</a>
