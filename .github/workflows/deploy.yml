@@ -62,16 +62,20 @@ jobs:
       - name: Make zip file
         run: zip -r ./$GITHUB_SHA.zip .
         shell: bash
-
+      # 현재 nodo.js 버전 16에서 실행, 곧 20으로 업데이트 된다는 오류 해결 => v4, v4, v2
       - name: Configure AWS credentials
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
-      - uses: aws-actions/configure-aws-credentials@v2
+        uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
           aws-region: ${{ env.AWS_REGION }}
-          
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        
       # script files 복사
       - name: Copy script
         run: cp ./scripts/*.sh ./deploy
