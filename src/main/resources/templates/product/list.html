@@ -24,9 +24,15 @@
                   <li><a th:href="@{#}">최근등록순</a></li>
               </ul>
 
-              <!-- 상품목록 -->              
-              <table border="0">
+              <!-- 상품목록 -->
+              <div th:each="product : ${pageResponseDTO.dtoList}" class="card" style="width: 18rem;">
+                <img th:src="@{|/product/${product.thumb1}|}" class="card-img-top" alt="...">
+                <div class="card-body">
+                  <p class="card-text">gdgdgdgdgd</p>
+                </div>
+              </div>
 
+              <table border="0">
                 <tr th:each="product : ${pageResponseDTO.dtoList}">
                   <td><a th:href="@{#}" class="thumb"><img th:src="@{|/product/${product.thumb1}|}" alt="상품이미지"/></a></td>
                   <td>
@@ -49,12 +55,7 @@
                     <h6 class="rating star1">상품평</h6>
                   </td>
                 </tr>
-
-
-
-
-                
-              </table>            
+              </table>
 
               <!-- 상품목록 페이지번호 -->
               <div class="paging">
