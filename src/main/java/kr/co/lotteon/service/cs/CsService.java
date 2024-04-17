@@ -2,12 +2,14 @@ package kr.co.lotteon.service.cs;
 
 
 import kr.co.lotteon.dto.cs.BoardDTO;
+import kr.co.lotteon.dto.cs.BoardFileDTO;
 import kr.co.lotteon.dto.cs.CsPageRequestDTO;
 import kr.co.lotteon.dto.cs.CsPageResponseDTO;
 import kr.co.lotteon.entity.cs.BoardCateEntity;
 import kr.co.lotteon.entity.cs.BoardEntity;
 import kr.co.lotteon.entity.cs.BoardTypeEntity;
 import kr.co.lotteon.repository.cs.BoardCateRepository;
+import kr.co.lotteon.repository.cs.BoardFileRepository;
 import kr.co.lotteon.repository.cs.BoardTypeRepository;
 import kr.co.lotteon.repository.cs.BoardRepository;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +32,7 @@ public class CsService {
     private final BoardTypeRepository typeRepository;
     private final BoardCateRepository boardCateRepository;
     private final ModelMapper modelMapper;
+    private final BoardFileRepository fileRepository;
 
     // 글목록, 페이지(카테고리별)
     public CsPageResponseDTO findByCate(CsPageRequestDTO csPageRequestDTO) {
@@ -78,6 +81,35 @@ public class CsService {
                 .dtoList(dtoList)
                 .total(totalElement)
                 .build();
+
+    }
+
+    // 글보기
+    public BoardDTO findByBnoForBoard(int bno) {
+
+        BoardEntity boardEntity = boardRepository.findById(bno).get();
+
+        List<BoardFileDTO> boardFileDTOS = fileRepository.findByBno(bno)
+                .stream()
+                .map(entity -> modelMapper.map(entity, BoardFileDTO.class))
+                .toList();
+
+
+        BoardDTO dto = boardEntity.toDTO();
+        dto.setFileDTOList(boardFileDTOS);
+
+        List<BoardTypeEntity> boardTypeEntities = typeRepository.findByCate(dto.getCate());
+        log.info("getCate : " + dto.getCate());
+        log.info("getTypeNo : " + dto.getTypeNo());
+
+        Map<Integer, String> typeMap = new HashMap<>();
+        for (BoardTypeEntity boardTypeEntity : boardTypeEntities) {
+            typeMap.put(boardTypeEntity.getTypeNo(), boardTypeEntity.getTypeName());
+        }
+        dto.setTypeName(typeMap.get(dto.getTypeNo()));
+        log.info("getTypeName : " + dto.getTypeName());
+
+        return dto;
 
     }
 }
