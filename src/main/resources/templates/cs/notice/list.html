@@ -1,4 +1,6 @@
 <html xmlns:th="http://www.thymeleaf.org"  xmlns:layout="http://www.thymeleaf.org/" layout:decorate="/cs/layout.html">
+<link rel="stylesheet" type="text/css" th:href="@{/css/csStyle.css}">
+
 <section id="cs" layout:fragment = "content">
   <div class="notice">
           <nav>
@@ -28,7 +30,7 @@
                         <span th:case="event" style="font-size: 26px; font-weight: bold;">이벤트당첨</span>
                     </span>
 
-                    <h2>공지사항 <span th:utext="${(cate eq 'null') ? '전체' : (cate eq 'cs') ? '고객서비스' : (cate eq 'safe') ? '안전거래' : (cate eq 'dangerProd') ? '위해상품' : '이벤트당첨'}" style="font-size: 20px;"></span> 내용입니다.</h2>
+                    <h2>공지사항 <span th:utext="${(cate eq 'null') ? '전체' : (cate eq 'cs') ? '고객서비스' : (cate eq 'safe') ? '안전거래' : (cate eq 'dangerProd') ? '위해상품' : (cate eq 'event') ? '이벤트당첨' : ''}" style="font-size: 20px;"></span> 내용입니다.</h2>
 
 
                 </nav>
@@ -38,7 +40,7 @@
                         <td>
                             <a th:href="@{/cs/notice/view(group=${csPageResponseDTO.group},cate=${csPageResponseDTO.cate},bno=${article.bno})}" >[<span th:text="${article.typeName}" style="font-size: 16px;"></span>] [[${article.title}]]</a>
                         </td>
-                        <td th:text="${#temporals.format(article.rdate, 'yyyy-MM-dd')}"></td>
+                        <td th:text="${#temporals.format(article.rdate, 'yyyy.MM.dd')}"></td>
                     </tr>
                 </table>
 
@@ -60,5 +62,5 @@
             </article>
           </section>
         </div>
-      </section>
+</section>
 </html>

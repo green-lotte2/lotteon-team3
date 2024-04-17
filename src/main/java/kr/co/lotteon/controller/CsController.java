@@ -1,5 +1,6 @@
 package kr.co.lotteon.controller;
 
+import kr.co.lotteon.dto.cs.BoardDTO;
 import kr.co.lotteon.dto.cs.CsPageRequestDTO;
 import kr.co.lotteon.dto.cs.CsPageResponseDTO;
 
@@ -50,7 +51,12 @@ public class CsController {
 
     // 공지사항 보기 페이지 매핑
     @GetMapping("/cs/notice/view")
-    public String noticeView(){
+    public String noticeView(Model model, int bno, String cate){
+        BoardDTO boardDTO = csService.findByBnoForBoard(bno);
+
+        model.addAttribute("boardDTO", boardDTO);
+        model.addAttribute("cate", cate);
+
         return "/cs/notice/view";
     }
     // FAQ list 페이지 매핑

@@ -21,8 +21,7 @@ public class CsPageRequestDTO {
     @Builder.Default
     private int size = 10;              // 한 페이지당 표시되는 번호 수
 
-    @Builder.Default
-    private String cate = "member";     // 카테고리 문자열
+    private String cate = null;          // 카테고리 문자열
     @Builder.Default
     private String group = "notice";    // 그룹 문자열
 
