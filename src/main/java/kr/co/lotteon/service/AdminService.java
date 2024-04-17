@@ -2,6 +2,8 @@ package kr.co.lotteon.service;
 
 import com.querydsl.core.Tuple;
 import kr.co.lotteon.dto.cs.BoardDTO;
+import kr.co.lotteon.dto.cs.CsPageRequestDTO;
+import kr.co.lotteon.dto.cs.CsPageResponseDTO;
 import kr.co.lotteon.dto.product.*;
 import kr.co.lotteon.entity.cs.BoardEntity;
 import kr.co.lotteon.entity.product.Cate1;
@@ -237,5 +239,16 @@ public class AdminService {
                 log.error(e.getMessage());
             }
         }
+    }
+    // 관리자 게시판관리 - 목록 출력
+    public CsPageResponseDTO findBoardByGroup(CsPageRequestDTO csPageRequestDTO){
+        String group = csPageRequestDTO.getGroup();
+        log.info("게시판관리 - 목록 Serv 1 : " + group);
+        boardRepository.selectBoardsByGroup(group);
+
+        // List<ProductDTO>와 page 정보 리턴
+        return CsPageResponseDTO.builder()
+                .csPageRequestDTO(csPageRequestDTO)
+                .build();
     }
 }
