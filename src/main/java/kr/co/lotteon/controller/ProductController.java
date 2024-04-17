@@ -2,6 +2,8 @@ package kr.co.lotteon.controller;
 
 import kr.co.lotteon.dto.product.PageRequestDTO;
 import kr.co.lotteon.dto.product.PageResponseDTO;
+import kr.co.lotteon.repository.product.Cate1Repository;
+import kr.co.lotteon.service.product.CateService;
 import kr.co.lotteon.service.product.ProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +17,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class ProductController {
 
     private final ProductService productService;
+    // 상품 카테고리를 불러오기 위한 cateService
+    private final CateService cateService;
 
     // cart 페이지 매핑
     @GetMapping("/product/cart")
@@ -29,11 +33,19 @@ public class ProductController {
     // list (상품 목록) 페이지 매핑
     @GetMapping("/product/list")
     public String list(Model model, PageRequestDTO pageRequestDTO){
+
         // 상품 목록 조회
         PageResponseDTO pageResponseDTO = productService.findByCate1AndCate2(pageRequestDTO);
         log.info("pageResponseDTO : " + pageResponseDTO.toString());
 
+        // 카테고리 불러오기
+        String c1Name = cateService.getc1Name(pageRequestDTO.getCate1());
+        String c2Name = cateService.getc2Name(pageRequestDTO.getCate1(), pageRequestDTO.getCate2());
+
+        // list페이지에 사용하기 위해 참조
         model.addAttribute(pageResponseDTO);
+        model.addAttribute(c1Name);
+        model.addAttribute(c2Name);
 
         return "/product/list";
     }
