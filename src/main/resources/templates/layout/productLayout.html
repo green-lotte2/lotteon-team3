@@ -2,19 +2,22 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 
+
 <head>
     <meta charset="UTF-8">
     <title>롯데ON::롯데 온라인 쇼핑몰</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <link rel="shortcut icon" type="image/x-icon" href="../images/favicon.ico" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
     <script src="https://kit.fontawesome.com/20962f3e4b.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.min.js"></script>
-    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"/>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.css">
-    <link rel="stylesheet" href="../css/common.css"/>
-    <link rel="stylesheet" href="../../static/css/product.css"/>
+    <link rel="stylesheet" th:href="@{https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css}">
+    <link rel="stylesheet" th:href="@{https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css}"/>
+    <link rel="stylesheet" th:href="@{https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.css}">
+    <link rel="stylesheet" th:href="@{/css/common.css}"/>
+    <<link rel="stylesheet" th:href="@{/css/product.css}">
     <style></style>
 </head>
 <body>
@@ -62,39 +65,39 @@
             <ul class="category">
                 <li><i class="fa fa-bars" aria-hidden="true"></i>카테고리</li>
                 <li>
-                    <a th:href="@{/product/list}"><i class="fas fa-tshirt"></i>패션·의류·뷰티</a>
+                    <a th:href="@{/product/list(cate1=10)}"><i class="fas fa-tshirt"></i>패션·의류·뷰티</a>
                     <ol>
-                        <li><a th:href="@{/product/list}">남성의류</a></li>
-                        <li><a th:href="@{/product/list}">여성의류</a></li>
-                        <li><a th:href="@{/product/list}">잡화</a></li>
-                        <li><a th:href="@{/product/list}">뷰티</a></li>
+                        <li><a th:href="@{/product/list(cate1=10,cate2=11)}">남성의류</a></li>
+                        <li><a th:href="@{/product/list(cate1=10,cate2=12)}">여성의류</a></li>
+                        <li><a th:href="@{/product/list(cate1=10,cate2=13)}">잡화</a></li>
+                        <li><a th:href="@{/product/list(cate1=10,cate2=14)}">뷰티</a></li>
                     </ol>
                 </li>
                 <li>
-                    <a th:href="@{/product/list}"><i class="fas fa-laptop"></i>가전·디지털</a>
+                    <a th:href="@{/product/list(cate1=20)}"><i class="fas fa-laptop"></i>가전·디지털</a>
                     <ol>
-                        <li><a th:href="@{/product/list}">노트북/PC</a></li>
-                        <li><a th:href="@{/product/list}">가전</a></li>
-                        <li><a th:href="@{/product/list}">휴대폰</a></li>
-                        <li><a th:href="@{/product/list}">기타</a></li>
+                        <li><a th:href="@{/product/list(cate1=20,cate2=21)}">노트북/PC</a></li>
+                        <li><a th:href="@{/product/list(cate1=20,cate2=22)}">가전</a></li>
+                        <li><a th:href="@{/product/list(cate1=20,cate2=23)}">휴대폰</a></li>
+                        <li><a th:href="@{/product/list(cate1=20,cate2=24)}">기타</a></li>
                     </ol>
                 </li>
                 <li>
-                    <a th:href="@{/product/list}"><i class="fas fa-utensils"></i>식품·생필품</a>
+                    <a th:href="@{/product/list(cate1=30)}"><i class="fas fa-utensils"></i>식품·생필품</a>
                     <ol>
-                        <li><a th:href="@{/product/list}">신선식품</a></li>
-                        <li><a th:href="@{/product/list}">가공식품</a></li>
-                        <li><a th:href="@{/product/list}">건강식품</a></li>
-                        <li><a th:href="@{/product/list}">생필품</a></li>
+                        <li><a th:href="@{/product/list(cate1=30,cate2=31)}">신선식품</a></li>
+                        <li><a th:href="@{/product/list(cate1=30,cate2=32)}">가공식품</a></li>
+                        <li><a th:href="@{/product/list(cate1=30,cate2=33)}">건강식품</a></li>
+                        <li><a th:href="@{/product/list(cate1=30,cate2=34)}">생필품</a></li>
                     </ol>
                 </li>
                 <li>
-                    <a th:href="@{/product/list}"><i class="fas fa-home"></i>홈·문구·취미</a>
+                    <a th:href="@{/product/list(cate1=40)}"><i class="fas fa-home"></i>홈·문구·취미</a>
                     <ol>
-                        <li><a th:href="@{/product/list}">가구/DIY</a></li>
-                        <li><a th:href="@{/product/list}">침구·커튼</a></li>
-                        <li><a th:href="@{/product/list}">생활용품</a></li>
-                        <li><a th:href="@{/product/list}">사무용품</a></li>
+                        <li><a th:href="@{/product/list(cate1=40,cate2=41)}">가구/DIY</a></li>
+                        <li><a th:href="@{/product/list(cate1=40,cate2=42)}">침구·커튼</a></li>
+                        <li><a th:href="@{/product/list(cate1=40,cate2=43)}">생활용품</a></li>
+                        <li><a th:href="@{/product/list(cate1=40,cate2=44)}">사무용품</a></li>
                     </ol>
                 </li>
             </ul>

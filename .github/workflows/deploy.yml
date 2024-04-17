@@ -13,7 +13,7 @@ env:
   S3_BUCKET_NAME: sun-s3-bucket-github-actions
   CODE_DEPLOY_APPLICATION_NAME: sun-codedeploy-app
   CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: sun-codedeploy-deploy-group
-  
+
 # workflow는 한개 이상의 job을 가지며, 각 job은 여러 step에 따라 단계를 나눔
 jobs:
   build:
@@ -34,7 +34,7 @@ jobs:
       - name: add Application.properties
         run: touch ./src/main/resources/application.properties
         shell: bash
-        
+
       # github secret으로 등록한 properties 내용 덮어쓰기
       - name: copy Application.properties
         run: echo "${{ secrets.APP_PROPERTIES }}" > ./src/main/resources/application.properties

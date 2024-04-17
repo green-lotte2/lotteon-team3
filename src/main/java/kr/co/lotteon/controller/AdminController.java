@@ -1,12 +1,14 @@
 package kr.co.lotteon.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
-import kr.co.lotteon.dto.product.Cate1DTO;
-import kr.co.lotteon.dto.product.Cate2DTO;
-import kr.co.lotteon.dto.product.ProductDTO;
+import kr.co.lotteon.dto.cs.BoardDTO;
+import kr.co.lotteon.dto.cs.CsPageRequestDTO;
+import kr.co.lotteon.dto.cs.CsPageResponseDTO;
+import kr.co.lotteon.dto.product.*;
 import kr.co.lotteon.entity.product.Cate1;
 import kr.co.lotteon.security.MyUserDetails;
 import kr.co.lotteon.service.AdminService;
+import kr.co.lotteon.service.cs.CsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -27,8 +29,14 @@ public class AdminController {
     private final AdminService adminService;
 
     // admin index 페이지 매핑
-    @GetMapping(value = {"/admin/","/admin/index"})
-    public String admin(){
+    @GetMapping(value = {"/admin","/admin/index"})
+    public String admin(Model model){
+        // 공지사항 조회
+        List<BoardDTO> noticeList = adminService.adminSelectNotices();
+        // 고객문의 조회
+        List<BoardDTO> qnaList = adminService.adminSelectQnas();
+        model.addAttribute("noticeList", noticeList);
+        model.addAttribute("qnaList", qnaList);
         return "/admin/index";
     }
     // config banner (관리자 배너 관리) 페이지 매핑
@@ -43,7 +51,20 @@ public class AdminController {
     }
     // product list (관리자 상품 목록) 페이지 매핑
     @GetMapping("/admin/product/list")
-    public String list(){
+    public String prodList(Model model, AdminPageRequestDTO adminPageRequestDTO){
+        log.info("관리자 상품 목록 Cont 1 : " + adminPageRequestDTO);
+
+        AdminPageResponseDTO adminPageResponseDTO = null;
+        if(adminPageRequestDTO.getKeyword() == null) {
+            // 일반 상품 목록 조회
+            adminPageResponseDTO = adminService.adminSelectProducts(adminPageRequestDTO);
+        }else {
+            // 검색 상품 목록 조회
+            log.info("키워드 검색 Cont" + adminPageRequestDTO.getKeyword());
+            adminPageResponseDTO = adminService.adminSearchProducts(adminPageRequestDTO);
+        }
+        log.info("관리자 상품 목록 Cont 2 : " + adminPageResponseDTO);
+        model.addAttribute("adminPageResponseDTO", adminPageResponseDTO);
         return "/admin/product/list";
     }
     // product register (관리자 상품 등록) 페이지 매핑
@@ -55,6 +76,25 @@ public class AdminController {
         model.addAttribute("cate1List", cate1List);
         return "/admin/product/register";
     }
+
+    // 관리자 게시판 목록 페이지 매핑
+    @GetMapping("/admin/cs/list")
+    public String csList(Model model, CsPageRequestDTO csPageRequestDTO) {
+
+        CsPageResponseDTO csPageResponseDTO = adminService.findBoardByGroup(csPageRequestDTO);
+        log.info("관리자 게시판 목록 Cont : " +csPageResponseDTO);
+        model.addAttribute(csPageResponseDTO);
+        model.addAttribute("group", csPageRequestDTO.getGroup());
+        return "/admin/cs/list";
+    }
+
+    // 관리자 상품 목록 검색 - cate1을 type으로 선택 시 cate1 조회
+    @GetMapping("/admin/findCate1")
+    @ResponseBody
+    public ResponseEntity<?> findCate1s(){
+        return adminService.findCate1s();
+    }
+
     // 관리자 상품 등록 - cate1 선택 시 cate2 조회
     @GetMapping("/admin/product/register/{cate1}")
     @ResponseBody
@@ -75,13 +115,15 @@ public class AdminController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         // 로그인 중일 때 해당 사용자 id를 seller에 입력
-        if (authentication != null && authentication.getPrincipal() instanceof MyUserDetails) {
+        if (authentication != null && authentication.isAuthenticated() && authentication.getPrincipal() instanceof MyUserDetails) {
             MyUserDetails userDetails = (MyUserDetails) authentication.getPrincipal();
             String sellerId = userDetails.getMember().getName();
             productDTO.setSeller(sellerId);
+            log.info("관리자 상품 등록 Cont 1 " + productDTO);
             // 로그인 상태가 아닐 때 == 개발 중 (배포시 삭제 할 것)
         } else if(authentication == null) {
             productDTO.setSeller("developer");
+            log.info("관리자 상품 등록 Cont 2 " + productDTO);
         }
         log.info("관리자 상품 등록 Cont " + productDTO);
 

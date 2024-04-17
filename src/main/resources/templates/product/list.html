@@ -12,7 +12,11 @@
 
               <!-- 정렬 메뉴 -->
               <ul class="sort">
-                  <li><a th:href="@{#}" class="on">판매많은순</a></li>
+                  <li>
+                    <a th:href="@{/product/list/(cate1=${pageResponseDTO.cate1},cate2=${pageResponseDTO.cate2},how=${pageResponseDTO.sort})}" class="on">
+                      판매많은순
+                    </a>
+                  </li>
                   <li><a th:href="@{#}">낮은가격순</a></li>
                   <li><a th:href="@{#}">높은가격순</a></li>
                   <li><a th:href="@{#}">평점높은순</a></li>
@@ -20,56 +24,41 @@
                   <li><a th:href="@{#}">최근등록순</a></li>
               </ul>
 
-              <!-- 상품목록 -->              
-              <table border="0">
-
-                <tr>
-                  <td><a th:href="@{#}" class="thumb"><img src="https://via.placeholder.com/120x120" alt="상품이미지"/></a></td>
-                  <td>
-                    <h3 class="name">상품명</h3>
-                    <a th:href="@{#}" class="desc">상품설명</a>
-                  </td>
-                  <td>
-                    <ul>
-                      <li><ins class="dis-price">27,000</ins></li>
-                      <li>
-                        <del class="org-price">30,000</del>
-                        <span class="discount">10%</span>
-                      </li>
-                      <li><span class="free-delivery">무료배송</span></li>
-                    </ul>
-                  </td>
-                  <td>
-                    <h4 class="seller"><i class="fas fa-home"></i>&nbsp;판매자</h4>
-                    <h5 class="badge power">판매자등급</h5>
-                    <h6 class="rating star1">상품평</h6>
-                  </td>
-                </tr>
-
-
-
-
-                
-              </table>            
+              <!-- 상품목록 -->
+              <div class="row row-cols-md-2">
+                    <div th:each="product : ${pageResponseDTO.dtoList}" class="card card h-100" style="width: 18rem; margin-right: 10px;">
+                        <a th:href="@{/product/view(prodNo=${product.prodNo},cate1=${product.cate1},cate2=${product.cate2})}" class="thumb">
+                            <img th:src="@{|/product/${product.thumb1}|}" class="card-img-top" style="width: 100%;" alt="상품이미지">
+                              <div class="card-body">
+                                <h4 class="seller"><i class="fas fa-home"></i>&nbsp;[[${product.company}]]</h4>
+                                <p class="card-text">[[${product.descript}]]</p>
+                                <p>[[${product.price}]]원</p>
+                                <ul>
+                                  <li><ins class="dis-price">[[${product.price}]]</ins></li>
+                                  <li>
+                                    <span class="discount">[[${product.discount}]]% 할인</span>
+                                    <del class="org-price">[[${product.price}]]</del>
+                                  </li>
+                                  <li><span class="free-delivery">무료배송</span></li>
+                                </ul>
+                              </div>
+                        </a>
+                    </div>
+              </div>
 
               <!-- 상품목록 페이지번호 -->
               <div class="paging">
-                <span class="prev">
-                  <a th:href="@{#}"><&nbsp;이전</a>
+                <span class="prev" th:if="${pageResponseDTO.prev}">
+                  <a th:href="@{/product/list(cate1=${pageResponseDTO.cate1},cate2=${pageResponseDTO.cate2},pg=${pageResponseDTO.start - 1})}"><&nbsp;이전</a>
                 </span>
-                <span class="num">
-                  <a href="#" class="on">1</a>
-                  <a href="#">2</a>
-                  <a href="#">3</a>
-                  <a href="#">4</a>
-                  <a href="#">5</a>
-                  <a href="#">6</a>
-                  <a href="#">7</a>
+                <span th:each="num : ${#numbers.sequence(pageResponseDTO.start, pageResponseDTO.end)}" class="num">
+                  <a th:classappend="${pageResponseDTO.pg eq num ? 'on' : 'off'}" th:href="@{/product/list(cate1=${pageResponseDTO.cate1},cate2=${pageResponseDTO.cate2},pg=${num})}">
+                      [[${num}]]
+                  </a>
                 </span>
-                <span class="next">
-                  <a href="#">다음&nbsp;></a>
+                <span class="next" th:if="${pageResponseDTO.next}">
+                  <a th:href="@{/product/list(cate1=${pageResponseDTO.cate1},cate2=${pageResponseDTO.cate2},pg=${pageResponseDTO.end + 1})}">다음&nbsp;></a>
                 </span>
               </div>
-
             </section>
         </main>

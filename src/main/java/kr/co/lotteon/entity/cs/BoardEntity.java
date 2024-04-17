@@ -36,6 +36,10 @@ public class BoardEntity {
     @CreationTimestamp
     private LocalDateTime rdate;
 
+    // join용 변수 생성
+    @Transient
+    private String typeName;
+
     public BoardDTO toDTO(){
         return BoardDTO.builder()
                 .bno(bno)

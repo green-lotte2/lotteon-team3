@@ -364,24 +364,38 @@ button[type=submit] {
     box-sizing: border-box;            
 }
 
-#admin-index > div > div > article > p {            
+#admin-index > div > div > article > div {
     overflow: hidden;
+    border-bottom: 1px solid #f1efef;
 }
 
-#admin-index > div > div > article > p > span {
+#admin-index > div > div > article > div > span {
     line-height: 26px;
 }
 
-#admin-index > div > div > article > p > span:nth-child(1) {
+#admin-index > div > div > article > div > a > span:nth-child(1) {
     float: left;
     display: block;
-    width: 400px;
+    width: 50px;
+    font-size: 13px;
     text-overflow: ellipsis;
     white-space: nowrap;
     text-align: left;
     overflow: hidden;
 }
-#admin-index > div > div > article > p > span:nth-child(2) {
+#admin-index > div > div > article > div > a {
+    float: left;
+    display: block;
+    width: 350px;
+    height: 26px;
+    font-size: 13px;
+    margin-top: 2px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: left;
+    overflow: hidden;
+}
+#admin-index > div > div > article > div > span:nth-child(2) {
     float: right;
 }
 
@@ -469,10 +483,14 @@ button[type=submit] {
     text-decoration: none;
 }
 #admin-product-list .paging > .num > a.on {
-    color: #fe434c;
+    background-color: #454c5f;
+    color: #f6f6f6;
     font-weight: bold;
 }
-
+#keywordInput {
+    margin-bottom: 3px;
+    height: 33px;
+}
 /* 배너관리 config-banner */
 #admin-config-banner {}
 #admin-config-banner > article > section {

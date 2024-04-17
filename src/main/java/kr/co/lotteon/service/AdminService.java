@@ -1,11 +1,16 @@
 package kr.co.lotteon.service;
 
+import com.querydsl.core.Tuple;
+import kr.co.lotteon.dto.cs.BoardDTO;
+import kr.co.lotteon.dto.cs.CsPageRequestDTO;
+import kr.co.lotteon.dto.cs.CsPageResponseDTO;
 import kr.co.lotteon.dto.product.*;
+import kr.co.lotteon.entity.cs.BoardEntity;
 import kr.co.lotteon.entity.product.Cate1;
-import kr.co.lotteon.entity.product.Cate2;
 import kr.co.lotteon.entity.product.Product;
-import kr.co.lotteon.repository.Cate1Repository;
-import kr.co.lotteon.repository.Cate2Repository;
+import kr.co.lotteon.repository.cs.BoardRepository;
+import kr.co.lotteon.repository.product.Cate1Repository;
+import kr.co.lotteon.repository.product.Cate2Repository;
 import kr.co.lotteon.repository.product.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -29,6 +35,7 @@ import java.util.stream.Collectors;
 @Service
 public class AdminService {
 
+    private final BoardRepository boardRepository;
     private final ProductRepository productRepository;
     private final Cate1Repository cate1Repository;
     private final Cate2Repository cate2Repository;
@@ -37,6 +44,38 @@ public class AdminService {
     @Value("${img.upload.path}")
     private String imgUploadPath;
 
+    // 관리자 인덱스 공지사항 조회
+    public List<BoardDTO> adminSelectNotices(){
+        List<Tuple> results =  boardRepository.adminSelectBoards("notice");
+        List<BoardDTO> dtoList = new ArrayList<>();
+        results.forEach(tuple -> {
+            // Tuple -> Entity
+            BoardEntity board = tuple.get(0, BoardEntity.class);
+            String typeName = tuple.get(1, String.class);
+            // Entity -> DTO
+            BoardDTO boardDTO = modelMapper.map(board, BoardDTO.class);
+            boardDTO.setTypeName(typeName);
+            dtoList.add(boardDTO);
+        });
+
+        return dtoList;
+    }
+    // 관리자 인덱스 고객문의 조회
+    public List<BoardDTO> adminSelectQnas(){
+        List<Tuple> results =  boardRepository.adminSelectBoards("qna");
+        List<BoardDTO> dtoList = new ArrayList<>();
+        results.forEach(tuple -> {
+            // Tuple -> Entity
+            BoardEntity board = tuple.get(0, BoardEntity.class);
+            String typeName = tuple.get(1, String.class);
+            // Entity -> DTO
+            BoardDTO boardDTO = modelMapper.map(board, BoardDTO.class);
+            boardDTO.setTypeName(typeName);
+            dtoList.add(boardDTO);
+        });
+
+        return dtoList;
+    }
     // 관리자 상품 등록 cate1 조회
     public List<Cate1DTO> findAllCate1(){
         List<Cate1> cate1s = cate1Repository.findAll();
@@ -45,6 +84,13 @@ public class AdminService {
         return cate1s.stream().map(cate1 -> modelMapper.map(cate1, Cate1DTO.class))
                 .collect(Collectors.toList());
     }
+
+    // 관리자 상품 목록 검색 - cate1을 type으로 선택 시 cate1 조회
+    public ResponseEntity<?> findCate1s(){
+        List<Cate1> cate1s = cate1Repository.findAll();
+        return ResponseEntity.ok().body(cate1s);
+    }
+
     // 관리자 상품 등록 cate2 조회
     public ResponseEntity<?> findAllCate2ByCate1(int cate1){
         // 조회된 Entity List -> DTO List
@@ -54,14 +100,15 @@ public class AdminService {
 
         return ResponseEntity.ok().body(cate2List);
     }
-    // 관리자 상품 목록 조회
+
+    // 관리자 상품 기본 목록 조회
     public AdminPageResponseDTO adminSelectProducts(AdminPageRequestDTO adminPageRequestDTO){
         log.info("관리자 상품 목록 조회 Serv 1 : "+ adminPageRequestDTO);
 
         Pageable pageable = adminPageRequestDTO.getPageable("no");
 
         // DB 조회
-        Page<Product> pageProducts = productRepository.selectProducts(adminPageRequestDTO, pageable);
+        Page<Product> pageProducts = productRepository.adminSelectProducts(adminPageRequestDTO, pageable);
         log.info("관리자 상품 목록 조회 Serv 2 : "+ pageProducts);
 
         // Page<Product>을 List<ProductDTO>로 변환
@@ -69,6 +116,32 @@ public class AdminService {
                 .map(product -> modelMapper.map(product, ProductDTO.class))
                 .toList();
         log.info("관리자 상품 목록 조회 Serv 3 : " +dtoList );
+
+        // total 값
+        int total = (int) pageProducts.getTotalElements();
+
+        // List<ProductDTO>와 page 정보 리턴
+        return AdminPageResponseDTO.builder()
+                .adminPageRequestDTO(adminPageRequestDTO)
+                .dtoList(dtoList)
+                .total(total)
+                .build();
+
+    }
+    // 관리자 상품 검색 목록 조회
+    public AdminPageResponseDTO adminSearchProducts(AdminPageRequestDTO adminPageRequestDTO){
+        log.info("관리자 상품 목록 검색 조회 Serv 1 : "+ adminPageRequestDTO);
+        Pageable pageable = adminPageRequestDTO.getPageable("no");
+
+        // DB 조회
+        Page<Product> pageProducts = productRepository.adminSearchProducts(adminPageRequestDTO, pageable);
+        log.info("관리자 상품 목록 검색 조회 Serv 2 : "+ pageProducts);
+
+        // Page<Product>을 List<ProductDTO>로 변환
+        List<ProductDTO> dtoList = pageProducts.getContent().stream()
+                .map(product -> modelMapper.map(product, ProductDTO.class))
+                .toList();
+        log.info("관리자 상품 목록 검색 조회 Serv 3 : " +dtoList );
 
         // total 값
         int total = (int) pageProducts.getTotalElements();
@@ -166,5 +239,16 @@ public class AdminService {
                 log.error(e.getMessage());
             }
         }
+    }
+    // 관리자 게시판관리 - 목록 출력
+    public CsPageResponseDTO findBoardByGroup(CsPageRequestDTO csPageRequestDTO){
+        String group = csPageRequestDTO.getGroup();
+        log.info("게시판관리 - 목록 Serv 1 : " + group);
+        boardRepository.selectBoardsByGroup(group);
+
+        // List<ProductDTO>와 page 정보 리턴
+        return CsPageResponseDTO.builder()
+                .csPageRequestDTO(csPageRequestDTO)
+                .build();
     }
 }

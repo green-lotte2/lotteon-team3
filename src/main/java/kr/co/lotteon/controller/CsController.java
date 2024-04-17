@@ -55,7 +55,7 @@ public class CsController {
     public String qnaWrite(){
         return "/cs/qna/write";
     }
-
+    // 공지사항 목록 매핑
     @GetMapping("/cs/notice/list")
     public String noticeList(Model model, CsPageRequestDTO csPageRequestDTO) {
         if (csPageRequestDTO.getCate() == null) {
