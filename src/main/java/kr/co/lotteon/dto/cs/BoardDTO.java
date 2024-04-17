@@ -18,7 +18,7 @@ public class BoardDTO {
 
     private String group;           // 게시글이 속한 그룹
     private String cate;            // 게시글이 속한 카테고리
-    private int type;               // 게시글의 유형(일반, 공지사항, 이벤트 등)
+    private int typeNo;               // 게시글의 유형(일반, 공지사항, 이벤트 등)
     private String title;           // 게시글 제목
     private String content;         // 게시글 내용
 
@@ -41,7 +41,7 @@ public class BoardDTO {
                 .uid(uid)
                 .group(group)
                 .cate(cate)
-                .type(type)
+                .typeNo(typeNo)
                 .title(title)
                 .content(content)
                 .file(file)

@@ -12,19 +12,17 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "cs_boardType")
+@Table(name = "cs_boardtype")
 public class BoardTypeEntity {
     @Id
-    private int no;
+    private int typeNo;
     private String cate;
-    private int type;
     private String typeName;
 
     public BoardTypeDTO toDTO(){
         return BoardTypeDTO.builder()
-                .no(no)
+                .typeNo(typeNo)
                 .cate(cate)
-                .type(type)
                 .typeName(typeName)
                 .build();
     }

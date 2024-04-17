@@ -24,7 +24,7 @@ public class BoardEntity {
     @Column(name = "\"group\"")
     private String group;
     private String cate;
-    private int type;
+    private int typeNo;
     private String title;
     private String content;
 
@@ -42,7 +42,7 @@ public class BoardEntity {
                 .uid(uid)
                 .group(group)
                 .cate(cate)
-                .type(type)
+                .typeNo(typeNo)
                 .title(title)
                 .content(content)
                 .file(file)
