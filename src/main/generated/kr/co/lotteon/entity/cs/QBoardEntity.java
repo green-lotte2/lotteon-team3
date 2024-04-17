@@ -37,7 +37,7 @@ public class QBoardEntity extends EntityPathBase<BoardEntity> {
 
     public final StringPath title = createString("title");
 
-    public final NumberPath<Integer> type = createNumber("type", Integer.class);
+    public final NumberPath<Integer> typeNo = createNumber("typeNo", Integer.class);
 
     public final StringPath uid = createString("uid");
 

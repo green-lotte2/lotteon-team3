@@ -47,7 +47,7 @@ public class CsService {
 
             for (BoardTypeEntity boardEntity : boardTypeEntitieList) {
                 if (boardEntity.getCate().equals(boardCateEntity.getCate())) {
-                    typeMap.put(boardEntity.getType(), boardEntity.getTypeName());
+                    typeMap.put(boardEntity.getTypeNo(), boardEntity.getTypeName());
                 }
             }
             cateNameMap.put(boardCateEntity.getCate(), boardCateEntity.getCateName());
@@ -63,7 +63,7 @@ public class CsService {
 
         for (BoardDTO boardDTO : dtoList) {
             boardDTO.setTypeName(
-                    cateMap.get(boardDTO.getCate()).get(boardDTO.getType())
+                    cateMap.get(boardDTO.getCate()).get(boardDTO.getTypeNo())
 
             );
             boardDTO.setCateName(

@@ -43,14 +43,6 @@ public class CsController {
     public String noticeList(Model model, CsPageRequestDTO csPageRequestDTO) {
         CsPageResponseDTO csPageResponseDTO = csService.findByCate(csPageRequestDTO);
 
-        log.info("csPageResponseDTO pg : "+ csPageResponseDTO.getPg());
-        log.info("csPageResponseDTO size : "+ csPageResponseDTO.getSize());
-        log.info("csPageResponseDTO total : "+ csPageResponseDTO.getTotal());
-        log.info("csPageResponseDTO start : "+ csPageResponseDTO.getStart());
-        log.info("csPageResponseDTO end : "+ csPageResponseDTO.getEnd());
-        log.info("csPageResponseDTO prev : "+ csPageResponseDTO.isPrev());
-        log.info("csPageResponseDTO next : "+ csPageResponseDTO.isNext());
-
         model.addAttribute(csPageResponseDTO);
         model.addAttribute("cate", csPageRequestDTO.getCate());
         return "/cs/notice/list";
