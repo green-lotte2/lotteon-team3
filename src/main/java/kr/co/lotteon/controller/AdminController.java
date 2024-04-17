@@ -1,6 +1,7 @@
 package kr.co.lotteon.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import kr.co.lotteon.dto.cs.BoardDTO;
 import kr.co.lotteon.dto.product.*;
 import kr.co.lotteon.entity.product.Cate1;
 import kr.co.lotteon.security.MyUserDetails;
@@ -25,8 +26,14 @@ public class AdminController {
     private final AdminService adminService;
 
     // admin index 페이지 매핑
-    @GetMapping(value = {"/admin/","/admin/index"})
-    public String admin(){
+    @GetMapping(value = {"/admin","/admin/index"})
+    public String admin(Model model){
+        // 공지사항 조회
+        List<BoardDTO> noticeList = adminService.adminSelectNotices();
+        // 고객문의 조회
+        List<BoardDTO> qnaList = adminService.adminSelectQnas();
+        model.addAttribute("noticeList", noticeList);
+        model.addAttribute("qnaList", qnaList);
         return "/admin/index";
     }
     // config banner (관리자 배너 관리) 페이지 매핑
@@ -66,6 +73,14 @@ public class AdminController {
         model.addAttribute("cate1List", cate1List);
         return "/admin/product/register";
     }
+
+    // 관리자 상품 목록 검색 - cate1을 type으로 선택 시 cate1 조회
+    @GetMapping("/admin/findCate1")
+    @ResponseBody
+    public ResponseEntity<?> findCate1s(){
+        return adminService.findCate1s();
+    }
+
     // 관리자 상품 등록 - cate1 선택 시 cate2 조회
     @GetMapping("/admin/product/register/{cate1}")
     @ResponseBody
