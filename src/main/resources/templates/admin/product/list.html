@@ -118,7 +118,7 @@
                             <a th:if="${adminPageResponseDTO.keyword == null}" class="page-link" th:href="@{/admin/product/list(pg=${adminPageResponseDTO.end + 1})}">&#62;</a>
                             <a th:if="${adminPageResponseDTO.keyword != null}" class="page-link" th:href="@{/admin/product/list(pg=${adminPageResponseDTO.end + 1}, type=${adminPageResponseDTO.type}, keyword=${adminPageResponseDTO.keyword})}">&#62;</a>
                         </span>
-                        </div>
+                    </div>
 
                 </section>                
                 <p class="ico info">
