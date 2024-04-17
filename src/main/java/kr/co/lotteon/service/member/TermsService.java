@@ -13,7 +13,7 @@ public class TermsService {
 
     private final TermsRepository termsRepository;
 
-    //Id 값으로 DB에 있는 terms 가져오기
+    //Id(고객 타입) 값으로 DB에 있는 terms 가져오기
     public Terms findByTerms(){
         return termsRepository.findById(1).get();
     }

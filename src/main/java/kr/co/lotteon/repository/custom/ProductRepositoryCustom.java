@@ -8,8 +8,8 @@ import org.springframework.data.domain.Pageable;
 
 public interface ProductRepositoryCustom {
 
-    public Page<Product> selectProducts(AdminPageRequestDTO adminPageRequestDTO, Pageable pageable);
+    public Page<Product> adminSelectProducts(AdminPageRequestDTO adminPageRequestDTO, Pageable pageable);
 
-    public Page<Product> searchProducts(AdminPageRequestDTO adminPageRequestDTO, Pageable pageable);
+    public Page<Product> adminSearchProducts(AdminPageRequestDTO adminPageRequestDTO, Pageable pageable);
 
 }

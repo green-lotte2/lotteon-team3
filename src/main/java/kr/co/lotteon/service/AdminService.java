@@ -45,6 +45,7 @@ public class AdminService {
         return cate1s.stream().map(cate1 -> modelMapper.map(cate1, Cate1DTO.class))
                 .collect(Collectors.toList());
     }
+
     // 관리자 상품 등록 cate2 조회
     public ResponseEntity<?> findAllCate2ByCate1(int cate1){
         // 조회된 Entity List -> DTO List
@@ -54,14 +55,15 @@ public class AdminService {
 
         return ResponseEntity.ok().body(cate2List);
     }
-    // 관리자 상품 목록 조회
+
+    // 관리자 상품 기본 목록 조회
     public AdminPageResponseDTO adminSelectProducts(AdminPageRequestDTO adminPageRequestDTO){
         log.info("관리자 상품 목록 조회 Serv 1 : "+ adminPageRequestDTO);
 
         Pageable pageable = adminPageRequestDTO.getPageable("no");
 
         // DB 조회
-        Page<Product> pageProducts = productRepository.selectProducts(adminPageRequestDTO, pageable);
+        Page<Product> pageProducts = productRepository.adminSelectProducts(adminPageRequestDTO, pageable);
         log.info("관리자 상품 목록 조회 Serv 2 : "+ pageProducts);
 
         // Page<Product>을 List<ProductDTO>로 변환
@@ -69,6 +71,32 @@ public class AdminService {
                 .map(product -> modelMapper.map(product, ProductDTO.class))
                 .toList();
         log.info("관리자 상품 목록 조회 Serv 3 : " +dtoList );
+
+        // total 값
+        int total = (int) pageProducts.getTotalElements();
+
+        // List<ProductDTO>와 page 정보 리턴
+        return AdminPageResponseDTO.builder()
+                .adminPageRequestDTO(adminPageRequestDTO)
+                .dtoList(dtoList)
+                .total(total)
+                .build();
+
+    }
+    // 관리자 상품 검색 목록 조회
+    public AdminPageResponseDTO adminSearchProducts(AdminPageRequestDTO adminPageRequestDTO){
+        log.info("관리자 상품 목록 검색 조회 Serv 1 : "+ adminPageRequestDTO);
+        Pageable pageable = adminPageRequestDTO.getPageable("no");
+
+        // DB 조회
+        Page<Product> pageProducts = productRepository.adminSelectProducts(adminPageRequestDTO, pageable);
+        log.info("관리자 상품 목록 검색 조회 Serv 2 : "+ pageProducts);
+
+        // Page<Product>을 List<ProductDTO>로 변환
+        List<ProductDTO> dtoList = pageProducts.getContent().stream()
+                .map(product -> modelMapper.map(product, ProductDTO.class))
+                .toList();
+        log.info("관리자 상품 목록 검색 조회 Serv 3 : " +dtoList );
 
         // total 값
         int total = (int) pageProducts.getTotalElements();

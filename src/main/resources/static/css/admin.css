@@ -469,7 +469,8 @@ button[type=submit] {
     text-decoration: none;
 }
 #admin-product-list .paging > .num > a.on {
-    color: #fe434c;
+    background-color: #454c5f;
+    color: #f6f6f6;
     font-weight: bold;
 }
 

@@ -1,9 +1,7 @@
 package kr.co.lotteon.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
-import kr.co.lotteon.dto.product.Cate1DTO;
-import kr.co.lotteon.dto.product.Cate2DTO;
-import kr.co.lotteon.dto.product.ProductDTO;
+import kr.co.lotteon.dto.product.*;
 import kr.co.lotteon.entity.product.Cate1;
 import kr.co.lotteon.security.MyUserDetails;
 import kr.co.lotteon.service.AdminService;
@@ -43,7 +41,20 @@ public class AdminController {
     }
     // product list (관리자 상품 목록) 페이지 매핑
     @GetMapping("/admin/product/list")
-    public String list(){
+    public String prodList(Model model, AdminPageRequestDTO adminPageRequestDTO){
+        log.info("관리자 상품 목록 Cont 1 : " + adminPageRequestDTO);
+
+        AdminPageResponseDTO adminPageResponseDTO = null;
+        if(adminPageRequestDTO.getKeyword() == null) {
+            // 일반 상품 목록 조회
+            adminPageResponseDTO = adminService.adminSelectProducts(adminPageRequestDTO);
+        }else {
+            // 검색 상품 목록 조회
+            log.info("키워드 검색 Cont" + adminPageRequestDTO.getKeyword());
+            adminPageResponseDTO = adminService.adminSearchProducts(adminPageRequestDTO);
+        }
+        log.info("관리자 상품 목록 Cont 2 : " + adminPageResponseDTO);
+        model.addAttribute("adminPageResponseDTO", adminPageResponseDTO);
         return "/admin/product/list";
     }
     // product register (관리자 상품 등록) 페이지 매핑
@@ -75,13 +86,15 @@ public class AdminController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         // 로그인 중일 때 해당 사용자 id를 seller에 입력
-        if (authentication != null && authentication.getPrincipal() instanceof MyUserDetails) {
+        if (authentication != null && authentication.isAuthenticated() && authentication.getPrincipal() instanceof MyUserDetails) {
             MyUserDetails userDetails = (MyUserDetails) authentication.getPrincipal();
             String sellerId = userDetails.getMember().getName();
             productDTO.setSeller(sellerId);
+            log.info("관리자 상품 등록 Cont 1 " + productDTO);
             // 로그인 상태가 아닐 때 == 개발 중 (배포시 삭제 할 것)
         } else if(authentication == null) {
             productDTO.setSeller("developer");
+            log.info("관리자 상품 등록 Cont 2 " + productDTO);
         }
         log.info("관리자 상품 등록 Cont " + productDTO);
 

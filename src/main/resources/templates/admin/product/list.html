@@ -2,7 +2,9 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{/layout/adminLayout}">
 <section id="admin-product-list" layout:fragment="content">
+    <script>
 
+    </script>
                 <nav>
                     <h3>상품목록</h3>
                     <p>
@@ -11,7 +13,7 @@
                 </nav>
                 <!-- 상품목록 컨텐츠 시작 -->                                
                 <section>
-                    <div>
+                    <form th:action="@{/admin/product/list}" method="get">
                         <select name="type">
                             <option value="prodName">상품명</option>
                             <option value="prodNo">상품코드</option>
@@ -19,93 +21,66 @@
                             <option value="company">제조사</option>
                             <option value="seller">판매자</option>
                         </select>
-                        <input type="text" name="keyword">
-                    </div>
+                        <input type="text" name="keyword" placeholder="검색어를 입력하세요"/>
+                    </form>
                     <table>
-                        <tr>
-                            <th><input type="checkbox" name="all"/></th>
-                            <th>이미지</th>
-                            <th>상품코드</th>
-                            <th>상품명</th>
-                            <th>판매가격</th>
-                            <th>할인율</th>
-                            <th>포인트</th>
-                            <th>재고</th>
-                            <th>판매자</th>
-                            <th>조회</th>
-                            <th>관리</th>
-                        </tr>
-
-                        <tr>
-                            <td><input type="checkbox" name="상품코드"/></td>
-                            <td><img th:src="@{/admin/images/sample_thumb.jpg}" class="thumb"></td>
-                            <td>201603292</td>
-                            <td>FreeMovement BLUEFORCE</td>
-                            <td>36,000</td>
-                            <td>10</td>
-                            <td>360</td>
-                            <td>400</td>
-                            <td>홍길동</td>
-                            <td>126</td>
-                            <td>
-                                <a href="#">[삭제]</a>
-                                <a href="#">[수정]</a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" name="상품코드"/></td>
-                            <td><img src="../../../static/admin/images/sample_thumb.jpg" class="thumb"></td>
-                            <td>201603292</td>
-                            <td>FreeMovement BLUEFORCE</td>
-                            <td>36,000</td>
-                            <td>10</td>
-                            <td>360</td>
-                            <td>400</td>
-                            <td>홍길동</td>
-                            <td>126</td>
-                            <td>
-                                <a href="#">[삭제]</a>
-                                <a href="#">[수정]</a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" name="상품코드"/></td>
-                            <td><img src="../../../static/admin/images/sample_thumb.jpg" class="thumb"></td>
-                            <td>201603292</td>
-                            <td>FreeMovement BLUEFORCE</td>
-                            <td>36,000</td>
-                            <td>10</td>
-                            <td>360</td>
-                            <td>400</td>
-                            <td>홍길동</td>
-                            <td>126</td>
-                            <td>
-                                <a href="#">[삭제]</a>
-                                <a href="#">[수정]</a>
-                            </td>
-                        </tr>
-                        
+                        <form id="formCheck" th:action="@{/admin/product/delete}" method="get">
+                            <tr>
+                                <th><input type="checkbox" name="all"/></th>
+                                <th>이미지</th>
+                                <th>상품코드</th>
+                                <th>상품명</th>
+                                <th>판매가격</th>
+                                <th>할인율</th>
+                                <th>포인트</th>
+                                <th>재고</th>
+                                <th>판매자</th>
+                                <th>조회</th>
+                                <th>관리</th>
+                            </tr>
+                            <th:block th:each="product, loop : ${adminPageResponseDTO.dtoList}">
+                                <tr>
+                                    <td><input type="checkbox" name="prodNo" th:value="${product.prodNo}"/></td>
+                                    <td>
+                                        <img th:src="@{'/product/' + ${product.thumb1}}"
+                                             class="thumb"
+                                             style="width: 60px; height: 60px;">
+                                    </td>
+                                    <td th:text="${product.prodNo}">상품코드</td>
+                                    <td th:text="${product.prodName}">상품명</td>
+                                    <td th:text="${product.price}">가격</td>
+                                    <td th:text="${product.discount}">할인율</td>
+                                    <td th:text="${product.point}">적립금</td>
+                                    <td th:text="${product.review}">리뷰수</td>
+                                    <td th:text="${product.company}">판매자</td>
+                                    <td th:text="${product.stock}">재고량</td>
+                                    <td>
+                                        <a href="#">[삭제]</a>
+                                        <a href="#">[수정]</a>
+                                    </td>
+                                </tr>
+                            </th:block>
+                        </form>
                     </table>
-
-                    
-                    <input type="button" value="선택삭제" />                          
-
-
+                    <input type="button" value="선택삭제" />
                     <div class="paging">
                         <span class="prev">
-                            <a href="#"><&nbsp;이전</a>
+                            <a th:if="${adminPageResponseDTO.keyword == null}" class="page-link" th:href="@{/admin/product/list(pg=${adminPageResponseDTO.start - 1})}">&#60;</a>
+                            <a th:if="${adminPageResponseDTO.keyword != null}" class="page-link" th:href="@{/admin/product/list(pg=${adminPageResponseDTO.start - 1}, type=${adminPageResponseDTO.type}, keyword=${adminPageResponseDTO.keyword})}">&#60;</a>
                         </span>
-                        <span class="num">
-                            <a href="#" class="on">1</a>
-                            <a href="#">2</a>
-                            <a href="#">3</a>
-                            <a href="#">4</a>
-                            <a href="#">5</a>
-                            <a href="#">6</a>
-                            <a href="#">7</a>
+                        <span class="num"> <!-- 해당 페이지 class on-->
+                            <th:block th:each="num:${#numbers.sequence(adminPageResponseDTO.start, adminPageResponseDTO.end)}">
+                                <a  th:if="${adminPageResponseDTO.keyword == null}" th:classappend="${adminPageResponseDTO.pg == num} ? 'page-link on' : 'page-link'" th:href="@{/admin/product/list(pg=${num})}">
+                                    [[${num}]]
+                                </a>
+                                <a  th:if="${adminPageResponseDTO.keyword != null}" th:classappend="${adminPageResponseDTO.pg == num} ? 'page-link on' : 'page-link'" th:href="@{/admin/product/list(pg=${num}, type=${adminPageResponseDTO.type}, keyword=${adminPageResponseDTO.keyword})}">
+                                    [[${num}]]
+                                </a>
+                            </th:block>
                         </span>
                         <span class="next">
-                            <a href="#">다음&nbsp;></a>
+                            <a th:if="${adminPageResponseDTO.keyword == null}" class="page-link" th:href="@{/admin/product/list(pg=${adminPageResponseDTO.end + 1})}">&#62;</a>
+                            <a th:if="${adminPageResponseDTO.keyword != null}" class="page-link" th:href="@{/admin/product/list(pg=${adminPageResponseDTO.end + 1}, type=${adminPageResponseDTO.type}, keyword=${adminPageResponseDTO.keyword})}">&#62;</a>
                         </span>
                         </div>
 
