@@ -1,4 +1,5 @@
-//memberRegister//
+// 일반사용자 관련
+// 판매자 관련 추가 예정
 
 //유효성 검사에 사용할 상태변수
 let isUidOk = false;
@@ -23,21 +24,18 @@ window.onload = function () {
 
     btnCheckUid.onclick = function () {
 
-        const type = this.dataset.type; //입력 유형 (uid, nickname 등)
-        const input = document.registerForm[type]; // 입력 요소
+        const type = this.dataset.type;
+        const input = document.registerForm[type];
 
         // 정규식 검사
         if (!input.value.match(reUid)) {
 
-            console.log("여기에 들어오나?");
-
-            input.classList.add('is-invalid');
             resultUid.innerText = '아이디 형식이 맞지 않습니다.';
+            resultUid.style.color='red';
             isUidOk = false;
             return;
         }
 
-        // 서버에 아이디 중복 확인 요청 (비동기 처리)
         async function fetchGet(url) {
 
             console.log("fetchData1...1");
@@ -67,22 +65,16 @@ window.onload = function () {
 
                 const data = await fetchGet(`/lotteon/member/check/${type}/${input.value}`);
 
-                if (data.result > 0) { //중복 아이디 존재
+                if (data.result > 0) { // 아이디가 중복된경우
 
-                    input.classList.remove('is-valid'); // 기존의 유효한 클래스를 제거
-                    input.classList.add('is-invalid');
-
-                    resultUid.classList.add('invalid-feedback');
                     resultUid.innerText = '이미 사용중인 아이디 입니다.';
+                    resultUid.style.color='red';
                     isUidOk = false;
-                } else {// 사용 가능한 아이디
 
-                    input.classList.remove('is-invalid'); // 기존의 무효한 클래스를 제거
-                    input.classList.add('is-valid');
-
-                    resultUid.classList.add('valid-feedback');
+                } else {// 아이디가 중복되지않은 경우(사용가능한 경우)
 
                     resultUid.innerText = '사용 가능한 아이디 입니다.';
+                    resultUid.style.color='green';
                     isUidOk = true;
                     console.log("isUidOk:" + isUidOk);
                 }
@@ -98,27 +90,24 @@ window.onload = function () {
         const inputPass1 = document.registerForm.pass;
         const inputPass2 = document.registerForm.pass2;
 
-        console.log("inputPass1 : " + inputPass1);
-        console.log("inputPass2 : " + inputPass2);
+        console.log("비밀번호 입력 : " + inputPass1);
+        console.log("비밀번호 확인 : " + inputPass2);
 
 
         if (inputPass1.value === inputPass2.value) {
 
             if (!inputPass1.value.match(rePass)) {
-                inputPass1.classList.add('is-invalid');
-                inputPass2.classList.add('is-invalid');
                 resultPass.innerText = '비밀번호 형식에 맞지 않습니다.';
+                resultPass.style.color='red';
                 isPassOk = false;
             } else {
-                inputPass1.classList.add('is-valid');
-                inputPass2.classList.add('is-valid');
                 resultPass.innerText = '사용 가능한 비밀번호 입니다.';
+                resultPass.style.color='green';
                 isPassOk = true;
             }
         } else {
-            inputPass1.classList.add('is-invalid');
-            inputPass2.classList.add('is-invalid');
             resultPass.innerText = '비밀번호가 일치하지 않습니다.';
+            resultPass.style.color='red';
             isPassOk = false;
         }
     });
@@ -131,9 +120,8 @@ window.onload = function () {
         const inputName = document.registerForm.name;
 
         if (!value.match(reName)) {
-            inputName.classList.add('is-invalid');
-            resultName.classList.add('invalid-feedback');
             resultName.innerText = '이름 형식이 맞지 않습니다.';
+            resultName.style.color='red';
             isNameOk = false;
         } else {
             resultName.innerText = '';
@@ -157,8 +145,8 @@ window.onload = function () {
         // 유효성 검사
         if (!inputEmail.value.match(reEmail)) {
 
-            inputEmail.classList.add('is-invalid');
             resultEmail.innerText = '이메일 형식이 맞지 않습니다.';
+            resultEmail.style.color='red';
             isEmailOk = false;
             return;
         }
@@ -185,7 +173,7 @@ window.onload = function () {
             }
         }
 
-        // 이메일 인증코드 발급 및 중복체크 추가 예정
+        // 이메일 중복 체크 및 이메일 전송
         setTimeout(async () => {
 
             console.log('inputEmail value : ' + inputEmail.value);
@@ -194,11 +182,16 @@ window.onload = function () {
             console.log('data : ' + data.result);
 
             if (data.result > 0) {
-                inputEmail.classList.add('is-invalid');
                 resultEmail.innerText = '이미 사용중인 이메일 입니다.';
+                resultEmail.style.color='red';
                 isEmailOk = false;
             } else {
-                alert('인증코드를 이메일로 전송합니다.');
+                resultEmail.innerText = '인증코드 전송이 완료되었습니다. 이메일을 확인해주세요.';
+                resultEmail.style.color='black';
+                // 이메일 인증번호 입력칸 활성화
+                inputEmailCode.removeAttribute('disabled');
+                // 이메일 인증번호를 입력할 수 있는 input에 포커스 설정
+                inputEmailCode.focus();
             }
 
         }, 1000);
@@ -237,14 +230,12 @@ window.onload = function () {
         const data = await fetchGet(`/lotteon/member/email/${inputEmailCode.value}`);
 
         if (!data.result) {
-            inputEmail.classList.add('is-invalid');
-            inputEmailCode.classList.add('is-invalid');
             resultEmailCode.innerText = '인증코드가 일치하지 않습니다.';
+            resultEmailCode.style.color='red';
             isEmailCodeOk = false;
         } else {
-            inputEmail.classList.add('is-valid');
-            inputEmailCode.classList.add('is-valid');
             resultEmailCode.innerText = '이메일이 인증되었습니다.';
+            resultEmailCode.style.color='green';
             isEmailCodeOk = true;
         }
     }
@@ -261,9 +252,8 @@ window.onload = function () {
 
         // 정규식 검사
         if (!input.value.match(reHp)) {
-            input.classList.add('is-invalid');
-            resultHp.classList.add('invalid-feedback');
             resultHp.innerText = '휴대폰 형식이 맞지 않습니다.';
+            resultHp.style.color='red';
             isHpOk = false;
             return;
         }
@@ -294,16 +284,12 @@ window.onload = function () {
             const data = await fetchGet(`/lotteon/member/check/${type}/${input.value}`);
 
             if (data.result > 0) {
-                input.classList.add('is-invalid');
-
-                resultHp.classList.add('invalid-feedback');
                 resultHp.innerText = '이미 사용중인 휴대폰 입니다.';
+                resultHp.style.color='red';
                 isHpOk = false;
             } else {
-                input.classList.add('is-valid');
-
-                resultHp.classList.add('valid-feedback');
                 resultHp.innerText = '사용 가능한 휴대폰 입니다.';
+                resultHp.style.color='green';
                 isHpOk = true;
             }
         }, 1000);

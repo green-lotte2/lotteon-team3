@@ -66,7 +66,7 @@ public class MemberController {
         return "/member/register";
     }
 
-    //타입에 따라 db에 있는지 중복확인을 시켜줌. if (type == email) {중복검사 후 메일 전송}
+    //email 중복검사 후 인증메일 전송
     @ResponseBody
     @GetMapping("/member/check/{type}/{value}")
     public ResponseEntity<?> checkUser(HttpSession session,
@@ -85,7 +85,6 @@ public class MemberController {
             memberService.sendEmailCode(session, value);
         }
 
-        //Json 생성
         Map<String, Object> resultMap = new HashMap<>();
         resultMap.put("result", count);
 
@@ -101,10 +100,8 @@ public class MemberController {
         Map<String, Object> resultMap = new HashMap<>();
 
         if (sessionCode.equals(code)) {
-            //Json 생성
             resultMap.put("result", true);
         } else {
-            //Json 생성
             resultMap.put("result", false);
         }
         return ResponseEntity.ok().body(resultMap);
@@ -116,7 +113,8 @@ public class MemberController {
     @PostMapping("/member/register")
     public String register(MemberDTO memberDTO, HttpServletRequest request){
 
-        log.info(memberDTO.getPass1());
+        //비밀번호 암호화 문제 발생부분
+        log.info("PASSWORD "+memberDTO.getPass1());
 
         memberDTO.setRegip(request.getRemoteAddr());
         memberService.save(memberDTO);

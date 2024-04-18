@@ -33,21 +33,17 @@ public class MemberService {
     // 회원 가입 - DB 입력
     public void save(MemberDTO memberDTO){
         // 비밀번호 암호화
-        String encodedPass = passwordEncoder.encode(memberDTO.getPass1());
-
-        memberDTO.setPass1(encodedPass);
-
+        memberDTO.setPass1(passwordEncoder.encode(memberDTO.getPass1()));
         Member member = modelMapper.map(memberDTO, Member.class);
         memberRepository.save(member); 
     }
 
-    //회원 등록이 되어 있는지 확인하는 서비스(0또는 1)
     public int selectCountMember(String type, String value) {
         return memberMapper.selectCountMember(type, value);
     }
 
-    //이메일 보내기 서비스
-    @Value("${spring.mail.username}")//이메일 보내는 사람 주소
+    //이메일 전송
+    @Value("${spring.mail.username}")
     private String sender;
     public void sendEmailCode(HttpSession session, String receiver) {
         log.info("sender={}", sender);
@@ -61,8 +57,77 @@ public class MemberService {
 
         log.info("code={}", code);
 
-        String title = "lotteShop 인증코드 입니다.";
-        String content = "<h1>인증코드는 " + code + "입니다.<h1>";
+//        String title = "[롯데ON] 회원가입 인증번호 안내드립니다";
+//        String content = "<h1>인증코드는 " + code + "입니다.<h1>";
+
+        //html 불러와서 메일 내용에 삽입할 예정
+        String title = "[롯데ON] 회원가입 인증번호 안내드립니다";
+        String content = "<div>\n" +
+                "    <table align=\"center\" cellpadding=\"0\" cellspacing=\"0\" style=\"font-family: 'Noto Sans KR','맑은 고딕','Malgun Gothic','Roboto','돋움','Dotum','Helvetica','Apple SD Gothic Neo', sans-serif; margin: 0 auto; padding: 0 32px; width: 656px;\">";
+        content+="<tbody><tr><td style=\"margin: 0; padding: 0;\">\n" +
+                "            <table align=\"center\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"656\" style=\"font-family: 'Noto Sans KR','맑은 고딕','Malgun Gothic','Roboto','돋움','Dotum','Helvetica','Apple SD Gothic Neo', sans-serif;\">\n" +
+                "                <tbody><tr><td cellpadding=\"0\" cellspacing=\"0\" border=\"0\" height=\"1\" style=\"line-height: 1px; margin: 0; min-width: 656px; padding: 0;\">\n" +
+                "                </td></tr>\n" +
+                "                </tbody></table>\n" +
+                "        </td></tr>\n" +
+                "        <tr><td height=\"36\" style=\"margin: 0; padding: 0;\"></td></tr>\n" +
+                "        <tr><td style=\"margin: 0; padding: 0;\">\n" +
+                "            <img src=\"https://contents.lotteon.com/email/email_image/fo/resources/assets/common-bi-lotteon-header-re2.png\" height=\"88\" width=\"656\" usemap=\"#on\" alt=\"롯데온 로고\" loading=\"lazy\">\n" +
+                "            <map name=\"on\">\n" +
+                "                <area target=\"_blank\" shape=\"rect\" coords=\"0,14,200,65\" alt=\"lotte on\" href=\"https://tmsapi.lotteon.com/msg-api/tracking?TV9JRD1NQl85OTk5OV81MTAwNzYyMQ==&amp;U1RZUEU9QVVUTw==&amp;p_id=20240418_4&amp;m_id=MB_99999_51007621&amp;s_tp=AUTO&amp;TElTVF9UQUJMRT1UTVNfQVVUT19TRU5EX0xJU1RfMDE=&amp;UE9TVF9JRD0yMDI0MDQxOF80&amp;U0VSVkVSX0lEPTAy&amp;VEM9MjAyNDA0MjU=&amp;S0lORD1D&amp;Q0lEPTAwMQ==&amp;c_id=001&amp;msg_type=01&amp;msg_type_seq=89&amp;enc_email=e83e79c5ab78faea0e7dde0ecdc53ad627477c9069f209f958965f90a24b36f5&amp;URL=https://www.lotteon.com/display/main/lotteon?ch_no=100005&amp;ch_dtl_no=1033000\">\n" +
+                "            </map>\n" +
+                "        </td></tr>\n" +
+                "        <tr><td height=\"20\" style=\"margin: 0; padding: 0;\"></td></tr>\n" +
+                "        </tbody></table>\n" +
+                "    <table align=\"center\" cellpadding=\"0\" cellspacing=\"0\" style=\"font-family: 'Noto Sans KR','맑은 고딕','Malgun Gothic','Roboto','돋움','Dotum','Helvetica','Apple SD Gothic Neo', sans-serif; margin: 0 auto; padding: 0 32px; width: 656px;\">\n" +
+                "        <tbody><tr><td style=\"margin: 0; padding: 0;\">\n" +
+                "\n" +
+                "\n" +
+                "            <table align=\"center\" cellpadding=\"0\" cellspacing=\"0\" style=\"font-family: 'Noto Sans KR','맑은 고딕','Malgun Gothic','Roboto','돋움','Dotum','Helvetica','Apple SD Gothic Neo', sans-serif; margin: 0 auto; width: 656px;\">\n" +
+                "                <tbody><tr><td height=\"64\" style=\"margin: 0; padding: 0;\"></td></tr>\n" +
+                "                <tr><td align=\"left\" style=\"margin: 0; padding: 0;\">\n" +
+                "                        <span style=\"color: #333; font-family: 'Noto Sans KR', 'Malgun Gothic', '돋움','Dotum','Apple SD Gothic Neo', 'Roboto', sans-serif; font-size: 44px; letter-spacing: -0.5px; line-height: 62px;\">이메일 회원 가입<br>\n" +
+                "                            인증번호 안내드립니다.</span>\n" +
+                "                </td></tr>\n" +
+                "                <tr><td height=\"40\" style=\"margin: 0; padding: 0;\"></td></tr>\n" +
+                "                <tr><td align=\"left\" style=\"margin: 0; padding: 0;\">\n" +
+                "                        <span style=\"color: #757575; font-family: 'Noto Sans KR', 'Malgun Gothic', '돋움','Dotum','Apple SD Gothic Neo', 'Roboto', sans-serif; font-size: 26px; letter-spacing: -0.2px; line-height: 38px; text-align: left;\">전송된 아래 인증번호를<br>\n" +
+                "                        회원가입 페이지에 입력하시면<br>\n" +
+                "                            롯데ON 이메일 인증이 완료됩니다.</span>\n" +
+                "                </td></tr>\n" +
+                "                <tr><td height=\"48\" style=\"border-bottom: 2px solid #eee; margin: 0; padding: 0;\"></td></tr>\n" +
+                "                </tbody></table>\n" +
+                "\n" +
+                "        </td></tr>\n" +
+                "        <tr><td style=\"margin: 0; padding: 0;\">\n" +
+                "\n" +
+                "\n" +
+                "            <table align=\"center\" cellpadding=\"0\" cellspacing=\"0\" style=\"font-family: 'Noto Sans KR','맑은 고딕','Malgun Gothic','Roboto','돋움','Dotum','Helvetica','Apple SD Gothic Neo', sans-serif; margin: 0 auto; width: 656px;\">\n" +
+                "                <tbody><tr><td height=\"96\" style=\"margin: 0; padding: 0;\"></td></tr>\n" +
+                "                <tr><td style=\"color: #333; font-size: 30px; margin: 0; padding: 0; text-align: left;\">\n" +
+                "                    <b style=\"color: #333; font-family: 'Noto Sans KR', 'Malgun Gothic', '돋움','Dotum','Apple SD Gothic Neo', 'Roboto', sans-serif;\">인증 번호 정보</b>\n" +
+                "                </td></tr>\n" +
+                "                <tr><td height=\"20\" style=\"border-bottom: 2px solid #333; margin: 0; padding: 0;\"></td></tr>\n" +
+                "                </tbody></table>\n" +
+                "\n" +
+                "        </td></tr>\n" +
+                "        <tr><td style=\"margin: 0; padding: 0;\">\n" +
+                "\n" +
+                "\n" +
+                "            <table align=\"center\" cellpadding=\"0\" cellspacing=\"0\" style=\"font-family: 'Noto Sans KR','맑은 고딕','Malgun Gothic','Roboto','돋움','Dotum','Helvetica','Apple SD Gothic Neo', sans-serif; margin: 0 auto; width: 656px;\">\n" +
+                "                <tbody><tr><td height=\"32\" colspan=\"2\" style=\"margin: 0; padding: 0;\"></td></tr>\n" +
+                "                <tr><td height=\"16\" colspan=\"2\" style=\"margin: 0; padding: 0;\"></td></tr>\n" +
+                "                <tr><td width=\"252\" height=\"42\" style=\"margin: 0; padding: 0; text-indent: 16px;\"><span style=\"color: #757575; font-family: 'Noto Sans KR', 'Malgun Gothic', '돋움','Dotum','Apple SD Gothic Neo', 'Roboto', sans-serif; font-size: 28px; letter-spacing: -0.3px; line-height: 38px; text-align: left;\">인증번호</span></td><td width=\"404\" height=\"42\" style=\"margin: 0; padding: 0;\"><span style=\"color: #333; font-family: 'Noto Sans KR', 'Malgun Gothic', '돋움','Dotum','Apple SD Gothic Neo', 'Roboto', sans-serif; font-size: 28px; letter-spacing: -0.3px; line-height: 38px; text-align: left;\">"+code+"</span></td></tr>\n" +
+                "                <tr><td colspan=\"2\" height=\"32\" style=\"border-bottom: 2px solid #eee; margin: 0; padding: 0;\"></td></tr>\n" +
+                "                </tbody></table>\n" +
+                "\n" +
+                "        </td></tr>\n" +
+                "        </tbody></table>\n" +
+                "    <table align=\"center\" width=\"360\" cellpadding=\"0\" cellspacing=\"0\" style=\"font-family: 'Noto Sans KR','맑은 고딕','Malgun Gothic','Roboto','돋움','Dotum','Helvetica','Apple SD Gothic Neo', sans-serif;\">\n" +
+                "        <tbody><tr><td height=\"144\" colspan=\"2\" style=\"margin: 0; padding: 0;\"></td></tr>\n" +
+                "        </tbody></table></div>\n" +
+                "</body>\n" +
+                "</html>";
 
         try {
             message.setSubject(title);
