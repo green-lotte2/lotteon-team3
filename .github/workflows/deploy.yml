@@ -30,13 +30,6 @@ jobs:
           distribution: 'oracle'
           java-version: '17'
 
-      # 작업 스크립트에서 환경 파일에 값을 설정
-      - name: Set output variable
-        run:  echo "OUTPUT_VARIABLE=value" >> $GITHUB_ENV
-
-      - name: Use Output variable
-        run: echo "The value is ${{ env.OUTPUT_VARIABLE }}"
-
       # application.properties를 프로젝트에 포함
       - name: add Application.yml
         run: touch ./src/main/resources/application.yml
