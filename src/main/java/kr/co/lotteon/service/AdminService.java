@@ -1,5 +1,6 @@
 package kr.co.lotteon.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.querydsl.core.Tuple;
 import kr.co.lotteon.dto.admin.AdminBoardPageRequestDTO;
 import kr.co.lotteon.dto.admin.AdminBoardPageResponseDTO;
@@ -28,12 +29,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.beans.Transient;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -162,13 +161,44 @@ public class AdminService {
     }
 
     // 관리자 상품 등록 - DB insert
-    public void insertProduct(ProductDTO productDTO, MultipartFile thumb190, MultipartFile thumb230, MultipartFile thumb456, MultipartFile detail860){
+    @Transient
+    public void insertProduct(String optionDTOListJson,
+                              ProductDTO productDTO,
+                              MultipartFile thumb190,
+                              MultipartFile thumb230,
+                              MultipartFile thumb456,
+                              MultipartFile detail860) {
 
         log.info("관리자 상품 등록 service1 productDTO : " + productDTO.toString());
         log.info("관리자 상품 등록 service2 thumb190 : " + thumb190);
         log.info("관리자 상품 등록 service3 thumb230 : " + thumb230);
         log.info("관리자 상품 등록 service4 thumb456 : " + thumb456);
         log.info("관리자 상품 등록 service5 detail860 : " + detail860);
+
+
+        // OptionDTO 리스트로 변환
+        ObjectMapper objectMapper = new ObjectMapper();
+        List<OptionDTO> optionDTOList = null;
+        try {
+            OptionDTO[] optionDTOArray = objectMapper.readValue(optionDTOListJson, OptionDTO[].class);
+            optionDTOList = Arrays.asList(optionDTOArray);
+            log.info(optionDTOList.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // 상품 코드 생성
+        String cate1 = String.valueOf(productDTO.getCate1());
+        String cate2 = String.valueOf(productDTO.getCate2());
+        Random random = new Random();
+
+        int randomNumber = random.nextInt(99999 - 10000 + 1) + 10000;
+        String ranNum = String.valueOf(randomNumber);
+
+        String code = cate1 + cate2 + ranNum;
+        int prodCode = Integer.parseInt(code);
+
+        productDTO.setProdCode(prodCode);
 
         // 이미지 파일 등록 : 해당 디렉토리 없을 경우 자동 생성
         File file = new File(imgUploadPath);
@@ -235,12 +265,37 @@ public class AdminService {
                         .toFile(new File(path, sName860));
                 log.info("리사이징 끝");
 
-                // 상품 정보 DB 저장
-                Product product = modelMapper.map(productDTO, Product.class);
-                log.info("관리자 상품 등록 service8 product : " + product.toString());
-                saveProduct = productRepository.save(product);
-                log.info("관리자 상품 등록 service9 savedProduct : " + saveProduct.toString());
 
+
+
+                if (optionDTOList != null){
+                    for (OptionDTO option : optionDTOList) {
+
+                        // DTO -> Entity : Entity의 영속성 때문에 매번 새로 생성해야함
+                        Product product = modelMapper.map(productDTO, Product.class);
+                        log.info("관리자 상품 등록 service8 product : " + product.toString());
+
+                        // 옵션 정보 Product Entity에 저장
+                        log.info("관리자 상품 등록 service9 " + option);
+                        product.setColor(option.getColor());
+                        product.setColorName(option.getColorName());
+                        product.setOpStock(option.getOpStock());
+                        product.setSize(option.getSize());
+                        log.info("optionDTO List : " + option);
+
+                        // 상품 정보 DB 저장
+                        saveProduct = productRepository.save(product);
+                        log.info("관리자 상품 등록 service10 savedProduct : " + saveProduct.toString());
+                    }
+                    // option 없는 경우
+                }else {
+                    // DTO -> Entity
+                    Product product = modelMapper.map(productDTO, Product.class);
+                    log.info("관리자 상품 등록 service8 product : " + product.toString());
+                    // 상품 정보 DB 저장
+                    saveProduct = productRepository.save(product);
+                    log.info("관리자 상품 등록 service10 savedProduct : " + saveProduct.toString());
+                }
             } catch (IOException e) {
                 log.error(e.getMessage());
             }

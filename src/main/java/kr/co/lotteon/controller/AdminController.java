@@ -1,5 +1,6 @@
 package kr.co.lotteon.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import kr.co.lotteon.dto.admin.AdminBoardPageRequestDTO;
 import kr.co.lotteon.dto.admin.AdminBoardPageResponseDTO;
@@ -11,6 +12,7 @@ import kr.co.lotteon.security.MyUserDetails;
 import kr.co.lotteon.service.AdminService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.objectweb.asm.TypeReference;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,7 +21,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -91,16 +96,18 @@ public class AdminController {
         return adminService.findAllCate2ByCate1(cate1);
     }
     // 관리자 상품 등록 - DB insert
-    @PostMapping("/admin/product/register")
+    @RequestMapping(value = "/admin/product/register", produces = "application/json;charset=UTF-8", method = RequestMethod.POST)
     public String registerProduct(HttpServletRequest httpServletRequest,
                                   ProductDTO productDTO,
-                                  OptionListDTO optionDTOS,
+                                  @RequestParam("optionDTOList") String optionDTOListJson,
                                   @RequestParam("thumb190") MultipartFile thumb190,
                                   @RequestParam("thumb230") MultipartFile thumb230,
                                   @RequestParam("thumb456") MultipartFile thumb456,
                                   @RequestParam("detail860") MultipartFile detail860){
         productDTO.setIp(httpServletRequest.getRemoteAddr());
-        log.info("관리자 상품 등록 Cont 1 " + optionDTOS);
+        log.info("관리자 상품 등록 Cont 1 " + optionDTOListJson);
+
+
         // 현재 로그인 중인 사용자 정보 불러오기
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -117,7 +124,8 @@ public class AdminController {
         }
         log.info("관리자 상품 등록 Cont " + productDTO);
 
-        adminService.insertProduct(productDTO, thumb190, thumb230, thumb456, detail860);
+        adminService.insertProduct(optionDTOListJson, productDTO, thumb190, thumb230, thumb456, detail860);
+
 
         return "redirect:/admin/product/list";
     }
