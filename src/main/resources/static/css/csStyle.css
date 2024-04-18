@@ -105,6 +105,10 @@ header > .logo a {
   font-size: 56px;
   color: #ef2a23;
 }
+#wrapper > header > div.top > div > p > a:nth-child(1) {
+  color: #ef2a23;
+  font-weight: bolder;
+}
 
 #cs > .main > section {
   width: 1200px;
@@ -134,7 +138,7 @@ header > .logo a {
   width: 18px;
   height: 18px;
   content: "";
-  background: url("../cs/images/cs_sprites.png") no-repeat;
+  background: url("../images/cs_sprites.png") no-repeat;
   background-position: -230px -276px;
   background-size: 750px auto;
   vertical-align: top;
@@ -147,6 +151,9 @@ header > .logo a {
   margin-top: 12px;
 }
 #cs > .main > section > ul .title {
+  font-size: 18px;
+}
+#cs > div > section.notice > ul > li > a > span {
   font-size: 18px;
 }
 
@@ -179,7 +186,7 @@ header > .logo a {
   height: 90px;
   box-sizing: border-box;
   text-align: center;
-  background-image: url("../cs/images/cs_sprites.png");
+  background-image: url("../images/cs_sprites.png");
   background-repeat: no-repeat;
   background-size: 750px auto;
 }
@@ -241,6 +248,15 @@ header > .logo a {
   margin-top: 10px;
   color: #0078ff;
 }
+#cs > div > section.qna > ul > li > a > span {
+  font-size: 18px;
+}
+.blue {
+  color: blue;
+}
+.grey {
+  color: grey;
+}
 
 #cs > .main > .tel {
   overflow: hidden;
@@ -291,7 +307,7 @@ header > .logo a {
 /* 푸터영역 */
 footer {
   width: 100%;
-  height: 192px;  
+  height: 192px;
   background: #f8f8f8;
   border-top: 1px solid #e9e9e9;
   box-sizing: border-box;
@@ -347,7 +363,7 @@ footer p > strong {
 .btnWrite {
   float: right;
   padding: 10px 20px;
-  text-align: center;        
+  text-align: center;
   margin-top: -48px;
   background-color: #067dfd;
   border: 1px solid #0063ce;
@@ -356,12 +372,25 @@ footer p > strong {
   color: #fff;
   box-sizing: border-box;
 }
+.btnCancel {
+  display: inline-block;
+  width: 200px;
+  height: 60px;
+  margin: 40px auto 0;
+  border: 1px solid #ccc;
+  border-radius: 34px;
+  font-size: 16px;
+  color: #000;
+  line-height: 58px;
+  text-align: center;
+  box-sizing: border-box;
+}
 
 .btnList {
   display: inline-block;
   width: 200px;
   height: 60px;
-  margin: 40px auto 0;
+  margin: 40px 400px;
   border: 1px solid #ccc;
   border-radius: 34px;
   font-size: 16px;
@@ -380,7 +409,7 @@ footer p > strong {
   height: 60px;
   margin: 40px auto 0;
   background-color: #067dfd;
-  border: 1px solid #0063ce;  
+  border: 1px solid #0063ce;
   border-radius: 34px;
   font-size: 16px;
   color: #fff;
@@ -388,9 +417,26 @@ footer p > strong {
   text-align: center;
   box-sizing: border-box;
 }
+.btnWriteCancel {
+  display: inline-block;
+  width: 200px;
+  height: 60px;
+  margin: 40px auto 0;
+  border: 1px solid #ccc;
+  border-radius: 34px;
+  font-size: 16px;
+  color: #000;
+  line-height: 58px;
+  text-align: center;
+  box-sizing: border-box;
+}
 .btnSubmit:hover {
   background-color: #0954f6;
 }
+.btnWriteCancel:hover {
+  background-color: #e4e4e4;
+}
+
 
 
 /* 고객센터 sub 공통 */
@@ -519,29 +565,29 @@ footer p > strong {
   text-align: center;
   margin-top: 26px;
 }
-#cs > .notice > .list > article > .page > a {
+#cs > .notice > .list > article > .page > span > a {
   display: inline-block;
   width: 34px;
-  height: 34px;        
+  height: 34px;
   box-sizing: border-box;
   text-align: center;
   line-height: 34px;
   font-size: 13px;
-  font-weight: bold;        
+  font-weight: bold;
   vertical-align: bottom;
 }
-#cs > .notice > .list > article > .page > .prev {
+#cs > .notice > .list > article > .page > span >.prev {
   font-size: 0;
-  background-image: url('../cs/images/cs_sprites.png');
+  background-image: url('../images/cs_sprites.png');
   background-position: -706px -652px;
 }
-#cs > .notice > .list > article > .page > .next {
+#cs > .notice > .list > article > .page > span > .next {
   font-size: 0;
-  background-image: url('../cs/images/cs_sprites.png');
+  background-image: url('../images/cs_sprites.png');
   background-position: -628px -652px;
 }
-#cs > .notice > .list > article > .page > .num {}
-#cs > .notice > .list > article > .page > .on {
+#cs > .notice > .list > article > .page > span > .num {}
+#cs > .notice > .list > article > .page > span > .on {
   background: #006cff;
   border-radius: 17px;
   color: #fff;
@@ -564,14 +610,14 @@ footer p > strong {
   font-weight: bold;
 }
 
-#cs > .notice > .view > article > nav > .date {        
+#cs > .notice > .view > article > nav > .date {
   font-size: 14px;
-  color: #777;        
+  color: #777;
 }
 
 #cs > .notice > .view > article > .content {
   width: 100%;
-  height: 100%;        
+  height: 100%;
   border-bottom: 1px solid #e9e9e9;
   padding: 26px;
   box-sizing: border-box;
@@ -683,7 +729,7 @@ footer p > strong {
   width: 100%;
   height: auto;
   border-bottom: 1px solid #ccc;
-}    
+}
 
 #cs > .faq > .list > article > div > ul > li:nth-child(n+4) {
   display: none;
@@ -694,8 +740,8 @@ footer p > strong {
   width: 100%;
   height: 100%;
   padding: 16px;
-  font-size: 16px;       
-  border-radius: 6px; 
+  font-size: 16px;
+  border-radius: 6px;
   box-sizing: border-box;
 }
 
@@ -716,7 +762,7 @@ footer p > strong {
   border-bottom: none;
   text-align: center;
 }
-            
+
 /* faq - 글보기 */
 #cs > .faq > .view {}
 #cs > .faq > .view > article {}
@@ -742,14 +788,14 @@ footer p > strong {
   margin-right: 6px;
 }
 
-#cs > .faq > .view > article > nav > .date {        
+#cs > .faq > .view > article > nav > .date {
   font-size: 14px;
-  color: #777;        
+  color: #777;
 }
 
 #cs > .faq > .view > article > .content {
   width: 100%;
-  height: 100%;        
+  height: 100%;
   border-bottom: 1px solid #e9e9e9;
   padding: 26px;
   box-sizing: border-box;
@@ -856,6 +902,11 @@ footer p > strong {
   padding: 16px;
   border-bottom: 1px solid #ccc;
 }
+/* html 에서 span 추가 -> 추가 css  */
+#cs > div > section > article > table > tbody > tr > td> a > span {
+  text-align: center;
+  font-size: 16px;
+}
 #cs > .qna > .list > article > table td:last-child {
   text-align: center;
   font-size: 14px;
@@ -868,29 +919,29 @@ footer p > strong {
   text-align: center;
   margin-top: 26px;
 }
-#cs > .qna > .list > article > .page > a {
+#cs > .qna > .list > article > .page > span > a {
   display: inline-block;
   width: 34px;
-  height: 34px;        
+  height: 34px;
   box-sizing: border-box;
   text-align: center;
   line-height: 34px;
   font-size: 13px;
-  font-weight: bold;        
+  font-weight: bold;
   vertical-align: bottom;
 }
-#cs > .qna > .list > article > .page > .prev {
+#cs > .qna > .list > article > .page  > span > .prev {
   font-size: 0;
-  background-image: url('../cs/images/cs_sprites.png');
+  background-image: url('../images/cs_sprites.png');
   background-position: -706px -652px;
 }
-#cs > .qna > .list > article > .page > .next {
+#cs > .qna > .list > article > .page > span > .next {
   font-size: 0;
-  background-image: url('../cs/images/cs_sprites.png');
+  background-image: url('../images/cs_sprites.png');
   background-position: -628px -652px;
 }
-#cs > .qna > .list > article > .page > .num {}
-#cs > .qna > .list > article > .page > .on {
+#cs > .qna > .list > article > .page > span > .num {}
+#cs > .qna > .list > article > .page > span > .on {
   background: #006cff;
   border-radius: 17px;
   color: #fff;
@@ -907,21 +958,31 @@ footer p > strong {
   border-bottom: 1px solid #e9e9e9;
   box-sizing: border-box;
 }
+#cs > div > section > article > nav > span > span {
+  margin-bottom: 6px;
+  font-size: 32px;
+  font-weight: bold;
+}
 #cs > .qna > .view > article > nav > .title {
   margin-bottom: 6px;
   font-size: 32px;
   font-weight: bold;
 }
+#cs > div > section > article > nav > h2 > span {
+  margin-bottom: 6px;
+  font-size: 32px;
+  font-weight: bold;
+}
 
-#cs > .qna > .view > article > nav > .date {        
+#cs > .qna > .view > article > nav > .date {
   font-size: 14px;
-  color: #777;        
+  color: #777;
 }
 
 #cs > .qna > .view > article > .content {
   width: 100%;
-  height: 100%;        
-  border-bottom: 1px solid #e9e9e9;
+  height: 100%;
+  border-bottom: 3px solid #e9e9e9;
   padding: 26px;
   box-sizing: border-box;
 }
@@ -929,6 +990,236 @@ footer p > strong {
 #cs > .qna > .view > article > .content * {
   font-size: 16px;
   line-height: 32px;
+}
+/* QnA view */
+#cs > div > section > article > div:nth-child(4) {
+  position: relative;
+
+}
+#cs > div > section > article > div:nth-child(4) > .btnQnAList{
+  float: left;
+  display: block;
+  margin-top: 40px;
+  margin-bottom: 30px;
+  width: 120px;
+  height: 60px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  border-radius: 0;
+  color: #000;
+  line-height: 55px;
+  text-align: center;
+  box-sizing: border-box;
+}
+#cs > div > section > article > div:nth-child(4) > .btnModify{
+  float: right;
+  display: block;
+  margin-top: 40px;
+  margin-right: 5px;
+  width: 120px;
+  height: 60px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  border-radius: 0;
+  color: #000;
+  line-height: 55px;
+  text-align: center;
+  box-sizing: border-box;
+}
+#cs > div > section > article > div:nth-child(4) > .btnDelete{
+  float: right;
+  display: block;
+  margin-top: 40px;
+  margin-bottom: 30px;
+  width: 120px;
+  height: 60px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  border-radius: 0;
+  color: #000;
+  line-height: 55px;
+  text-align: center;
+  box-sizing: border-box;
+}
+.btnModify:hover {
+  font-weight: bolder;
+  background-color: #f7f7f7;
+}
+.btnDelete:hover {
+  font-weight: bolder;
+  background-color: #f7f7f7;
+}
+#thumb {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  margin-top: 5px;
+  border: 1px solid #e4e4e4;
+}
+#cs > div > section > article > nav > div >{
+  text-align: center;
+}
+#cs > div > section > article > nav > div > a{
+  font-size: 12px;
+  font-weight: bold;
+  color: blue;
+
+}
+
+/* QnA modify */
+#cs > .qna > .modify {}
+#cs > .qna > .modify > article {}
+#cs > .qna > .modify > article > form > nav {
+  width: 100%;
+  height: auto;
+  padding: 26px;
+  border-top: 2px solid #111;
+  border-bottom: 1px solid #e9e9e9;
+  box-sizing: border-box;
+}
+#cs > div > section > article >form >  nav > span > span {
+  margin-bottom: 6px;
+  font-size: 32px;
+  font-weight: bold;
+}
+#cs > .qna > .modify > article >form >  nav > .title {
+  margin-bottom: 6px;
+  font-size: 32px;
+  font-weight: bold;
+}
+#cs > div > section > article >form >  nav > h2 > span {
+  margin-bottom: 6px;
+  font-size: 32px;
+  font-weight: bold;
+}
+
+#cs > .qna > .modify > article >form >  nav > .date {
+  font-size: 14px;
+  color: #777;
+}
+
+#cs > .qna > .modify > article > form .content {
+  width: 100%;
+  height: 100%;
+  border-bottom: 3px solid #e9e9e9;
+  padding: 26px;
+  box-sizing: border-box;
+}
+
+#cs > .qna > .modify > article > form > .content * {
+  font-size: 16px;
+  line-height: 32px;
+}
+#cs > div > section > article > form > div.content > textarea {
+  width: 100%;
+  height: 360px;
+  resize: none;
+  font-size: 16px;
+  padding: 10px;
+  box-sizing: border-box;
+  outline: none;
+  border: 2px solid #e4e4e4;
+}
+#cs > div > section > article >form >  div.content > textarea:hover {
+  width: 100%;
+  height: 360px;
+  resize: none;
+  font-size: 16px;
+  padding: 10px;
+  box-sizing: border-box;
+  outline: none;
+  border: 2px solid #ef2a23;
+}
+#cs > div > section > article > form > div:nth-child(3) {
+  position: relative;
+}
+
+#cs > div > section > article >form >  div:nth-child(3) > .btnCancel{
+  float: right;
+  display: block;
+  margin-top: 40px;
+  margin-bottom: 30px;
+  margin-right: 5px;
+  width: 120px;
+  height: 60px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  border-radius: 0;
+  color: #000;
+  line-height: 55px;
+  text-align: center;
+  box-sizing: border-box;
+}
+#cs > div > section > article > form > div:nth-child(3) > .btnModiDone{
+  float: right;
+  display: block;
+  margin-top: 40px;
+  margin-right: 5px;
+  width: 120px;
+  height: 60px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  border-radius: 0;
+  color: #000;
+  line-height: 55px;
+  text-align: center;
+  box-sizing: border-box;
+}
+.btnQnAList:hover {
+  font-weight: bolder;
+  background-color: #f7f7f7;
+}
+.btnCancel:hover {
+  font-weight: bolder;
+  background-color: #f7f7f7;
+}
+.btnModiDone:hover {
+  font-weight: bolder;
+  background-color: #f7f7f7;
+}
+
+
+
+#cs > div > section > article > section > article > div > h4 {
+  font-size: 16px;
+  font-weight: bold;
+  margin-top: 10px;
+
+}
+#cs > div > section > article > section > article > div > h4 > span {
+  font-size: 16px;
+  font-weight: bold;
+  margin-top: 10px;
+}
+#cs > div > section > article > section > article > div > textarea {
+  width: 100%;
+  height: 100px;
+  padding: 2px 21px;
+  box-sizing: border-box;
+  resize: none;
+  border: 0;
+  color: #000;
+  margin-top: 15px;
+  padding-top: 15px;
+  font-size:17px;
+  border-bottom: 3px solid #e9e9e9;
+  background-color: rgba(158, 158, 158, 0.1);
+}
+.empty {
+  width: 100%;
+  height: 100px;
+  padding: 2px 21px;
+  box-sizing: border-box;
+  resize: none;
+  border: 0;
+  color: grey;
+  margin-top: 15px;
+  padding-top: 40px;
+  font-size:17px;
+  font-weight: bold;
+  text-align: center;
+  border-bottom: 3px solid #e9e9e9;
+  background-color: rgba(158, 158, 158, 0.1);
 }
 
 /* qna - 글쓰기 */
@@ -945,7 +1236,7 @@ footer p > strong {
 #cs > .qna > .write > article table td {
   padding: 16px;
   border-bottom: 1px solid #ccc;
-  font-size: 16px;        
+  font-size: 16px;
 }
 
 #cs > .qna > .write > article table td:first-child {
@@ -979,3 +1270,20 @@ footer p > strong {
   padding: 10px;
   box-sizing: border-box;
 }
+#write > article > form > table > tbody > tr:nth-child(4) > td.form-group > label {
+  padding: 16px;
+  font-size: 16px;
+}
+#write > article > form > table > tbody > tr:nth-child(4) > td:nth-child(2) > input[type=file]{
+  margin-top: 10px;
+}
+/*추가*/
+/*버튼 위치*/
+#write > article > form > div {
+  margin-left: 500px;
+}
+
+.name {
+  font-weight: bolder;
+}
+

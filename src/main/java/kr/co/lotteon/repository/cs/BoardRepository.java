@@ -9,10 +9,14 @@ import org.springframework.data.jpa.repository.Query;
 
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface BoardRepository extends JpaRepository<BoardEntity, Integer>, BoardRepositoryCustom {
 
     // 리스트 출력시(그룹, 카테고리로 구분)
     @Query("SELECT b FROM BoardEntity b WHERE b.group = :group AND (b.cate= :cate OR :cate = 'null')")
     public Page<BoardEntity> findByGroupAndCate(String group, String cate, Pageable pageable);
+
+    public List<BoardEntity> findTop10ByTypeNo(int typeNo);
 }

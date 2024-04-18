@@ -1,9 +1,12 @@
 package kr.co.lotteon.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import kr.co.lotteon.dto.cs.BoardDTO;
+import kr.co.lotteon.dto.cs.BoardTypeDTO;
 import kr.co.lotteon.dto.cs.CsPageRequestDTO;
 import kr.co.lotteon.dto.cs.CsPageResponseDTO;
 
+import kr.co.lotteon.entity.cs.BoardCateEntity;
 import kr.co.lotteon.service.cs.CsCateService;
 import kr.co.lotteon.service.cs.CsService;
 import lombok.RequiredArgsConstructor;
@@ -12,12 +15,16 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Slf4j
 @RequiredArgsConstructor
 @Controller
 public class CsController {
 
     private final CsService csService;
+    private final CsCateService csCateService;
 
     // cs index 페이지 매핑
     @GetMapping(value = {"/cs","/cs/index"})
@@ -25,13 +32,8 @@ public class CsController {
         return "/cs/index";
     }
 
-    @GetMapping("/cs/qna/list")
+    @GetMapping(value = "/cs/qna/list")
     public String qnaList(Model model, CsPageRequestDTO csPageRequestDTO) {
-        // cate가 null이거나 빈 문자열인 경우 "member" 카테고리로 설정합니다.
-        if (csPageRequestDTO.getCate() == null || csPageRequestDTO.getCate().isEmpty()) {
-            csPageRequestDTO.setCate("member");
-        }
-
         CsPageResponseDTO csPageResponseDTO = csService.findByCate(csPageRequestDTO);
 
         model.addAttribute(csPageResponseDTO);
@@ -52,9 +54,14 @@ public class CsController {
     }
     // QnA 쓰기 페이지 매핑
     @GetMapping("/cs/qna/write")
-    public String qnaWrite(){
+    public String qnaWrite(HttpServletRequest request, Model model, String cate) {
+
+        List<BoardCateEntity> cates = csCateService.getCate();
+        model.addAttribute("cates", cates);
+
         return "/cs/qna/write";
     }
+
     // 공지사항 목록 매핑
     @GetMapping("/cs/notice/list")
     public String noticeList(Model model, CsPageRequestDTO csPageRequestDTO) {
@@ -80,9 +87,31 @@ public class CsController {
     }
     // FAQ list 페이지 매핑
     @GetMapping("/cs/faq/list")
-    public String faqList(){
+    public String faqList(Model model, String cate, String group) {
+        List<BoardDTO> dtoList = csService.findByCateForFaq(cate);
+        List<BoardTypeDTO> boardTypeDTOs = csCateService.findByCateTypeDTOS(cate);
+        for (BoardTypeDTO boardTypeDTO : boardTypeDTOs) {
+            List<BoardDTO> boardDTOS = new ArrayList<>();
+            int i = 0;
+            for (BoardDTO boardDTO : dtoList) {
+                if (boardDTO.getTypeNo() == boardTypeDTO.getTypeNo()) {
+                    boardDTO.setIndex(i);
+                    i++;
+                    boardDTOS.add(boardDTO);
+                }
+            }
+            boardTypeDTO.setBoards(boardDTOS);
+        }
+        log.info("dtoList size : " + dtoList.size());
+
+        model.addAttribute("dtoList", dtoList);
+        model.addAttribute("types", boardTypeDTOs);
+        model.addAttribute("cate", cate);
+        model.addAttribute("group", group);
+
         return "/cs/faq/list";
     }
+
     // FAQ 보기 페이지 매핑
     @GetMapping("/cs/faq/view")
     public String faqView(){
