@@ -18,7 +18,7 @@
                 <!-- 상품 전체 정보 내용 -->                
                 <article class="info">
                     <div class="image">
-                        <img th:src="@{|/product/${ProductDTO.thumb3}|}" alt="상품이미지"/>
+                        <img th:src="@{|/prodImg/${productDTO.thumb3}|}" alt="상품이미지"/>
                     </div>
                     <div class="summary">
                         <nav>
@@ -39,9 +39,9 @@
                                 <ins>27,000</ins>
                             </div>
                         </nav>
-                        <nav>
+                        <nav th:if="${productDTO.delivery} == 0">
                             <span class="delivery">무료배송</span>
-                            <span class="arrival">모레(금) 7/8 도착예정</span>
+                            <span class="arrival">모레(금) [[${productDTO.rdate}]] 도착예정</span>
                             <span class="desc">본 상품은 국내배송만 가능합니다.</span>
                         </nav>
                         <nav>
@@ -51,7 +51,7 @@
                         <nav>
                             <span class="origin">원산지-상세설명 참조</span>
                         </nav>
-                        <img src="../images/vip_plcc_banner.png" alt="100원만 결제해도 1만원 적립!" class="banner" />
+                        <img th:src="@{/images/vip_plcc_banner.png}" alt="100원만 결제해도 1만원 적립!" class="banner" />
                         
                         <div class="count">
                             <button class="decrease">-</button>
@@ -77,9 +77,7 @@
                         <h1>상품정보</h1>
                     </nav>
                     <!-- 상품상세페이지 이미지 -->
-                    <img src="https://via.placeholder.com/860x460" alt="상세페이지1">
-                    <img src="https://via.placeholder.com/860x460" alt="상세페이지2">
-                    <img src="https://via.placeholder.com/860x460" alt="상세페이지3">
+                    <img th:src="@{|/prodImg/${productDTO.detail}|}" alt="상세페이지1">
                 </article>
 
                 <!-- 상품 정보 제공 고시 내용 -->
@@ -91,37 +89,37 @@
                     <table border="0">
                         <tr>
                             <td>상품번호</td>
-                            <td>10110125435</td>
+                            <td>[[${productDTO.prodNo}]]</td>
                         </tr>
                         <tr>
                             <td>상품상태</td>
-                            <td>새상품</td>
+                            <td>[[${productDTO.status}]]</td>
                         </tr>
                         <tr>
                             <td>부가세 면세여부</td>
-                            <td>과세상품</td>
+                            <td>[[${productDTO.duty}]]</td>
                         </tr>
                         <tr>
                             <td>영수증발행</td>
-                            <td>발행가능 - 신용카드 전표, 온라인 현금영수증</td>
+                            <td>[[${productDTO.receipt}]]</td>
                         </tr>
                         <tr>
                             <td>사업자구분</td>
-                            <td>사업자 판매자</td>
+                            <td>[[${productDTO.bizType}]]</td>
                         </tr>
                         <tr>
                             <td>브랜드</td>
-                            <td>블루포스</td>
+                            <td>[[${productDTO.company}]]</td>
                         </tr>
                         <tr>
                             <td>원산지</td>
-                            <td>국내생산</td>
+                            <td>[[${productDTO.origin}]]</td>
                         </tr>
                     </table>
                     <table border="0">
                         <tr>
                             <td>제품소재</td>
-                            <td>상세정보 직접입력</td>
+                            <td>[[${productDTO.descript}]]</td>
                         </tr>
                         <tr>
                             <td>색상</td>
@@ -265,13 +263,13 @@
         </main>
         <footer>
             <ul>
-              <li><a href="#">회사소개</a></li>
-              <li><a href="#">서비스이용약관</a></li>
-              <li><a href="#">개인정보처리방침</a></li>
-              <li><a href="#">전자금융거래약관</a></li>
+              <li><a th:href="@{#}">회사소개</a></li>
+              <li><a th:href="@{#}">서비스이용약관</a></li>
+              <li><a th:href="@{#}">개인정보처리방침</a></li>
+              <li><a th:href="@{#}">전자금융거래약관</a></li>
             </ul>
             <div>
-              <p><img src="../images/footer_logo.png" alt="로고" /></p>
+              <p><img th:src="@{/images/footer_logo.png}" alt="로고" /></p>
               <p>
                 <strong>(주)롯데ON</strong><br />
                 서울특별시 송파구 올림픽로 300 롯데월드타워 26층 (역삼동 강남파이낸스센터)<br />

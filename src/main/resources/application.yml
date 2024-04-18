@@ -105,15 +105,23 @@ file:
 
 img:
   upload:
-    path: src/main/resources/static/product
+    path: prodImg/
+
+# 배포 시 정적 리소스의 경로 설정
+myServer:
+  static-resources-path: /home/lotteon/prodImg/
+
+local:
+  static-resources-path: prodImg/
+
 
 # 배포 할 때 파일 업로드 설정
-##file:
-##  upload:
-##    path: /home/lotteon/uploads
-##img:
-##  upload:
-##    path: /home/lotteon/product
+#file:
+#  upload:
+#    path: file:/home/lotteon/uploads
+#img:
+#  upload:
+#    path: file:/home/lotteon/product
 
 logging:
   level:
