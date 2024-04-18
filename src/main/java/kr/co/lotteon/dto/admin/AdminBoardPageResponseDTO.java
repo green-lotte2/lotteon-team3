@@ -1,5 +1,7 @@
-package kr.co.lotteon.dto.product;
+package kr.co.lotteon.dto.admin;
 
+import kr.co.lotteon.dto.cs.BoardDTO;
+import kr.co.lotteon.dto.product.ProductDTO;
 import lombok.*;
 
 import java.util.List;
@@ -9,12 +11,13 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class AdminPageResponseDTO {
-    private List<ProductDTO> dtoList;
+public class AdminBoardPageResponseDTO {
+    private List<BoardDTO> dtoList;
     private int pg;
     private int size;
     private int total;
     private int startNo;
+    private String group;
     private String type;
     private String keyword;
 
@@ -22,14 +25,15 @@ public class AdminPageResponseDTO {
     private boolean prev, next;
 
     @Builder
-    public AdminPageResponseDTO(AdminPageRequestDTO adminPageRequestDTO, List<ProductDTO> dtoList, int total){
+    public AdminBoardPageResponseDTO(AdminBoardPageRequestDTO adminBoardPageRequestDTO, List<BoardDTO> dtoList, int total){
 
-        this.pg = adminPageRequestDTO.getPg();
-        this.size = adminPageRequestDTO.getSize();
+        this.pg = adminBoardPageRequestDTO.getPg();
+        this.size = adminBoardPageRequestDTO.getSize();
         this.total = total;
         this.dtoList = dtoList;
-        this.type = adminPageRequestDTO.getType();
-        this.keyword = adminPageRequestDTO.getKeyword();
+        this.group = adminBoardPageRequestDTO.getGroup();
+        this.type = adminBoardPageRequestDTO.getType();
+        this.keyword = adminBoardPageRequestDTO.getKeyword();
 
         this.startNo = total - ((pg - 1) * size);
         this.end = (int) (Math.ceil(this.pg/10.0))*10;

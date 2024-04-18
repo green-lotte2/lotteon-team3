@@ -2,6 +2,18 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{/layout/adminLayout}">
 <section id="cs" layout:fragment = "content">
+    <script>
+        async function deleteBoard(bno){
+            console.log("bno : " + bno);
+            if(confirm('게시글을 삭제 하시겠습니까?')){
+                const data = await fetchDelete(`/lotteon/admin/cs/delete/${bno}`);
+                if(data != null){
+                    alert('삭제 완료되었습니다.');
+                    location.reload();
+                }
+            }
+        }
+    </script>
             <article id="adminCsList">
                 <nav>
                     <span th:switch="${group}">
@@ -12,34 +24,37 @@
                 </nav>
                 <!-- 게시글 목록 -->
                 <table>
-                    <tr th:each="article : ${csPageResponseDTO.dtoList}" >
+                    <tr th:each="article : ${adminBoardPageResponseDTO.dtoList}" >
                         <td><span style="font-size: 16px;">[ [[${article.typeName}]] ]</span></td>
-                        <td><a th:href="@{/admin/cs/view(group=${csPageResponseDTO.group},cate=${csPageResponseDTO.cate},bno=${article.bno})}" > [[${article.title}]]</a></td>
+                        <td>
+                            <a th:if="${adminBoardPageResponseDTO.keyword == null}" th:href="@{/admin/cs/view(group=${adminBoardPageResponseDTO.group}, bno=${article.bno}, pg=${adminBoardPageResponseDTO.pg})}" > [[${article.title}]]</a>
+                            <a th:if="${adminBoardPageResponseDTO.keyword != null}" th:href="@{/admin/cs/view(group=${adminBoardPageResponseDTO.group}, type=${adminBoardPageResponseDTO.type}, keyword=${adminBoardPageResponseDTO.keyword},bno=${article.bno}, pg=${adminBoardPageResponseDTO.pg})}" > [[${article.title}]]</a>
+                        </td>
                         <td th:text="${#temporals.format(article.rdate, 'yyyy-MM-dd')}"></td>
                         <td>
-                            <button id="btnDelete">삭제</button>
+                            <button id="btnDelete" onclick="deleteBoard(this.value)" th:value="${article.bno}">삭제</button>
                         </td>
                     </tr>
                 </table>
                 <!-- 페이지 -->
                 <div class="paging">
                     <span class="prev">
-                        <a th:if="${csPageResponseDTO.cate == null}" class="page-link" th:href="@{/admin/cs/list(pg=${csPageResponseDTO.start - 1})}">&#60;</a>
-                        <a th:if="${csPageResponseDTO.cate != null}" class="page-link" th:href="@{/admin/cs/list(pg=${csPageResponseDTO.start - 1}, cate=${csPageResponseDTO.cate})}">&#60;</a>
+                        <a th:if="${adminBoardPageResponseDTO.keyword == null}" class="page-link" th:href="@{/admin/cs/list(pg=${adminBoardPageResponseDTO.start - 1}, group=${adminBoardPageResponseDTO.group})}">&#60;</a>
+                        <a th:if="${adminBoardPageResponseDTO.keyword != null}" class="page-link" th:href="@{/admin/cs/list(pg=${adminBoardPageResponseDTO.start - 1}, group=${adminBoardPageResponseDTO.group}, type=${adminBoardPageResponseDTO.type}, keyword=${adminBoardPageResponseDTO.keyword})}">&#60;</a>
                     </span>
                     <span class="num"> <!-- 해당 페이지 class on-->
-                            <th:block th:each="num:${#numbers.sequence(csPageResponseDTO.start, csPageResponseDTO.end)}">
-                                <a  th:if="${csPageResponseDTO.cate == null}" th:classappend="${csPageResponseDTO.pg == num} ? 'page-link on' : 'page-link'" th:href="@{/admin/cs/list(pg=${num})}">
+                            <th:block th:each="num:${#numbers.sequence(adminBoardPageResponseDTO.start, adminBoardPageResponseDTO.end)}">
+                                <a  th:if="${adminBoardPageResponseDTO.keyword == null}" th:classappend="${adminBoardPageResponseDTO.pg == num} ? 'page-link on' : 'page-link'" th:href="@{/admin/cs/list(pg=${num}, group=${adminBoardPageResponseDTO.group})}">
                                     [[${num}]]
                                 </a>
-                                <a  th:if="${csPageResponseDTO.cate != null}" th:classappend="${csPageResponseDTO.pg == num} ? 'page-link on' : 'page-link'" th:href="@{/admin/cs/list(pg=${num})}">
+                                <a  th:if="${adminBoardPageResponseDTO.keyword != null}" th:classappend="${adminBoardPageResponseDTO.pg == num} ? 'page-link on' : 'page-link'" th:href="@{/admin/cs/list(pg=${num}, group=${adminBoardPageResponseDTO.group})}">
                                     [[${num}]]
                                 </a>
                             </th:block>
                         </span>
                     <span class="next">
-                            <a th:if="${csPageResponseDTO.cate == null}" class="page-link" th:href="@{/admin/cs/list(pg=${csPageResponseDTO.end + 1})}" >&#62;</a>
-                            <a th:if="${csPageResponseDTO.cate != null}" class="page-link" th:href="@{/admin/cs/list(pg=${csPageResponseDTO.end + 1}, cate=${csPageResponseDTO.cate})}">&#62;</a>
+                            <a th:if="${adminBoardPageResponseDTO.keyword == null}" class="page-link" th:href="@{/admin/cs/list(pg=${adminBoardPageResponseDTO.end + 1}, group=${adminBoardPageResponseDTO.group})}" >&#62;</a>
+                            <a th:if="${adminBoardPageResponseDTO.keyword != null}" class="page-link" th:href="@{/admin/cs/list(pg=${adminBoardPageResponseDTO.end + 1}, group=${adminBoardPageResponseDTO.group}, type=${adminBoardPageResponseDTO.type}, keyword=${adminBoardPageResponseDTO.keyword})}">&#62;</a>
                     </span>
                 </div>
             </article>

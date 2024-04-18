@@ -23,8 +23,9 @@ public class BoardDTO {
     private String content;         // 게시글 내용
 
     private int file;               // 첨부된 파일 개수
+    private int hit;                // 조회수
     private String status;          // 게시글의 상태(게시, 비공개, 삭제)
-    private String reply;           // 게시글의 답변
+    private int reply;              // 게시글의 답변 개수
 
     private LocalDateTime rdate;    // 작성 날짜
 
