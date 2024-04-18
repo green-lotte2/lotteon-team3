@@ -94,12 +94,13 @@ public class AdminController {
     @PostMapping("/admin/product/register")
     public String registerProduct(HttpServletRequest httpServletRequest,
                                   ProductDTO productDTO,
+                                  OptionListDTO optionDTOS,
                                   @RequestParam("thumb190") MultipartFile thumb190,
                                   @RequestParam("thumb230") MultipartFile thumb230,
                                   @RequestParam("thumb456") MultipartFile thumb456,
                                   @RequestParam("detail860") MultipartFile detail860){
         productDTO.setIp(httpServletRequest.getRemoteAddr());
-
+        log.info("관리자 상품 등록 Cont 1 " + optionDTOS);
         // 현재 로그인 중인 사용자 정보 불러오기
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 

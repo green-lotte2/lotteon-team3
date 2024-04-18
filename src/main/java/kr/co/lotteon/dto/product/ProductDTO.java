@@ -4,6 +4,7 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -25,6 +26,7 @@ public class ProductDTO {
     private int sold;
     private int stock;
     private int amount;
+    private int prodCode;
     private String bizType;
     private String company;
     private String deleteYn;
@@ -40,5 +42,8 @@ public class ProductDTO {
     private String thumb1;
     private String thumb2;
     private String thumb3;
+
+    List<OptionDTO> optionList;
+
     private LocalDateTime rdate;
 }
