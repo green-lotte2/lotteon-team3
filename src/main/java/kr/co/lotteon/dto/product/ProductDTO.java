@@ -27,6 +27,9 @@ public class ProductDTO {
     private int stock;
     private int amount;
     private int prodCode;
+    private String colorName;
+    private String color;
+
     private String bizType;
     private String company;
     private String deleteYn;
