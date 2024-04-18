@@ -17,7 +17,7 @@ env:
 # workflow는 한개 이상의 job을 가지며, 각 job은 여러 step에 따라 단계를 나눔
 jobs:
   build:
-    name: lotteon
+    name: CI/CD
     # 해당 jobs에서 아래의 steps들이 어떠한 환경에서 실행될 것인지를 지정
     runs-on: ubuntu-latest
 
@@ -29,7 +29,7 @@ jobs:
         with:
           distribution: 'oracle'
           java-version: '17'
-      
+
       # 작업 스크립트에서 환경 파일에 값을 설정
       - name: Set output variable
         run:  echo "OUTPUT_VARIABLE=value" >> $GITHUB_ENV
