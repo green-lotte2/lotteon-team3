@@ -8,7 +8,7 @@ on:
 
 # 해당 yml 내에서 사용할 key-value 속성
 env:
-  PROJECT_NAME: lotteon-team3/lotteon
+  PROJECT_NAME: lotteon-team3
   AWS_REGION: ap-northeast-2
   S3_BUCKET_NAME: sun-s3-bucket-github-actions
   CODE_DEPLOY_APPLICATION_NAME: sun-codedeploy-app 
@@ -17,7 +17,7 @@ env:
 # workflow는 한개 이상의 job을 가지며, 각 job은 여러 step에 따라 단계를 나눔
 jobs:
   build:
-    name: CI/CD
+    name: lotteon
     # 해당 jobs에서 아래의 steps들이 어떠한 환경에서 실행될 것인지를 지정
     runs-on: ubuntu-latest
 
@@ -29,6 +29,13 @@ jobs:
         with:
           distribution: 'oracle'
           java-version: '17'
+      
+      # 작업 스크립트에서 환경 파일에 값을 설정
+      - name: Set output variable
+        run:  echo "OUTPUT_VARIABLE=value" >> $GITHUB_ENV
+
+      - name: Use Output variable
+        run: echo "The value is ${{ env.OUTPUT_VARIABLE }}"
 
       # application.properties를 프로젝트에 포함
       - name: add Application.yml
