@@ -2,17 +2,20 @@ package kr.co.lotteon.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import kr.co.lotteon.dto.member.MemberDTO;
 import kr.co.lotteon.entity.member.Terms;
 import kr.co.lotteon.service.member.MemberService;
 import kr.co.lotteon.service.member.TermsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 @Controller
@@ -62,9 +65,58 @@ public class MemberController {
         
         return "/member/register";
     }
+
+    //타입에 따라 db에 있는지 중복확인을 시켜줌. if (type == email) {중복검사 후 메일 전송}
+    @ResponseBody
+    @GetMapping("/member/check/{type}/{value}")
+    public ResponseEntity<?> checkUser(HttpSession session,
+                                       @PathVariable("type") String type,
+                                       @PathVariable("value") String value) {
+
+        log.info("memberController.......");
+        log.info("type={}", type);
+        log.info("value={}", value);
+        int count = memberService.selectCountMember(type, value);
+
+        log.info("count={}", count);
+
+        if (type.equals("email") && count <= 0) {
+            log.info("email={}", value);
+            memberService.sendEmailCode(session, value);
+        }
+
+        //Json 생성
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("result", count);
+
+        return ResponseEntity.ok().body(resultMap);
+    }
+
+    //이메일 인증코드 검사
+    @ResponseBody
+    @GetMapping("/member/email/{code}")
+    public ResponseEntity<?> checkEmailCode(HttpSession session, @PathVariable("code") String code) {
+        String sessionCode = (String) session.getAttribute("code");
+
+        Map<String, Object> resultMap = new HashMap<>();
+
+        if (sessionCode.equals(code)) {
+            //Json 생성
+            resultMap.put("result", true);
+        } else {
+            //Json 생성
+            resultMap.put("result", false);
+        }
+        return ResponseEntity.ok().body(resultMap);
+    }
+
+
+
     // 회원 가입 처리 - DB 전송
     @PostMapping("/member/register")
-    public String register(MemberDTO memberDTO, HttpServletRequest request, HttpServletResponse response){
+    public String register(MemberDTO memberDTO, HttpServletRequest request){
+
+        log.info(memberDTO.getPass1());
 
         memberDTO.setRegip(request.getRemoteAddr());
         memberService.save(memberDTO);

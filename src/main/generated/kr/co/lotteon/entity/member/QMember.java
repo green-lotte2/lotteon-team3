@@ -35,7 +35,7 @@ public class QMember extends EntityPathBase<Member> {
 
     public final StringPath fax = createString("fax");
 
-    public final NumberPath<Integer> gender = createNumber("gender", Integer.class);
+    public final StringPath gender = createString("gender");
 
     public final StringPath hp = createString("hp");
 
