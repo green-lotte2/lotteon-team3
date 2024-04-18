@@ -25,19 +25,16 @@
             <article>
                 <nav>
                     <span th:switch="${cate}">
-
                         <span th:case="'null'">전체</span>
                         <span th:case="cs">고객서비스</span>
                         <span th:case="safe">안전거래</span>
                         <span th:case="dangerProd">위해상품</span>
                         <span th:case="event">이벤트당첨</span>
                     </span>
-
+                  
                     <h2>공지사항 <span th:utext="${(cate eq 'null') ? '전체' : (cate eq 'cs') ? '고객서비스' : (cate eq 'safe') ? '안전거래' : (cate eq 'dangerProd') ? '위해상품' : (cate eq 'event') ? '이벤트당첨' : ''}" style="font-size: 20px;"></span> 내용입니다.</h2>
-
-
                 </nav>
-
+                <!-- 글 목록 -->
                 <table>
                     <tr th:each="article : ${csPageResponseDTO.dtoList}" >
                         <td>
@@ -46,7 +43,7 @@
                         <td th:text="${#temporals.format(article.rdate, 'yyyy.MM.dd')}"></td>
                     </tr>
                 </table>
-
+                <!-- 페이지 -->
                 <th:block th:if="${csPageResponseDTO.end gt 0 }">
                     <div class="page">
                       <span th:if="${csPageResponseDTO.prev}" class="prev">

@@ -34,12 +34,12 @@
                       </a>
                   </li>
                   <li>
-                      <a th:href="@{#}">
+                      <a th:href="@{/product/list(cate1=${pageResponseDTO.cate1},cate2=${pageResponseDTO.cate2}, sort='review', how='DESC')}">
                           후기많은순
                       </a>
                   </li>
                   <li>
-                      <a th:href="@{#}">
+                      <a th:href="@{/product/list(cate1=${pageResponseDTO.cate1},cate2=${pageResponseDTO.cate2}, sort='rdate', how='DESC')}">
                           최근등록순
                       </a>
                   </li>

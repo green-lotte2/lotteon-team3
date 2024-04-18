@@ -40,4 +40,6 @@ logs/
 files
 files/
 .yml
-.gradle
+
+### application.yml ###
+/src/main/resources/application.yml

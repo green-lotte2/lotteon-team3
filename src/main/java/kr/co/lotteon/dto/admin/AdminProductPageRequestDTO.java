@@ -1,4 +1,4 @@
-package kr.co.lotteon.dto.product;
+package kr.co.lotteon.dto.admin;
 
 import lombok.*;
 import org.springframework.data.domain.PageRequest;
@@ -11,7 +11,7 @@ import org.springframework.data.domain.Sort;
 @NoArgsConstructor
 @ToString
 @Builder
-public class AdminPageRequestDTO {
+public class AdminProductPageRequestDTO {
     @Builder.Default
     private int no = 1;
     @Builder.Default
