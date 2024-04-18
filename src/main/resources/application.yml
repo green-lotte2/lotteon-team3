@@ -12,7 +12,7 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     password: Qwer1234!
-    url: jdbc:mysql://3.35.92.212:3306/lotte
+    url: jdbc:mysql://3.35.92.212/lotte
     username: team3
   devtools:
     livereload:
@@ -26,8 +26,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: jsa7868@gmail.com
-    password: pybwgoacfyleuwje
+    username: kkj80911@gmail.com
+    password: fljx bkyj tunj qggz
     properties:
       mail:
         smtp:
