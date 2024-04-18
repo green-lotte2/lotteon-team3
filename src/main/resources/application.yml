@@ -98,14 +98,14 @@ pagehelper:
   reasonable: true
 
 # 파일 업로드 설정
-file:
-  upload:
-    path: uploads/
+#file:
+#  upload:
+#    path: uploads/
 
 
-img:
-  upload:
-    path: prodImg/
+#img:
+#  upload:
+#    path: prodImg/
 
 # 배포 시 정적 리소스의 경로 설정
 myServer:
@@ -115,13 +115,13 @@ local:
   static-resources-path: prodImg/
 
 
-# 배포 할 때 파일 업로드 설정
-#file:
-#  upload:
-#    path: file:/home/lotteon/uploads
-#img:
-#  upload:
-#    path: file:/home/lotteon/product
+ # 배포 할 때 파일 업로드 설정
+file:
+  upload:
+    path: file:/home/lotteon/uploads
+img:
+  upload:
+    path: file:/home/lotteon/product
 
 logging:
   level:

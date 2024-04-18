@@ -17,11 +17,11 @@ public class WebMvcConfig implements WebMvcConfigurer {
     private AppInfo appInfo;
     
     // ====== 배포시엔 해당 어노테이션 사용 ======
-    //@Value("${myServer.static-resources-path}")
+    @Value("${myServer.static-resources-path}")
     // 경로 :/home/lotteon/prodImg
     
     // ====== 개발시엔 해당 어노테이션 사용 ======
-    @Value("${local.static-resources-path}")
+    //@Value("${local.static-resources-path}")
     // 경로 :prod/**
     private String staticServerPath;
 
