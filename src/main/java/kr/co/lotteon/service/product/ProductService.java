@@ -35,6 +35,13 @@ public class ProductService {
                     .total(totalElements)
                     .build();
     }
+    
+    // 상품 보기
+    public ProductDTO selectByprodNo(int prodNo){
+        Product product = productRepository.findById(prodNo).get();
+        ProductDTO productDTO = modelMapper.map(product, ProductDTO.class);
+        return productDTO;
+    }
 
 
 }

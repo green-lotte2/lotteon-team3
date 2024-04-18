@@ -107,6 +107,13 @@ img:
   upload:
     path: src/main/resources/static/product
 
+# 배포 할 때 파일 업로드 설정
+##file:
+##  upload:
+##    path: /home/lotteon/uploads
+##img:
+##  upload:
+##    path: /home/lotteon/product
 
 logging:
   level:

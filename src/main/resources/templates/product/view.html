@@ -11,29 +11,29 @@
                 <nav>
                     <h1>상품보기</h1>
                     <p>
-                        HOME > <span>패션·의류·뷰티</span> > <strong>남성의류</strong>
+                        HOME > <span>[[${c1Name}]]</span> > <strong>[[${c2Name}]]</strong>
                     </p>
                 </nav>
 
                 <!-- 상품 전체 정보 내용 -->                
                 <article class="info">
                     <div class="image">
-                        <img src="https://via.placeholder.com/460x460" alt="상품이미지"/>
+                        <img th:src="@{|/product/${ProductDTO.thumb3}|}" alt="상품이미지"/>
                     </div>
                     <div class="summary">
                         <nav>
-                            <h1>(주)판매자명</h1>
-                            <h2>상품번호&nbsp;:&nbsp;<span>10010118412</span></h2>
+                            <h1>[[${productDTO.company}]]</h1>
+                            <h2>상품번호&nbsp;:&nbsp;<span>[[${productDTO.prodNo}]]</span></h2>
                         </nav>                        
                         <nav>
-                            <h3>상품명</h3>
-                            <p>상품설명 출력</p>
-                            <h5 class="rating star4"><a href="#">상품평보기</a></h5>
+                            <h3>[[${productDTO.prodName}]]</h3>
+                            <p>[[${productDTO.descript}]]</p>
+                            <h5 class="rating star4"><a th:href="@{#}">상품평보기</a></h5>
                         </nav>
                         <nav>
                             <div class="org_price">
-                                <del>30,000</del>
-                                <span>10%</span>
+                                <del>[[${productDTO.price}]]</del>
+                                <span>[[${productDTO.discount}]]%</span>
                             </div>
                             <div class="dis_price">
                                 <ins>27,000</ins>
