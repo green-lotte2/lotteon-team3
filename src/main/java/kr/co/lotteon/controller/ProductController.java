@@ -70,7 +70,7 @@ public class ProductController {
     public String view(Model model, ProductDTO productDTO){
 
         ProductDTO prod = productService.selectByprodNo(productDTO.getProdNo());
-
+        log.info("productDTO : " + prod.toString());
         // 카테 가져오기
         String c1Name = cateService.getc1Name(productDTO.getCate1());
         String c2Name = cateService.getc2Name(productDTO.getCate1(), productDTO.getCate2());
@@ -80,7 +80,7 @@ public class ProductController {
         model.addAttribute("c2Name",c2Name);
         
         // productDTO 참조
-        model.addAttribute("ProductDTO", prod);
+        model.addAttribute("productDTO", prod);
 
         return "/product/view";
     }

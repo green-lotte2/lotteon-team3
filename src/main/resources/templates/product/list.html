@@ -49,11 +49,11 @@
               <div class="row row-cols-md-2">
                     <div th:each="product : ${pageResponseDTO.dtoList}" class="card card h-100" style="width: 18rem; margin-right: 10px;">
                         <a th:href="@{/product/view(prodNo=${product.prodNo},cate1=${product.cate1},cate2=${product.cate2})}" class="thumb">
-                            <img th:src="@{|/product/${product.thumb1}|}" class="card-img-top" style="width: 100%;" alt="상품이미지">
+                            <img th:src="@{'/prodImg/'+ ${product.thumb1}}" class="card-img-top" style="width: 100%;" alt="상품이미지">
                         </a>
                               <div class="card-body">
                                   <a th:href="@{/product/view(prodNo=${product.prodNo},cate1=${product.cate1},cate2=${product.cate2})}" class="thumb">
-                                    <h4 class="seller"><i class="fas fa-home"></i>&nbsp;[[${product.company}]]</h4>
+                                      <h5 class="seller" th:text=" '[' + ${product.company}+ ']'"></h5> <h6></h6>
                                     <p class="card-text">[[${product.descript}]]</p>
                                     <p>[[${product.price}]]원</p>
                                     <ul>
@@ -66,7 +66,6 @@
                                     </ul>
                                   </a>
                               </div>
-
                     </div>
               </div>
 
