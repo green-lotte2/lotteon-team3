@@ -7,8 +7,7 @@ on:
     branches: [ main ] # main branch로 push 될 때 실행
 
 # 해당 yml 내에서 사용할 key-value 속성
-env:  
-
+env:
   PROJECT_NAME: lotteon-team3/lotteon
   AWS_REGION: ap-northeast-2
   S3_BUCKET_NAME: sun-s3-bucket-github-actions
