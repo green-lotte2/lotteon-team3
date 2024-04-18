@@ -1,9 +1,11 @@
 package kr.co.lotteon.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import kr.co.lotteon.dto.cs.BoardDTO;
 import kr.co.lotteon.dto.cs.CsPageRequestDTO;
 import kr.co.lotteon.dto.cs.CsPageResponseDTO;
 
+import kr.co.lotteon.entity.cs.BoardCateEntity;
 import kr.co.lotteon.service.cs.CsCateService;
 import kr.co.lotteon.service.cs.CsService;
 import lombok.RequiredArgsConstructor;
@@ -12,12 +14,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.util.List;
+
 @Slf4j
 @RequiredArgsConstructor
 @Controller
 public class CsController {
 
     private final CsService csService;
+    private final CsCateService csCateService;
 
     // cs index 페이지 매핑
     @GetMapping(value = {"/cs","/cs/index"})
@@ -28,10 +33,9 @@ public class CsController {
     @GetMapping("/cs/qna/list")
     public String qnaList(Model model, CsPageRequestDTO csPageRequestDTO) {
         // cate가 null이거나 빈 문자열인 경우 "member" 카테고리로 설정합니다.
-        if (csPageRequestDTO.getCate() == null || csPageRequestDTO.getCate().isEmpty()) {
-            csPageRequestDTO.setCate("member");
+        if (csPageRequestDTO.getCate() == null) {
+            csPageRequestDTO.setCate("null");
         }
-
         CsPageResponseDTO csPageResponseDTO = csService.findByCate(csPageRequestDTO);
 
         model.addAttribute(csPageResponseDTO);
@@ -52,7 +56,11 @@ public class CsController {
     }
     // QnA 쓰기 페이지 매핑
     @GetMapping("/cs/qna/write")
-    public String qnaWrite(){
+    public String qnaWrite(HttpServletRequest request, Model model, String cate) {
+
+        List<BoardCateEntity> cates = csCateService.getCate();
+        model.addAttribute("cates", cates);
+
         return "/cs/qna/write";
     }
     // 공지사항 목록 매핑

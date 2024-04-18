@@ -12,11 +12,12 @@
             <aside>
               <h2>문의하기</h2>
               <ul>
-                <li th:class="${(cate eq 'member') ? 'on' : ''}"><a th:href="@{/cs/qna/list(group='qna',cate='member')}">회원</a></li>
+                <li th:class="${(cate eq 'null') ? 'on' : ''}"><a th:href="@{/cs/qna/list(group='qna', cate='null')}">전체</a></li>
+                <li th:class="${(cate=='member') ? 'on' : ''}"><a th:href="@{/cs/qna/list(group='qna',cate='member')}">회원</a></li>
                 <li th:class="${(cate=='coupon') ? 'on' : ''}"><a th:href="@{/cs/qna/list(group='qna',cate='coupon')}">쿠폰/이벤트</a></li>
                 <li th:class="${(cate=='order') ? 'on' : ''}"><a th:href="@{/cs/qna/list(group='qna',cate='order')}">주문/결제</a></li>
                 <li th:class="${(cate=='delivery') ? 'on' : ''}"><a th:href="@{/cs/qna/list(group='qna',cate='delivery')}">배송</a></li>
-                <li th:class="${(cate=='cancel') ? 'on' : ''}"><a th:href="@{/cs/qna/list(group='qna',cate='cancel')}">취소/반품/교환</a></li>
+                <li th:class="${(cate=='refund') ? 'on' : ''}"><a th:href="@{/cs/qna/list(group='qna',cate='refund')}">취소/반품/교환</a></li>
                 <li th:class="${(cate=='travel') ? 'on' : ''}"><a th:href="@{/cs/qna/list(group='qna',cate='travel')}">여행/숙박/항공</a></li>
                 <li th:class="${(cate=='safe') ? 'on' : ''}"><a th:href="@{/cs/qna/list(group='qna',cate='safe')}">안전거래</a></li>
               </ul>
@@ -25,16 +26,17 @@
 
               <nav>
                 <span th:switch="${cate}">
+                        <span th:case="'null'" style="font-size: 26px; font-weight: bold;" >전체</span>
                         <span th:case="member" style="font-size: 26px; font-weight: bold;">회원</span>
                         <span th:case="coupon" style="font-size: 26px; font-weight: bold;">쿠폰/이벤트</span>
                         <span th:case="order" style="font-size: 26px; font-weight: bold;">주문/결제</span>
                         <span th:case="delivery" style="font-size: 26px; font-weight: bold;">배송</span>
-                        <span th:case="cancel" style="font-size: 26px; font-weight: bold;">취소/반품/교환</span>
+                        <span th:case="refund" style="font-size: 26px; font-weight: bold;">취소/반품/교환</span>
                         <span th:case="travel" style="font-size: 26px; font-weight: bold;">여행/숙박/항공</span>
                         <span th:case="safe" style="font-size: 26px; font-weight: bold;">안전거래</span>
                     </span>
-                <h2><span th:utext="${(cate eq 'member') ? '회원' : (cate eq 'coupon') ? '쿠폰/이벤트' : (cate eq 'order') ? '주문/결제'
-                : (cate eq 'delivery') ? '배송' : (cate eq 'cancel') ? '취소/반품/교환' : (cate eq 'travel') ? '여행/숙박/항공'
+                <h2><span th:utext="${(cate eq 'null') ? '전체' : (cate eq 'member') ? '회원' : (cate eq 'coupon') ? '쿠폰/이벤트' : (cate eq 'order') ? '주문/결제'
+                : (cate eq 'delivery') ? '배송' : (cate eq 'refund') ? '취소/반품/교환' : (cate eq 'travel') ? '여행/숙박/항공'
                 : (cate eq 'safe') ? '안전거래' : ''}" style="font-size: 20px;"></span>관련 문의 내용입니다.</h2>
 
               </nav>
@@ -63,7 +65,7 @@
                 </div>
               </th:block>
 
-              <a th:href="@{#}" class="btnWrite" style="margin-top: -30px;">문의하기</a>
+              <a th:href="@{/cs/qna/write(group=qna)}" class="btnWrite" style="margin-top: -30px;">문의하기</a>
 
             </article>
           </section>
