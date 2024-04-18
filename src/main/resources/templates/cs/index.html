@@ -63,29 +63,29 @@
           </section>
 
           <section class="faq">
-            <h1>자주 묻는 질문<a th:href="@{/cs/faq/list}">전체보기</a>
+            <h1>자주 묻는 질문<a th:href="@{/cs/faq/list(group='faq' ,cate='member')}">전체보기</a>
             </h1>
             <ol>
               <li>
-                <a href="#"><span>회원</span></a>
+                <a th:href="@{/cs/faq/list(group='faq' ,cate='member')}"><span>회원</span></a>
               </li>
               <li>
-                <a href="#"><span>쿠폰/이벤트</span></a>
+                <a th:href="@{/cs/faq/list(group='faq' ,cate='coupon')}"><span>쿠폰/이벤트</span></a>
               </li>
               <li>
-                <a href="#"><span>주문/결제</span></a>
+                <a th:href="@{/cs/faq/list(group='faq' ,cate='order')}"><span>주문/결제</span></a>
               </li>
               <li>
-                <a href="#"><span>배송</span></a>
+                <a th:href="@{/cs/faq/list(group='faq' ,cate='delivery')}"><span>배송</span></a>
               </li>
               <li>
-                <a href="#"><span>취소/반품/교환</span></a>
+                <a th:href="@{/cs/faq/list(group='faq' ,cate='refund')}"><span>취소/반품/교환</span></a>
               </li>
               <li>
-                <a href="#"><span>여행/숙박/항공</span></a>
+                <a th:href="@{/cs/faq/list(group='faq' ,cate='travel')}"><span>여행/숙박/항공</span></a>
               </li>
               <li>
-                <a href="#"><span>안전거래</span></a>
+                <a th:href="@{/cs/faq/list(group='faq' ,cate='safe')}"><span>안전거래</span></a>
               </li>
             </ol>
           </section>
@@ -93,7 +93,7 @@
           <section class="qna">
             <h1>
               문의하기
-              <a th:href="@{/cs/qna/list(group='qna' ,cate=null)}">전체보기</a>
+              <a th:href="@{/cs/qna/list(group='qna' ,cate='member')}">전체보기</a>
             </h1>
             <ul>
               <li>

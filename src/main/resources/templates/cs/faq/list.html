@@ -1,27 +1,46 @@
-<html xmlns:th="http://www.thymeleaf.org"  xmlns:layout="http://www.thymeleaf.org/" layout:decorate="/cs/layout.html">
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/csLayout}">
 <head>
+
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script>
     $(function(){
-      $('.more').click(function(e){
+      /*let moreview = $("div > ul > li:nth-child(n+4)");*/
+
+      $(".moreAteg").click(function(e){
         e.preventDefault();
+        console.log("more click");
 
-        /*
-        let item = $(this).parent().find('> li:nth-child(n+4)');
-        let isVisible = item.is(':visible');
+        // this.classList : 배열 형태의 class 속성을 가짐
+        // => 배열이니깐 index 1번이 ${type.typeNo}이 됨
+        let typeNo = this.classList[1];
 
-        console.log('isVisible : ' + isVisible);
+        //jQuery 써야되니깐 .을 붙인 뒤 typeNo 통해 해당 타입의 클래스를 만들어줌
+        $("."+typeNo).show();
+        $(this).hide();
 
-        if(isVisible){
-          item.slideUp(100);
-        }else{
-          item.slideDown(100);
-        }
-        */
-
+        // .lessAteg 이면서 .typeNo 보여줌
+        // -> 간단히 보기가 보이게 됨
+        $(".lessAteg."+typeNo).show();
       });
-    });
+
+      $(".lessAteg").click(function(e){
+        e.preventDefault();
+        console.log("less click");
+        let typeNo = this.classList[1];
+
+        $("."+typeNo).hide();
+        $(this).hide();
+        $(".moreAteg."+typeNo).show();
+      });
+
+    })
+
   </script>
+
+
 </head>
 
 <section id="cs" layout:fragment="content">
@@ -35,68 +54,51 @@
             <aside>
               <h2>자주묻는 질문</h2>
               <ul>
-                <li class="on"><a href="#">회원</a></li>
-                <li><a href="#">쿠폰/이벤트</a></li>
-                <li><a href="#">주문/결제</a></li>
-                <li><a href="#">배송</a></li>
-                <li><a href="#">취소/반품/교환</a></li>
-                <li><a href="#">여행/숙박/항공</a></li>
-                <li><a href="#">안전거래</a></li>
+                <li th:class="${(cate eq 'member') ? 'on' : ''}"><a th:href="@{/cs/faq/list(group='faq',cate='member')}">회원</a></li>
+                <li th:class="${(cate=='coupon') ? 'on' : ''}"><a th:href="@{/cs/faq/list(group='faq',cate='coupon')}">쿠폰/이벤트</a></li>
+                <li th:class="${(cate=='order') ? 'on' : ''}"><a th:href="@{/cs/faq/list(group='faq',cate='order')}">주문/결제</a></li>
+                <li th:class="${(cate=='delivery') ? 'on' : ''}"><a th:href="@{/cs/faq/list(group='faq',cate='delivery')}">배송</a></li>
+                <li th:class="${(cate=='refund') ? 'on' : ''}"><a th:href="@{/cs/faq/list(group='faq',cate='refund')}">취소/반품/교환</a></li>
+                <li th:class="${(cate=='travel') ? 'on' : ''}"><a th:href="@{/cs/faq/list(group='faq',cate='travel')}">여행/숙박/항공</a></li>
+                <li th:class="${(cate=='safe') ?'on' : ''}"><a th:href="@{/cs/faq/list(group='faq',cate='safe')}">안전거래</a></li>
               </ul>
             </aside>
-            <article>              
+            <article>
               <nav>
-                <h1>회원</h1>
+                <span th:switch="${cate}">
+                    <span th:case="member">회원</span>
+                    <span th:case="coupon">쿠폰/이벤트</span>
+                    <span th:case="order">주문/결제</span>
+                    <span th:case="delivery">배송</span>
+                    <span th:case="refund">취소/반품/교환</span>
+                    <span th:case="travel">여행/숙박/항공</span>
+                    <span th:case="safe">안전거래</span>
+                 </span>
                 <h2>가장 자주 묻는 질문입니다.</h2>
               </nav>
 
               <div>
-                <h3>가입</h3>
-                <ul>
-                  <li><a href="./view.html"><span>Q.</span>개인회원과 법인회원에 차이가 있나요?</a></li>
-                  <li><a href="#"><span>Q.</span>개인회원과 법인회원에 차이가 있나요?</a></li>
-                  <li><a href="#"><span>Q.</span>개인회원과 법인회원에 차이가 있나요?</a></li>
-                  <li><a href="#"><span>Q.</span>개인회원과 법인회원에 차이가 있나요?</a></li>
-                  <li><a href="#"><span>Q.</span>개인회원과 법인회원에 차이가 있나요?</a></li>
-                  <li class="more"><a href="#">더보기</a></li>
-                </ul>
-              </div>
-              <div>
-                <h3>탈퇴</h3>
-                <ul>
-                  <li><a href="#"><span>Q.</span>회원탈퇴 후 재가입이 가능한가요?</a></li>
-                  <li><a href="#"><span>Q.</span>회원탈퇴 후 재가입이 가능한가요?</a></li>
-                  <li><a href="#"><span>Q.</span>회원탈퇴 후 재가입이 가능한가요?</a></li>
-                  <li><a href="#"><span>Q.</span>회원탈퇴 후 재가입이 가능한가요?</a></li>
-                  <li><a href="#"><span>Q.</span>회원탈퇴 후 재가입이 가능한가요?</a></li>
-                  <li class="more"><a href="#">더보기</a></li>
-                </ul>
-              </div>
-              <div>
-                <h3>회원정보</h3>
-                <ul>
-                  <li><a href="#"><span>Q.</span>회원정보를 수정하고 싶어요.</a></li>
-                  <li><a href="#"><span>Q.</span>회원정보를 수정하고 싶어요.</a></li>
-                  <li><a href="#"><span>Q.</span>회원정보를 수정하고 싶어요.</a></li>
-                  <li><a href="#"><span>Q.</span>회원정보를 수정하고 싶어요.</a></li>
-                  <li><a href="#"><span>Q.</span>회원정보를 수정하고 싶어요.</a></li>
-                  <li class="more"><a href="#">더보기</a></li>
-                </ul>
-              </div>
-              <div>
-                <h3>로그인</h3>
-                <ul>
-                  <li><a href="#"><span>Q.</span>로그인에 문제가 있어요.</a></li>
-                  <li><a href="#"><span>Q.</span>로그인에 문제가 있어요.</a></li>
-                  <li><a href="#"><span>Q.</span>로그인에 문제가 있어요.</a></li>
-                  <li><a href="#"><span>Q.</span>로그인에 문제가 있어요.</a></li>
-                  <li><a href="#"><span>Q.</span>로그인에 문제가 있어요.</a></li>
-                  <li class="more"><a href="#">더보기</a></li>
-                </ul>
+                <th:block th:each="type : ${types}"><br>
+                  <h3>[[${type.typeName}]]</h3>
+                  <ul>
+                    <th:block th:each="dto : ${type.boards}" th:if="${dto.typeNo == type.typeNo}">
+                      <li th:class="${dto.index ge 3
+					                        	&& dto.index le 9 ? dto.typeNo : '' }">
+                        <a th:href="@{/cs/faq/view(group=${dto.group}, cate=${dto.cate},bno=${dto.bno})}">
+                          <span>Q.</span>[[${dto.title}]]
+                        </a>
+                      </li>
+                    </th:block>
+                    <li class="more">
+                      <a th:class="moreAteg + ' ' + ${type.typeNo}" href="#">더보기</a>
+                      <a th:class="lessAteg + ' ' + ${type.typeNo}" style="display: none" href="#">간단히보기</a>
+                    </li>
+                  </ul>
+                </th:block>
+
               </div>
 
             </article>
           </section>
         </div>
 </section>
-</html>

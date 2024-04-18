@@ -19,6 +19,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,7 +35,7 @@ public class CsService {
     private final ModelMapper modelMapper;
     private final BoardFileRepository fileRepository;
 
-    // 글목록, 페이지(카테고리별)
+    // 글목록(notice, qna)
     public CsPageResponseDTO findByCate(CsPageRequestDTO csPageRequestDTO) {
 
         Pageable pageable = csPageRequestDTO.getPageable("bno");
@@ -111,5 +112,22 @@ public class CsService {
 
         return dto;
 
+    }
+
+    public List<BoardDTO> findByCateForFaq(String cate) {
+        List<BoardDTO> dtoList = new ArrayList<>();
+        List<BoardTypeEntity> boardTypeEntities = typeRepository.findByCate(cate);
+        for (BoardTypeEntity boardTypeEntity : boardTypeEntities) {
+            List<BoardEntity> boardEntities = boardRepository.findTop10ByTypeNo(boardTypeEntity.getTypeNo());
+            List<BoardDTO> boardDTOS = boardEntities
+                    .stream()
+                    .map(entity -> modelMapper.map(entity, BoardDTO.class))
+                    .toList();
+            for (BoardDTO boardDTO : boardDTOS) {
+                dtoList.add(boardDTO);
+            }
+        }
+
+        return dtoList;
     }
 }
