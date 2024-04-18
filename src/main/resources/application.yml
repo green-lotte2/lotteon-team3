@@ -114,9 +114,6 @@ myServer:
 local:
   static-resources-path: prodImg/
 
-
-
-
 logging:
   level:
     org:

@@ -25,6 +25,53 @@
                 pointInput.value =  Math.floor(price / 100);
             }
         }
+        const eOptionInputPanel = document.getElementById('eOptionInputPanel');
+        // option 선택 Div 공개
+        function prodOption(cate2){
+            console.log("cate2" + cate2);
+            // 남성의류나 여성의류
+            if(cate2 == '11' || cate2 == '12'){
+                document.getElementById('eOptionInputPanel').style.display = 'block';
+            }
+        }
+        // option 선택란 추가
+        let optionIndex = 1; // 최초 인덱스 값
+
+        function addOption(button){
+            const tr = button.closest('tr');
+            const colorInput = tr.querySelector('.colorInput');
+            const colorValue = colorInput.value;
+            console.log("colorValue" + colorValue);
+
+            // 기존 tr 태그 복사
+            const newRow = document.querySelector('.eManualOptionRow').cloneNode(true);
+
+            const tableBody = document.querySelector('#prodOptionTable');
+
+            const newColorInput = newRow.querySelector('.colorInput');
+            newColorInput.value = colorValue;
+
+            tableBody.appendChild(newRow);
+
+            // name 속성 증가
+            let colorInput2 = newRow.querySelector('.colorInput');
+            console.log(colorInput2);
+            console.log(optionIndex);
+
+            const newColor = 'optionList[' + optionIndex + '].color';
+            const newColorName = 'optionList[' + optionIndex + '].colorName';
+            const newSize = 'optionList[' + optionIndex + '].size';
+            const newOpStock = 'optionList[' + optionIndex + '].opStock';
+            colorInput2.setAttribute('name', newColor);
+            newRow.querySelector('.colorName').setAttribute('name', newColorName);
+            newRow.querySelector('.sizeSelect').setAttribute('name', newSize);
+            newRow.querySelector('.opStockInput').setAttribute('name', newOpStock);
+
+
+
+            optionIndex++; // 인덱스 값 증가
+        }
+
     </script>
                 <nav>
                     <h3>상품등록</h3>
@@ -55,7 +102,7 @@
                                 <tr>
                                     <td>2차 분류</td>
                                     <td>
-                                        <select name="cate2" id="cate2">
+                                        <select name="cate2" id="cate2" onchange="prodOption(this.value)">
                                             <option value="0">2차 분류 선택</option>
                                         </select>
                                     </td>
@@ -137,7 +184,67 @@
                                 </tr>
                             </table>                                
                         </section>
+                        <!-- 상품 옵션 추가 -->
+                        <div id="eOptionInputPanel" class="addForm _self_option_wrap" style="display: none;">
+                            <h4>옵션</h4>
+                            <div class="mBoard gCellSingle">
+                                <table border="1" summary="" id="prodOptionTable" class="prodOptionTable">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col">색상</th>
+                                        <th scope="col">사이즈</th>
+                                        <th scope="col">재고량</th>
+                                        <th scope="col">관리</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody class="center" id="eManualOptionTbody">
+                                    <tr class="eHeading eManualOptionRow" optiongroup="0">
+                                        <td>
+                                            <datalist id="list" class="list">
+                                                <option>#d8cec5</option>
+                                                <option>#1a1dee</option>
+                                                <option>#1e1e15</option>
+                                                <option>#303030</option>
+                                                <option>#bb0000</option>
+                                            </datalist>
+                                            <input type="color" name="optionList[0].color" list="list" style="width:70px;" class="colorInput">
+                                            <input id="colorName" name="optionList[0].colorName" type="text" class="fText" style="width:150px;" placeholder="색상 이름을 입력">
+                                        </td>
+                                        <td>
+                                            <select name="optionList[0].size" id="sizeSelect" class="sizeSelect">
+                                                <option value="S">S</option>
+                                                <option value="M">M</option>
+                                                <option value="L">L</option>
+                                                <option value="Xl">XL</option>
+                                                <option value="Xl">XXL</option>
+                                            </select>
+                                        </td>
+                                        <td class="left eBubbleArea" id="eOptionBubbleArea_0">
+                                            <div class="bubbleArea">
+                                                <div class="mBubble">
+                                                    <div class="box">
+                                                        <input class="ec-uipack-bubble-move-ctrl opStockInput" type="text" name="optionList[0].opStock" id="prodOptionStock">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="left eBubbleArea">
+                                            <div class="button">
+                                                <button type="button" class="btnOption lv1Minus vaBottom"><span>삭제</span></button>
+                                                <button type="button" class="btnOption lv1Plus vaBottom" onclick="addOption(this)"><span>추가</span></button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
 
+                            <div class="mCtrl typeFooter">
+                                <div class="gRight">
+                                    <button id="optionSubmit">모든 옵션 품목추가</button>
+                                </div>
+                            </div>
+                        </div>
                         <!-- 상품정보 제공 고시 -->
                         <section>
                             <h4>상품정보 제공고시</h4>

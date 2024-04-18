@@ -20,6 +20,7 @@ public class Product {
     private int prodNo;
     private int cate1;
     private int cate2;
+
     private int delivery;
     private int discount;
     private int hit;
@@ -30,6 +31,7 @@ public class Product {
     private int sold;
     private int stock;
     private int amount;
+
     private String bizType;
     private String company;
     private String deleteYn;
@@ -45,6 +47,14 @@ public class Product {
     private String thumb1;
     private String thumb2;
     private String thumb3;
+
+    // 상품 상세 옵션
+    private int prodCode;
+    private int opStock;
+    private String color;
+    private String colorName;
+    private String size;
+
 
     @CreationTimestamp
     private LocalDateTime rdate;

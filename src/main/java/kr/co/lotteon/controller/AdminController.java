@@ -94,12 +94,13 @@ public class AdminController {
     @PostMapping("/admin/product/register")
     public String registerProduct(HttpServletRequest httpServletRequest,
                                   ProductDTO productDTO,
+                                  OptionListDTO optionDTOS,
                                   @RequestParam("thumb190") MultipartFile thumb190,
                                   @RequestParam("thumb230") MultipartFile thumb230,
                                   @RequestParam("thumb456") MultipartFile thumb456,
                                   @RequestParam("detail860") MultipartFile detail860){
         productDTO.setIp(httpServletRequest.getRemoteAddr());
-
+        log.info("관리자 상품 등록 Cont 1 " + optionDTOS);
         // 현재 로그인 중인 사용자 정보 불러오기
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -119,11 +120,6 @@ public class AdminController {
         adminService.insertProduct(productDTO, thumb190, thumb230, thumb456, detail860);
 
         return "redirect:/admin/product/list";
-    }
-    // product register (관리자 상품 등록) 페이지 매핑 22222222222
-    @GetMapping("/admin/product/option")
-    public String register2(Model model){
-        return "/admin/product/option";
     }
 
     // 관리자 게시판 목록 페이지 매핑
