@@ -15,7 +15,7 @@ public class MemberDTO {
     private String uid;
     private String pass1;
     private String name;
-    private int gender;
+    private String gender;
     private String hp;
     private String email;
     private int point;
