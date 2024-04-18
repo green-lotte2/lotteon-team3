@@ -240,15 +240,43 @@ public class AdminService {
             }
         }
     }
-    // 관리자 게시판관리 - 목록 출력
+    // 관리자 게시판관리 - 기본 목록 출력
     public CsPageResponseDTO findBoardByGroup(CsPageRequestDTO csPageRequestDTO){
         String group = csPageRequestDTO.getGroup();
+        Pageable pageable = csPageRequestDTO.getPageable("bno");
         log.info("게시판관리 - 목록 Serv 1 : " + group);
-        boardRepository.selectBoardsByGroup(group);
+
+        // DB 조회
+        Page<Tuple> boardEntities = boardRepository.selectBoardsByGroup(csPageRequestDTO, pageable, group);
+        log.info("게시판관리 - 목록 Serv 2 : "+ boardEntities);
+
+        // Page<Tuple>을 List<BoardDTO>로 변환
+        List<BoardDTO> dtoList = boardEntities.getContent().stream()
+                .map(tuple ->{
+                    log.info("tuple : "+ tuple);
+                    // Tuple -> Board 테이블 칼럼
+                    BoardEntity boardEntity = tuple.get(0, BoardEntity.class);
+                    // Tuple -> Join한 typeName 칼럼
+                    String typeName = tuple.get(1, String.class);
+                    // Entity -> DTO
+                    BoardDTO boardDTO = modelMapper.map(boardEntity, BoardDTO.class);
+                    boardDTO.setTypeName(typeName);
+
+                    log.info("게시판관리 - 목록 Serv 3 : "+ boardDTO);
+
+                    return boardDTO;
+                })
+                .toList();
+        log.info("게시판관리 - 목록 Serv 4 : "+ dtoList);
+
+        // total 값
+        int total = (int) boardEntities.getTotalElements();
 
         // List<ProductDTO>와 page 정보 리턴
         return CsPageResponseDTO.builder()
                 .csPageRequestDTO(csPageRequestDTO)
+                .dtoList(dtoList)
+                .total(total)
                 .build();
     }
 }

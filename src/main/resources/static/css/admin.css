@@ -448,44 +448,54 @@ button[type=submit] {
     margin-top: 10px;
 }
 
-#admin-product-list .paging {
+/* 관리자 페이지 공통 */
+.paging {
     width: 100%;
     padding: 30px 0;
     text-align: center;
 }
-
-#admin-product-list .paging > span > a {
+.paging > span > a {
     color: #777;
     font-family: "돋움", Dotum, Tahoma, sans-serif;
     font-size: 11px;
     letter-spacing: -1px;
 }
   
-#admin-product-list .paging > span > a:hover {
+.paging > span > a:hover {
     text-decoration: underline;
 }
   
-#admin-product-list .paging > .num > a {
+.paging > .num > a {
     display: inline-block;
     min-width: 14px;
-    margin: 0 2px;
+
     padding: 8px 9px;
     border: 1px solid #c4c4c4;
-    /*background: url() 0 0 repeat-x;*/
+    border-radius: 3px;
     color: #000;
     font-family: Tahoma;
     font-size: 12px;
     text-align: center;
     text-decoration: none;
 }
-#admin-product-list .paging > .num > a:hover {
+.paging > .num > a:hover {
     border: 1px solid #454c5f;
     text-decoration: none;
+    border-radius: 3px;
+    box-sizing: content-box;
 }
-#admin-product-list .paging > .num > a.on {
+.paging > .num > a.on {
     background-color: #454c5f;
     color: #f6f6f6;
     font-weight: bold;
+    border-radius: 3px;
+}
+.prev {
+    font-weight: bold;
+}
+.next > a > img {
+    width: 30px;
+    height: 30px;
 }
 #keywordInput {
     margin-bottom: 3px;
@@ -734,4 +744,79 @@ button[type=submit] {
     color: white;
     margin: 0 auto;
     cursor: pointer;
+}
+/* 관리자 - 글목록 */
+#adminCsList > table {
+    width: 100%;
+    margin-top: 10px;
+    border-collapse: collapse;
+    border-top: 2px solid #111;
+}
+#adminCsList > table tr {
+    width: 100%;
+    height: 26px;
+}
+#adminCsList > table tr:hover {
+    background-color: #f7f7f7;
+}
+
+#adminCsList > table td:first-child {
+    width: 10%;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+}
+#adminCsList > table td:nth-child(2) {
+    width: 60%;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+}
+#adminCsList > table td:nth-child(3) {
+    width: 20%;
+    padding: 10px;
+    text-align: center;
+    font-size: 14px;
+    border-bottom: 1px solid #ccc;
+}
+#adminCsList > table td:last-child {
+    width: 10%;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+}
+#adminCsList > table a {
+    font-size: 16px;
+}
+#btnDelete{
+    border: 2px solid #454c5f;
+    font-size: 12px;
+    background: #454c5f;
+    padding: 8px 12px;
+    color: #fff;
+    vertical-align: top;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+#btnDelete:hover {
+    border: 3px solid #0e0101;
+    font-size: 12px;
+    background: #e95658;
+    padding: 8px 12px;
+    color: #fff;
+    vertical-align: top;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+#adminCsList > .page {
+    text-align: center;
+    margin-top: 26px;
+}
+#adminCsList > .page > a {
+    display: inline-block;
+    width: 34px;
+    height: 34px;
+    box-sizing: border-box;
+    text-align: center;
+    line-height: 34px;
+    font-size: 13px;
+    font-weight: bold;
+    vertical-align: bottom;
 }
