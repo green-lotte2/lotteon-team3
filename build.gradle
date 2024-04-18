@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'kr.co.lotteon'
-version = '0.0.3-SNAPSHOT'
+version = '0.0.4-SNAPSHOT'
 
 java {
 	sourceCompatibility = '17'
@@ -75,4 +75,9 @@ tasks.withType(JavaCompile) {
 
 clean {
 	delete file(querydslDir)
+}
+
+// plain.jar 파일 생성을 금지시키는 설정
+tasks.named('jar') {
+	enabled = false
 }

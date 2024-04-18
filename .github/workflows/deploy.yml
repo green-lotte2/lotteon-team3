@@ -1,16 +1,14 @@
 # workflow의 이름
 name: Deploy
 
-
 # 해당 workflow가 언제 실행될 것인지에 대한 트리거를 지정
 on:
   push:
     branches: [ main ] # main branch로 push 될 때 실행
 
 # 해당 yml 내에서 사용할 key-value 속성
-env:  
-
-  PROJECT_NAME: lotteon-team3
+env:
+  PROJECT_NAME: lotteon-team3/lotteon
   AWS_REGION: ap-northeast-2
   S3_BUCKET_NAME: sun-s3-bucket-github-actions
   CODE_DEPLOY_APPLICATION_NAME: sun-codedeploy-app 
@@ -19,7 +17,7 @@ env:
 # workflow는 한개 이상의 job을 가지며, 각 job은 여러 step에 따라 단계를 나눔
 jobs:
   build:
-    name: lotteon
+    name: CI/CD
     # 해당 jobs에서 아래의 steps들이 어떠한 환경에서 실행될 것인지를 지정
     runs-on: ubuntu-latest
 
