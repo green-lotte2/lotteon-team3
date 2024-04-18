@@ -408,8 +408,217 @@ button[type=submit] {
     width: 100px;
 }
 
+/* 상품 옵션 등록 */
+#eOptionInputPanel{
+}
+#prodOptionTable {
+    width: 95%;
+    padding: 10px;
+}
+#prodOptionTable th {
+    width: auto;
+    border: 1px solid #d9dadc;
+    font-weight: normal;
+    font-size: 14px;
+    padding: 9px 9px 7px;
+    background-color: #fafafb;
+}
+#prodOptionTable th:before {
+    content: "";
+    position: absolute;
+    top: -1px;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 1px;
+    background: #d9dadc;
+}
+#prodOptionTable th:after {
+    content: "";
+    position: absolute;
+    right: -1px;
+    top: 0;
+    height: 100%;
+    width: 1px;
+    background: #d9dadc;
+}
+#prodOptionTable tr > td:nth-child(1){
+    width: 300px;
+    border-top: 1px solid #e6e6e6;
+    border-bottom: 1px solid #e6e6e6;
+    background: #f6f6f6;
+    padding-left: 10px;
+    text-align: left;
+}
+#prodOptionTable tr > td:nth-child(2){
+    width: 300px;
+    border-top: 1px solid #e6e6e6;
+    border-bottom: 1px solid #e6e6e6;
+    background: #f6f6f6;
+    padding-left: 10px;
+    text-align: left;
+}
+#prodOptionTable tr > td:nth-child(3){
+    width: 300px;
+    border-top: 1px solid #e6e6e6;
+    border-bottom: 1px solid #e6e6e6;
+    background: #f6f6f6;
+    padding-left: 10px;
+    text-align: left;
+}
+#prodOptionTable tr > td:nth-child(4){
+    width: 150px;
+    border-top: 1px solid #e6e6e6;
+    border-bottom: 1px solid #e6e6e6;
+    background: #f6f6f6;
+    padding-left: 10px;
+    text-align: left;
+}
+.colorInput {
+    padding: 0px;
 
+}
+.mForm .addForm {
+    margin: 8px 0 0 25px;
+}
+.mBoard.gGuide table {
+    border-left: 1px solid #e6e6e6;
+    border-collapse: separate;
+    line-height: 1.5;
+    font-family: "Noto Sans KR", sans-serif;
+}
+.mCtrl.typeHeader {
+    position: relative;
+    z-index: 1;
+    margin-bottom: -1px;
+}
+.mCtrl {
+    width: 95%;
+    min-height: 46px;
+    padding: 8px;
+    border: 1px solid #d9dadc;
+    box-sizing: border-box;
+    text-align: center;
+    background-color: #fff;
+}
+.mCtrl:after {
+    content: "";
+    display: block;
+    clear: both;
+}
+.mBoard.gSmall.gGuide .mForm .mBoard.gCellSingle {
+    overflow: auto;
+}
+.mBoard.gCellSingle {
+    margin-top: 8px;
+}
+caption {
+    display: none;
+}
+colgroup {
+    display: table-column-group;
+    unicode-bidi: isolate;
+}
+col {
+    display: table-column;
+    unicode-bidi: isolate;
+}
+.mBoard .center {
+    text-align: center;
+}
+.mBoard.gCellSingle td {
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+.btnOption.lv1Plus, .btnOption.lv1Minus {
+    width: 28px;
+    height: 28px;
+    border: 1px solid transparent;
+    background-color: #667084;
+}
+.btnOption {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+    white-space: nowrap;
+    text-indent: 150%;
+    vertical-align: middle;
+    box-sizing: border-box;
+    border-radius: 3px;
+}
+.btnOption.lv1Plus:before, .btnOption.lv1Plus:after, .btnOption.lv1Minus:before {
+    background-color: #fff;
+}
+.btnOption.lv1Plus:before, .btnOption.lv2Plus:before, .btnOption.lv1Minus:before, .btnOption.lv2Minus:before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin: -1px 0 0 -5px;
+    width: 10px;
+    height: 2px;
+}
 
+.btnOption.lv1Plus:after, .btnOption.lv2Plus:after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 2px;
+    height: 10px;
+    margin: -5px 0 0 -1px;
+    transform: rotate(180deg);
+    -webkit-transform: rotate(180deg);
+}
+#eManualOptionHeadTemplate {
+    display: none;
+}
+.bubbleArea {
+    position: relative;
+}
+.mBubble {
+    display: -webkit-flex;
+    display: -ms-flex;
+    display: -moz-flex;
+    display: flex;
+    position: relative;
+    -webkit-align-items: flex-start;
+    -ms-align-items: flex-start;
+    -moz-align-items: flex-start;
+    align-items: flex-start;
+    width: 100%;
+    min-height: 44px;
+}
+.mBubble .box {
+    -webkit-flex: 1;
+    -ms-flex: 1;
+    -moz-flex: 1;
+    flex: 1;
+    min-width: 0;
+    border-radius: 4px;
+}
+#prodOptionStock {
+    margin: 4px 7px 8px;
+}
+#optionSubmit {
+    height: 28px;
+    position: relative;
+    text-align: center;
+    vertical-align: middle;
+    text-decoration: none;
+    white-space: nowrap;
+    box-sizing: border-box;
+    border-radius: 3px;
+    padding: 0 8px;
+    border: 1px solid transparent;
+    font-size: 12px;
+    line-height: 26px;
+    color: #fff;
+    font-weight: normal;
+    background-color: #444b59;
+}
 /* 상품목록 : product-list */
 #admin-product-list {}
 #admin-product-list > section > div  {
@@ -819,4 +1028,183 @@ button[type=submit] {
     font-size: 13px;
     font-weight: bold;
     vertical-align: bottom;
+}
+
+/***article-view***/
+.articleForm {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    height: auto;
+}
+.articleForm > div {
+    display: flex;
+    margin: 10px 0;
+    width: 100%;
+}
+.articleForm > .titleBox {
+    padding: 10px 0;
+    margin: 0;
+    border-bottom: 1px solid #d6d6d6;
+}
+.articleForm > .titleBox > p {
+    font-size: 18px;
+    font-weight: bold;
+}
+.articleForm > .infoBox {
+    margin: 10px 0 0 0;
+    justify-content: space-between;
+}
+.articleForm > .infoBox > p {
+    font-size: 16px;
+    font-weight: bold;
+}
+.articleForm > .infoBox > p > span {
+    font-size: 16px;
+    font-weight: bold;
+}
+.articleForm > .contentsBox {
+    border-top: 1px solid #d6d6d6;
+    border-bottom: 1px solid #d6d6d6;
+}
+.articleForm > .contentsBox > textarea {
+    width: 100%;
+    min-height: 300px;
+    margin: 20px 0;
+    text-align: left;
+    font-size: 16px;
+    outline: none;
+    resize: none;
+    background-color: #ffffff;
+    border: 0;
+}
+.articleForm .titleInput {
+    width: 100%;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: left;
+    outline: none;
+    resize: none;
+    border: 0;
+}
+/*aritlce-view-file*/
+.fileBox {
+    align-items: center;
+}
+.fileBox > p {
+    justify-content: center;
+    margin-right: 10px;
+}
+.fileBox > a {
+    padding: 4px 6px;
+    border: 1px solid #d6d6d6;
+    border-radius: 10px;
+    margin: 0 4px;
+}
+.fileBox > a:hover {
+    color: white;
+    border: 1px solid #a8d031;
+    background-color: #a8d031;
+}
+/*aritlce-view-btn*/
+.articleBtnBox {
+    padding: 10px 0;
+    justify-content: end;
+    border-top: 1px solid #d6d6d6;
+    border-bottom: 2px solid #d6d6d6;
+}
+.articleBtnBox > a {
+    font-size: 14px;
+    padding: 6px;
+    margin: 0 4px;
+    border: 1px solid #d6d6d6;
+    border-radius: 10px;
+}
+.articleBtnBox > a:hover {
+    color: white;
+    border: 2px solid #454c5f;
+    background: #454c5f;
+}
+
+/*aritlce-view-commentBox*/
+.commentBox {
+    flex-wrap: wrap;
+    flex-direction: column;
+}
+.commentBox > p {
+    margin-top: 10px;
+    padding-left: 4px;
+    font-weight: bold;
+}
+.commentBox > form > textarea {
+    width: 100%;
+    min-height: 100px;
+    margin-top: 10px;
+    padding: 10px;
+    box-sizing: border-box;
+    text-align: left;
+    font-size: 16px;
+    outline: none;
+    resize: none;
+    border: 1px solid #d6d6d6;
+    border-radius: 10px;
+}
+.commentBox > form > div {
+    display: flex;
+    justify-content: end;
+    margin-top: 10px;
+}
+.commentBox > form > div > button {
+    padding: 6px;
+    margin-left: 4px;
+    border: 1px solid #d6d6d6;
+    border-radius: 10px;
+    background-color: transparent;
+    cursor: pointer;
+}
+.commentBox > form > div > button:hover {
+    color: white;
+    border: 1px solid #a8d031;
+    background-color: #a8d031;
+}
+.commentBox > .comment {
+    padding: 5px 10px;
+    margin-top: 10px;
+    border-radius: 10px;
+    border: 1px solid #d6d6d6;
+}
+.commentBox > .comment > p {
+    padding-left: 10px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid #d6d6d6;
+}
+.commentBox > .comment > textarea {
+    width: 100%;
+    min-height: 60px;
+    padding: 10px;
+    box-sizing: border-box;
+    text-align: left;
+    font-size: 16px;
+    outline: none;
+    resize: none;
+    border: 0;
+    background-color: transparent;
+}
+.commentBox > .comment > div {
+    display: flex;
+    justify-content: end;
+    margin-top: 4px;
+}
+.commentBox > .comment > div > button {
+    padding: 6px;
+    margin-right: 8px;
+    border: 1px solid #d6d6d6;
+    border-radius: 10px;
+    background-color: white;
+    cursor: pointer;
+}
+.commentBox > .comment > div > button:hover {
+    color: white;
+    border: 1px solid #a8d031;
+    background-color: #a8d031;
 }

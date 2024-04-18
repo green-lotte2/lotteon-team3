@@ -29,6 +29,7 @@ public class Product {
     private int score;
     private int sold;
     private int stock;
+    private int amount;
     private String bizType;
     private String company;
     private String deleteYn;

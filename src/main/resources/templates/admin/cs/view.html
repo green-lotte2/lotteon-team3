@@ -2,6 +2,11 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{/layout/adminLayout}">
 <section id="cs" layout:fragment="content">
+    <script>
+        function confirmDelete() {
+            return confirm("게시글을 삭제하시겠습니까?");
+        }
+    </script>
     <div class="articleBox" id="community_view">
         <form class="articleForm" id="communityForm" th:action="@{/admin/cs/modify}" method="post">
             <!--hidden-->
@@ -19,69 +24,33 @@
             <div class="contentsBox">
                 <textarea id="contentTextarea" readonly>[[${board.content}]]</textarea>
 
-            </div><!--
-            &lt;!&ndash; 수정 / 삭제 / 목록 버튼 &ndash;&gt;
+            </div>
+            <!-- 수정 / 삭제 / 목록 버튼 -->
             <div class="articleBtnBox">
-                &lt;!&ndash; 수정 버튼 &ndash;&gt;
+                <!-- 수정 버튼 -->
                 <a th:if="${adminBoardPageResponseDTO.keyword == null}"
                    th:href="@{/admin/cs/modify(group=${adminBoardPageResponseDTO.group}, bno=${board.bno}, pg=${adminBoardPageResponseDTO.pg})}"
                    class="btn btn-secondary btn-sm" data-art="artModify">수정</a>
                 <a th:if="${adminBoardPageResponseDTO.keyword != null}"
                    th:href="@{/admin/cs/modify(group=${adminBoardPageResponseDTO.group}, bno=${board.bno}, type=${adminBoardPageResponseDTO.type},keyword=${adminBoardPageResponseDTO.keyword}, pg=${adminBoardPageResponseDTO.pg})}"
                    class="btn btn-secondary btn-sm" data-art="artModify">수정</a>
-                &lt;!&ndash; 삭제 버튼 &ndash;&gt;
+                <!-- 삭제 버튼 -->
                 <a th:if="${adminBoardPageResponseDTO.keyword == null}"
                    th:href="@{/admin/cs/delete(group=${adminBoardPageResponseDTO.group}, bno=${board.bno}, pg=${adminBoardPageResponseDTO.pg})}"
-                   class="btn btn-secondary btn-sm" data-art="artRemove"
+                   class="btn btn-secondary btn-sm btnDelete " data-art="artRemove"
                    onclick="return confirmDelete()">삭제</a>
                 <a th:if="${adminBoardPageResponseDTO.keyword != null}"
                    th:href="@{/admin/cs/delete(group=${adminBoardPageResponseDTO.group}, bno=${board.bno}, type=${adminBoardPageResponseDTO.type},keyword=${adminBoardPageResponseDTO.keyword}, pg=${adminBoardPageResponseDTO.pg})}"
-                   class="btn btn-secondary btn-sm" data-art="artRemove"
+                   class="btn btn-secondary btn-sm btnDelete" data-art="artRemove"
                    onclick="return confirmDelete()">삭제</a>
-                &lt;!&ndash; 목록 버튼 &ndash;&gt;
+                <!-- 목록 버튼 -->
                 <a th:if="${adminBoardPageResponseDTO.keyword == null}"
                    th:href="@{/admin/cs/list(group=${adminBoardPageResponseDTO.group}, pg=${adminBoardPageResponseDTO.pg})}"
                    class="btn btnList">목록</a>
                 <a th:if="${adminBoardPageResponseDTO.keyword != null}"
                    th:href="@{/admin/cs/list(group=${adminBoardPageResponseDTO.group}, pg=${adminBoardPageResponseDTO.pg}, type=${adminBoardPageResponseDTO.type}, keyword=${adminBoardPageResponseDTO.keyword})}"
                    class="btn btnList">목록</a>
-            </div>-->
+            </div>
         </form>
-        <!-- 댓글쓰기 -->
-        <div class="commentBox" id="commentBox">
-            <p>댓글쓰기</p>
-            <form th:action="@{/comment}" name="commentForm" method="post" id="commentForm">
-                <!--<th:block th:unless="${#authentication.principal eq 'anonymousUser'}">
-                    <input type="hidden" name="uid" th:value="${#authentication.principal.user.uid}">
-                </th:block>-->
-                <input type="hidden" name="ano" th:value="${board.bno}" id="ano"/>
-                <textarea name="content" class="commentContent"></textarea>
-                <div>
-                    <button id="btnCancel" data-form="commentCancel">취소</button>
-                    <button id="btnComment" data-form="commentWrite">댓글 작성</button>
-                </div>
-            </form>
-            <!-- 댓글목록 -->
-            <p>댓글목록</p>
-            <!--댓글 없을때-->
-<!--
-            <th:block th:if="${comments.isEmpty()}">
-                <div class="comment" id="noComment">
-                    <textarea name="" id="" readonly>댓글이 없습니다. 댓글을 남겨주세요</textarea>
-                </div>
-            </th:block>
-                <th:block th:each="comment, loop:${comments}">
-                    &lt;!&ndash; 관리자로 들어 왔기 때문에 수정, 삭제 버튼 출력 &ndash;&gt;
-                    <div class="comment" >
-                        <p><span>[[${comment.uid}]]</span>&nbsp;&nbsp;<span
-                                th:text="${#temporals.format(comment.rdate,'yyyy-MM-dd')}"></span></p>
-                        <textarea name="" readonly>[[${comment.content}]]</textarea>
-                        <div>
-                            <button id="commentModify" data-mode='modify' th:data-cno="${comment.cno}">수정</button>
-                            <button id="commentRemove" data-mode='remove' th:data-cno="${comment.cno}">삭제</button>
-                        </div>
-                    </div>
-                </th:block>-->
-        </div>
     </div>
 </section>
