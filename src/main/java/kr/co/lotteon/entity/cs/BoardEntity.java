@@ -3,6 +3,7 @@ package kr.co.lotteon.entity.cs;
 import jakarta.persistence.*;
 import kr.co.lotteon.dto.cs.BoardDTO;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import java.time.LocalDateTime;
 
@@ -30,8 +31,10 @@ public class BoardEntity {
 
     @Builder.Default
     private Integer file = -1;
+    @ColumnDefault("0")
+    private int hit;
     private String status;
-    private String reply;
+    private int reply;
 
     @CreationTimestamp
     private LocalDateTime rdate;
