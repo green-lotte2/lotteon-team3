@@ -1,14 +1,16 @@
 package kr.co.lotteon.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import kr.co.lotteon.dto.admin.AdminBoardPageRequestDTO;
+import kr.co.lotteon.dto.admin.AdminBoardPageResponseDTO;
+import kr.co.lotteon.dto.admin.AdminProductPageRequestDTO;
+import kr.co.lotteon.dto.admin.AdminProductPageResponseDTO;
 import kr.co.lotteon.dto.cs.BoardDTO;
 import kr.co.lotteon.dto.cs.CsPageRequestDTO;
 import kr.co.lotteon.dto.cs.CsPageResponseDTO;
 import kr.co.lotteon.dto.product.*;
-import kr.co.lotteon.entity.product.Cate1;
 import kr.co.lotteon.security.MyUserDetails;
 import kr.co.lotteon.service.AdminService;
-import kr.co.lotteon.service.cs.CsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -51,17 +53,17 @@ public class AdminController {
     }
     // product list (관리자 상품 목록) 페이지 매핑
     @GetMapping("/admin/product/list")
-    public String prodList(Model model, AdminPageRequestDTO adminPageRequestDTO){
-        log.info("관리자 상품 목록 Cont 1 : " + adminPageRequestDTO);
+    public String prodList(Model model, AdminProductPageRequestDTO adminProductPageRequestDTO){
+        log.info("관리자 상품 목록 Cont 1 : " + adminProductPageRequestDTO);
 
-        AdminPageResponseDTO adminPageResponseDTO = null;
-        if(adminPageRequestDTO.getKeyword() == null) {
+        AdminProductPageResponseDTO adminPageResponseDTO = null;
+        if(adminProductPageRequestDTO.getKeyword() == null) {
             // 일반 상품 목록 조회
-            adminPageResponseDTO = adminService.adminSelectProducts(adminPageRequestDTO);
+            adminPageResponseDTO = adminService.adminSelectProducts(adminProductPageRequestDTO);
         }else {
             // 검색 상품 목록 조회
-            log.info("키워드 검색 Cont" + adminPageRequestDTO.getKeyword());
-            adminPageResponseDTO = adminService.adminSearchProducts(adminPageRequestDTO);
+            log.info("키워드 검색 Cont" + adminProductPageRequestDTO.getKeyword());
+            adminPageResponseDTO = adminService.adminSearchProducts(adminProductPageRequestDTO);
         }
         log.info("관리자 상품 목록 Cont 2 : " + adminPageResponseDTO);
         model.addAttribute("adminPageResponseDTO", adminPageResponseDTO);
@@ -75,17 +77,6 @@ public class AdminController {
         log.info("관리자 상품 등록 Cont : "+cate1List);
         model.addAttribute("cate1List", cate1List);
         return "/admin/product/register";
-    }
-
-    // 관리자 게시판 목록 페이지 매핑
-    @GetMapping("/admin/cs/list")
-    public String csList(Model model, CsPageRequestDTO csPageRequestDTO) {
-
-        CsPageResponseDTO csPageResponseDTO = adminService.findBoardByGroup(csPageRequestDTO);
-        log.info("관리자 게시판 목록 Cont : " +csPageResponseDTO);
-        model.addAttribute(csPageResponseDTO);
-        model.addAttribute("group", csPageRequestDTO.getGroup());
-        return "/admin/cs/list";
     }
 
     // 관리자 상품 목록 검색 - cate1을 type으로 선택 시 cate1 조회
@@ -129,5 +120,37 @@ public class AdminController {
 
         adminService.insertProduct(productDTO, thumb190, thumb230, thumb456, detail860);
         return "redirect:/admin/product/list";
+    }
+
+    // 관리자 게시판 목록 페이지 매핑
+    @GetMapping("/admin/cs/list")
+    public String boardList(Model model, AdminBoardPageRequestDTO adminBoardPageRequestDTO) {
+
+        AdminBoardPageResponseDTO adminBoardPageResponseDTO = adminService.findBoardByGroup(adminBoardPageRequestDTO);
+        log.info("관리자 게시판 목록 Cont : " +adminBoardPageResponseDTO);
+        model.addAttribute(adminBoardPageResponseDTO);
+        model.addAttribute("group", adminBoardPageRequestDTO.getGroup());
+        return "/admin/cs/list";
+    }
+    // 관리자 게시글 삭제
+    @DeleteMapping("/admin/cs/delete/{bno}")
+    public ResponseEntity<?> boardDelete(@PathVariable("bno") int bno){
+        log.info("관리자 게시글 삭제 Cont 1 : " + bno);
+        return adminService.boardDelete(bno);
+    }
+    // 관리자 게시판 보기 페이지 매핑
+    @GetMapping("/admin/cs/view")
+    public String boardView(Model model, int bno, AdminBoardPageRequestDTO adminBoardPageRequestDTO){
+        log.info("관리자 게시판 보기 Cont 1 : " + adminBoardPageRequestDTO);
+        BoardDTO board = adminService.selectBoard(bno);
+        log.info("관리자 게시판 보기 Cont 2 : " + board);
+        // pg, type, keyword 값
+        AdminBoardPageResponseDTO adminBoardPageResponseDTO = AdminBoardPageResponseDTO.builder()
+                .adminBoardPageRequestDTO(adminBoardPageRequestDTO)
+                .build();
+        log.info("관리자 게시판 보기 Cont 3 : " + adminBoardPageResponseDTO);
+        model.addAttribute("board",board );
+        model.addAttribute("adminBoardPageResponseDTO", adminBoardPageResponseDTO);
+        return  "/admin/cs/view";
     }
 }

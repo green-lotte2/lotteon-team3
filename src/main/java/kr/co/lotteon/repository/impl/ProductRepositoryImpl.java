@@ -2,10 +2,9 @@ package kr.co.lotteon.repository.impl;
 
 
 import com.querydsl.core.QueryResults;
-import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import kr.co.lotteon.dto.product.AdminPageRequestDTO;
+import kr.co.lotteon.dto.admin.AdminProductPageRequestDTO;
 import kr.co.lotteon.entity.product.Product;
 import kr.co.lotteon.entity.product.QProduct;
 import kr.co.lotteon.repository.custom.ProductRepositoryCustom;
@@ -28,8 +27,8 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
 
     // 관리자 - 상품 목록 기본 조회
     @Override
-    public Page<Product> adminSelectProducts(AdminPageRequestDTO adminPageRequestDTO, Pageable pageable){
-        log.info("상품 목록 기본 조회 Impl 1 : " + adminPageRequestDTO);
+    public Page<Product> adminSelectProducts(AdminProductPageRequestDTO adminProductPageRequestDTO, Pageable pageable){
+        log.info("상품 목록 기본 조회 Impl 1 : " + adminProductPageRequestDTO);
         QueryResults<Product> results = jpaQueryFactory
                 .select(qProduct)
                 .from(qProduct)
@@ -47,10 +46,10 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
 
     // 관리자 - 상품 목록 검색 조회
     @Override
-    public Page<Product> adminSearchProducts(AdminPageRequestDTO adminPageRequestDTO, Pageable pageable){
-        log.info("상품 목록 키워드 검색 impl 1 : " + adminPageRequestDTO.getKeyword());
-        String type = adminPageRequestDTO.getType();
-        String keyword = adminPageRequestDTO.getKeyword();
+    public Page<Product> adminSearchProducts(AdminProductPageRequestDTO adminProductPageRequestDTO, Pageable pageable){
+        log.info("상품 목록 키워드 검색 impl 1 : " + adminProductPageRequestDTO.getKeyword());
+        String type = adminProductPageRequestDTO.getType();
+        String keyword = adminProductPageRequestDTO.getKeyword();
 
         BooleanExpression expression = null;
 

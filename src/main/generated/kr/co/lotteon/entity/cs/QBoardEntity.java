@@ -29,9 +29,11 @@ public class QBoardEntity extends EntityPathBase<BoardEntity> {
 
     public final StringPath group = createString("group");
 
+    public final NumberPath<Integer> hit = createNumber("hit", Integer.class);
+
     public final DateTimePath<java.time.LocalDateTime> rdate = createDateTime("rdate", java.time.LocalDateTime.class);
 
-    public final StringPath reply = createString("reply");
+    public final NumberPath<Integer> reply = createNumber("reply", Integer.class);
 
     public final StringPath status = createString("status");
 

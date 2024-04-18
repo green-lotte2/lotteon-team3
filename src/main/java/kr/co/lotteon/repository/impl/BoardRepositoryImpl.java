@@ -3,6 +3,7 @@ package kr.co.lotteon.repository.impl;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import kr.co.lotteon.dto.admin.AdminBoardPageRequestDTO;
 import kr.co.lotteon.dto.cs.CsPageRequestDTO;
 import kr.co.lotteon.entity.cs.BoardEntity;
 import kr.co.lotteon.entity.cs.QBoardEntity;
@@ -46,8 +47,7 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
 
     // 관리자 게시판관리 글 목록 조회 (최신순 5개)
     @Override
-    public Page<Tuple> selectBoardsByGroup(CsPageRequestDTO pageRequestDTO, Pageable pageable, String group) {
-        String cate = pageRequestDTO.getCate();
+    public Page<Tuple> selectBoardsByGroup(AdminBoardPageRequestDTO pageRequestDTO, Pageable pageable, String group) {
 
         // article 테이블과 User 테이블을 Join해서 article목록, 닉네임을 select
         QueryResults<Tuple> results = jpaQueryFactory
