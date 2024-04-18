@@ -121,11 +121,6 @@ public class AdminController {
 
         return "redirect:/admin/product/list";
     }
-    // product register (관리자 상품 등록) 페이지 매핑 22222222222
-    @GetMapping("/admin/product/option")
-    public String register2(Model model){
-        return "/admin/product/option";
-    }
 
     // 관리자 게시판 목록 페이지 매핑
     @GetMapping("/admin/cs/list")
