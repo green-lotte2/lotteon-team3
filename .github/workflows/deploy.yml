@@ -8,7 +8,7 @@ on:
 
 # 해당 yml 내에서 사용할 key-value 속성
 env:
-  PROJECT_NAME: lotteon-team3
+  PROJECT_NAME: lotteon-team3/lotteon
   AWS_REGION: ap-northeast-2
   S3_BUCKET_NAME: sun-s3-bucket-github-actions
   CODE_DEPLOY_APPLICATION_NAME: sun-codedeploy-app 
