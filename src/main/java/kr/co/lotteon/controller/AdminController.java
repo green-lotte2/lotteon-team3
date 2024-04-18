@@ -6,8 +6,6 @@ import kr.co.lotteon.dto.admin.AdminBoardPageResponseDTO;
 import kr.co.lotteon.dto.admin.AdminProductPageRequestDTO;
 import kr.co.lotteon.dto.admin.AdminProductPageResponseDTO;
 import kr.co.lotteon.dto.cs.BoardDTO;
-import kr.co.lotteon.dto.cs.CsPageRequestDTO;
-import kr.co.lotteon.dto.cs.CsPageResponseDTO;
 import kr.co.lotteon.dto.product.*;
 import kr.co.lotteon.security.MyUserDetails;
 import kr.co.lotteon.service.AdminService;
@@ -119,7 +117,13 @@ public class AdminController {
         log.info("관리자 상품 등록 Cont " + productDTO);
 
         adminService.insertProduct(productDTO, thumb190, thumb230, thumb456, detail860);
+
         return "redirect:/admin/product/list";
+    }
+    // product register (관리자 상품 등록) 페이지 매핑 22222222222
+    @GetMapping("/admin/product/option")
+    public String register2(Model model){
+        return "/admin/product/option";
     }
 
     // 관리자 게시판 목록 페이지 매핑
