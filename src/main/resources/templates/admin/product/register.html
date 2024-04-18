@@ -16,6 +16,11 @@
                 // 태그 문자열 삽입
                 cate2Select.insertAdjacentHTML('beforeend', cate2Option);
             }
+            if (cate1 === '30') {
+                document.getElementById('amountTr').style.display = 'table-row';
+            } else {
+                document.getElementById('amountTr').style.display = 'none';
+            }
         }
         // 판매 가격의 1%를 포인트에 자동 입력
         function inputPoint(textPrice){
@@ -25,19 +30,20 @@
                 pointInput.value =  Math.floor(price / 100);
             }
         }
-        const eOptionInputPanel = document.getElementById('eOptionInputPanel');
         // option 선택 Div 공개
+        const eOptionInputPanel = document.getElementById('eOptionInputPanel');
         function prodOption(cate2){
             console.log("cate2" + cate2);
             // 남성의류나 여성의류
             if(cate2 == '11' || cate2 == '12'){
                 document.getElementById('eOptionInputPanel').style.display = 'block';
+                // 그 외
+            }else {
+                document.getElementById('eOptionInputPanel').style.display = 'none';
             }
         }
-        // option 선택란 추가
-        let optionIndex = 1; // 최초 인덱스 값
-
-        function addOption(button){
+        // option 입력란 추가
+        function addOption(button) {
             const tr = button.closest('tr');
             const colorInput = tr.querySelector('.colorInput');
             const colorValue = colorInput.value;
@@ -45,33 +51,50 @@
 
             // 기존 tr 태그 복사
             const newRow = document.querySelector('.eManualOptionRow').cloneNode(true);
-
             const tableBody = document.querySelector('#prodOptionTable');
-
             const newColorInput = newRow.querySelector('.colorInput');
+            // 이전에 선택한 색상값 넣어주기
             newColorInput.value = colorValue;
 
             tableBody.appendChild(newRow);
-
-            // name 속성 증가
-            let colorInput2 = newRow.querySelector('.colorInput');
-            console.log(colorInput2);
-            console.log(optionIndex);
-
-            const newColor = 'optionList[' + optionIndex + '].color';
-            const newColorName = 'optionList[' + optionIndex + '].colorName';
-            const newSize = 'optionList[' + optionIndex + '].size';
-            const newOpStock = 'optionList[' + optionIndex + '].opStock';
-            colorInput2.setAttribute('name', newColor);
-            newRow.querySelector('.colorName').setAttribute('name', newColorName);
-            newRow.querySelector('.sizeSelect').setAttribute('name', newSize);
-            newRow.querySelector('.opStockInput').setAttribute('name', newOpStock);
-
-
-
-            optionIndex++; // 인덱스 값 증가
         }
+        // 모든 옵션 품목추가 버튼 클릭
+        function pushOptionList(e){
+            e.preventDefault();
+            const trList = document.getElementsByClassName('optionListTr');
+            const optionDTOList = [];
+            optionDTOList.length = 0;
+            // 각 tr 요소에 대해 반복
+            for (const tr of trList) {
+                const colorInput = tr.querySelector('.colorInput');
+                const colorValue = colorInput.value;
 
+                const sizeSelect = tr.querySelector('.sizeSelect');
+                const selectedSize = sizeSelect.value;
+
+                const opStockInput = tr.querySelector('.opStockInput');
+                const opStockValue = opStockInput.value;
+
+                const colorNameInput = tr.querySelector('.colorName');
+                const colorNameValue = colorNameInput.value;
+
+                // OptionDTO 객체 생성
+                const optionDTO = {
+                    opStock: opStockValue,
+                    color: colorValue,
+                    colorName: colorNameValue,
+                    size: selectedSize
+                };
+
+                // OptionDTO 객체를 배열에 추가
+                optionDTOList.push(optionDTO);
+            }
+            console.log(optionDTOList);
+            const optDTOListInput = document.getElementById('optionDTOList');
+            optDTOListInput.value = JSON.stringify(optionDTOList); // 배열을 JSON 문자열로 변환하여 할당
+            alert('옵션 등록 성공');
+
+        }
     </script>
                 <nav>
                     <h3>상품등록</h3>
@@ -155,6 +178,10 @@
                                     <td>재고수량</td>
                                     <td><input type="text" name="stock"/> 개</td>
                                 </tr>
+                                <tr style="display: none" id="amountTr">
+                                    <td>무게</td>
+                                    <td><input type="text" name="amount" value="0"/> g</td>
+                                </tr>
                                 <tr>
                                     <td>배송비</td>
                                     <td>
@@ -198,7 +225,7 @@
                                     </tr>
                                     </thead>
                                     <tbody class="center" id="eManualOptionTbody">
-                                    <tr class="eHeading eManualOptionRow" optiongroup="0">
+                                    <tr class="eHeading eManualOptionRow optionListTr" optiongroup="0">
                                         <td>
                                             <datalist id="list" class="list">
                                                 <option>#d8cec5</option>
@@ -207,23 +234,23 @@
                                                 <option>#303030</option>
                                                 <option>#bb0000</option>
                                             </datalist>
-                                            <input type="color" name="optionList[0].color" list="list" style="width:70px;" class="colorInput">
-                                            <input id="colorName" name="optionList[0].colorName" type="text" class="fText" style="width:150px;" placeholder="색상 이름을 입력">
+                                            <input type="color" name="color" list="list" style="width:70px;" class="colorInput">
+                                            <input id="colorName" name="colorName" type="text" class="fText colorName" style="width:150px;" placeholder="색상 이름을 입력">
                                         </td>
                                         <td>
-                                            <select name="optionList[0].size" id="sizeSelect" class="sizeSelect">
+                                            <select name="size" id="sizeSelect" class="sizeSelect">
                                                 <option value="S">S</option>
                                                 <option value="M">M</option>
                                                 <option value="L">L</option>
                                                 <option value="Xl">XL</option>
-                                                <option value="Xl">XXL</option>
+                                                <option value="XXL">XXL</option>
                                             </select>
                                         </td>
                                         <td class="left eBubbleArea" id="eOptionBubbleArea_0">
                                             <div class="bubbleArea">
                                                 <div class="mBubble">
                                                     <div class="box">
-                                                        <input class="ec-uipack-bubble-move-ctrl opStockInput" type="text" name="optionList[0].opStock" id="prodOptionStock">
+                                                        <input class="ec-uipack-bubble-move-ctrl opStockInput" type="text" name="opStock" id="prodOptionStock">
                                                     </div>
                                                 </div>
                                             </div>
@@ -241,7 +268,7 @@
 
                             <div class="mCtrl typeFooter">
                                 <div class="gRight">
-                                    <button id="optionSubmit">모든 옵션 품목추가</button>
+                                    <button id="optionSubmit" onclick="pushOptionList(event)">모든 옵션 품목추가</button>
                                 </div>
                             </div>
                         </div>
@@ -274,7 +301,7 @@
                                 </tr>                                
                             </table>                                
                         </section>
-                        
+                        <input type="text" name="optionDTOList" id="optionDTOList">
                         <input type="submit" value="등록하기"/>
                     </form>
                 </article>
