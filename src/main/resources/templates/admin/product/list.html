@@ -40,9 +40,57 @@
                 searchForm.insertAdjacentHTML('beforeend', keywordInputTag);
             }
         }
+        // 폼 전송
         function formSubmit(){
             const searchForm = document.getElementById('searchForm');
             searchForm.submit();
+        }
+        // 전체 선택 클릭
+        function totalCheck(){
+            const prodCheckBox = document.querySelectorAll('.prodCheckBox');
+            let checkedTurn = 0;
+                // 체크한 경우
+                if (checkedTurn === 0) {
+                    prodCheckBox.forEach(function(checkbox) {
+                        checkbox.checked = true;
+                    });
+                    checkedTurn = 1;
+                    // 체크 해제한 경우
+                } else {
+                    prodCheckBox.forEach(function(checkbox) {
+                        checkbox.checked = false;
+                    });
+                    checkedTurn = 0;
+                }
+        }
+        // 상품 삭제
+        function prodDelete(){
+            if(confirm('선택한 상품을 삭제하세겠습니까?')){
+                const prodCheckBox = document.querySelectorAll('.prodCheckBox');
+                // 삭제할 상품의 번호를 저장하는 배열
+                let prodNoArray = [];
+
+                // forEach로 순회하며 checked된 상품의 번호 찾기
+                prodCheckBox.forEach(check => {
+                    // check된 상품번호 배열에 저장
+                    if (check.checked){
+                        prodNoArray.push(check.value);
+                    }
+                })
+                fetch("/lotteon/admin/product/delete", {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({prodNoArray: prodNoArray})
+                })
+                    .then(response => {
+                        if(response != null){
+
+                        }
+                    })
+                    .catch(err =>{
+                        console.log(err);
+                    });
+            }
         }
     </script>
                 <nav>
@@ -66,7 +114,7 @@
                     <table>
                         <form id="formCheck" th:action="@{/admin/product/delete}" method="get">
                             <tr>
-                                <th><input type="checkbox" name="all"/></th>
+                                <th><input type="checkbox" name="all" onclick="totalCheck()"/></th>
                                 <th>이미지</th>
                                 <th>상품코드</th>
                                 <th>상품명</th>
@@ -82,7 +130,7 @@
                             </tr>
                             <th:block th:each="product, loop : ${adminPageResponseDTO.dtoList}">
                                 <tr>
-                                    <td><input type="checkbox" name="prodNo" th:value="${product.prodNo}"/></td>
+                                    <td><input type="checkbox" name="prodNo" th:value="${product.prodNo}" class="prodCheckBox"/></td>
                                     <td>
                                         <img th:src="@{'/prodImg/'+${product.thumb1}}"
                                              class="thumb"
@@ -106,7 +154,7 @@
                             </th:block>
                         </form>
                     </table>
-                    <input type="button" value="선택삭제" />
+                    <button onclick="prodDelete()">선택삭제</button>
                     <div class="paging">
                         <span class="prev">
                             <a th:if="${adminPageResponseDTO.keyword == null}" class="page-link" th:href="@{/admin/product/list(pg=${adminPageResponseDTO.start - 1})}">&#60;</a>
