@@ -40,10 +40,10 @@
                   <tr>
                     <td>문의유형</td>
                     <td>
-                      <select name="cate" id="cate" required>
+                      <select name="typeName" id="typeName" required>
                         <option selected disabled th:value="0">선택</option>
-                        <th:block th:each="cateOption : ${cates}">
-                          <option th:value="${cateOption.cate}" th:text="${cateOption.cateName}"></option>
+                        <th:block th:each="boardType : ${boardTypes}">
+                          <option th:value="${boardType.typeName}" th:text="${boardType.typeName}"></option>
                         </th:block>
                       </select>
                     </td>
@@ -62,7 +62,7 @@
                   </tr>
                 </table>
                 <div>
-                  <a th:href="@{/cs/qna/list(group='qna', cate='member')}" class="btnWriteCancel">취소하기</a>
+                  <a th:href="@{/cs/qna/list(group='qna', cate=${cate})}" class="btnWriteCancel">취소하기</a>
                   <input type="submit" class="btnSubmit" value="등록하기"/>
                 </div>
               </form>

@@ -27,6 +27,11 @@ public class CsCateService {
         return boardCateEntities;
     }
 
+    public List<BoardTypeEntity> getTypeName(){
+        List<BoardTypeEntity> boardTypeEntities = boardTypeRepository.findAll();
+        return boardTypeEntities;
+    }
+
 
     public List<BoardTypeEntity> findByCate(String cate){
         return boardTypeRepository.findByCate(cate);
