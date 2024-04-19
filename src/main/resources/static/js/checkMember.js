@@ -5,6 +5,7 @@
 let isUidOk = false;
 let isPassOk = false;
 let isNameOk = false;
+let isNickOk  = false;
 let isEmailOk = false;
 let isHpOk = false;
 let isEmailCodeOk = false;
@@ -13,6 +14,7 @@ let isEmailCodeOk = false;
 const reUid = /^[a-z]+[a-z0-9]{4,19}$/g;
 const rePass = /^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\(\\)\-_=+]).{5,16}$/;
 const reName = /^[가-힣]{2,10}$/
+const reNick  = /^[a-zA-Zㄱ-힣0-9][a-zA-Zㄱ-힣0-9]*$/;
 const reEmail = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
 const reHp = /^01(?:0|1|[6-9])-(?:\d{4})-\d{4}$/;
 
@@ -117,7 +119,6 @@ window.onload = function () {
 
     document.registerForm.name.addEventListener('focusout', () => {
         const value = document.registerForm.name.value;
-        const inputName = document.registerForm.name;
 
         if (!value.match(reName)) {
             resultName.innerText = '이름 형식이 맞지 않습니다.';
@@ -128,6 +129,56 @@ window.onload = function () {
             isNameOk = true;
         }
     });
+
+    // 별명 유효성 검사
+    const resultNick=document.getElementById('result_nick');
+    document.registerForm.nick.addEventListener('focusout',()=>{
+        const type=document.registerForm.nick.dataset.type;
+        const input=document.registerForm[type];
+
+        console.log('value : '+ input.value);
+        
+        if(!input.value.match(reNick)) {
+            resultNick.innerText = '닉네임 형식이 맞지 않습니다.';
+            resultNick.style.color = 'red';
+            return;
+        }
+        
+        async function fetchGet(url){
+            console.log("fetchData1...1");
+            try {
+                console.log("fetchData1...2");
+                const response = await fetch(url);
+                console.log("here1");
+
+                if (!response.ok) {
+                    console.log("here2");
+                    throw new Error('response not ok');
+                }
+
+                const data = await response.json();
+                console.log("data1 : " + data);
+                return data;
+            } catch (err) {
+                console.log(err)
+            }
+        }
+        setTimeout(async ()=>{
+            const data = await fetchGet(`/lotteon/member/check/${type}/${input.value}`);
+
+            if (data.result > 0) {
+                resultHp.innerText = '이미 사용중인 닉네임 입니다.';
+                resultHp.style.color='red';
+                isHpOk = false;
+            } else {
+                resultHp.innerText = '사용 가능한 닉네임 입니다.';
+                resultHp.style.color='green';
+                isHpOk = true;
+            }
+        }, 1000);
+        
+    });
+            
 
     // 이메일 유효성 검사
     const divEmailCode = document.getElementById('divEmailCode');
@@ -340,6 +391,10 @@ window.onload = function () {
 
         if (!isNameOk) {
             alert('이름이 유효하지 않습니다.');
+            return false;
+        }
+        if (!isNickOk) {
+            alert('닉네임이 유효하지 않습니다.');
             return false;
         }
 

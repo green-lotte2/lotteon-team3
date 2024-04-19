@@ -9,6 +9,7 @@
         select count(*) from member
         <where>
             <if test="type=='uid'">uid=#{value}</if>
+            <if test="type == 'nick'">nick=#{value}</if>
             <if test="type=='hp'">hp=#{value}</if>
             <if test="type=='email'">email=#{value}</if>
         </where>
