@@ -35,7 +35,11 @@ public class PageRequestDTO{
     private String searchType;
     private String searchKeyword;
 
-    public Pageable getPageable(){
-        return PageRequest.of(this.pg -1, this.size, Sort.by(this.sort).descending());
+    public Pageable getPageable() {
+        if (this.how.equals("ASC")) {
+            return PageRequest.of(this.pg - 1, this.size, Sort.by(this.sort).descending());
+        } else {
+            return PageRequest.of(this.pg - 1, this.size, Sort.by(this.sort).descending());
+        }
     }
 }
