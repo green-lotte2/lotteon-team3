@@ -33,38 +33,44 @@ public class CsController {
     }
 
     @GetMapping(value = "/cs/qna/list")
-    public String qnaList(Model model, CsPageRequestDTO csPageRequestDTO) {
+    public String qnaList(Model model, CsPageRequestDTO csPageRequestDTO, String group) {
         CsPageResponseDTO csPageResponseDTO = csService.findByCate(csPageRequestDTO);
 
         model.addAttribute(csPageResponseDTO);
         model.addAttribute("cate", csPageRequestDTO.getCate());
+        model.addAttribute("group", group);
+
         return "/cs/qna/list";
     }
 
     // QnA 보기 페이지 매핑
     // 공지사항 보기 페이지 매핑
     @GetMapping("/cs/qna/view")
-    public String qnaView(Model model, int bno, String cate){
+    public String qnaView(Model model, int bno, String cate, String group){
         BoardDTO boardDTO = csService.findByBnoForBoard(bno);
 
         model.addAttribute("boardDTO", boardDTO);
         model.addAttribute("cate", cate);
+        model.addAttribute("group", group);
 
         return "/cs/qna/view";
     }
     // QnA 쓰기 페이지 매핑
     @GetMapping("/cs/qna/write")
-    public String qnaWrite(HttpServletRequest request, Model model, String cate) {
+    public String qnaWrite(HttpServletRequest request, Model model, String cate, String group) {
 
         List<BoardCateEntity> cates = csCateService.getCate();
         model.addAttribute("cates", cates);
+        model.addAttribute("cate", cate);
+
+        model.addAttribute("group", group);
 
         return "/cs/qna/write";
     }
 
     // 공지사항 목록 매핑
     @GetMapping("/cs/notice/list")
-    public String noticeList(Model model, CsPageRequestDTO csPageRequestDTO) {
+    public String noticeList(Model model, CsPageRequestDTO csPageRequestDTO, String group) {
         if (csPageRequestDTO.getCate() == null) {
             csPageRequestDTO.setCate("null");
         }
@@ -72,16 +78,18 @@ public class CsController {
 
         model.addAttribute(csPageResponseDTO);
         model.addAttribute("cate", csPageRequestDTO.getCate());
+        model.addAttribute("group", group);
         return "/cs/notice/list";
     }
 
     // 공지사항 보기 페이지 매핑
     @GetMapping("/cs/notice/view")
-    public String noticeView(Model model, int bno, String cate){
+    public String noticeView(Model model, int bno, String cate, String group){
         BoardDTO boardDTO = csService.findByBnoForBoard(bno);
 
         model.addAttribute("boardDTO", boardDTO);
         model.addAttribute("cate", cate);
+        model.addAttribute("group", group);
 
         return "/cs/notice/view";
     }
