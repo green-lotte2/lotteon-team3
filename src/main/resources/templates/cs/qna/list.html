@@ -5,11 +5,18 @@
 
 <section id="cs" layout:fragment = "content">
         <div class="qna">
-          <nav>
-            <div>
-              <p>홈<span>></span>문의하기</p>
-            </div>
-          </nav>
+            <nav>
+                <div>
+                    <p>홈
+                        <span>></span>
+                        <span th:switch="${group}">
+                      <span th:case="notice" style="font-size: 16px; color: black;">공지사항</span>
+                      <span th:case="qna" style="font-size: 16px; color: black;">고객문의</span>
+                      <span th:case="faq" style="font-size: 16px; color: black;">자주묻는질문</span>
+                      </span>
+                    </p>
+                </div>
+            </nav>
           <section class="list">
             <aside>
               <h2>문의하기</h2>
@@ -65,7 +72,8 @@
                 </div>
               </th:block>
 
-              <a th:href="@{/cs/qna/write(group=qna)}" class="btnWrite">문의하기</a>
+                <a th:href="@{/cs/qna/write(group='qna', cate=${cate})}" class="btnWrite">문의하기</a>
+
 
             </article>
           </section>

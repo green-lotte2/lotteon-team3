@@ -7,7 +7,14 @@
         <div class="notice">
           <nav>
             <div>
-              <p>홈<span>></span>공지사항</p>
+              <p>홈
+                <span>></span>
+                <span th:switch="${group}">
+                      <span th:case="notice" style="font-size: 16px; color: black;">공지사항</span>
+                      <span th:case="qna" style="font-size: 16px; color: black;">고객문의</span>
+                      <span th:case="faq" style="font-size: 16px; color: black;">자주묻는질문</span>
+                      </span>
+              </p>
             </div>
           </nav>
           <section class="view">
@@ -37,7 +44,7 @@
                 </p><br><br>
 
               </div>
-              <a th:href="@{/cs/notice/list(cate='null')}" class="btnList">목록보기</a>
+              <a th:href="@{/cs/notice/list(group='notice', cate=${cate})}" class="btnList">목록보기</a>
             </article>
           </section>
         </div>

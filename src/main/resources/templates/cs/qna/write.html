@@ -8,7 +8,14 @@
         <div class="qna">
           <nav>
             <div>
-              <p>홈<span>></span>문의하기</p>
+              <p>홈
+                <span>></span>
+                <span th:switch="${group}">
+                      <span th:case="notice" style="font-size: 16px; color: black;">공지사항</span>
+                      <span th:case="qna" style="font-size: 16px; color: black;">고객문의</span>
+                      <span th:case="faq" style="font-size: 16px; color: black;">자주묻는질문</span>
+                      </span>
+              </p>
             </div>
           </nav>
           <section class="write">
@@ -26,36 +33,36 @@
             </aside>
             <article>
               <form th:action="@{/cs/qna/write}" method="POST" enctype="multipart/form-data">
-                <input type="hidden" name="group" value="qna" />
+                <input type="" name="group" readonly th:value="${group}" />
+                <input type="" name="cate" readonly th:value="${cate}" />
                 <!--<input type="hidden" name="uid" th:value="${#authentication.principal.member.uid}" /> 나중에 추가하기-->
                 <table>
                   <tr>
                     <td>문의유형</td>
                     <td>
-                      <select name="type">
-                        <option value="0">선택</option>
-                        <option>가입</option>
-                        <option>탈퇴</option>
-                        <option>회원정보</option>
-                        <option>로그인</option>
+                      <select name="cate" id="cate" required>
+                        <option selected disabled th:value="0">선택</option>
+                        <th:block th:each="cateOption : ${cates}">
+                          <option th:value="${cateOption.cate}" th:text="${cateOption.cateName}"></option>
+                        </th:block>
                       </select>
                     </td>
                   </tr>
                   <tr>
-                    <td>문의제목</td>                  
+                    <td>문의제목</td>
                     <td>
                       <input type="text" name="title" placeholder="제목을 입력하세요."/>
                     </td>
-                  </tr>                
+                  </tr>
                   <tr>
-                    <td>문의내용</td>                  
+                    <td>문의내용</td>
                     <td>
                       <textarea name="content" placeholder="내용을 입력하세요."></textarea>
                     </td>
                   </tr>
                 </table>
                 <div>
-                  <a th:href="@{/cs/qna/list(group=qna)}" class="btnWriteCancel">취소하기</a>
+                  <a th:href="@{/cs/qna/list(group='qna', cate='member')}" class="btnWriteCancel">취소하기</a>
                   <input type="submit" class="btnSubmit" value="등록하기"/>
                 </div>
               </form>
