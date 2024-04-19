@@ -24,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 @Slf4j
@@ -130,6 +131,14 @@ public class AdminController {
         return "redirect:/admin/product/list";
     }
 
+    // 상품 삭제
+    @ResponseBody
+    @PostMapping("/admin/product/delete")
+    public String prodDelete(@RequestBody Map<String, int[]> requestData){
+        int[] prodNoArray = requestData.get("prodNoArray");
+        log.info("상품 삭제 Cont 1 : " + requestData);
+        return adminService.prodDelete(prodNoArray);
+    }
     // 관리자 게시판 목록 페이지 매핑
     @GetMapping("/admin/cs/list")
     public String boardList(Model model, AdminBoardPageRequestDTO adminBoardPageRequestDTO) {

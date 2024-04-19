@@ -159,7 +159,13 @@ public class AdminService {
                 .build();
 
     }
+    // 관리자 상품 삭제
+    public String prodDelete(int[] prodNoArray){
+        log.info("관리자 상품 삭제 Serv 1 : " + Arrays.toString(prodNoArray));
+        //List<Integer> prodNo = Arrays.asList(prodNoArray);
 
+        return "{key : value}";
+    }
     // 관리자 상품 등록 - DB insert
     @Transient
     public void insertProduct(String optionDTOListJson,
@@ -340,6 +346,7 @@ public class AdminService {
                 .total(total)
                 .build();
     }
+
     // 관리자 게시판 관리 - 게시글 삭제
     public ResponseEntity<?> boardDelete(int bno){
         log.info("관리자 게시글 삭제 Serv 1 : " + bno);
