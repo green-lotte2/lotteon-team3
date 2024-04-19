@@ -376,7 +376,7 @@ button[type=submit] {
 #admin-index > div > div > article > div > a > span:nth-child(1) {
     float: left;
     display: block;
-    width: 50px;
+    width: 70px;
     font-size: 13px;
     text-overflow: ellipsis;
     white-space: nowrap;
