@@ -10,12 +10,12 @@ import lombok.*;
 @Builder
 @ToString
 @Entity
-@Table(name = "product_cate2")
-public class Cate2 {
+@Table(name = "product_cate3")
+public class Cate3 {
     @Id
     private int cate2;
 
-    private int cate1;
+    private int cate3;
 
-    private String c2Name;
+    private String c3Name;
 }
