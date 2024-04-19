@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class MemberDTO {
     private String uid;
-    private String pass1;
+    private String pass;
     private String name;
     private String gender;
     private String hp;
