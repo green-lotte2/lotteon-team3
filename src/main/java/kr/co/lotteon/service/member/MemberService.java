@@ -33,7 +33,7 @@ public class MemberService {
     // 회원 가입 - DB 입력
     public void save(MemberDTO memberDTO){
         // 비밀번호 암호화
-        memberDTO.setPass1(passwordEncoder.encode(memberDTO.getPass1()));
+        memberDTO.setPass(passwordEncoder.encode(memberDTO.getPass()));
         Member member = modelMapper.map(memberDTO, Member.class);
         memberRepository.save(member); 
     }
