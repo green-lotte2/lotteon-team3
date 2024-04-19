@@ -118,7 +118,8 @@ public class CsService {
         List<BoardDTO> dtoList = new ArrayList<>();
         List<BoardTypeEntity> boardTypeEntities = typeRepository.findByCate(cate);
         for (BoardTypeEntity boardTypeEntity : boardTypeEntities) {
-            List<BoardEntity> boardEntities = boardRepository.findTop10ByTypeNo(boardTypeEntity.getTypeNo());
+            // 최신 글이 먼저 나오도록 변경된 부분
+            List<BoardEntity> boardEntities = boardRepository.findTop10ByTypeNoOrderByRdateDesc(boardTypeEntity.getTypeNo());
             List<BoardDTO> boardDTOS = boardEntities
                     .stream()
                     .map(entity -> modelMapper.map(entity, BoardDTO.class))
@@ -127,7 +128,7 @@ public class CsService {
                 dtoList.add(boardDTO);
             }
         }
-
         return dtoList;
     }
+
 }

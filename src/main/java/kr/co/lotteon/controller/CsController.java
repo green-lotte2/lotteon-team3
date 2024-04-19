@@ -7,6 +7,7 @@ import kr.co.lotteon.dto.cs.CsPageRequestDTO;
 import kr.co.lotteon.dto.cs.CsPageResponseDTO;
 
 import kr.co.lotteon.entity.cs.BoardCateEntity;
+import kr.co.lotteon.entity.cs.BoardTypeEntity;
 import kr.co.lotteon.service.cs.CsCateService;
 import kr.co.lotteon.service.cs.CsService;
 import lombok.RequiredArgsConstructor;
@@ -59,8 +60,8 @@ public class CsController {
     @GetMapping("/cs/qna/write")
     public String qnaWrite(HttpServletRequest request, Model model, String cate, String group) {
 
-        List<BoardCateEntity> cates = csCateService.getCate();
-        model.addAttribute("cates", cates);
+        List<BoardTypeEntity> boardTypes = csCateService.getTypeName();
+        model.addAttribute("boardTypes", boardTypes);
         model.addAttribute("cate", cate);
 
         model.addAttribute("group", group);

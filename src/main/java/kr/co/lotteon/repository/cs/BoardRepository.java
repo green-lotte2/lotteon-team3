@@ -18,5 +18,5 @@ public interface BoardRepository extends JpaRepository<BoardEntity, Integer>, Bo
     @Query("SELECT b FROM BoardEntity b WHERE b.group = :group AND (b.cate= :cate OR :cate = 'null')")
     public Page<BoardEntity> findByGroupAndCate(String group, String cate, Pageable pageable);
 
-    public List<BoardEntity> findTop10ByTypeNo(int typeNo);
+    List<BoardEntity> findTop10ByTypeNoOrderByRdateDesc(int typeNo);
 }
