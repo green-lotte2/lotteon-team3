@@ -24,6 +24,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     private String staticServerPath;
 
 
+    
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("prodImg/**")
