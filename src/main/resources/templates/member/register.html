@@ -10,6 +10,8 @@
                 </nav>
 				<form method="POST" name="registerForm">
 					<input type="hidden" th:name="type" th:value="${type}">
+					<!-- 일반회원시 level 1 -->
+					<input type="hidden" name="level" value="1">
 					<section>
 						<table>
 							<caption>필수 정보입력</caption>
