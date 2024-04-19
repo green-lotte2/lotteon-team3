@@ -176,19 +176,6 @@ public class AdminService {
         log.info("관리자 상품 등록 service5 detail860 : " + detail860);
         log.info("관리자 상품 등록 service6 json : " + optionDTOListJson);
 
-
-
-        // JON 문자열 파싱 -> OptionDTO 리스트로 변환
-        ObjectMapper objectMapper = new ObjectMapper();
-        List<OptionDTO> optionDTOList = null;
-        try {
-            OptionDTO[] optionDTOArray = objectMapper.readValue(optionDTOListJson, OptionDTO[].class);
-            optionDTOList = Arrays.asList(optionDTOArray);
-            log.info(optionDTOList.toString());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
         // 상품 코드 생성
         String cate1 = String.valueOf(productDTO.getCate1());
         String cate2 = String.valueOf(productDTO.getCate2());
@@ -268,6 +255,18 @@ public class AdminService {
                 log.info("리사이징 끝");
 
 
+                // JON 문자열 파싱 -> OptionDTO 리스트로 변환
+                ObjectMapper objectMapper = new ObjectMapper();
+                List<OptionDTO> optionDTOList = null;
+                try {
+                    OptionDTO[] optionDTOArray = objectMapper.readValue(optionDTOListJson, OptionDTO[].class);
+                    optionDTOList = Arrays.asList(optionDTOArray);
+                    log.info(optionDTOList.toString());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                // option 정보 Entity에 입력 후 DB 저장
                 if (optionDTOList != null){
                     for (OptionDTO option : optionDTOList) {
 

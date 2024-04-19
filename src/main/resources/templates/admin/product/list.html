@@ -16,7 +16,7 @@
                 keywordInput.remove();
 
                 // cate1용 <select> 태그 생성
-                let cate2Option = `<select name="keyword" id="keywordInput">`;
+                let cate2Option = `<select name="keyword" id="keywordInput" onchange="formSubmit()">`;
 
                 // cate1 갯수만큼  <option> 태그 추가
                 for (const cate1 of cate1s) {
@@ -40,6 +40,10 @@
                 searchForm.insertAdjacentHTML('beforeend', keywordInputTag);
             }
         }
+        function formSubmit(){
+            const searchForm = document.getElementById('searchForm');
+            searchForm.submit();
+        }
     </script>
                 <nav>
                     <h3>상품목록</h3>
@@ -52,7 +56,7 @@
                     <form th:action="@{/admin/product/list}" method="get" id="searchForm">
                         <select name="type" onchange="findCate(this.value)">
                             <option value="prodName">상품명</option>
-                            <option value="prodNo">상품코드</option>
+                            <option value="prodCode">상품코드</option>
                             <option value="cate1" >상품분류</option>
                             <option value="company">제조사</option>
                             <option value="seller">판매자</option>
@@ -87,7 +91,7 @@
                                     <td th:text="${product.prodCode}">상품코드</td>
                                     <td th:text="${product.prodName}">상품명</td>
                                     <td th:text="${product.colorName}">색상</td>
-                                    <td><span th:style="'background-color: ' + ${product.color}">ㅤ</span></td>
+                                    <td><div th:style="'background-color: ' + ${product.color}" class="colorListDiv">ㅤ</div></td>
                                     <td th:text="${product.price}">가격</td>
                                     <td th:text="${product.discount}">할인율</td>
                                     <td th:text="${product.point}">적립금</td>
