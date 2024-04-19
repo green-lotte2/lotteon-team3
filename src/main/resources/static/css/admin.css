@@ -376,7 +376,7 @@ button[type=submit] {
 #admin-index > div > div > article > div > a > span:nth-child(1) {
     float: left;
     display: block;
-    width: 50px;
+    width: 70px;
     font-size: 13px;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -630,11 +630,15 @@ col {
 }
 #admin-product-list > section > table  tr > th{
     padding: 10px 0;
-    background: #f6f6f6;
+    background: #242238;
+    color: #F0F4F9;
+    border-left: 1px solid #F0F4F9;
 }
 #admin-product-list > section > table  tr > td {
     background: #fff;
     text-align: center;
+    font-size: 14px;
+    border-left: 1px solid #f6f6f6;
     box-sizing: border-box;
 }
 #admin-product-list > section > table  tr > td:nth-child(1) {width: 20px;}
@@ -642,7 +646,7 @@ col {
 #admin-product-list > section > table  tr > td:nth-child(3) {width: 80px;}
 #admin-product-list > section > table  tr > td:nth-child(4) {width: auto; text-align: left;}
 #admin-product-list > section > table  tr > td:nth-child(5) {width: 80px;}
-#admin-product-list > section > table  tr > td:nth-child(6) {width: 80px;}
+#admin-product-list > section > table  tr > td:nth-child(6) {width: 80px; text-align: center;}
 #admin-product-list > section > table  tr > td:nth-child(7) {width: 80px;}
 #admin-product-list > section > table  tr > td:nth-child(8) {width: 80px;}
 #admin-product-list > section > table  tr > td:nth-child(9) {width: 80px;}
@@ -656,7 +660,11 @@ col {
     width: 100px;
     margin-top: 10px;
 }
-
+.colorListDiv {
+    margin-left: 13px;
+    width:35px;
+    height:35px;
+}
 /* 관리자 페이지 공통 */
 .paging {
     width: 100%;

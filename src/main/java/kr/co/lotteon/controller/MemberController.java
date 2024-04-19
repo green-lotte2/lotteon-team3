@@ -73,7 +73,6 @@ public class MemberController {
                                        @PathVariable("type") String type,
                                        @PathVariable("value") String value) {
 
-        log.info("memberController.......");
         log.info("type={}", type);
         log.info("value={}", value);
         int count = memberService.selectCountMember(type, value);
@@ -114,7 +113,7 @@ public class MemberController {
     public String register(MemberDTO memberDTO, HttpServletRequest request){
 
         //비밀번호 암호화 문제 발생부분
-        log.info("PASSWORD "+memberDTO.getPass1());
+        log.info("PASSWORD "+memberDTO.getPass());
 
         memberDTO.setRegip(request.getRemoteAddr());
         memberService.save(memberDTO);

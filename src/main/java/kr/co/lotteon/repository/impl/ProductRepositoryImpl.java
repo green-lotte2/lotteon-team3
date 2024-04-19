@@ -58,11 +58,11 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
             expression = qProduct.prodName.contains(keyword);
             log.info("prodName 검색 : " + expression);
 
-        }else if(type.equals("prodNo")){
+        }else if(type.equals("prodCode")){
             // 입력된 키워드를 정수형으로 변환
-            int prodNo = Integer.parseInt(keyword);
-            expression = qProduct.prodNo.eq(prodNo);
-            log.info("prodNo 검색 : " + expression);
+            int prodCode = Integer.parseInt(keyword);
+            expression = qProduct.prodCode.eq(prodCode);
+            log.info("prodCode 검색 : " + expression);
 
         }else if(type.equals("cate1")){
             int cate1 = Integer.parseInt(keyword);

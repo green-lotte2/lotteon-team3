@@ -131,7 +131,6 @@ window.onload = function () {
 
     // 이메일 유효성 검사
     const divEmailCode = document.getElementById('divEmailCode');
-
     const inputEmail = document.getElementById('inputEmail');
     const btn_email = document.getElementById('btn_email');
     const resultEmail = document.getElementById('result_email');
