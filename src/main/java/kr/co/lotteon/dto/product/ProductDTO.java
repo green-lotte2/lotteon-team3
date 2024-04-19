@@ -16,6 +16,7 @@ public class ProductDTO {
     private int prodNo;
     private int cate1;
     private int cate2;
+    private int cate3;
     private int delivery;
     private int discount;
     private int hit;
