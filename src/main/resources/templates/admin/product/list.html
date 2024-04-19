@@ -66,6 +66,8 @@
                                 <th>이미지</th>
                                 <th>상품코드</th>
                                 <th>상품명</th>
+                                <th>색상명</th>
+                                <th>색상</th>
                                 <th>판매가격</th>
                                 <th>할인율</th>
                                 <th>포인트</th>
@@ -82,8 +84,10 @@
                                              class="thumb"
                                              style="width: 60px; height: 60px;">
                                     </td>
-                                    <td th:text="${product.prodNo}">상품코드</td>
+                                    <td th:text="${product.prodCode}">상품코드</td>
                                     <td th:text="${product.prodName}">상품명</td>
+                                    <td th:text="${product.colorName}">색상</td>
+                                    <td><span th:style="'background-color: ' + ${product.color}">ㅤ</span></td>
                                     <td th:text="${product.price}">가격</td>
                                     <td th:text="${product.discount}">할인율</td>
                                     <td th:text="${product.point}">적립금</td>

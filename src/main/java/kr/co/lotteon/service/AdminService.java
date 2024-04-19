@@ -174,9 +174,11 @@ public class AdminService {
         log.info("관리자 상품 등록 service3 thumb230 : " + thumb230);
         log.info("관리자 상품 등록 service4 thumb456 : " + thumb456);
         log.info("관리자 상품 등록 service5 detail860 : " + detail860);
+        log.info("관리자 상품 등록 service6 json : " + optionDTOListJson);
 
 
-        // OptionDTO 리스트로 변환
+
+        // JON 문자열 파싱 -> OptionDTO 리스트로 변환
         ObjectMapper objectMapper = new ObjectMapper();
         List<OptionDTO> optionDTOList = null;
         try {
@@ -266,8 +268,6 @@ public class AdminService {
                 log.info("리사이징 끝");
 
 
-
-
                 if (optionDTOList != null){
                     for (OptionDTO option : optionDTOList) {
 
@@ -291,6 +291,7 @@ public class AdminService {
                 }else {
                     // DTO -> Entity
                     Product product = modelMapper.map(productDTO, Product.class);
+                    product.setColor("#FFFFFF");
                     log.info("관리자 상품 등록 service8 product : " + product.toString());
                     // 상품 정보 DB 저장
                     saveProduct = productRepository.save(product);
