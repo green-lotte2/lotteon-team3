@@ -13,9 +13,9 @@ import lombok.*;
 @Table(name = "product_cate3")
 public class Cate3 {
     @Id
-    private int cate2;
-
     private int cate3;
+
+    private int cate2;
 
     private String c3Name;
 }
