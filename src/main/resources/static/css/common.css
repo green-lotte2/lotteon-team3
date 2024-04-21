@@ -201,6 +201,10 @@ main > aside > .category > li > a:hover + ol {
 main > aside > .category ol:hover {
   display: block;
 }
+/*cate3 마우스 호버*/
+main > aside > .category > li > ol > li:hover > ol {
+  display: block;
+}
 
 main > aside > .category i {
   width: 22px;
