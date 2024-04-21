@@ -26,6 +26,8 @@ public class PageRequestDTO{
     @Builder.Default
     private int cate2 = 11;
 
+    private int cate3;
+
     @Builder.Default
     private String how = "DESC";
 

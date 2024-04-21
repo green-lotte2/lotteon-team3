@@ -1,8 +1,6 @@
 package kr.co.lotteon.controller;
 
-import kr.co.lotteon.dto.product.PageRequestDTO;
-import kr.co.lotteon.dto.product.PageResponseDTO;
-import kr.co.lotteon.dto.product.ProductDTO;
+import kr.co.lotteon.dto.product.*;
 import kr.co.lotteon.repository.product.Cate1Repository;
 import kr.co.lotteon.service.product.CateService;
 import kr.co.lotteon.service.product.ProductService;
@@ -11,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -31,6 +31,7 @@ public class ProductController {
     public String complete(){
         return "/product/complete";
     }
+
     // list (상품 목록) 페이지 매핑
     @GetMapping("/product/list")
     public String list(Model model, PageRequestDTO pageRequestDTO){
@@ -42,13 +43,16 @@ public class ProductController {
         // 카테고리 불러오기
         String c1Name = cateService.getc1Name(pageRequestDTO.getCate1());
         String c2Name = cateService.getc2Name(pageRequestDTO.getCate1(), pageRequestDTO.getCate2());
+        String c3Name = cateService.getc3Name(pageRequestDTO.getCate2(), pageRequestDTO.getCate3());
         log.info("c1Name : " + c1Name);
         log.info("c2Name : " + c2Name);
+        log.info("c3Name : " + c3Name);
 
         // list페이지에 사용하기 위해 참조
         model.addAttribute(pageResponseDTO);
         model.addAttribute("c1Name",c1Name);
         model.addAttribute("c2Name",c2Name);
+        model.addAttribute("c3Name",c3Name);
 
         return "/product/list";
     }
@@ -71,14 +75,27 @@ public class ProductController {
 
         ProductDTO prod = productService.selectByprodNo(productDTO.getProdNo());
         log.info("productDTO : " + prod.toString());
+        
         // 카테 가져오기
         String c1Name = cateService.getc1Name(productDTO.getCate1());
         String c2Name = cateService.getc2Name(productDTO.getCate1(), productDTO.getCate2());
+        String c3Name = cateService.getc3Name( productDTO.getCate2(), productDTO.getCate3());
+        
+        // 카테 리스트 가져오기
+        List<Cate1DTO> cate1DTOS = cateService.getCate1List();
+        List<Cate2DTO> cate2DTOS = cateService.getCate2List();
+        List<Cate3DTO> cate3DTOS = cateService.getCate3List();
         
         // 카테 참조
         model.addAttribute("c1Name",c1Name);
         model.addAttribute("c2Name",c2Name);
+        model.addAttribute("c3Name",c3Name);
         
+        // 카테 리스트 가져오기
+        model.addAttribute("cate1DTOS", cate1DTOS);
+        model.addAttribute("cate2DTOS", cate2DTOS);
+        model.addAttribute("cate3DTOS", cate3DTOS);
+
         // productDTO 참조
         model.addAttribute("productDTO", prod);
 

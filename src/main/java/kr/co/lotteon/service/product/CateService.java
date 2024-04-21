@@ -30,11 +30,21 @@ public class CateService {
     }
 
     public String getc2Name(int cate1, int cate2){
-        return cate2Repository.findBycate1AndCate2(cate1, cate2).getC2Name();
+        Cate2 cate2Entity = cate2Repository.findBycate1AndCate2(cate1, cate2);
+        if(cate2Entity != null){
+            return cate2Entity.getC2Name();
+        }else{
+            return null;
+        }
     }
 
     public String getc3Name(int cate2, int cate3){
-        return cate3Repository.findByCate2AndCate3(cate2, cate3).getC3Name();
+        Cate3 cate3Entity = cate3Repository.findByCate2AndCate3(cate2, cate3);
+        if(cate3Entity != null){
+            return cate3Entity.getC3Name();
+        }else{
+            return null;
+        }
     }
 
     // cate1 리스트 불러오기
