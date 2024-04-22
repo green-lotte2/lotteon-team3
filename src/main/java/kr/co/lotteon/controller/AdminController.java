@@ -8,11 +8,13 @@ import kr.co.lotteon.dto.admin.AdminProductPageRequestDTO;
 import kr.co.lotteon.dto.admin.AdminProductPageResponseDTO;
 import kr.co.lotteon.dto.cs.BoardDTO;
 import kr.co.lotteon.dto.product.*;
+import kr.co.lotteon.entity.member.Terms;
 import kr.co.lotteon.security.MyUserDetails;
 import kr.co.lotteon.service.AdminService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.objectweb.asm.TypeReference;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -34,6 +36,8 @@ import java.util.Random;
 public class AdminController {
 
     private final AdminService adminService;
+    private final ObjectMapper objectMapper;
+
 
     // admin index 페이지 매핑
     @GetMapping(value = {"/admin","/admin/index"})
@@ -46,6 +50,22 @@ public class AdminController {
         model.addAttribute("qnaList", qnaList);
         return "/admin/index";
     }
+    // admin index 페이지 그래프 조회
+    @GetMapping("/admin/orderChart")
+    public ResponseEntity<?> orderChart() {
+        List<Map<String, Object>> jsonResult = adminService.selectOrderForChart();
+        log.info("페이지 그래프 조회 Cont 1: " + jsonResult);
+        try {
+            // 객체를 JSON으로 변환
+            String json = objectMapper.writeValueAsString(jsonResult);
+            // JSON 문자열을 ResponseEntity로 반환
+            return ResponseEntity.ok().body(json);
+        } catch (Exception e) {
+            // JSON 변환에 실패한 경우
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("JSON 변환 오류");
+        }
+    }
+
     // config banner (관리자 배너 관리) 페이지 매핑
     @GetMapping("/admin/config/banner")
     public String banner(){
@@ -53,7 +73,10 @@ public class AdminController {
     }
     // config info (관리자 기본 환경 정보) 페이지 매핑
     @GetMapping("/admin/config/info")
-    public String info(){
+    public String info(Model model){
+        // 관리자 환경설정 기본환경 정보 - 약관 조회
+        Terms terms = adminService.findByTerms();
+        model.addAttribute("terms", terms);
         return "/admin/config/info";
     }
     // product list (관리자 상품 목록) 페이지 매핑
@@ -205,5 +228,18 @@ public class AdminController {
         model.addAttribute("board",board );
         model.addAttribute("adminBoardPageResponseDTO", adminBoardPageResponseDTO);
         return  "/admin/cs/view";
+    }
+    //// Seller //////////////////////////////////////////////////////////////////////////////////
+
+    // seller index 페이지 매핑
+    @GetMapping(value = {"/seller","/seller/index"})
+    public String seller(Model model){
+        // 공지사항 조회
+        List<BoardDTO> noticeList = adminService.adminSelectNotices();
+        // 고객문의 조회
+        List<BoardDTO> qnaList = adminService.adminSelectQnas();
+        model.addAttribute("noticeList", noticeList);
+        model.addAttribute("qnaList", qnaList);
+        return "/seller/index";
     }
 }

@@ -33,7 +33,7 @@
                                 <tr>
                                     <td>버전</td>
                                     <td>
-                                        v1.0.1
+                                        [[${appInfo.version}]]
                                     </td>
                                 </tr>
                             </table>
@@ -46,20 +46,24 @@
                             </p>
                             <table>
                                 <tr>
-                                    <td>1조</td>
-                                    <td><textarea name="art1"></textarea></td>
+                                    <td>전자금융거래</td>
+                                    <td><textarea name="art1" th:text="${terms.finance}" style="height: 200px; width: 900px"></textarea></td>
                                 </tr>
                                 <tr>
-                                    <td>1조</td>
-                                    <td><textarea name="art1"></textarea></td>
+                                    <td>위치정보이용</td>
+                                    <td><textarea name="art1" th:text="${terms.location}" style="height: 200px; width: 900px"></textarea></td>
                                 </tr>
                                 <tr>
-                                    <td>1조</td>
-                                    <td><textarea name="art1"></textarea></td>
+                                    <td>개인정보처리방침</td>
+                                    <td><textarea name="art1" th:text="${terms.privacy}" style="height: 200px; width: 900px"></textarea></td>
                                 </tr>
                                 <tr>
-                                    <td>1조</td>
-                                    <td><textarea name="art1"></textarea></td>
+                                    <td>판매회원약관</td>
+                                    <td><textarea name="art1" th:text="${terms.tax}" style="height: 200px; width: 900px"></textarea></td>
+                                </tr>
+                                <tr>
+                                    <td>구매회원약관</td>
+                                    <td><textarea name="art1" th:text="${terms.terms}" style="height: 200px; width: 900px"></textarea></td>
                                 </tr>
                             </table>                                
                         </section>                                                

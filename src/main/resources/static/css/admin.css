@@ -27,7 +27,12 @@ header > div {
 }
 header > div > .logo {
     float: left;
-    margin-top: 46px;
+    margin-top: 26px;
+    margin-left: 10px;
+}
+header > div > .logo  > img{
+    width: 150px;
+    height: auto;
 }
 header > div > p {
     float: right;

@@ -19,7 +19,7 @@
 <div id="admin-wrapper">
     <header>
         <div>
-            <a th:href="@{/admin/index}" class="logo"><img th:src="@{/admin/images/admin_logo.png}" alt="admin_logo"/></a>
+            <a th:href="@{/seller/index}" class="logo"><img th:src="@{/admin/images/seller_logo.png}" alt="admin_logo"/></a>
             <p>
                 <span>홍길동님 반갑습니다.</span>
                 <a th:href="@{/}">HOME |</a>
@@ -33,33 +33,11 @@
             <!-- Global Navigation Bar -->
             <ul id="gnb">
                 <li>
-                    <a href="#"><i class="fa fa-cogs" aria-hidden="true"></i>환경설정</a>
-                    <ol>
-                        <li><a th:href="@{/admin/config/info}">기본환경정보</a></li>
-                        <li><a th:href="@{/admin/config/banner}">배너관리</a></li>
-                    </ol>
-                </li>
-                <li>
                     <a href="#"><i class="fas fa-store" aria-hidden="true"></i>상점관리</a>
-                    <ol>
-                        <li><a th:href="@{/admin/}">판매자현황</a></li>
-                        <li><a th:href="@{/admin/product/list}">재고관리</a></li>
-                    </ol>
-                </li>
-                <li>
-                    <a href="#"><i class="fa fa-users" aria-hidden="true"></i>회원관리</a>
-                    <ol>
-                        <li><a th:href="@{/admin/}">회원현황</a></li>
-                        <li><a th:href="@{/admin/}">포인트관리</a></li>
-                        <li><a th:href="@{/admin/}">비회원관리</a></li>
-                        <li><a th:href="@{/admin/}">접속자집계</a></li>
-                    </ol>
-                </li>
-                <li>
-                    <a href="#"><i class="fas fa-box-open" aria-hidden="true"></i>상품관리</a>
                     <ol>
                         <li><a th:href="@{/admin/product/list}">상품현황</a></li>
                         <li><a th:href="@{/admin/product/register}">상품등록</a></li>
+                        <li><a th:href="@{/admin/product/list}">재고관리</a></li>
                     </ol>
                 </li>
                 <li>
@@ -69,14 +47,6 @@
                         <li><a href="#">매출현황</a></li>
                         <li><a href="#">결제관리</a></li>
                         <li><a href="#">배송관리</a></li>
-                    </ol>
-                </li>
-                <li>
-                    <a href="#"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>게시판관리</a>
-                    <ol>
-                        <li><a th:href="@{/admin/cs/list(group='notice', cate=null)}">공지사항</a></li>
-                        <li><a th:href="@{/admin/cs/list(group='faq', cate=null)}">자주묻는질문</a></li>
-                        <li><a th:href="@{/admin/cs/list(group='qna', cate=null)}">고객문의</a></li>
                     </ol>
                 </li>
             </ul>
