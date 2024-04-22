@@ -30,16 +30,34 @@
                 pointInput.value =  Math.floor(price / 100);
             }
         }
-        // option 선택 Div 공개
+        // cate2 선택시 cate3 조회 + option 선택 Div 공개
         const eOptionInputPanel = document.getElementById('eOptionInputPanel');
-        function prodOption(cate2){
+        async function prodOption(cate2){
             console.log("cate2" + cate2);
+
+            // cate3 조회
+            await findCate3(cate2);
+
             // 남성의류나 여성의류
             if(cate2 == '11' || cate2 == '12'){
                 document.getElementById('eOptionInputPanel').style.display = 'block';
                 // 그 외
             }else {
                 document.getElementById('eOptionInputPanel').style.display = 'none';
+            }
+        }
+        // cate3 조회
+        async function findCate3(cate2){
+            const cate3Select = document.getElementById('cate3');
+            console.log(cate2);
+            const cate3s = await fetchGet(`/lotteon/admin/product/cate3/${cate2}`)
+            // 기존 <option> 태그들 삭제
+            cate3Select.innerHTML = "";
+            for(const cate3 of cate3s){
+                const cate3Option = `<option value="${cate3.cate3}">${cate3.c3Name}</option>`;
+                console.log("cate3Option : " + cate3Option);
+                // 태그 문자열 삽입
+                cate3Select.insertAdjacentHTML('beforeend', cate3Option);
             }
         }
         // option 입력란 추가
@@ -127,6 +145,14 @@
                                     <td>
                                         <select name="cate2" id="cate2" onchange="prodOption(this.value)">
                                             <option value="0">2차 분류 선택</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>3차 분류</td>
+                                    <td>
+                                        <select name="cate2" id="cate3">
+                                            <option value="0">3차 분류 선택</option>
                                         </select>
                                     </td>
                                 </tr>

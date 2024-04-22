@@ -96,6 +96,12 @@ public class AdminController {
     public ResponseEntity<?> registerCate2(@PathVariable int cate1){
         return adminService.findAllCate2ByCate1(cate1);
     }
+    // 관리자 상품 등록 - cate2 선택 시 cate3 조회
+    @GetMapping("/admin/product/cate3/{cate2}")
+    @ResponseBody
+    public ResponseEntity<?> registerCate3(@PathVariable int cate2){
+        return adminService.findAllCate3ByCate2(cate2);
+    }
     // 관리자 상품 등록 - DB insert
     @RequestMapping(value = "/admin/product/register", produces = "application/json;charset=UTF-8", method = RequestMethod.POST)
     public String registerProduct(HttpServletRequest httpServletRequest,
@@ -134,7 +140,7 @@ public class AdminController {
     // 상품 삭제
     @ResponseBody
     @PostMapping("/admin/product/delete")
-    public String prodDelete(@RequestBody Map<String, int[]> requestData){
+    public ResponseEntity prodDelete(@RequestBody Map<String, int[]> requestData){
         int[] prodNoArray = requestData.get("prodNoArray");
         log.info("상품 삭제 Cont 1 : " + requestData);
         return adminService.prodDelete(prodNoArray);
@@ -148,6 +154,13 @@ public class AdminController {
         model.addAttribute(adminBoardPageResponseDTO);
         model.addAttribute("group", adminBoardPageRequestDTO.getGroup());
         return "/admin/cs/list";
+    }
+    // 관리자 게시글 등록 페이지 매핑
+    @GetMapping("/admin/cs/register")
+    public String boardDelete(Model model, @RequestParam("group") String group){
+        log.info("관리자 게시글 등록 Cont 1 : " + group);
+        model.addAttribute("group", group);
+        return "/admin/cs/register";
     }
     // 관리자 게시글 삭제
     @DeleteMapping("/admin/cs/delete/{bno}")
