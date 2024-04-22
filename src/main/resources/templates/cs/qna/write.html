@@ -34,17 +34,21 @@
             <article>
               <form th:action="@{/cs/qna/write}" method="POST" enctype="multipart/form-data">
                 <input type="" name="group" readonly th:value="${group}" />
-                <input type="" name="cate" readonly th:value="${cate}" />
                 <!--<input type="hidden" name="uid" th:value="${#authentication.principal.member.uid}" /> 나중에 추가하기-->
                 <table>
                   <tr>
                     <td>문의유형</td>
                     <td>
-                      <select name="typeName" id="typeName" required>
-                        <option selected disabled th:value="0">선택</option>
-                        <th:block th:each="boardType : ${boardTypes}">
-                          <option th:value="${boardType.typeName}" th:text="${boardType.typeName}"></option>
+                      <select name="cate" id="cate" required>
+                        <option selected disabled th:value="0">1차 분류 선택</option>
+                        <th:block th:each="cate : ${cates}">
+                          <option th:value="${cate.cate}" th:text="${cate.cateName}"></option>
                         </th:block>
+                      </select>
+
+                      <!-- cateName에 따라서 선택지가 달라짐 -->
+                      <select name="type" id="type" required>
+                        <option selected disabled th:value="0">2차 분류 선택</option>
                       </select>
                     </td>
                   </tr>
