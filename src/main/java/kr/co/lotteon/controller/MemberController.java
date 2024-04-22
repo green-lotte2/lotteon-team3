@@ -124,7 +124,17 @@ public class MemberController {
     // registerSeller (판매자 가입) 페이지 매핑
     @GetMapping("/member/registerSeller")
     public String registerSeller(){
+
         return "/member/registerSeller";
+    }
+
+    @PostMapping("/member/registerSeller")
+    public String registerSeller(MemberDTO memberDTO,HttpServletRequest request){
+        memberDTO.setRegip(request.getRemoteAddr());
+        memberDTO.setName(memberDTO.getName());//사용자 이름을 회사명으로 설정
+        memberService.save(memberDTO);
+
+        return "redirect:/member/login?success=200";
     }
 
 
