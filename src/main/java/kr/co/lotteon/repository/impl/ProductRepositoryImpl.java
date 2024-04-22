@@ -105,6 +105,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
         return new PageImpl<>(productList, pageable, total);
     }
 
+
     // 기본 상품 리스트
     @Override
     public Page<Product> productList(PageRequestDTO pageRequestDTO, Pageable pageable) {
@@ -159,6 +160,18 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
         log.info("impl 2" + resultMap);
 
         return resultMap;
+    }
+
+    // 관리자 - 의류 옵션 추가 상품 코드 조회
+    public Product findProductByProdCode(int prodCode){
+        log.info("의류 옵션 추가 Impl 1 : " + prodCode);
+        Product product = jpaQueryFactory
+                .selectFrom(qProduct)
+                .where(qProduct.prodCode.eq(prodCode))
+                .limit(1)
+                .fetchOne();
+        log.info("의류 옵션 추가 Impl 2 : " + product);
+        return product;
     }
 
 }

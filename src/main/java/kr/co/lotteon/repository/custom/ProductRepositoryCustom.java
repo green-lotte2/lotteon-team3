@@ -15,7 +15,12 @@ public interface ProductRepositoryCustom {
 
     public Page<Product> adminSearchProducts(AdminProductPageRequestDTO adminProductPageRequestDTO, Pageable pageable);
 
+
     public Page<Product> productList(PageRequestDTO pageRequestDTO, Pageable pageable);
 
     public Map<String, List<String>> selectProdOption(int prodNo);
+
+    public Product findProductByProdCode(int prodCode);
+
+
 }
