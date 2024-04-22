@@ -31,6 +31,8 @@ public class QPoint extends EntityPathBase<Point> {
 
     public final StringPath uid = createString("uid");
 
+    public final StringPath usecase = createString("usecase");
+
     public QPoint(String variable) {
         super(Point.class, forVariable(variable));
     }

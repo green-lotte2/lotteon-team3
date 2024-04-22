@@ -95,6 +95,17 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
         log.info("상품 목록 검색 조회 Impl 3 : " + productList);
         return new PageImpl<>(productList, pageable, total);
     }
+    // 관리자 - 의류 옵션 추가 상품 코드 조회
+    public Product findProductByProdCode(int prodCode){
+        log.info("의류 옵션 추가 Impl 1 : " + prodCode);
+        Product product = jpaQueryFactory
+                .selectFrom(qProduct)
+                .where(qProduct.prodCode.eq(prodCode))
+                .limit(1)
+                .fetchOne();
+        log.info("의류 옵션 추가 Impl 2 : " + product);
+        return product;
+    }
 }
 
 

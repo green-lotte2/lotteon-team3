@@ -11,4 +11,6 @@ public interface ProductRepositoryCustom {
 
     public Page<Product> adminSearchProducts(AdminProductPageRequestDTO adminProductPageRequestDTO, Pageable pageable);
 
+    public Product findProductByProdCode(int prodCode);
+
 }
