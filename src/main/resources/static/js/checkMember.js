@@ -1,7 +1,6 @@
-// 일반사용자 관련
-// 판매자 관련 추가 예정
+// 일반회원 유효성 검사 및 중복검사
 
-//유효성 검사에 사용할 상태변수
+// 유효성 검사에 사용할 상태변수
 let isUidOk = false;
 let isPassOk = false;
 let isNameOk = false;

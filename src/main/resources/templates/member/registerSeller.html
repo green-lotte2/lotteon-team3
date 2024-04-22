@@ -2,11 +2,13 @@
 	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	  layout:decorate="~{/layout/memberLayout}">
         <main id="member" layout:fragment="content">
+			<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+			<script th:src="@{/js/checkSeller.js}"></script>
             <div class="registerSeller">
 				<nav>
 					<h1>판매자 회원가입</h1>
 				</nav>
-				<form method="POST">
+				<form method="POST" name="registerForm">
 					<input type="hidden" th:name="type" th:value="${type}">
 					<!-- 판매자회원시 level 5 -->
 					<input type="hidden" name="level" value="5">
@@ -15,21 +17,25 @@
 							<caption>필수 정보입력</caption>
 							<tr>
 								<th><span class="essential">*</span>아이디</th>
-								<td><input type="text" name="uid" placeholder="아이디를 입력"
-									required /> <span class="msgSId">&nbsp;&nbsp;영문, 숫자로
-										4~12자까지 설정해 주세요.</span></td>
+								<td>
+									<input type="text" name="uid" placeholder="아이디를 입력" required />
+									<button type="button" id="btnCheckUid" data-type="uid">아이디 중복체크</button>
+									<div id="result_uid" class="deprecation-block"></div>
+									<span class="msgSId">&nbsp;&nbsp;영문, 숫자로 4~12자까지 설정해 주세요.</span>
+								</td>
 							</tr>
 							<tr>
 								<th><span class="essential">*</span>비밀번호</th>
-								<td><input type="password" name="pass"
-									placeholder="비밀번호를 입력" required /> <span class="msgPass">&nbsp;&nbsp;영문,
-										숫자, 특수문자를 조합하여 8~12자까지 설정해 주세요.</span></td>
+								<td><input type="password" name="pass" placeholder="비밀번호를 입력" required />
+									<span class="msgPass">&nbsp;&nbsp;영문,숫자, 특수문자를 조합하여 8~12자까지 설정해 주세요.</span>
+								</td>
 							</tr>
 							<tr>
 								<th><span class="essential">*</span>비밀번호확인</th>
-								<td><input type="password" name="pass2"
-									placeholder="비밀번호를 확인" required /> <span class="msgPass">&nbsp;&nbsp;비밀번호
-										재입력</span></td>
+								<td><input type="password" name="pass2" placeholder="비밀번호를 확인" required />
+									<span class="msgPass">&nbsp;&nbsp;비밀번호 재입력</span>
+									<div id="result_pass"></div>
+								</td>
 							</tr>
 						</table>
 					</section>
@@ -39,59 +45,85 @@
 							<caption>판매자 정보입력</caption>
 							<tr>
 								<th><span class="essential">*</span>회사명</th>
-								<td><input type="text" name="company"
-									placeholder="회사명 입력" required /> <span class="msgCompany">&nbsp;&nbsp;(주)포함
-										입력, 예) (주)롯데쇼핑</span></td>
+								<td><input type="text" name="company" placeholder="회사명 입력" required />
+									<button type="button" id="btnCheckCompany" data-type="company">회사명 중복체크</button>
+									<div id="result_company" class="deprecation-block"></div>
+									<span class="msgCompany">&nbsp;&nbsp;(주)포함 입력, 예) (주)롯데쇼핑</span>
+								</td>
 							</tr>
 							<tr>
 								<th><span class="essential">*</span>대표자</th>
-								<td><input type="text" name="ceo" placeholder="대표자 입력"
-									required /></td>
+								<td>
+									<input type="text" name="ceo" placeholder="대표자 입력" required />
+									<span id="result_ceo"></span>
+								</td>
 							</tr>
 							<tr>
 								<th><span class="essential">*</span>사업자등록번호</th>
-								<td><input type="text" name="corp_reg"
-									placeholder="사업자등록번호 입력" required /> <span class="msgCorp">&nbsp;&nbsp;-
-										표시 포함 12자리 입력, 예) 123-45-67890</span></td>
+								<td><input type="text" name="bizRegNum" placeholder="사업자등록번호 입력" required />
+									<button type="button" id="btnCheckBizRegNum" data-type="bizRegNum">사업자등록번호 중복체크</button>
+									<div id="result_bizRegNum" class="deprecation-block"></div>
+									<span class="msgCorp">&nbsp;&nbsp;- 표시 포함 12자리 입력, 예) 123-45-67890</span>
+								</td>
 
 							</tr>
 							<tr>
 								<th><span class="essential">*</span>통신판매업신고 번호</th>
-								<td><input type="text" name="online_reg"
-									placeholder="통신판매업신고 입력" required /> <span class="msgOnline">&nbsp;&nbsp;-
-										표시 포함, 예) 강남-12345, 제 1-01-23-4567호, 2017-경기성남-0011</span></td>
+								<td><input type="text" name="comRegNum" placeholder="통신판매업신고 입력" required />
+									<button type="button" id="btnCheckComRegNum" data-type="comRegNum">통신판매업신고번호 중복체크</button>
+									<div id="result_comRegNum" class="deprecation-block"></div>
+									<span class="msgOnline">&nbsp;&nbsp;-표시 포함, 예) 강남-12345, 제 1-01-23-4567호, 2017-경기성남-0011</span>
+								</td>
 							</tr>
 							<tr>
 								<th><span class="essential">*</span>전화번호</th>
-								<td><input type="text" name="tel" placeholder="전화번호 입력"
-									required /> <span class="msgTel">&nbsp;&nbsp;- 표시 포함,
-										지역번호 포함, 예) 02-234-1234</span></td>
+								<td>
+									<input type="text" name="tel" placeholder="전화번호 입력" required data-type="tel"/>
+									<div id="result_tel" class="deprecation-block"></div>
+									<span class="msgTel">&nbsp;&nbsp;- 표시 포함,지역번호 포함, 예) 02-234-1234</span>
+								</td>
 							</tr>
 							<tr>
 								<th><span class="essential">*</span>팩스번호</th>
-								<td><input type="text" name="fax" placeholder="팩스번호 입력"
-									required /> <span class="msgFax">&nbsp;&nbsp;- 표시 포함,
-										지역번호 포함, 예) 02-234-1234</span></td>
+								<td><input type="text" name="fax" placeholder="팩스번호 입력" required data-type="fax" />
+									<div id="result_fax" class="deprecation-block"></div>
+									<span class="msgFax">&nbsp;&nbsp;- 표시 포함,지역번호 포함, 예) 02-234-1234</span>
+								</td>
 							</tr>
 							<tr>
 								<th><span class="essential">*</span>EMAIL</th>
-								<td><input type="email" name="email"
-									placeholder="이메일 입력" required /></td>
+								<td><input id="inputEmail" type="email" name="email" placeholder="이메일 입력"
+										   required/>
+									<button class="btnSubmit" type="button" id="btn_email" data-type="email">이메일 인증</button>
+									<span id="result_email"></span>
+
+									<div id="divEmailCode">
+										<input class="form-control" id="inputEmailCode" name="code" type="text"
+											   placeholder="이메일 인증코드 입력" disabled/>
+
+										<button type="button" class="btnSubmit" id="btnCheckEmailCode"
+												data-type="email">
+											<span class="" role="status">인증코드 확인</span>
+										</button>
+										<div id="resultEmailCode" class="d-block"></div>
+									</div>
+								</td>
 							</tr>
 							<tr class="addr">
 								<th>회사주소</th>
 								<td>
 									<div>
-										<input type="text" name="kms_zip" id="zip"
-											placeholder="우편번호 입력 클릭" readonly />
+										<input type="text" name="zip" id="inputZip" placeholder="우편번호 입력 클릭"
+											   readonly/>
+										<button type="button" id="findZip">우편번호 찾기</button>
 									</div>
 									<div>
-										<input type="text" name="kms_addr1" id="addr1" size="50"
-											placeholder="주소를 검색하세요." readonly />
+										<input type="text" name="addr1" id="inputAddr1" size="50"
+											   placeholder="주소를 검색하세요." readonly/>
 									</div>
 									<div>
-										<input type="text" name="kms_addr2" id="addr2" size="50"
-											placeholder="상세주소를 입력하세요." />
+										<input type="text" name="addr2" id="inputAddr2" size="50"
+											   placeholder="상세주소를 입력하세요."/>
 									</div>
 								</td>
 							</tr>
@@ -102,14 +134,18 @@
 							<caption>담당자 정보입력</caption>
 							<tr>
 								<th><span class="essential">*</span>이름</th>
-								<td><input type="text" name="km_name" placeholder="이름을 입력"
-									required /></td>
+								<td>
+									<input type="text" name="manager" placeholder="이름을 입력" required />
+									<span id="result_manager"></span>
+								</td>
 							</tr>
 							<tr>
 								<th><span class="essential">*</span>휴대폰</th>
-								<td><input type="text" name="km_hp" maxlength="13"
-									placeholder="휴대폰번호 입력" required /> <span class="msgHp">&nbsp;&nbsp;-
-										포함 13자리를 입력하세요.</span></td>
+								<td>
+									<input type="text" name="managerHp" maxlength="13" placeholder="휴대폰번호 입력" required />
+									<span class="msgHp">&nbsp;&nbsp;-포함 13자리를 입력하세요.</span>
+									<div id="result_managerHp"></div>
+								</td>
 							</tr>
 						</table>
 					</section>
