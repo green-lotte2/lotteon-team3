@@ -34,21 +34,24 @@
             <article>
               <form th:action="@{/cs/qna/write}" method="POST" enctype="multipart/form-data">
                 <input type="" name="group" readonly th:value="${group}" />
+                <input type="" name="cate" readonly th:value="${cate}" />
                 <!--<input type="hidden" name="uid" th:value="${#authentication.principal.member.uid}" /> 나중에 추가하기-->
                 <table>
                   <tr>
                     <td>문의유형</td>
                     <td>
-                      <select name="cate" id="cate" required>
-                        <option selected disabled th:value="0">1차 분류 선택</option>
-                        <th:block th:each="cate : ${cates}">
-                          <option th:value="${cate.cate}" th:text="${cate.cateName}"></option>
-                        </th:block>
+                      <select name="cate1">
+                        <option value="0">1차유형</option>
+                        <option th:each="ct1 : ${cate1}" th:value="${ct1.cate1}" th:selected="${ct1.cate1 eq pageRequestDTO.cate1}">
+                          [[${ct1.cateName}]]
+                        </option>
                       </select>
 
-                      <!-- cateName에 따라서 선택지가 달라짐 -->
-                      <select name="type" id="type" required>
-                        <option selected disabled th:value="0">2차 분류 선택</option>
+                      <select name="cate2">
+                        <option value="0">2차유형</option>
+                        <option th:each="ct2:${cate2}" th:value="${ct2.cate2}">
+                          [[${ct2.cate2_name}]]
+                        </option>
                       </select>
                     </td>
                   </tr>
@@ -66,7 +69,10 @@
                   </tr>
                 </table>
                 <div>
-                  <a th:href="@{/cs/qna/list(group='qna', cate=${cate})}" class="btnWriteCancel">취소하기</a>
+                  <!-- cate가 없는 경우 -->
+                  <a th:if="${cate == null}" th:href="@{/cs/index}" class="btnWriteCancel">취소하기</a>
+                  <!-- cate가 있는 경우 -->
+                  <a th:if="${cate != null}" th:href="@{/cs/qna/list(group='qna', cate=${cate})}" class="btnWriteCancel">취소하기</a>
                   <input type="submit" class="btnSubmit" value="등록하기"/>
                 </div>
               </form>

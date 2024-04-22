@@ -75,12 +75,13 @@ public class CsController {
     }
     // QnA 쓰기 페이지 매핑
     @GetMapping("/cs/qna/write")
-    public String qnaWrite(HttpServletRequest request, Model model, String group) {
+    public String qnaWrite(HttpServletRequest request, Model model, String group, String cate) {
 
         List<BoardTypeEntity> boardTypes = csCateService.getTypeName();
         model.addAttribute("boardTypes", boardTypes);
 
         model.addAttribute("group", group);
+        model.addAttribute("cate", cate);
 
         return "/cs/qna/write";
     }
