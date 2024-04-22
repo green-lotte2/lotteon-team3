@@ -2,6 +2,94 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{/layout/adminLayout}">
             <section id="admin-index" layout:fragment="content">
+                <script>
+                    window.onload = async function (){
+                        // 주문 차트
+                        let ordCt = document.getElementById('orderChart');
+
+                        let orderData = "";
+                        // 주문 데이터 가져오기
+                        const response = await fetch('/lotteon/admin/orderChart');
+                        const dataText = await response.text(); // JSON 형식의 문자열을 가져옴
+                        let data = [];
+
+                        try {
+                            // JSON 형식의 문자열을 JavaScript 객체로 변환
+                            data = JSON.parse(dataText);
+                            console.log("주문 데이터 : ", data);
+                        } catch (error) {
+                            console.error('주문 데이터 변환 오류:', error);
+                        }
+
+                        let orderChart = new Chart(ordCt,     {
+                            type: 'bar',
+                            data: {
+                                labels: data.map(row => row.month),
+                                datasets: [
+                                    {
+                                        label: '월별 주문 건수',
+                                        data: data.map(row => row.count),
+                                        backgroundColor: '#848a8e',
+                                    }
+                                ]
+                            },
+                            options: {
+                                // 크기 조절을 위해 false
+                                responsive: false,
+                                title: {
+                                    display: true,
+                                },
+                                scales: {
+                                    yAxes: [{
+                                        ticks: {
+                                            beginAtZero: true, // 0부터 시작하게 합니다.
+                                            stepSize: 1   // 1 씩 증가하도록 설정합니다.
+                                        }
+                                    }]
+                                }
+                            }
+                        });
+                        // 회원 차트
+                        let memCt = document.getElementById('memChart');
+                        let memChart = new Chart(memCt, {
+                            type: 'line',
+                            data: {
+                                labels: ['2020', '2021', '2022', '2023'],
+                                datasets: [
+                                    {
+                                        label: 'Dataset',
+                                        data: [10,20,30,40],
+                                        fill: false,
+                                        borderColor: 'rgb(75, 192, 192)',
+                                        tension: 0.1
+                                    }
+                                ]
+                            },
+                            options: {
+                                // 크기 조절을 위해 false
+                                responsive: false,
+                                title: {
+                                    display: true,
+                                },
+                                scales: { // x축과 y축에 대한 설정
+                                    x: {
+                                        grid: { // 축에 대한 격자선
+                                            display: false, // grid 활성화 (기본값 true)
+                                        }
+                                    },
+                                    y: {
+                                        min: 0, // y축에 대한 최소값
+                                        max: 10, // y축에 대한 최대값
+                                        border: { // 축에 대한 테두리 속성
+                                            dash: [5, 5] // 점선 형태
+                                        },
+                                    }
+                                }
+                            }
+
+                        });
+                    }
+                </script>
                 <nav>
                     <h3>관리자 메인</h3>
                     <p>
@@ -11,182 +99,36 @@
 
                 <h4>쇼핑몰 운영현황</h4>
                 <article>
-                    <table>	
+                    <table>
                         <tr>
                             <td>
                                 <strong>주문건수(건)</strong>
                                 <span>131</span>
                             </td>
-                            <td>
-                                <strong>주문금액(원)</strong>
-                                <span>1,130,000</span>
-                            </td>
-                            <td>
-                                <strong>회원가입(명)</strong>
-                                <span>1014</span>
-                            </td>
-                            <td>
-                                <strong>쇼핑몰 방문(명)</strong>
-                                <span>1014</span>
-                            </td>
-                            <td>
-                                <strong>신규게시물(건)</strong>
-                                <span>100</span>
-                            </td>
                         </tr>
                         <tr>
                             <td>
-                                <p>
-                                    <span>PC</span>
-                                    <span>60</span>
-                                </p>
-                                <p>
-                                    <span>Mobile</span>
-                                    <span>71</span>
-                                </p>
+                                <canvas id="orderChart" width="800" height="300" style="margin-left: 140px"></canvas>
                             </td>
-                            <td>
-                                <p>
-                                    <span>PC</span>
-                                    <span>60</span>
-                                </p>
-                                <p>
-                                    <span>Mobile</span>
-                                    <span>71</span>
-                                </p>
-                            </td>
-                            <td>
-                                <p>
-                                    <span>PC</span>
-                                    <span>60</span>
-                                </p>
-                                <p>
-                                    <span>Mobile</span>
-                                    <span>71</span>
-                                </p>
-                            </td>
-                            <td>
-                                <p>
-                                    <span>PC</span>
-                                    <span>60</span>
-                                </p>
-                                <p>
-                                    <span>Mobile</span>
-                                    <span>71</span>
-                                </p>
-                            </td>
-                            <td>
-                                <p>
-                                    <span>PC</span>
-                                    <span>60</span>
-                                </p>
-                                <p>
-                                    <span>Mobile</span>
-                                    <span>71</span>
-                                </p>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <p>
-                                    <span>어제</span>
-                                    <span>4</span>
-                                </p>
-                                <p>
-                                    <span>주간</span>
-                                    <span>10</span>
-                                </p>
-                                <p>
-                                    <span>월간</span>
-                                    <span>30</span>
-                                </p>
-                            </td>
-                            <td>
-                                <p>
-                                    <span>어제</span>
-                                    <span>4</span>
-                                </p>
-                                <p>
-                                    <span>주간</span>
-                                    <span>10</span>
-                                </p>
-                                <p>
-                                    <span>월간</span>
-                                    <span>30</span>
-                                </p>
-                            </td>
-                            <td>
-                                <p>
-                                    <span>어제</span>
-                                    <span>4</span>
-                                </p>
-                                <p>
-                                    <span>주간</span>
-                                    <span>10</span>
-                                </p>
-                                <p>
-                                    <span>월간</span>
-                                    <span>30</span>
-                                </p>
-                            </td>
-                            <td>
-                                <p>
-                                    <span>어제</span>
-                                    <span>4</span>
-                                </p>
-                                <p>
-                                    <span>주간</span>
-                                    <span>10</span>
-                                </p>
-                                <p>
-                                    <span>월간</span>
-                                    <span>30</span>
-                                </p>
-                            </td>
-                            <td>
-                                <p>
-                                    <span>어제</span>
-                                    <span>4</span>
-                                </p>
-                                <p>
-                                    <span>주간</span>
-                                    <span>10</span>
-                                </p>
-                                <p>
-                                    <span>월간</span>
-                                    <span>30</span>
-                                </p>
-                            </td>		
                         </tr>
                     </table>
                 </article>
 
-                <h4>주문 업무현황</h4>
+                <h4>사용자 가입 현황</h4>
                 <article>
                     <table>
                         <tr>
                             <td>
-                                <strong>입금대기(건)</strong>
-                                <span>100</span>
-                            </td>
-                            <td>
-                                <strong>배송준비(건)</strong>
-                                <span>100</span>
-                            </td>
-                            <td>
-                                <strong>취소요청(건)</strong>
-                                <span>100</span>
-                            </td>
-                            <td>
-                                <strong>교환요청(건)</strong>
-                                <span>100</span>
-                            </td>
-                            <td>
-                                <strong>반품요청(건)</strong>
-                                <span>100</span>
+                                <strong>가입건수(건)</strong>
+                                <span>131</span>
                             </td>
                         </tr>
-                    </table>                    
+                        <tr>
+                            <td>
+                                <canvas id="memChart" width="800" height="300" style="margin-left: 140px"></canvas>
+                            </td>
+                        </tr>
+                    </table>
                 </article>
 
                 <div>

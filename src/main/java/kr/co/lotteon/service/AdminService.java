@@ -13,11 +13,13 @@ import kr.co.lotteon.dto.cs.CsPageResponseDTO;
 import kr.co.lotteon.dto.product.*;
 import kr.co.lotteon.entity.cs.BoardCateEntity;
 import kr.co.lotteon.entity.cs.BoardEntity;
+import kr.co.lotteon.entity.member.Terms;
 import kr.co.lotteon.entity.product.Cate1;
 import kr.co.lotteon.entity.product.Option;
 import kr.co.lotteon.entity.product.Product;
 import kr.co.lotteon.repository.cs.BoardCateRepository;
 import kr.co.lotteon.repository.cs.BoardRepository;
+import kr.co.lotteon.repository.member.TermsRepository;
 import kr.co.lotteon.repository.product.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -51,10 +53,42 @@ public class AdminService {
     private final Cate1Repository cate1Repository;
     private final Cate2Repository cate2Repository;
     private final Cate3Repository cate3Repository;
+    private final TermsRepository termsRepository;
+    private final OrderRepository orderRepository;
+
     private final ModelMapper modelMapper;
+
 
     @Value("${img.upload.path}")
     private String imgUploadPath;
+
+
+    // 관리자 환경설정 기본환경 정보 - 약관 조회
+    public Terms findByTerms(){
+        return termsRepository.findById(1).get();
+    }
+
+    // 관리자 인덱스 주문 차트 조회
+    public List<Map<String, Object>> selectOrderForChart() {
+        log.info("월별 주문 count 조회 Serv 1");
+        List<Tuple> tuples = orderRepository.selectOrderForChart();
+        log.info("월별 주문 count 조회 Serv 2: " + tuples);
+
+        List<Map<String, Object>> jsonResult = tuples.stream()
+                .map(tuple -> {
+                    int year = tuple.get(0, Integer.class);
+                    int month = tuple.get(1, Integer.class);
+                    long count = tuple.get(2, long.class);
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("month", month + "월");
+                    map.put("count", count);
+                    return map;
+                })
+                .collect(Collectors.toList());
+
+        log.info("월별 주문 count 조회 Serv 3: " + jsonResult);
+        return jsonResult;
+    }
 
     // 관리자 인덱스 공지사항 조회
     public List<BoardDTO> adminSelectNotices() {
