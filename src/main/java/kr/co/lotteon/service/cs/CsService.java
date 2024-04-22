@@ -16,7 +16,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -127,6 +129,70 @@ public class CsService {
             for (BoardDTO boardDTO : boardDTOS) {
                 dtoList.add(boardDTO);
             }
+        }
+        return dtoList;
+    }
+
+    // 인덱스에 notice 리스트출력
+    public List<BoardDTO> getNoticeBoard(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("rdate").descending().and(Sort.by("bno").descending()));
+        List<BoardEntity> boardEntityPage = boardRepository.findByGroupOrderByRdateDescBnoDesc("notice",  pageable);
+        List<BoardDTO> dtoList = boardEntityPage
+                .stream()
+                .map(entity -> modelMapper.map(entity, BoardDTO.class))
+                .toList();
+
+
+        List<BoardCateEntity> boardCateEntitieList = boardCateRepository.findAll();
+        List<BoardTypeEntity> boardTypeEntitieList = typeRepository.findAll();
+
+        Map<String, Map<Integer, String>> cateMap = new HashMap<>();
+        for (BoardCateEntity boardCateEntity : boardCateEntitieList) {
+            Map<Integer, String> typeMap = new HashMap<>();
+            for (BoardTypeEntity boardEntity : boardTypeEntitieList) {
+                if (boardEntity.getCate().equals(boardCateEntity.getCate())) {
+                    typeMap.put(boardEntity.getTypeNo(), boardEntity.getTypeName());
+                }
+            }
+            cateMap.put(boardCateEntity.getCate(), typeMap);
+        }
+
+        for (BoardDTO boardDTO : dtoList) {
+            boardDTO.setTypeName(
+                    cateMap.get(boardDTO.getCate()).get(boardDTO.getTypeNo())
+            );
+        }
+        return dtoList;
+    }
+
+    // 인덱스에 qna 리스트 출력
+    public List<BoardDTO> getQnaBoard(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("rdate").descending().and(Sort.by("bno").descending()));
+        List<BoardEntity> boardEntityPage = boardRepository.findByGroupOrderByRdateDescBnoDesc("qna", pageable);
+        List<BoardDTO> dtoList = boardEntityPage
+                .stream()
+                .map(entity -> modelMapper.map(entity, BoardDTO.class))
+                .toList();
+
+
+        List<BoardCateEntity> boardCateEntitieList = boardCateRepository.findAll();
+        List<BoardTypeEntity> boardTypeEntitieList = typeRepository.findAll();
+
+        Map<String, Map<Integer, String>> cateMap = new HashMap<>();
+        for (BoardCateEntity boardCateEntity : boardCateEntitieList) {
+            Map<Integer, String> typeMap = new HashMap<>();
+            for (BoardTypeEntity boardEntity : boardTypeEntitieList) {
+                if (boardEntity.getCate().equals(boardCateEntity.getCate())) {
+                    typeMap.put(boardEntity.getTypeNo(), boardEntity.getTypeName());
+                }
+            }
+            cateMap.put(boardCateEntity.getCate(), typeMap);
+        }
+
+        for (BoardDTO boardDTO : dtoList) {
+            boardDTO.setTypeName(
+                    cateMap.get(boardDTO.getCate()).get(boardDTO.getTypeNo())
+            );
         }
         return dtoList;
     }

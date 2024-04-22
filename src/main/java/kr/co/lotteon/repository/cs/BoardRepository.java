@@ -19,4 +19,7 @@ public interface BoardRepository extends JpaRepository<BoardEntity, Integer>, Bo
     public Page<BoardEntity> findByGroupAndCate(String group, String cate, Pageable pageable);
 
     List<BoardEntity> findTop10ByTypeNoOrderByRdateDesc(int typeNo);
+
+    // 인덱스 - notice, qna 리스트 출력
+    public List<BoardEntity> findByGroupOrderByRdateDescBnoDesc(String group, Pageable pageable);
 }

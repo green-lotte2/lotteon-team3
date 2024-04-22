@@ -724,15 +724,15 @@ footer p > strong {
   height: auto;
   border: 1px solid #ccc;
   border-radius: 6px;
+  padding-left: 0;
 }
 #cs > .faq > .list > article > div > ul > li {
   width: 100%;
   height: auto;
   border-bottom: 1px solid #ccc;
 }
-
-#cs > .faq > .list > article > div > ul > li:nth-child(n+4) {
-  display: none;
+#cs > .faq > .list > article > div > ul > li:last-child {
+  border-bottom: 0;
 }
 
 #cs > .faq > .list > article > div > ul a {
