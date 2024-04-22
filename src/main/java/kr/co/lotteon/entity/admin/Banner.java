@@ -1,10 +1,12 @@
-package kr.co.lotteon.entity.member;
+package kr.co.lotteon.entity.admin;
 
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Getter
 @Setter
@@ -13,16 +15,16 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name="member_point")
-public class Point {
+@Table(name="banner")
+public class Banner {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int pointNo;
-    private String uid;
-    private int ordNo;
-    private int point;
-    private String descript;
+    private int bno;
+    private String thumb;
+    private String cate;
+
     @CreationTimestamp
-    private LocalDateTime pointDate;
-    private String usecase;
+    private LocalDate startdate;
+    @CreationTimestamp
+    private LocalTime starttime;
 }
