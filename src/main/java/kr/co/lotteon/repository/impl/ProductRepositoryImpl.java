@@ -2,10 +2,14 @@ package kr.co.lotteon.repository.impl;
 
 
 import com.querydsl.core.QueryResults;
+import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.co.lotteon.dto.admin.AdminProductPageRequestDTO;
+import kr.co.lotteon.dto.product.PageRequestDTO;
 import kr.co.lotteon.entity.product.Product;
+import kr.co.lotteon.entity.product.QOption;
 import kr.co.lotteon.entity.product.QProduct;
 import kr.co.lotteon.repository.custom.ProductRepositoryCustom;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +19,11 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import java.beans.Expression;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Repository
@@ -24,6 +32,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
 
     private final JPAQueryFactory jpaQueryFactory;
     private final QProduct qProduct = QProduct.product;
+    private final QOption qOption = QOption.option;
 
     // 관리자 - 상품 목록 기본 조회
     @Override
@@ -95,6 +104,63 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
         log.info("상품 목록 검색 조회 Impl 3 : " + productList);
         return new PageImpl<>(productList, pageable, total);
     }
+
+    // 기본 상품 리스트
+    @Override
+    public Page<Product> productList(PageRequestDTO pageRequestDTO, Pageable pageable) {
+        log.info("productLsit impl" + pageRequestDTO);
+        BooleanExpression predicate = qProduct.isNotNull();
+
+        if (pageRequestDTO.getCate1() != 0) {
+            predicate = predicate.and(qProduct.cate1.eq(pageRequestDTO.getCate1()));
+        }
+        if (pageRequestDTO.getCate2() != 0) {
+            predicate = predicate.and(qProduct.cate2.eq(pageRequestDTO.getCate2()));
+        }
+        if (pageRequestDTO.getCate3() != 0) {
+            predicate = predicate.and(qProduct.cate3.eq(pageRequestDTO.getCate3()));
+        }
+
+        QueryResults<Product> results = jpaQueryFactory.selectFrom(qProduct)
+                                .orderBy(qProduct.prodNo.desc())
+                                .offset(pageable.getOffset())
+                                .limit(pageable.getPageSize())
+                                .where(predicate)
+                                .fetchResults();
+
+        return new PageImpl<>(results.getResults(), pageable, results.getTotal());
+    }
+
+    @Override
+    public Map<String, List<String>> selectProdOption(int prodNo) {
+
+        // SELECT opName, group_concat(opValue) from product_option where prodNo =? GROUP BY opName;
+        List<Tuple> result = jpaQueryFactory
+                .select(qOption.opName, Expressions.stringTemplate("GROUP_CONCAT({0})",qOption.opValue))
+                .from(qOption)
+                .where(qOption.prodNo.eq(prodNo))
+                .groupBy(qOption.opName)
+                .fetch();
+        log.info("impl 1" + result);
+
+        Map<String, List<String>> resultMap = new HashMap<>();
+
+        for (Tuple tuple : result) {
+            String opName = tuple.get(qOption.opName);
+            log.info("opName : " + opName);
+            String opValue = tuple.get(Expressions.stringTemplate("GROUP_CONCAT({0})", qOption.opValue));
+            log.info("opValue : " + opValue);
+
+            // opName이 이미 resultMap에 존재하는지 확인, 없으면 빈 리스트를 새로 생성하여 추가
+            resultMap.putIfAbsent(opName, new ArrayList<>());
+
+            resultMap.get(opName).add(opValue);
+        }
+        log.info("impl 2" + resultMap);
+
+        return resultMap;
+    }
+
 }
 
 

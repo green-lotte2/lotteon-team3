@@ -2,6 +2,8 @@ package kr.co.lotteon.dto.product;
 
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -14,4 +16,5 @@ public class OptionDTO {
     private int prodNo;
     private String opName;
     private String opValue;
+
 }

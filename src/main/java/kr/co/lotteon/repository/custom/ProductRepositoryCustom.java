@@ -1,9 +1,13 @@
 package kr.co.lotteon.repository.custom;
 
 import kr.co.lotteon.dto.admin.AdminProductPageRequestDTO;
+import kr.co.lotteon.dto.product.PageRequestDTO;
 import kr.co.lotteon.entity.product.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
+import java.util.List;
+import java.util.Map;
 
 public interface ProductRepositoryCustom {
 
@@ -11,4 +15,7 @@ public interface ProductRepositoryCustom {
 
     public Page<Product> adminSearchProducts(AdminProductPageRequestDTO adminProductPageRequestDTO, Pageable pageable);
 
+    public Page<Product> productList(PageRequestDTO pageRequestDTO, Pageable pageable);
+
+    public Map<String, List<String>> selectProdOption(int prodNo);
 }

@@ -20,11 +20,9 @@ public class PageRequestDTO{
     @Builder.Default
     private int size=40;
 
-    @Builder.Default
-    private int cate1 = 10;
+    private int cate1;
 
-    @Builder.Default
-    private int cate2 = 11;
+    private int cate2;
 
     private int cate3;
 

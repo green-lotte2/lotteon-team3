@@ -11,7 +11,7 @@
                 <nav>
                     <h1>상품보기</h1>
                     <p>
-                        HOME > <span>[[${c1Name}]]</span> > <strong>[[${c2Name}]]</strong>
+                        HOME > <span>[[${c1Name}]]</span> > <span>[[${c2Name}]]</span> > <strong>[[${c3Name}]]</strong>
                     </p>
                 </nav>
 
@@ -44,9 +44,18 @@
                             <span class="arrival">모레(금) [[${productDTO.rdate}]] 도착예정</span>
                             <span class="desc">본 상품은 국내배송만 가능합니다.</span>
                         </nav>
-                        <nav>
-                            <span class="card cardfree"><i>아이콘</i>무이자할부</span>&nbsp;&nbsp;
-                            <span class="card cardadd"><i>아이콘</i>카드추가혜택</span>
+                        <nav th:each="option : ${prodOptions}">
+                            <select  class="form-select" aria-label="Default select example">
+                                <option selected>옵션</option>
+                                <option value="1">[[${option.key}]]</option>
+
+                            </select>
+                            <br>
+                            <select class="form-select" aria-label="Default select example">
+                                <option selected>상세</option>
+                                <option value="1">[[${option.value}]]</option>
+
+                            </select>
                         </nav>
                         <nav>
                             <span class="origin">원산지-상세설명 참조</span>
