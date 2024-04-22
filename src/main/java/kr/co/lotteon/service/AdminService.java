@@ -308,13 +308,14 @@ public class AdminService {
                         log.info("관리자 상품 등록 service8 product : " + product.toString());
 
                         // 옵션 정보 Product Entity에 저장
+                        /*
                         log.info("관리자 상품 등록 service9 " + option);
                         product.setColor(option.getColor());
                         product.setColorName(option.getColorName());
                         product.setOpStock(option.getOpStock());
                         product.setSize(option.getSize());
                         log.info("optionDTO List : " + option);
-
+                        */
                         // 상품 정보 DB 저장
                         saveProduct = productRepository.save(product);
                         log.info("관리자 상품 등록 service10 savedProduct : " + saveProduct.toString());
