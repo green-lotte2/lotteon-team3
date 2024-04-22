@@ -45,10 +45,10 @@
             const searchForm = document.getElementById('searchForm');
             searchForm.submit();
         }
+        let checkedTurn = 0;
         // 전체 선택 클릭
         function totalCheck(){
             const prodCheckBox = document.querySelectorAll('.prodCheckBox');
-            let checkedTurn = 0;
                 // 체크한 경우
                 if (checkedTurn === 0) {
                     prodCheckBox.forEach(function(checkbox) {
@@ -83,8 +83,9 @@
                     body: JSON.stringify({prodNoArray: prodNoArray})
                 })
                     .then(response => {
-                        if(response != null){
-
+                        // 새로고침
+                        if(response.ok == true){
+                            location.reload();
                         }
                     })
                     .catch(err =>{

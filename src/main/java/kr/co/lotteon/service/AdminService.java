@@ -6,16 +6,20 @@ import kr.co.lotteon.dto.admin.AdminBoardPageRequestDTO;
 import kr.co.lotteon.dto.admin.AdminBoardPageResponseDTO;
 import kr.co.lotteon.dto.admin.AdminProductPageRequestDTO;
 import kr.co.lotteon.dto.admin.AdminProductPageResponseDTO;
+import kr.co.lotteon.dto.cs.BoardCateDTO;
 import kr.co.lotteon.dto.cs.BoardDTO;
 import kr.co.lotteon.dto.cs.CsPageRequestDTO;
 import kr.co.lotteon.dto.cs.CsPageResponseDTO;
 import kr.co.lotteon.dto.product.*;
+import kr.co.lotteon.entity.cs.BoardCateEntity;
 import kr.co.lotteon.entity.cs.BoardEntity;
 import kr.co.lotteon.entity.product.Cate1;
 import kr.co.lotteon.entity.product.Product;
+import kr.co.lotteon.repository.cs.BoardCateRepository;
 import kr.co.lotteon.repository.cs.BoardRepository;
 import kr.co.lotteon.repository.product.Cate1Repository;
 import kr.co.lotteon.repository.product.Cate2Repository;
+import kr.co.lotteon.repository.product.Cate3Repository;
 import kr.co.lotteon.repository.product.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,9 +45,11 @@ import java.util.stream.Collectors;
 public class AdminService {
 
     private final BoardRepository boardRepository;
+    private final BoardCateRepository boardCateRepository;
     private final ProductRepository productRepository;
     private final Cate1Repository cate1Repository;
     private final Cate2Repository cate2Repository;
+    private final Cate3Repository cate3Repository;
     private final ModelMapper modelMapper;
 
     @Value("${img.upload.path}")
@@ -106,6 +112,16 @@ public class AdminService {
         return ResponseEntity.ok().body(cate2List);
     }
 
+    // 관리자 상품 등록 cate3 조회
+    public ResponseEntity<?> findAllCate3ByCate2(int cate2){
+        // 조회된 Entity List -> DTO List
+        List<Cate3DTO> cate3List = cate3Repository.findByCate2(cate2).stream()
+                .map(cate3 -> modelMapper.map(cate3, Cate3DTO.class))
+                .collect(Collectors.toList());;
+
+        return ResponseEntity.ok().body(cate3List);
+    }
+
     // 관리자 상품 기본 목록 조회
     public AdminProductPageResponseDTO adminSelectProducts(AdminProductPageRequestDTO adminProductPageRequestDTO){
         log.info("관리자 상품 목록 조회 Serv 1 : "+ adminProductPageRequestDTO);
@@ -160,11 +176,14 @@ public class AdminService {
 
     }
     // 관리자 상품 삭제
-    public String prodDelete(int[] prodNoArray){
+    public ResponseEntity<?> prodDelete(int[] prodNoArray){
         log.info("관리자 상품 삭제 Serv 1 : " + Arrays.toString(prodNoArray));
-        //List<Integer> prodNo = Arrays.asList(prodNoArray);
 
-        return "{key : value}";
+        for(int prodNo : prodNoArray) {
+            // 상품 삭제 반복
+            productRepository.deleteById(prodNo);
+        }
+        return ResponseEntity.ok().body("ok");
     }
     // 관리자 상품 등록 - DB insert
     @Transient
@@ -346,7 +365,19 @@ public class AdminService {
                 .total(total)
                 .build();
     }
+    // 관리자 게시판 관리 - 게시글 등록
+    public List<BoardCateDTO> findBoardCate(){
 
+        List<BoardCateEntity> boardCates = boardCateRepository.findAll();
+        // 조회된 Entity List -> DTO List
+        return boardCates.stream()
+                .map(cate -> modelMapper.map(cate, BoardCateDTO.class))
+                .collect(Collectors.toList());
+    }
+    // 관리자 게시판 관리 - 게시글 등록
+    public void registerBoard(){
+
+    }
     // 관리자 게시판 관리 - 게시글 삭제
     public ResponseEntity<?> boardDelete(int bno){
         log.info("관리자 게시글 삭제 Serv 1 : " + bno);
