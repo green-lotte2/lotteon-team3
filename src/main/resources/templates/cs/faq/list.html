@@ -2,17 +2,40 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{/layout/csLayout}">
-
-<script>
-    function toggleButtonText(element) {
-        var text = element.innerText;
-        if (text === '더보기') {
-            element.innerText = '간단히 보기';
-        } else {
-            element.innerText = '더보기';
+<head>
+    <style>
+        button.more {
+            display: block;
+            width: 100%;
+            height: 100%;
+            padding: 16px;
+            font-size: 16px;
+            border-radius: 0 0 5px 5px;
+            box-sizing: border-box;
+            background-color: transparent;
+            border: 0px solid #eee;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
         }
-    }
-</script>
+        button.more:hover {
+            background-color: #f7f7f7;
+        }
+        button.more:active {
+            background-color: #e0e0e0;
+        }
+    </style>
+
+    <script>
+        function toggleButtonText(element) {
+            var text = element.innerText;
+            if (text === '더보기 🔽') {
+                element.innerText = '간단히 보기 🔼';
+            } else {
+                element.innerText = '더보기 🔽';
+            }
+        }
+    </script>
+</head>
 
 <section id="cs" layout:fragment = "content">
     <div class="faq">
@@ -68,9 +91,8 @@
                                 </li>
                             </th:block>
                         </div>
-
                         <li th:if="${type.boards.size() > 3}" class="more">
-                            <a href="#" data-bs-toggle="collapse" th:data-bs-target="'#collapseExample_' + ${type.typeNo}" onclick="toggleButtonText(this);">더보기</a>
+                            <button type="button" class="more" data-bs-toggle="collapse" th:data-bs-target="'#collapseExample_' + ${type.typeNo}" onclick="toggleButtonText(this);">더보기 🔽</button>
                         </li>
                     </ul>
                 </div>
