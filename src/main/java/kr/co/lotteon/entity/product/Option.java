@@ -10,15 +10,13 @@ import lombok.*;
 @Builder
 @ToString
 @Entity
-@Table(name = "optin")
+@Table(name = "product_option")
 public class Option {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int opNo;
 
-    @ManyToOne
-    @JoinColumn(name = "prodNo")
-    private Product product;
+    private int prodNo;
 
     private String opName;
     private String opValue;

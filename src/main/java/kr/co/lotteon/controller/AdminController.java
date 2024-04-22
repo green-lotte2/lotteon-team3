@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.lang.management.MemoryPoolMXBean;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -131,10 +132,32 @@ public class AdminController {
         }
         log.info("관리자 상품 등록 Cont " + productDTO);
 
-        adminService.insertProduct(optionDTOListJson, productDTO, thumb190, thumb230, thumb456, detail860);
+        ProductDTO saveProd = adminService.insertProduct(optionDTOListJson, productDTO, thumb190, thumb230, thumb456, detail860);
+        int prodNo = saveProd.getProdNo();
 
+        return "redirect:/admin/product/view?prodNo="+prodNo;
+    }
 
-        return "redirect:/admin/product/list";
+    // 등록된 상품 보기
+    @GetMapping("/admin/product/view")
+    public String prodView(Model model, @RequestParam("prodNo") int prodNo){
+        ProductDTO productDTO = adminService.prodView(prodNo);
+        model.addAttribute("productDTO", productDTO);
+        return "/admin/product/view";
+    }
+
+    // 등록된 상품 의류 옵션 추가
+    @RequestMapping(value = "/admin/option/color/{prodCode}", produces = "application/json;charset=UTF-8", method = RequestMethod.POST)
+    public ResponseEntity<?> colorOptionAdd(@PathVariable("prodCode") int prodCode, @RequestBody List<ColorDTO> colorDTOList) {
+        log.info("상품 의류 옵션 추가 Cont 1 : " + prodCode);
+        log.info("상품 의류 옵션 추가 Cont 2 : " + colorDTOList);
+        return adminService.colorOptionAdd(prodCode, colorDTOList);
+    }
+    // 등록된 상품 커스텀 옵션 추가
+    @RequestMapping(value = "/admin/option", produces = "application/json;charset=UTF-8", method = RequestMethod.POST)
+    public ResponseEntity<?> optionAdd(@RequestBody List<OptionDTO> optionDTOS) {
+        log.info("상품 커스텀 옵션 추가 Cont 1 : " + optionDTOS);
+        return adminService.optionAdd(optionDTOS);
     }
 
     // 상품 삭제

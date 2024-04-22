@@ -10,7 +10,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @ToString
-public class OptionListDTO {
-    // 상품 상세 옵션
-    private List<OptionDTO> optionList;
+public class ColorListDTO {
+    // 의류 상품 상세 옵션
+    private List<ColorDTO> optionList;
 }
