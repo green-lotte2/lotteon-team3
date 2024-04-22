@@ -8,10 +8,8 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 @ToString
-public class OptionDTO {
-    // 상품 상세 옵션
-    private int opNo;
+public class WishDTO {
+    private int wishNo;
+    private String uid;
     private int prodNo;
-    private String opName;
-    private String opValue;
 }

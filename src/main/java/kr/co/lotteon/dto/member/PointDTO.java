@@ -17,6 +17,7 @@ public class PointDTO {
     private int point;
     private String descript;
     private LocalDateTime pointDate;
+    private String usecase;
 
 
 }
