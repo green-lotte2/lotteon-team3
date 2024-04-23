@@ -18,12 +18,6 @@
 
         }
     </script>
-    <style>
-        .login> .kakao{
-            width: 100px;
-
-        }
-    </style>
 
             <div class="login">
                 <nav>
@@ -54,6 +48,10 @@
                     </a>
                     <a th:href="@{/oauth2/authorization/kakao}" class="kakao">
                         <img th:src="@{/member/images/icon_easy_kakao.svg}" alt="로그인"/>
+                    </a>
+
+                    <a th:href="@{/oauth2/authorization/naver}" class="naver">
+                        <img th:src="@{/member/images/icon_easy_naver.svg}" alt="로그인"/>
                     </a>
 
                     <a th:href="@{/member}" class="banner"><img th:src="@{/member/images/member_login_banner.jpg}" alt="1만원 할인 쿠폰 받기"></a>
