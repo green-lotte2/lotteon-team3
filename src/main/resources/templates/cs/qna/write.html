@@ -4,33 +4,40 @@
       layout:decorate="~{/layout/csLayout}">
 <head>
   <script>
-    // 1차 분류 선택이 변경될 때 호출되는 함수
     function handleCateChange() {
       var cateSelect = document.getElementById('cate');
       var typeSelect = document.getElementById('type');
 
-      // 선택된 1차 분류 값 가져오기
       var selectedCate = cateSelect.value;
 
-      // 1차 분류가 선택되지 않은 경우
       if (selectedCate === '0') {
         typeSelect.disabled = true;
-        typeSelect.selectedIndex = 0; // 2차 분류 선택을 초기화
-
+        typeSelect.selectedIndex = 0;
       } else {
-        // 선택된 1차 분류에 해당하는 2차 분류 옵션 활성화
         var options = typeSelect.getElementsByTagName('option');
         for (var i = 0; i < options.length; i++) {
           var option = options[i];
           if (option.getAttribute('data-cate') === selectedCate) {
-            option.style.display = ''; // 보이게 설정
+            option.style.display = '';
           } else {
-            option.style.display = 'none'; // 숨김
+            option.style.display = 'none';
           }
         }
         typeSelect.disabled = false;
       }
     }
+
+    document.addEventListener("DOMContentLoaded", function() {
+      var writeForm = document.getElementById('writeForm');
+
+      writeForm.addEventListener('submit', function(event) {
+        // 글 등록 후 알림 창 표시
+        alert('글이 성공적으로 등록되었습니다.');
+
+        // 이벤트 기본 동작 중단하지 않고 폼 제출
+        writeForm.submit();
+      });
+    });
   </script>
 </head>
 <section id="cs" layout:fragment="content">
@@ -63,7 +70,7 @@
       <article>
         <form id="writeForm" th:action="@{/cs/qna/write}" method="POST" enctype="multipart/form-data">
           <input type="" name="group" readonly th:value="${group}" />
-          <!--<input type="hidden" name="uid" th:value="${#authentication.principal.member.uid}" /> 나중에 추가하기-->
+          <input type="" name="uid" th:value="${#authentication.principal.member.uid}" />
           <table>
             <tr>
               <td>문의유형</td>
@@ -76,6 +83,7 @@
                   <option value="delivery">배송</option>
                   <option value="refund">취소/반품/교환</option>
                   <option value="travel">여행/숙박/항공</option>
+                  <option value="safe">안전거래</option>
                 </select>
 
                 <!-- cateName에 따라서 선택지가 달라짐 -->
@@ -97,6 +105,12 @@
               <td>문의내용</td>
               <td>
                 <textarea name="content" placeholder="내용을 입력하세요."></textarea>
+              </td>
+            </tr>
+            <tr>
+              <td>파일</td>
+              <td>
+                <input type="file" name="files" multiple="multiple" pl/><br>
               </td>
             </tr>
           </table>

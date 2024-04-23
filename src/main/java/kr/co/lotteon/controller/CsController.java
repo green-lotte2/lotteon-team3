@@ -91,7 +91,6 @@ public class CsController {
     @PostMapping("cs/qna/write")
     public String qnaWriteForm(HttpServletRequest request, BoardDTO dto){
         dto.setStatus("검토중");
-        dto.setUid("test"); // 'test' uid로 설정
         csService.save(dto);
 
         return "redirect:/cs/qna/list?group=qna&cate=member&success=200";
