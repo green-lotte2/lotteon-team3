@@ -10,7 +10,6 @@ import java.util.Optional;
 @Repository
 public interface MemberRepository extends JpaRepository<Member,String>, MemberRepositoryCustom {
 
-public interface MemberRepository extends JpaRepository<Member,String> {
     Optional<Member> findByEmail(String email); // 중복 가입 확인
 
 }

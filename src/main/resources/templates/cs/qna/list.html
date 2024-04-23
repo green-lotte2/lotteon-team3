@@ -68,18 +68,19 @@
                 : (cate eq 'delivery') ? '배송' : (cate eq 'refund') ? '취소/반품/교환' : (cate eq 'travel') ? '여행/숙박/항공'
                 : (cate eq 'safe') ? '안전거래' : ''}" style="font-size: 20px;"></span>관련 문의 내용입니다.</h2>
 
-                </nav>
-                <table>
-                    <tr th:each="article : ${csPageResponseDTO.dtoList}" >
-                        <td>
-                            <a th:href="@{/cs/qna/view(group=${csPageResponseDTO.group},cate=${csPageResponseDTO.cate},bno=${article.bno})}" >[<span th:text="${article.typeName}" style="font-size: 16px;"></span>] [[${article.title}]]</a>
-                        </td>
-                        <td>
-                            <span th:text="${#strings.substring(article.uid, 0, 3)} + '***'"></span>
-                        </td>
-                        <td th:text="${#temporals.format(article.rdate, 'yyyy.MM.dd')}"></td>
-                    </tr>
-                </table>
+
+              </nav>
+              <table>
+                <tr th:each="article : ${csPageResponseDTO.dtoList}" >
+                  <td>
+                    <a th:href="@{/cs/qna/view(group=${csPageResponseDTO.group},cate=${csPageResponseDTO.cate},bno=${article.bno})}" >[<span th:text="${article.typeName}" style="font-size: 16px;"></span>] [[${article.title}]]</a>
+                  </td>
+                    <td>
+                        <span th:text="${#strings.substring(article.uid, 0, 3)} + '***'"></span>
+                    </td>
+                    <td th:text="${#temporals.format(article.rdate, 'yyyy.MM.dd')}"></td>
+                </tr>
+              </table>
 
                 <th:block th:if="${csPageResponseDTO.end gt 0 }">
                     <div class="page">
@@ -94,8 +95,10 @@
                         <span th:if="${csPageResponseDTO.next}" class="next">
                         <a th:href="@{/cs/qna/list(group=${csPageResponseDTO.group},cate=${csPageResponseDTO.cate},pg=${csPageResponseDTO.end + 1})}">다음</a>
                       </span>
+
                     </div>
                 </th:block>
+
 
                 <a th:if="${#authorization.expression('isAuthenticated()')}" th:href="@{/cs/qna/write(group=${group})}" class="btnWrite">문의하기</a>
                 <a th:unless="${#authorization.expression('isAuthenticated()')}" th:href="@{/member/login}" class="btnWrite">문의하기</a>
