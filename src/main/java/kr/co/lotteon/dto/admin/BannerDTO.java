@@ -5,6 +5,7 @@ import lombok.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -15,7 +16,12 @@ import java.time.LocalTime;
 public class BannerDTO {
     private int bno;
     private String thumb;
+    private String bnName;
     private String cate;
-    private LocalDate startdate;
-    private LocalTime starttime;
+    private String link;
+
+    private Date beginDate;
+    private Date beginTime;
+    private Date endDate;
+    private Date endTime;
 }

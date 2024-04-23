@@ -1,0 +1,80 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/adminLayout}">
+<section id="cs" layout:fragment="content">
+    <script>
+        // cate 선택 시 type 조회
+        async function findType(cate){
+            const typeSelect = document.getElementById('typeSelect');
+            console.log(typeSelect);
+            const types = await fetchGet(`/lotteon/admin/cs/type/${cate}`);
+            console.log(types);
+            // 기존 <option> 태그들 삭제
+            typeSelect.innerHTML = "";
+            for(const type of types){
+                const typeOption = `<option value="${type.typeNo}">${type.typeName}</option>`;
+                console.log("typeOption : " + typeOption);
+                // 태그 문자열 삽입
+                typeSelect.insertAdjacentHTML('beforeend', typeOption);
+            }
+        }
+    </script>
+    <nav>
+        <span th:switch="${group}">
+            <span th:case="notice" style="font-size: 26px; font-weight: bold;" >공지사항</span>
+            <span th:case="qna" style="font-size: 26px; font-weight: bold;">고객문의</span>
+            <span th:case="faq" style="font-size: 26px; font-weight: bold;">자주묻는질문</span>
+        </span>
+    </nav>
+    <!-- 내용 시작 -->
+    <article class="writeArt">
+        <form th:action="@{/admin/cs/write}" id="adminWriteForm" method="POST" enctype="multipart/form-data">
+            <input type="hidden" name="group" readonly th:value="${group}" />
+            <!--<input type="hidden" name="uid" th:value="${#authentication.principal.member.uid}" /> 나중에 추가하기-->
+            <table>
+                <tr>
+                    <td>유형</td>
+                    <td>
+                        <select name="cate1" onchange="findType(this.value)">
+                            <option value="0">1차유형</option>
+                            <option th:each="ct1 : ${cates}" th:value="${ct1.cate}">
+                                [[${ct1.cateName}]]
+                            </option>
+                        </select>
+
+                        <select name="type" id="typeSelect">
+                            <option value="0">말머리</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>제목</td>
+                    <td>
+                        <input type="text" name="title" placeholder="제목을 입력하세요."/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>내용</td>
+                    <td>
+                        <textarea name="content" placeholder="내용을 입력하세요."></textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <td>파일첨부</td>
+                    <td>
+                        <!-- 파일첨부 -->
+                        <div class="filebox">
+                            <label for="formFileMultiple"> 파일첨부</label>
+                            <input class="form-control" type="file" name="files" id="formFileMultiple" multiple>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            <div>
+                <a th:href="@{/admin/cs/list(group= ${group})}" class="btnWriteCancel">취소하기</a>
+                <input type="submit" class="btnSubmit" value="등록하기"/>
+            </div>
+        </form>
+    </article>
+    <!-- 내용 끝 -->
+</section>

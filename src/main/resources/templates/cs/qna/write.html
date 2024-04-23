@@ -2,82 +2,124 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{/layout/csLayout}">
+<head>
+  <script>
+    function handleCateChange() {
+      var cateSelect = document.getElementById('cate');
+      var typeSelect = document.getElementById('type');
 
+      var selectedCate = cateSelect.value;
 
-<section id="cs" layout:fragment = "content">
-        <div class="qna">
-          <nav>
-            <div>
-              <p>홈
-                <span>></span>
-                <span th:switch="${group}">
-                      <span th:case="notice" style="font-size: 16px; color: black;">공지사항</span>
-                      <span th:case="qna" style="font-size: 16px; color: black;">고객문의</span>
-                      <span th:case="faq" style="font-size: 16px; color: black;">자주묻는질문</span>
-                      </span>
-              </p>
-            </div>
-          </nav>
-          <section class="write">
-            <aside>
-              <h2>문의하기</h2>
-              <ul>
-                <li th:class="${(cate=='member') ? 'on' : ''}"><a th:href="@{/cs/qna/list(group='qna',cate='member')}">회원</a></li>
-                <li th:class="${(cate=='coupon') ? 'on' : ''}"><a th:href="@{/cs/qna/list(group='qna',cate='coupon')}">쿠폰/이벤트</a></li>
-                <li th:class="${(cate=='order') ? 'on' : ''}"><a th:href="@{/cs/qna/list(group='qna',cate='order')}">주문/결제</a></li>
-                <li th:class="${(cate=='delivery') ? 'on' : ''}"><a th:href="@{/cs/qna/list(group='qna',cate='delivery')}">배송</a></li>
-                <li th:class="${(cate=='refund') ? 'on' : ''}"><a th:href="@{/cs/qna/list(group='qna',cate='refund')}">취소/반품/교환</a></li>
-                <li th:class="${(cate=='travel') ? 'on' : ''}"><a th:href="@{/cs/qna/list(group='qna',cate='travel')}">여행/숙박/항공</a></li>
-                <li th:class="${(cate=='safe') ? 'on' : ''}"><a th:href="@{/cs/qna/list(group='qna',cate='safe')}">안전거래</a></li>
-              </ul>
-            </aside>
-            <article>
-              <form th:action="@{/cs/qna/write}" method="POST" enctype="multipart/form-data">
-                <input type="" name="group" readonly th:value="${group}" />
-                <input type="" name="cate" readonly th:value="${cate}" />
-                <!--<input type="hidden" name="uid" th:value="${#authentication.principal.member.uid}" /> 나중에 추가하기-->
-                <table>
-                  <tr>
-                    <td>문의유형</td>
-                    <td>
-                      <select name="cate1">
-                        <option value="0">1차유형</option>
-                        <option th:each="ct1 : ${cate1}" th:value="${ct1.cate1}" th:selected="${ct1.cate1 eq pageRequestDTO.cate1}">
-                          [[${ct1.cateName}]]
-                        </option>
-                      </select>
+      if (selectedCate === '0') {
+        typeSelect.disabled = true;
+        typeSelect.selectedIndex = 0;
+      } else {
+        var options = typeSelect.getElementsByTagName('option');
+        for (var i = 0; i < options.length; i++) {
+          var option = options[i];
+          if (option.getAttribute('data-cate') === selectedCate) {
+            option.style.display = '';
+          } else {
+            option.style.display = 'none';
+          }
+        }
+        typeSelect.disabled = false;
+      }
+    }
 
-                      <select name="cate2">
-                        <option value="0">2차유형</option>
-                        <option th:each="ct2:${cate2}" th:value="${ct2.cate2}">
-                          [[${ct2.cate2_name}]]
-                        </option>
-                      </select>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>문의제목</td>
-                    <td>
-                      <input type="text" name="title" placeholder="제목을 입력하세요."/>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>문의내용</td>
-                    <td>
-                      <textarea name="content" placeholder="내용을 입력하세요."></textarea>
-                    </td>
-                  </tr>
-                </table>
-                <div>
-                  <!-- cate가 없는 경우 -->
-                  <a th:if="${cate == null}" th:href="@{/cs/index}" class="btnWriteCancel">취소하기</a>
-                  <!-- cate가 있는 경우 -->
-                  <a th:if="${cate != null}" th:href="@{/cs/qna/list(group='qna', cate=${cate})}" class="btnWriteCancel">취소하기</a>
-                  <input type="submit" class="btnSubmit" value="등록하기"/>
-                </div>
-              </form>
-            </article>
-          </section>
-        </div>
+    document.addEventListener("DOMContentLoaded", function() {
+      var writeForm = document.getElementById('writeForm');
+
+      writeForm.addEventListener('submit', function(event) {
+        // 글 등록 후 알림 창 표시
+        alert('글이 성공적으로 등록되었습니다.');
+
+        // 이벤트 기본 동작 중단하지 않고 폼 제출
+        writeForm.submit();
+      });
+    });
+  </script>
+</head>
+<section id="cs" layout:fragment="content">
+  <div class="qna">
+    <nav>
+      <div>
+        <p>홈
+          <span>></span>
+          <span th:switch="${group}">
+                        <span th:case="notice" style="font-size: 16px; color: black;">공지사항</span>
+                        <span th:case="qna" style="font-size: 16px; color: black;">고객문의</span>
+                        <span th:case="faq" style="font-size: 16px; color: black;">자주묻는질문</span>
+                    </span>
+        </p>
+      </div>
+    </nav>
+    <section class="write">
+      <aside>
+        <h2>문의하기</h2>
+        <ul>
+          <li th:class="${(cate=='member') ? 'on' : ''}"><a th:href="@{/cs/qna/list(group='qna',cate='member')}">회원</a></li>
+          <li th:class="${(cate=='coupon') ? 'on' : ''}"><a th:href="@{/cs/qna/list(group='qna',cate='coupon')}">쿠폰/이벤트</a></li>
+          <li th:class="${(cate=='order') ? 'on' : ''}"><a th:href="@{/cs/qna/list(group='qna',cate='order')}">주문/결제</a></li>
+          <li th:class="${(cate=='delivery') ? 'on' : ''}"><a th:href="@{/cs/qna/list(group='qna',cate='delivery')}">배송</a></li>
+          <li th:class="${(cate=='refund') ? 'on' : ''}"><a th:href="@{/cs/qna/list(group='qna',cate='refund')}">취소/반품/교환</a></li>
+          <li th:class="${(cate=='travel') ? 'on' : ''}"><a th:href="@{/cs/qna/list(group='qna',cate='travel')}">여행/숙박/항공</a></li>
+          <li th:class="${(cate=='safe') ? 'on' : ''}"><a th:href="@{/cs/qna/list(group='qna',cate='safe')}">안전거래</a></li>
+        </ul>
+      </aside>
+      <article>
+        <form id="writeForm" th:action="@{/cs/qna/write}" method="POST" enctype="multipart/form-data">
+          <input type="" name="group" readonly th:value="${group}" />
+          <input type="" name="uid" th:value="${#authentication.principal.member.uid}" />
+          <table>
+            <tr>
+              <td>문의유형</td>
+              <td>
+                <select name="cate" id="cate" required onchange="handleCateChange()">
+                  <option selected disabled th:value="0">1차 분류 선택</option>
+                  <option value="member">회원</option>
+                  <option value="coupon">쿠폰/이벤트</option>
+                  <option value="order">주문/결제</option>
+                  <option value="delivery">배송</option>
+                  <option value="refund">취소/반품/교환</option>
+                  <option value="travel">여행/숙박/항공</option>
+                  <option value="safe">안전거래</option>
+                </select>
+
+                <!-- cateName에 따라서 선택지가 달라짐 -->
+                <select name="typeNo" id="type" required disabled>
+                  <option selected disabled th:value="0">2차 분류 선택</option>
+                  <th:block th:each="type : ${types}">
+                    <option th:value="${type.typeNo}" th:text="${type.typeName}" th:attr="data-cate=${type.cate}"></option>
+                  </th:block>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td>문의제목</td>
+              <td>
+                <input type="text" name="title" placeholder="제목을 입력하세요."/>
+              </td>
+            </tr>
+            <tr>
+              <td>문의내용</td>
+              <td>
+                <textarea name="content" placeholder="내용을 입력하세요."></textarea>
+              </td>
+            </tr>
+            <tr>
+              <td>파일</td>
+              <td>
+                <input type="file" name="files" multiple="multiple" pl/><br>
+              </td>
+            </tr>
+          </table>
+          <div>
+            <a th:href="@{/cs/qna/list(group='qna', cate='member')}" class="btnWriteCancel">취소하기</a>
+            <button type="submit" class="btnSubmit" value="등록하기">등록하기</button>
+          </div>
+        </form>
+      </article>
+    </section>
+  </div>
 </section>
-</html>

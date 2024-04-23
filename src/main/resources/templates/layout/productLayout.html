@@ -17,7 +17,77 @@
     <link rel="stylesheet" th:href="@{https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.css}">
     <link rel="stylesheet" th:href="@{/css/common.css}"/>
     <link rel="stylesheet" th:href="@{/css/product.css}">
-    <style></style>
+    <script>
+        window.onload= function (){
+
+            // 옵션 select 요소
+            const selectOption = document.querySelectorAll('.selectOption');
+            // 각 옵션 select 요소에 대해 이벤트 등록
+            selectOption.forEach(function (select) {
+
+                console.log("select : "+select);
+
+                // 옵션 선택시
+                select.addEventListener('change', function() {
+
+                    const nav = select.closest('nav');
+
+                    // 상세 select 선택
+                    const selectDetail = nav.querySelector('.selectDetail');
+
+                    // 상세 select disabled 삭제
+                    selectDetail.disabled = false;
+                });
+            });
+
+
+            const countDiv = document.getElementsByClassName('count')[0];
+
+            // 상품수량 감소 버튼
+            const decrease = countDiv.getElementsByClassName('decrease')[0];
+            // 상품수량 중가 버튼
+            const increase = countDiv.getElementsByClassName('increase')[0];
+            // 상품수량
+            const count = countDiv.getElementsByClassName('number')[0];
+            const countValueText = count.value;
+
+            let countValue = parseInt(countValueText);
+
+            decrease.onclick = function (){
+                countValue--;
+                count.value = countValue;
+                console.log(count.value)
+
+            }
+
+            increase.onclick = function (){
+                countValue ++;
+                count.value = countValue;
+                console.log(count.value)
+            }
+
+            const orgPrice = document.getElementsByClassName('org_price')[0];
+            // 할인률
+            const discountDel = orgPrice.getElementsByTagName('span')[0];
+            const discountText = discountDel.innerText;
+            discountText
+            console.log(discountText);
+            //const productPrice =
+
+            // 장바구니 버튼
+            const cart = document.getElementsByClassName('cart')[0];
+
+            cart.onclick = function (e){
+                e.preventDefault();
+                const prodNoAfter = location.href.split('=')[1];
+                const prodNo = prodNoAfter.split('&')[0];
+
+                console.log(prodNo);
+
+            }
+        }
+
+    </script>
 </head>
 <body>
 <div id="wrapper">
