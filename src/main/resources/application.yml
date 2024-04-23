@@ -56,6 +56,7 @@ spring:
       max-file-size: 10MB
 
   security:
+    # 개발시, 배포시 각각 redirect-uri 다름
     oauth2:
       client:
         provider: #네이버와 카카오는 따로 provider 설정 필요
@@ -81,7 +82,10 @@ spring:
             authorization-grant-type: authorization_code
 
             # 카카오 > 내 애플리케이션 > 카카오 로그인 > 등록된 Redirect URI 사용
-            redirect-uri: http://localhost:8080/lotteon/login/oauth2/code/kakao
+            # 개발시 사용
+            # redirect-uri: http://localhost:8080/lotteon/login/oauth2/code/kakao
+            # 배포시 사용
+            redirect-uri: http://ec2-3-35-92-212.ap-northeast-2.compute.amazonaws.com:8080/lotteon/login/oauth2/code/kakao
             client-id: 82327135c9d68ac16cf6972b6fd1641f
             # 카카오 > 내 애플리케이션 > 카카오로그인 > 보안 > Client Secret
             client-secret: wsSFQZP4vxXdUY4MYwFtWJlYgULNvKlT
@@ -94,7 +98,10 @@ spring:
           google:
             client-id: 224975630827-8nl3vpsfn2uve9q1hsna5ao3lnj6452b.apps.googleusercontent.com
             client-secret: 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
-            redirect-uri: http://localhost:8080/lotteon/login/oauth2/code/google
+            # 개발시 사용
+            # redirect-uri: http://localhost:8080/lotteon/login/oauth2/code/google
+            # 배포시 사용
+            redirect-uri: http://ec2-3-35-92-212.ap-northeast-2.compute.amazonaws.com:8080/lotteon/login/oauth2/code/google
             scope:
               - email
               - profile
@@ -104,7 +111,10 @@ spring:
             authorization-grant-type: authorization_code
             client-id: X9jSjtT15GiBMRExXzwb
             client-secret: CKcV3cCPV3
-            redirect-uri: http://localhost:8080/lotteon/login/oauth2/code/naver
+            # 개발시 사용
+            # redirect-uri: http://localhost:8080/lotteon/login/oauth2/code/naver
+            # 배포시 사용
+            redirect-uri: http://ec2-3-35-92-212.ap-northeast-2.compute.amazonaws.com:8080/lotteon/login/oauth2/code/naver
             scope:
               - name
               - email
@@ -140,3 +150,5 @@ logging:
         type:
           descriptor:
             sql: trace
+
+            
