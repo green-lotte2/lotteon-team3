@@ -8,7 +8,6 @@ import kr.co.lotteon.entity.member.QMember;
 import kr.co.lotteon.repository.custom.CommentRepositoryCustom;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.jpa.provider.QueryComment;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

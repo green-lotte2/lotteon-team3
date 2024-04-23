@@ -56,4 +56,12 @@ public class ProductService {
     public Map<String, List<String>> selectProdOption(int prodNo){
         return productRepository.selectProdOption(prodNo);
     }
+
+    // ========== 메인페이지 ==========
+    // 최신상품
+    public List<ProductDTO> bestProductMain(){return productRepository.bestProductMain();}
+    public List<ProductDTO> recentProductMain(){return productRepository.recentProductMain();}
+    public List<ProductDTO> discountProductMain(){return productRepository.discountProductMain();}
+    public List<ProductDTO> hitProductMain(){return productRepository.hitProductMain();}
+    // ==============================
 }

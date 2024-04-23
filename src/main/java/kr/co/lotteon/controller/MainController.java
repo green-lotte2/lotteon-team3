@@ -4,7 +4,9 @@ import kr.co.lotteon.config.AppInfo;
 import kr.co.lotteon.dto.product.Cate1DTO;
 import kr.co.lotteon.dto.product.Cate2DTO;
 import kr.co.lotteon.dto.product.Cate3DTO;
+import kr.co.lotteon.dto.product.ProductDTO;
 import kr.co.lotteon.service.product.CateService;
+import kr.co.lotteon.service.product.ProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,7 +20,8 @@ import java.util.List;
 public class MainController {
 
     private final CateService cateService;
-
+    private final ProductService productService;
+    
     // 메인페이지 매핑
     @GetMapping(value = {"/","/index"})
     public String index(Model model){
@@ -34,6 +37,30 @@ public class MainController {
         model.addAttribute("cate2DTOS", cate2DTOS);
         model.addAttribute("cate3DTOS", cate3DTOS);
 
+        // 베스트 상품
+        List<ProductDTO> bestProducts = productService.bestProductMain();
+        log.info("베스트 상품 : " + bestProducts);
+        // 히트상품
+        List<ProductDTO> hitProducts = productService.recentProductMain();
+        log.info("히트상품 : " + hitProducts);
+        // 추천상품
+        //
+        // 최신상품
+        List<ProductDTO> recentProducts = productService.recentProductMain();
+        log.info("최신상품 : " + recentProducts);
+        // 할인상품
+        List<ProductDTO> discountProducts = productService.discountProductMain();
+        log.info("할인 : " + discountProducts);
+
+        // ==== 참조 ====
+        // 베스트 상품
+        model.addAttribute("bestProducts",bestProducts);
+        // 히트상품
+        model.addAttribute("hitProducts",hitProducts);
+        // 최신상품
+        model.addAttribute("recentProducts",recentProducts);
+        // 할인상품
+        model.addAttribute("discountProducts",discountProducts);
         return "/index";
     }
 
