@@ -32,10 +32,10 @@
                         <nav>
                             <div class="org_price">
                                 <del>[[${productDTO.price}]]</del>
-                                <span>[[${productDTO.discount}]]%</span>
+                                <span th:text="${productDTO.discount} + '%' "></span>
                             </div>
                             <div class="dis_price">
-                                <ins>27,000</ins>
+                                <ins>[[${productDTO.price*(productDTO.discount/100)}]]</ins>
                             </div>
                         </nav>
                         <nav>
@@ -65,7 +65,7 @@
                         
                         <div class="count">
                             <button class="decrease">-</button>
-                            <input type="text" name="num" value="1" readonly/>
+                            <input type="text" class="number" name="num" value="1" readonly/>
                             <button class="increase">+</button>
                         </div>
                         
