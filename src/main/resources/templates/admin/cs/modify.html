@@ -1,0 +1,107 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/adminLayout}">
+<section id="cs" layout:fragment="content">
+    <script>
+        function confirmDelete() {
+            return confirm("게시글을 삭제하시겠습니까?");
+        }
+        // cate 선택 시 type 조회
+        async function findType(cate){
+            const typeSelect = document.getElementById('typeSelect');
+            console.log(typeSelect);
+            const types = await fetchGet(`/lotteon/admin/cs/type/${cate}`);
+            console.log(types);
+            // 기존 <option> 태그들 삭제
+            typeSelect.innerHTML = "";
+            for(const type of types){
+                const typeOption = `<option value="${type.typeNo}">${type.typeName}</option>`;
+                console.log("typeOption : " + typeOption);
+                // 태그 문자열 삽입
+                typeSelect.insertAdjacentHTML('beforeend', typeOption);
+            }
+        }
+    </script>
+        <nav>
+        <span th:switch="${group}">
+            <span th:case="notice" style="font-size: 26px; font-weight: bold;" >공지사항</span>
+            <span th:case="qna" style="font-size: 26px; font-weight: bold;">고객문의</span>
+            <span th:case="faq" style="font-size: 26px; font-weight: bold;">자주묻는질문</span>
+        </span>
+        </nav>
+        <!-- 내용 시작 -->
+            <article class="writeArt">
+                <form th:action="@{/admin/cs/write}" id="adminWriteForm" method="POST" enctype="multipart/form-data">
+                    <input type="hidden" name="group" readonly th:value="${group}" />
+                    <!--<input type="hidden" name="uid" th:value="${#authentication.principal.member.uid}" /> 나중에 추가하기-->
+                    <table>
+                        <tr>
+                            <td>유형</td>
+                            <td>
+                                <select name="cate1" onchange="findType(this.value)">
+                                    <option value="0">1차유형</option>
+                                    <option th:each="cate : ${cates}" th:selected="${cate.cate == board.cate}" th:value="${cate.cate}">
+                                        [[${cate.cateName}]]
+                                    </option>
+                                </select>
+                                <select name="type" id="typeSelect">
+                                    <option th:value="${board.typeNo}">말머리</option>
+                                    <option th:each="type : ${typeList}" th:selected="${type.typeNo == board.typeNo}" th:value="${type.typeNo}">
+                                        [[${type.typeName}]]
+                                    </option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>제목</td>
+                            <td>
+                                <input type="text" name="title" placeholder="제목을 입력하세요." th:value="${board.title}"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>내용</td>
+                            <td>
+                                <textarea name="content" th:text="${board.content}"></textarea>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>파일첨부</td>
+                            <td>
+                                <!-- 파일첨부 -->
+                                <div class="filebox">
+                                    <label for="formFileMultiple"> 파일첨부</label>
+                                    <input class="form-control" type="file" name="files" id="formFileMultiple" multiple>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+                <!-- 수정 / 삭제 / 목록 버튼 -->
+                <div class="articleBtnBox">
+                    <!-- 수정 버튼 -->
+                    <a th:if="${adminBoardPageResponseDTO.keyword == null}"
+                       th:href="@{/admin/cs/modify(group=${adminBoardPageResponseDTO.group}, bno=${board.bno}, pg=${adminBoardPageResponseDTO.pg})}"
+                       class="btn btn-secondary btn-sm" data-art="artModify">수정</a>
+                    <a th:if="${adminBoardPageResponseDTO.keyword != null}"
+                       th:href="@{/admin/cs/modify(group=${adminBoardPageResponseDTO.group}, bno=${board.bno}, type=${adminBoardPageResponseDTO.type},keyword=${adminBoardPageResponseDTO.keyword}, pg=${adminBoardPageResponseDTO.pg})}"
+                       class="btn btn-secondary btn-sm" data-art="artModify">수정</a>
+                    <!-- 삭제 버튼 -->
+                    <a th:if="${adminBoardPageResponseDTO.keyword == null}"
+                       th:href="@{/admin/cs/delete(group=${adminBoardPageResponseDTO.group}, bno=${board.bno}, pg=${adminBoardPageResponseDTO.pg})}"
+                       class="btn btn-secondary btn-sm btnDelete " data-art="artRemove"
+                       onclick="return confirmDelete()">삭제</a>
+                    <a th:if="${adminBoardPageResponseDTO.keyword != null}"
+                       th:href="@{/admin/cs/delete(group=${adminBoardPageResponseDTO.group}, bno=${board.bno}, type=${adminBoardPageResponseDTO.type},keyword=${adminBoardPageResponseDTO.keyword}, pg=${adminBoardPageResponseDTO.pg})}"
+                       class="btn btn-secondary btn-sm btnDelete" data-art="artRemove"
+                       onclick="return confirmDelete()">삭제</a>
+                    <!-- 목록 버튼 -->
+                    <a th:if="${adminBoardPageResponseDTO.keyword == null}"
+                       th:href="@{/admin/cs/list(group=${adminBoardPageResponseDTO.group}, pg=${adminBoardPageResponseDTO.pg})}"
+                       class="btn btnList">목록</a>
+                    <a th:if="${adminBoardPageResponseDTO.keyword != null}"
+                       th:href="@{/admin/cs/list(group=${adminBoardPageResponseDTO.group}, pg=${adminBoardPageResponseDTO.pg}, type=${adminBoardPageResponseDTO.type}, keyword=${adminBoardPageResponseDTO.keyword})}"
+                       class="btn btnList">목록</a>
+                </div>
+
+            </article>
+</section>

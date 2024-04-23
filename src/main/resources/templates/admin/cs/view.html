@@ -6,50 +6,141 @@
         function confirmDelete() {
             return confirm("게시글을 삭제하시겠습니까?");
         }
+
+        // cate 선택 시 type 조회
+        async function findType(cate) {
+            const typeSelect = document.getElementById('typeSelect');
+            console.log(typeSelect);
+            const types = await fetchGet(`/lotteon/admin/cs/type/${cate}`);
+            console.log(types);
+            // 기존 <option> 태그들 삭제
+            typeSelect.innerHTML = "";
+            for (const type of types) {
+                const typeOption = `<option value="${type.typeNo}">${type.typeName}</option>`;
+                console.log("typeOption : " + typeOption);
+                // 태그 문자열 삽입
+                typeSelect.insertAdjacentHTML('beforeend', typeOption);
+            }
+        }
+        // 답변 등록 버튼 클릭
+        async function submitComment(){
+            const commentBox = document.getElementById('commentBox');
+            const commentForm = document.getElementById('commentForm');
+
+            // 로그인 구현 후
+            //const uid = document.getElementById('uid').value;
+
+            const bno = document.getElementById('bno').value;
+            const cate = document.getElementById('cate').value;
+            const group = document.getElementById('group').value;
+
+            const jsonData = {
+                "uid" : "test",
+                "bno" : bno,
+                "cate" : cate,
+                "group" : group
+            };
+            console.log(jsonData);
+
+            // 답변 등록
+            const data = await fetchPost('/lotteon/comment', jsonData);
+
+            // 새 답변 목록에 추가
+            const commentArticle = `<div class="comment">
+                                            <p><span>${data.uid}</span>&nbsp;&nbsp;<span>${data.rdate.substring(0, 10)}</span></p>
+                                            <textarea name="" id="" readonly>${data.content}</textarea>
+                                            <div>
+                                            <button id="commentModify">수정</button>
+                                            <button id="commentRemove">삭제</button>
+                                            </div>
+                                            </div>`;
+            // 태그 문자열 삽입
+            commentBox.insertAdjacentHTML('beforeend', commentArticle);
+            // 댓글 작성 폼 비우기
+            commentForm.content.value = "";
+        }
     </script>
-    <div class="articleBox" id="community_view">
-        <form class="articleForm" id="communityForm" th:action="@{/admin/cs/modify}" method="post">
-            <!--hidden-->
-            <input type="hidden" name="cate" id="cate"/>
-            <div class="titleBox">
-                <p>[[${board.title}]]</p>
-            </div>
-
-            <div class="infoBox">
-                <p>작성자 : <span>[[${board.uid}]]</span></p>
-                <p>조회수 : <span>[[${board.hit}]]</span>&nbsp;&nbsp;<span
-                        th:text="${#temporals.format(board.rdate,'yyyy-MM-dd')}"></span></p>
-            </div>
-
-            <div class="contentsBox">
-                <textarea id="contentTextarea" readonly>[[${board.content}]]</textarea>
-
-            </div>
-            <!-- 수정 / 삭제 / 목록 버튼 -->
-            <div class="articleBtnBox">
-                <!-- 수정 버튼 -->
-                <a th:if="${adminBoardPageResponseDTO.keyword == null}"
-                   th:href="@{/admin/cs/modify(group=${adminBoardPageResponseDTO.group}, bno=${board.bno}, pg=${adminBoardPageResponseDTO.pg})}"
-                   class="btn btn-secondary btn-sm" data-art="artModify">수정</a>
-                <a th:if="${adminBoardPageResponseDTO.keyword != null}"
-                   th:href="@{/admin/cs/modify(group=${adminBoardPageResponseDTO.group}, bno=${board.bno}, type=${adminBoardPageResponseDTO.type},keyword=${adminBoardPageResponseDTO.keyword}, pg=${adminBoardPageResponseDTO.pg})}"
-                   class="btn btn-secondary btn-sm" data-art="artModify">수정</a>
-                <!-- 삭제 버튼 -->
-                <a th:if="${adminBoardPageResponseDTO.keyword == null}"
-                   th:href="@{/admin/cs/delete(group=${adminBoardPageResponseDTO.group}, bno=${board.bno}, pg=${adminBoardPageResponseDTO.pg})}"
-                   class="btn btn-secondary btn-sm btnDelete " data-art="artRemove"
-                   onclick="return confirmDelete()">삭제</a>
-                <a th:if="${adminBoardPageResponseDTO.keyword != null}"
-                   th:href="@{/admin/cs/delete(group=${adminBoardPageResponseDTO.group}, bno=${board.bno}, type=${adminBoardPageResponseDTO.type},keyword=${adminBoardPageResponseDTO.keyword}, pg=${adminBoardPageResponseDTO.pg})}"
-                   class="btn btn-secondary btn-sm btnDelete" data-art="artRemove"
-                   onclick="return confirmDelete()">삭제</a>
-                <!-- 목록 버튼 -->
-                <a th:if="${adminBoardPageResponseDTO.keyword == null}"
-                   th:href="@{/admin/cs/list(group=${adminBoardPageResponseDTO.group}, pg=${adminBoardPageResponseDTO.pg})}"
-                   class="btn btnList">목록</a>
-                <a th:if="${adminBoardPageResponseDTO.keyword != null}"
-                   th:href="@{/admin/cs/list(group=${adminBoardPageResponseDTO.group}, pg=${adminBoardPageResponseDTO.pg}, type=${adminBoardPageResponseDTO.type}, keyword=${adminBoardPageResponseDTO.keyword})}"
-                   class="btn btnList">목록</a>
+    <nav>
+        <span th:switch="${group}">
+            <span th:case="notice" style="font-size: 26px; font-weight: bold;">공지사항</span>
+            <span th:case="qna" style="font-size: 26px; font-weight: bold;">고객문의</span>
+            <span th:case="faq" style="font-size: 26px; font-weight: bold;">자주묻는질문</span>
+        </span>
+    </nav>
+    <!-- 내용 시작 -->
+    <article class="writeArt">
+        <form th:action="@{/admin/cs/write}" id="adminWriteForm" method="POST" enctype="multipart/form-data">
+            <input type="hidden" name="group" readonly th:value="${group}"/>
+            <!--<input type="hidden" name="uid" th:value="${#authentication.principal.member.uid}" /> 나중에 추가하기-->
+            <table>
+                <tr>
+                    <td>제목</td>
+                    <td>
+                        <input type="text" name="title" placeholder="제목을 입력하세요." th:value="${board.title}"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>내용</td>
+                    <td>
+                        <textarea name="content" readonly th:text="${board.content}"></textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <td>첨부파일</td>
+                    <td>
+                        <div class="fileBox">
+                            <th:block th:each="file:${board.fileDTOList}">
+                                <label for="formFileMultiple"> 첨부파일</label>
+                                <a th:href="@{/file/fileDownload/{fno}(fno=${file.fno})}" class="fileLink"
+                                   id="formFileMultiple"
+                                   th:data-fno="${file.fno}">[[${file.ofile}]]</a>
+                            </th:block>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </form>
+        <!-- 수정 / 삭제 / 목록 버튼 -->
+        <div class="articleBtnBox">
+            <!-- 수정 버튼 -->
+            <a th:if="${adminBoardPageResponseDTO.keyword == null}"
+               th:href="@{/admin/cs/modify(group=${adminBoardPageResponseDTO.group}, bno=${board.bno}, pg=${adminBoardPageResponseDTO.pg})}"
+               class="btn btn-secondary btn-sm" data-art="artModify">수정</a>
+            <a th:if="${adminBoardPageResponseDTO.keyword != null}"
+               th:href="@{/admin/cs/modify(group=${adminBoardPageResponseDTO.group}, bno=${board.bno}, type=${adminBoardPageResponseDTO.type},keyword=${adminBoardPageResponseDTO.keyword}, pg=${adminBoardPageResponseDTO.pg})}"
+               class="btn btn-secondary btn-sm" data-art="artModify">수정</a>
+            <!-- 삭제 버튼 -->
+            <a th:if="${adminBoardPageResponseDTO.keyword == null}"
+               th:href="@{/admin/cs/delete(group=${adminBoardPageResponseDTO.group}, bno=${board.bno}, pg=${adminBoardPageResponseDTO.pg})}"
+               class="btn btn-secondary btn-sm btnDelete " data-art="artRemove"
+               onclick="return confirmDelete()">삭제</a>
+            <a th:if="${adminBoardPageResponseDTO.keyword != null}"
+               th:href="@{/admin/cs/delete(group=${adminBoardPageResponseDTO.group}, bno=${board.bno}, type=${adminBoardPageResponseDTO.type},keyword=${adminBoardPageResponseDTO.keyword}, pg=${adminBoardPageResponseDTO.pg})}"
+               class="btn btn-secondary btn-sm btnDelete" data-art="artRemove"
+               onclick="return confirmDelete()">삭제</a>
+            <!-- 목록 버튼 -->
+            <a th:if="${adminBoardPageResponseDTO.keyword == null}"
+               th:href="@{/admin/cs/list(group=${adminBoardPageResponseDTO.group}, pg=${adminBoardPageResponseDTO.pg})}"
+               class="btn btnList">목록</a>
+            <a th:if="${adminBoardPageResponseDTO.keyword != null}"
+               th:href="@{/admin/cs/list(group=${adminBoardPageResponseDTO.group}, pg=${adminBoardPageResponseDTO.pg}, type=${adminBoardPageResponseDTO.type}, keyword=${adminBoardPageResponseDTO.keyword})}"
+               class="btn btnList">목록</a>
+        </div>
+    </article>
+    <!-- 답변쓰기 -->
+    <div class="commentBox" id="commentBox">
+        <p>답변쓰기</p>
+        <form th:action="@{/admin/comment}" name="commentForm" method="post" id="commentForm">
+            <!--<th:block th:unless="${#authentication.principal eq 'anonymousUser'}">
+                <input type="hidden" name="uid" th:value="${#authentication.principal.user.uid}">
+            </th:block>  로그인 완료되면 풀 것 -->
+            <input type="hidden" name="bno" th:value="${board.bno}" id="bno"/>
+            <input type="hidden" name="cate" th:value="${board.cate}" id="cate"/>
+            <input type="hidden" name="group" th:value="${board.group}" id="group"/>
+            <textarea name="content" class="commentContent"></textarea>
+            <div>
+                <button id="btnCancel" data-form="commentCancel">취소</button>
+                <button id="btnComment" data-form="commentWrite" onclick="submitComment()">답변등록</button>
             </div>
         </form>
     </div>

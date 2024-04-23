@@ -54,7 +54,6 @@ public class ProductService {
 
     // 옵션 불러오기
     public Map<String, List<String>> selectProdOption(int prodNo){
-        Map<String, List<String>> result = productRepository.selectProdOption(prodNo);
-        return result;
+        return productRepository.selectProdOption(prodNo);
     }
 }

@@ -41,6 +41,8 @@ public class QMember extends EntityPathBase<Member> {
 
     public final NumberPath<Integer> level = createNumber("level", Integer.class);
 
+    public final StringPath location = createString("location");
+
     public final StringPath manager = createString("manager");
 
     public final StringPath managerHp = createString("managerHp");
@@ -52,6 +54,8 @@ public class QMember extends EntityPathBase<Member> {
     public final StringPath pass = createString("pass");
 
     public final NumberPath<Integer> point = createNumber("point", Integer.class);
+
+    public final StringPath provider = createString("provider");
 
     public final DateTimePath<java.time.LocalDateTime> rdate = createDateTime("rdate", java.time.LocalDateTime.class);
 

@@ -1,5 +1,7 @@
 package kr.co.lotteon.security;
 
+import kr.co.lotteon.oauth2.OAuth2UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -10,7 +12,11 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
+@RequiredArgsConstructor
 public class SecurityConfig {
+
+    private final OAuth2UserService oauth2UserService;
+
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
@@ -31,6 +37,12 @@ public class SecurityConfig {
                                         .invalidateHttpSession(true)
                                         .logoutRequestMatcher(new AntPathRequestMatcher("/member/logout"))
                                         .logoutSuccessUrl("/member/login?success=300"));
+
+        // OAuth 설정
+        httpSecurity.oauth2Login(oauth -> oauth
+                .loginPage("/member/login") 
+                .defaultSuccessUrl("/")
+                .userInfoEndpoint(userInfo -> userInfo.userService(oauth2UserService))); //소셜로그인 완료된 후 후처리
 
         ///////////배포전 인가 수정하기/////////
         httpSecurity.authorizeHttpRequests(authorize -> authorize

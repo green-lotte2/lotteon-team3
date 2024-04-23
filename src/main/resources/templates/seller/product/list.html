@@ -1,0 +1,186 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/sellerLayout}">
+<section id="admin-product-list" layout:fragment="content">
+    <script>
+        // type 상품 분류 선택 시 cate1 조회후 select 태그 추가
+        async function findCate(type){
+            console.log(type);
+            if(type == 'cate1') {
+                const searchForm = document.getElementById('searchForm');
+                const keywordInput = document.getElementById('keywordInput');
+                console.log(type);
+
+                const cate1s = await fetchGet('/lotteon/admin/findCate1')
+                // 기존 <input> 태그 삭제
+                keywordInput.remove();
+
+                // cate1용 <select> 태그 생성
+                let cate2Option = `<select name="keyword" id="keywordInput" onchange="formSubmit()">`;
+
+                // cate1 갯수만큼  <option> 태그 추가
+                for (const cate1 of cate1s) {
+                    cate2Option += `<option value="${cate1.cate1}">${cate1.c1Name}</option>`;
+                }
+                cate2Option += `</select>`;
+                console.log("cate2Option : " + cate2Option);
+                // 태그 문자열 삽입
+                searchForm.insertAdjacentHTML('beforeend', cate2Option);
+            }else{
+                const searchForm = document.getElementById('searchForm');
+                const keywordInput = document.getElementById('keywordInput');
+                console.log(type);
+
+                // 기존 <input> 태그 삭제
+                keywordInput.remove();
+
+                const keywordInputTag = `<input type="text" name="keyword" placeholder="검색어를 입력하세요" id="keywordInput"/>`;
+                console.log("keywordInputTag : " + keywordInputTag);
+                // 태그 문자열 삽입
+                searchForm.insertAdjacentHTML('beforeend', keywordInputTag);
+            }
+        }
+        // 폼 전송
+        function formSubmit(){
+            const searchForm = document.getElementById('searchForm');
+            searchForm.submit();
+        }
+        let checkedTurn = 0;
+        // 전체 선택 클릭
+        function totalCheck(){
+            const prodCheckBox = document.querySelectorAll('.prodCheckBox');
+                // 체크한 경우
+                if (checkedTurn === 0) {
+                    prodCheckBox.forEach(function(checkbox) {
+                        checkbox.checked = true;
+                    });
+                    checkedTurn = 1;
+                    // 체크 해제한 경우
+                } else {
+                    prodCheckBox.forEach(function(checkbox) {
+                        checkbox.checked = false;
+                    });
+                    checkedTurn = 0;
+                }
+        }
+        // 상품 삭제
+        function prodDelete(){
+            if(confirm('선택한 상품을 삭제하세겠습니까?')){
+                const prodCheckBox = document.querySelectorAll('.prodCheckBox');
+                // 삭제할 상품의 번호를 저장하는 배열
+                let prodNoArray = [];
+
+                // forEach로 순회하며 checked된 상품의 번호 찾기
+                prodCheckBox.forEach(check => {
+                    // check된 상품번호 배열에 저장
+                    if (check.checked){
+                        prodNoArray.push(check.value);
+                    }
+                })
+                fetch("/lotteon/admin/product/delete", {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({prodNoArray: prodNoArray})
+                })
+                    .then(response => {
+                        // 새로고침
+                        if(response.ok == true){
+                            location.reload();
+                        }
+                    })
+                    .catch(err =>{
+                        console.log(err);
+                    });
+            }
+        }
+    </script>
+                <nav>
+                    <h3>상품목록</h3>
+                    <p>
+                        HOME > 상품관리 > <strong>상품목록</strong>
+                    </p>
+                </nav>
+                <!-- 상품목록 컨텐츠 시작 -->                                
+                <section>
+                    <form th:action="@{/admin/product/list}" method="get" id="searchForm">
+                        <select name="type" onchange="findCate(this.value)">
+                            <option value="prodName">상품명</option>
+                            <option value="prodCode">상품코드</option>
+                            <option value="cate1" >상품분류</option>
+                            <option value="company">제조사</option>
+                            <option value="seller">판매자</option>
+                        </select>
+                        <input type="text" name="keyword" placeholder="검색어를 입력하세요" id="keywordInput"/>
+                    </form>
+                    <table>
+                        <form id="formCheck" th:action="@{/admin/product/delete}" method="get">
+                            <tr>
+                                <th><input type="checkbox" name="all" onclick="totalCheck()"/></th>
+                                <th>이미지</th>
+                                <th>상품코드</th>
+                                <th>상품명</th>
+                                <th>색상명</th>
+                                <th>색상</th>
+                                <th>판매가격</th>
+                                <th>할인율</th>
+                                <th>포인트</th>
+                                <th>재고</th>
+                                <th>제조사</th>
+                                <th>조회</th>
+                                <th>관리</th>
+                            </tr>
+                            <th:block th:each="product, loop : ${adminPageResponseDTO.dtoList}">
+                                <tr>
+                                    <td><input type="checkbox" name="prodNo" th:value="${product.prodNo}" class="prodCheckBox"/></td>
+                                    <td>
+                                        <img th:src="@{'/prodImg/'+${product.thumb1}}"
+                                             class="thumb"
+                                             style="width: 60px; height: 60px;">
+                                    </td>
+                                    <td th:text="${product.prodCode}">상품코드</td>
+                                    <td th:text="${product.prodName}">상품명</td>
+                                    <td th:text="${product.colorName}">색상</td>
+                                    <td><div th:style="'background-color: ' + ${product.color}" class="colorListDiv">ㅤ</div></td>
+                                    <td th:text="${product.price}">가격</td>
+                                    <td th:text="${product.discount}">할인율</td>
+                                    <td th:text="${product.point}">적립금</td>
+                                    <td th:text="${product.stock}">재고</td>
+                                    <td th:text="${product.company}">제조사</td>
+                                    <td th:text="${product.hit}">조회</td>
+                                    <td>
+                                        <a th:href="@{/admin/product/}">[삭제]</a>
+                                        <a th:href="@{/admin/product/view(prodNo = ${product.prodNo})}">[수정]</a>
+                                    </td>
+                                </tr>
+                            </th:block>
+                        </form>
+                    </table>
+                    <button onclick="prodDelete()">선택삭제</button>
+                    <div class="paging">
+                        <span class="prev">
+                            <a th:if="${adminPageResponseDTO.keyword == null}" class="page-link" th:href="@{/admin/product/list(pg=${adminPageResponseDTO.start - 1})}">&#60;</a>
+                            <a th:if="${adminPageResponseDTO.keyword != null}" class="page-link" th:href="@{/admin/product/list(pg=${adminPageResponseDTO.start - 1}, type=${adminPageResponseDTO.type}, keyword=${adminPageResponseDTO.keyword})}">&#60;</a>
+                        </span>
+                        <span class="num"> <!-- 해당 페이지 class on-->
+                            <th:block th:each="num:${#numbers.sequence(adminPageResponseDTO.start, adminPageResponseDTO.end)}">
+                                <a  th:if="${adminPageResponseDTO.keyword == null}" th:classappend="${adminPageResponseDTO.pg == num} ? 'page-link on' : 'page-link'" th:href="@{/admin/product/list(pg=${num})}">
+                                    [[${num}]]
+                                </a>
+                                <a  th:if="${adminPageResponseDTO.keyword != null}" th:classappend="${adminPageResponseDTO.pg == num} ? 'page-link on' : 'page-link'" th:href="@{/admin/product/list(pg=${num}, type=${adminPageResponseDTO.type}, keyword=${adminPageResponseDTO.keyword})}">
+                                    [[${num}]]
+                                </a>
+                            </th:block>
+                        </span>
+                        <span class="next">
+                            <a th:if="${adminPageResponseDTO.keyword == null}" class="page-link" th:href="@{/admin/product/list(pg=${adminPageResponseDTO.end + 1})}">&#62;</a>
+                            <a th:if="${adminPageResponseDTO.keyword != null}" class="page-link" th:href="@{/admin/product/list(pg=${adminPageResponseDTO.end + 1}, type=${adminPageResponseDTO.type}, keyword=${adminPageResponseDTO.keyword})}">&#62;</a>
+                        </span>
+                    </div>
+
+                </section>                
+                <p class="ico info">
+                    <strong>Tip!</strong>
+                    전자상거래 등에서의 상품 등의 정보제공에 관한 고시에 따라 총 35개 상품군에 대해 상품 특성 등을 양식에 따라 입력할 수 있습니다.
+                </p>
+                <!-- 상품목록 컨텐츠 끝 -->
+            </section>

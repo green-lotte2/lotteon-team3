@@ -17,7 +17,127 @@
     <link rel="stylesheet" th:href="@{https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.css}">
     <link rel="stylesheet" th:href="@{/css/common.css}"/>
     <link rel="stylesheet" th:href="@{/css/product.css}">
-    <style></style>
+    <script>
+        window.onload= async function (){
+            const orgPrice = document.getElementsByClassName('org_price')[0];
+            // 할인률
+            const discountDel = orgPrice.getElementsByTagName('span')[0];
+            const discountText = discountDel.innerText;
+            const discountValue = discountText.split('%')[0];
+            let intDiscount = parseInt(discountValue);
+
+            // 상품 원가격
+            const productPriceSpan = orgPrice.getElementsByTagName('del')[0];
+            const productPriceText = productPriceSpan.innerText;
+            let intProductPrice = parseInt(productPriceText);
+
+            // 상품의 할인된 가격
+            let discountPrice = intProductPrice * ((100-intDiscount)/100);
+
+            //할인된 가격 표시
+            const dis_price = document.getElementsByClassName('dis_price')[0];
+            const dis_priceIns = dis_price.getElementsByTagName('ins')[0];
+
+            dis_priceIns.innerText = discountPrice;
+
+            // 배송비
+            const delivery = document.getElementsByClassName('delivery')[0];
+            const deliveryVal = delivery.innerText;
+            const deliveryWon = deliveryVal.split(':')[1];
+            let deliveryValue = deliveryWon.split('원')[0];
+            let deliveryInt = parseInt(deliveryValue);
+
+
+            // 총 가격 표시 html
+            const total = document.getElementsByClassName('total')[0];
+            const totalSpan = total.getElementsByTagName('span')[0];
+
+            if (discountPrice>=30000){
+                totalSpan.innerText = discountPrice;
+            }else if(discountPrice <= 30000) {
+                totalSpan.innerText = discountPrice+deliveryInt;
+            }
+
+            // 옵션 select 요소
+            const selectOption = document.querySelectorAll('.selectOption');
+            // 각 옵션 select 요소에 대해 이벤트 등록
+            selectOption.forEach(function (select) {
+
+                console.log("select : "+select);
+
+                // 옵션 선택시
+                select.addEventListener('change', function() {
+
+                    const nav = select.closest('nav');
+
+                    // 상세 select 선택
+                    const selectDetail = nav.querySelector('.selectDetail');
+
+                    // 상세 select disabled 삭제
+                    selectDetail.disabled = false;
+                });
+            });
+
+            const countDiv = document.getElementsByClassName('count')[0];
+
+            // 상품수량 감소 버튼
+            const decrease = countDiv.getElementsByClassName('decrease')[0];
+            // 상품수량 중가 버튼
+            const increase = countDiv.getElementsByClassName('increase')[0];
+            // 상품수량
+            const count = countDiv.getElementsByClassName('number')[0];
+            count.value = 1;
+
+            const countValueText = count.value;
+
+            let countValue = parseInt(countValueText);
+
+            decrease.addEventListener('click', await function (){
+                countValue = countValue -1;
+                count.value = countValue;
+                // 30000원 이상 무료배송
+                if(totalPrice>=30000){
+                    let totalPrice = (discountPrice*count.value);
+                    totalSpan.innerText = totalPrice;
+                }else if(totalPrice <= 30000){
+                    let totalPrice = (discountPrice*count.value)+deliveryInt;
+                    totalSpan.innerText = totalPrice;
+                }
+
+            });
+
+
+            increase.addEventListener('click', await function (){
+                countValue = countValue +1;
+                count.value = countValue;
+
+                // 30000원 이상 무료배송
+                if(totalPrice>=30000){
+                    let totalPrice = (discountPrice*count.value);
+                    totalSpan.innerText = totalPrice;
+                }else if(totalPrice <= 30000){
+                    let totalPrice = (discountPrice*count.value)+deliveryInt;
+                    totalSpan.innerText = totalPrice;
+                }
+            });
+
+            let totalPrice = (discountPrice*countValue)+deliveryInt;
+            console.log('totalPrice : ' + totalPrice);
+
+            // 장바구니 버튼
+            const cart = document.getElementsByClassName('cart')[0];
+
+            cart.onclick = function (e){
+                e.preventDefault();
+                const prodNoAfter = location.href.split('=')[1];
+                const prodNo = prodNoAfter.split('&')[0];
+
+                console.log(prodNo);
+
+            }
+        }
+
+    </script>
 </head>
 <body>
 <div id="wrapper">

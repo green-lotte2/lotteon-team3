@@ -7,6 +7,7 @@ import kr.co.lotteon.dto.cs.CsPageRequestDTO;
 import kr.co.lotteon.dto.cs.CsPageResponseDTO;
 import kr.co.lotteon.entity.cs.BoardCateEntity;
 import kr.co.lotteon.entity.cs.BoardEntity;
+import kr.co.lotteon.entity.cs.BoardFileEntity;
 import kr.co.lotteon.entity.cs.BoardTypeEntity;
 import kr.co.lotteon.repository.cs.BoardCateRepository;
 import kr.co.lotteon.repository.cs.BoardFileRepository;
@@ -15,16 +16,27 @@ import kr.co.lotteon.repository.cs.BoardRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -136,7 +148,7 @@ public class CsService {
     // 인덱스에 notice 리스트출력
     public List<BoardDTO> getNoticeBoard(int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("rdate").descending().and(Sort.by("bno").descending()));
-        List<BoardEntity> boardEntityPage = boardRepository.findByGroupOrderByRdateDescBnoDesc("notice",  pageable);
+        List<BoardEntity> boardEntityPage = boardRepository.findByGroupOrderByRdateDescBnoDesc("notice", pageable);
         List<BoardDTO> dtoList = boardEntityPage
                 .stream()
                 .map(entity -> modelMapper.map(entity, BoardDTO.class))
@@ -197,4 +209,10 @@ public class CsService {
         return dtoList;
     }
 
+    // 글 등록 메서드
+    public void save(BoardDTO dto) {
+        BoardEntity savedEntity = boardRepository.save(dto.toEntity());
+
+        boardRepository.save(savedEntity);
+    }
 }

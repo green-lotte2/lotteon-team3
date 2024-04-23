@@ -29,7 +29,7 @@ public class Member {
     @ColumnDefault("1")
     private int level;
 //    // 위치기반 약관 동의여부 추가(Y/N)
-//    private String location;
+    private String location;
     private String zip;
     private String addr1;
     private String addr2;
@@ -42,6 +42,7 @@ public class Member {
     private String managerHp;
     private String fax;
     private String regip;
+    private String provider;
     private LocalDateTime wdate;
     @CreationTimestamp
     private LocalDateTime rdate;

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.lotteon.mapper.OrderMapper">
+
+    <select id="selectCountMember" resultType="int">
+        select count(*) from member
+        <where>
+            <if test="type=='uid'">uid=#{value}</if>
+            <if test="type == 'nick'">nick=#{value}</if>
+            <if test="type=='hp'">hp=#{value}</if>
+            <if test="type=='email'">email=#{value}</if>
+        </where>
+
+    </select>
+
+</mapper>

@@ -3,6 +3,7 @@ package kr.co.lotteon.entity.cs;
 import jakarta.persistence.*;
 import kr.co.lotteon.dto.cs.BoardFileDTO;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
@@ -23,10 +24,15 @@ public class BoardFileEntity {
     private int bno;
     private String ofile;
     private String sfile;
+
+    @ColumnDefault("0")
     private int download;
 
     @CreationTimestamp
     private LocalDateTime rdate;
+
+    // 파일 경로 저장 필드 추가
+    private String filePath;
 
     public BoardFileDTO toDTO(){
         return BoardFileDTO.builder()
@@ -36,6 +42,7 @@ public class BoardFileEntity {
                 .sfile(sfile)
                 .download(download)
                 .rdate(rdate)
+                .filePath(filePath)
                 .build();
     }
 }

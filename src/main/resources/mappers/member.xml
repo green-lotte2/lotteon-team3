@@ -8,12 +8,22 @@
     <select id="selectCountMember" resultType="int">
         select count(*) from member
         <where>
+            <!-- 일반회원 관련 중복검사 -->
             <if test="type=='uid'">uid=#{value}</if>
             <if test="type == 'nick'">nick=#{value}</if>
             <if test="type=='hp'">hp=#{value}</if>
             <if test="type=='email'">email=#{value}</if>
-        </where>
 
+            <!-- 판매자회원 관련 중복검사-->
+            <if test="type=='company'">company=#{value}</if>
+            <if test="type=='bizRegNum'">bizRegNum=#{value}</if>
+            <if test="type=='comRegNum'">comRegNum=#{value}</if>
+            <if test="type=='tel'">tel=#{value}</if>
+            <if test="type=='fax'">fax=#{value}</if>
+
+
+        </where>
     </select>
+
 
 </mapper>
