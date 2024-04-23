@@ -48,7 +48,7 @@ public class CsController {
         model.addAttribute("qnaBoard", qnaBoard);
         model.addAttribute("cate", cate);
         return "/cs/index";
-}
+    }
 
     // QnA list
     @GetMapping(value = "/cs/qna/list")

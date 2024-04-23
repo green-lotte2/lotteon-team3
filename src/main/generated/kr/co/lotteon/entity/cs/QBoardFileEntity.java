@@ -23,6 +23,8 @@ public class QBoardFileEntity extends EntityPathBase<BoardFileEntity> {
 
     public final NumberPath<Integer> download = createNumber("download", Integer.class);
 
+    public final StringPath filePath = createString("filePath");
+
     public final NumberPath<Integer> fno = createNumber("fno", Integer.class);
 
     public final StringPath ofile = createString("ofile");

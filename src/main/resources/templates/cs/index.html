@@ -8,6 +8,23 @@
     <link rel="shortcut icon" type="image/x-icon" href="../img/favicon.ico" />
     <link rel="stylesheet" th:href="@{/css/csStyle.css}">
     <script th:inline="javascript">
+      document.addEventListener("DOMContentLoaded", function() {
+        var ask = document.querySelector('.ask');
+
+        // 문의하기 버튼 클릭 이벤트
+        ask.addEventListener('click', function() {
+          // 로그인 상태 확인
+          var isAuthenticated = [[${#authorization.expression('isAuthenticated()')}]];
+
+          // 만약 로그인되어 있지 않다면
+          if (!isAuthenticated) {
+            // 알림창 띄우기
+            alert('로그인 후에 이용 가능합니다.');
+            // 로그인 페이지로 이동
+            window.location.href = '/member/login'; // 로그인 페이지 URL로 변경해주세요.
+          }
+        });
+      });
     </script>
   </head>
   <body>
@@ -101,12 +118,8 @@
                 </li>
               </th:block>
             </ul>
-            <a th:href="@{/cs/qna/write(group=qna)}"
-               th:if="${#authorization.expression('isAuthenticated()')}"
-               class="ask">문의글 작성 ></a>
-            <a th:href="@{/cs/qna/write(group=qna)}"
-               th:unless="${#authorization.expression('isAuthenticated()')}"
-               class="ask">문의글 작성 ></a>
+            <a th:if="${#authorization.expression('isAuthenticated()')}" th:href="@{/cs/qna/write(group='qna')}" class="ask">문의하기</a>
+            <a th:unless="${#authorization.expression('isAuthenticated()')}" th:href="@{/member/login}" class="ask">문의하기</a>
           </section>
 
           <section class="tel">
