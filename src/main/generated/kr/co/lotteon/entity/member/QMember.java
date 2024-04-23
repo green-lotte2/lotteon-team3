@@ -41,6 +41,8 @@ public class QMember extends EntityPathBase<Member> {
 
     public final NumberPath<Integer> level = createNumber("level", Integer.class);
 
+    public final StringPath location = createString("location");
+
     public final StringPath manager = createString("manager");
 
     public final StringPath managerHp = createString("managerHp");

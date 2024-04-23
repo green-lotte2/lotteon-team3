@@ -76,19 +76,20 @@ spring:
             authorization-grant-type: authorization_code
 
             # 카카오 > 내 애플리케이션 > 카카오 로그인 > 등록된 Redirect URI 사용
-            redirect-uri: http://localhost:8080/sboard/login/oauth2/code/kakao
-            client-id: 5d395917afb3f84f1bde6ebcbd12c3cf
+            redirect-uri: http://localhost:8080/lotteon/login/oauth2/code/kakao
+            client-id: 82327135c9d68ac16cf6972b6fd1641f
             # 카카오 > 내 애플리케이션 > 카카오로그인 > 보안 > Client Secret
-            client-secret: 8U4ZM3EKyAlXR3BDQ3wpaozimhKNE4Nt
+            client-secret: wsSFQZP4vxXdUY4MYwFtWJlYgULNvKlT
             client-authentication-method: client_secret_post
             scope:
               - profile_nickname
               - profile_image
+              - account_email
 
           google:
             client-id: 224975630827-8nl3vpsfn2uve9q1hsna5ao3lnj6452b.apps.googleusercontent.com
             client-secret: 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
-            redirect-uri: http://localhost:8080/farmstory/login/oauth2/code/google
+            redirect-uri: http://localhost:8080/lotteon/login/oauth2/code/google
             scope:
               - email
               - profile

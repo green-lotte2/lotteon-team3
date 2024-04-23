@@ -1,4 +1,9 @@
 /* member 공통 */
+.login> .kakao> img{
+  width: 40px;
+
+}
+
 header {
   width: 100%;
   height: auto;

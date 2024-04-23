@@ -1,5 +1,6 @@
 package kr.co.lotteon.oauth2;
 
+import jakarta.servlet.http.HttpServletRequest;
 import kr.co.lotteon.entity.member.Member;
 import kr.co.lotteon.repository.member.MemberRepository;
 import kr.co.lotteon.security.MyUserDetails;
@@ -12,6 +13,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
+import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -19,44 +21,55 @@ import java.util.Map;
 public class OAuth2UserService extends DefaultOAuth2UserService {
 
     private final MemberRepository memberRepository;
+    private final HttpServletRequest request;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
 
-        log.info("loadUser...1 : " + userRequest);
-
         String accessToken = userRequest.getAccessToken().getTokenValue();
-        log.info("loadUser...2 : " + accessToken);
-        //로그인 진행중인 서비스 구분(구글 or 카카오 or 네이버)
-        String provider = userRequest.getClientRegistration().getRegistrationId();
-        log.info("loadUser...3 : " + provider);
-
+        String registrationId = userRequest.getClientRegistration().getRegistrationId();
         OAuth2User oauth2User = super.loadUser(userRequest);
-        log.info("loadUser...4 : " + oauth2User);
-
         Map<String, Object> attributes = oauth2User.getAttributes();
-        log.info("loadUser...5 : " + attributes);
+        OAuth2MemberInfo memberInfo = null;
+
+        if (registrationId.equals("google")) {
+            memberInfo = new GoogleInfo(oauth2User.getAttributes());
+        } else if (registrationId.equals("kakao")) {
+            memberInfo = new KakaoInfo(oauth2User.getAttributes());
+        }
+
+
 
         // 사용자 확인 및 회원가입 처리
-        String email = (String) attributes.get("email");
+        String email = memberInfo.getEmail();
         String uid = email.substring(0, email.lastIndexOf("@"));
-        String name = (String) attributes.get("name");
+        String name = memberInfo.getName();
+        String provider = memberInfo.getProvider();
+        int level=1;
+        String regip=memberInfo.getRegip(request);
 
-        // 사용자 확인
-        Member member = memberRepository.findById(uid)
-                                        .orElse(Member.builder()
-                                                .uid(uid)
-                                                .email(email)
-                                                .name(name)
-                                                .nick(name)
-                                                .level(1)
-                                                .provider(provider)
-                                                .build());
+        Optional<Member> findMember = memberRepository.findById(uid);
+        Member member=null;
 
-        // 저장 or 수정
-        memberRepository.save(member);
+        if(findMember.isEmpty()){
+            member=Member.builder()
+                    .uid(uid)
+                    .email(email)
+                    .name(name)
+                    .nick(name)
+                    .level(level)
+                    .provider(provider)
+                    .regip(regip)
+                    .build();
 
-        // SecurityContextHolder의 principal(사용자 인증 객체)로 저장
+            memberRepository.save(member);
+        }else{
+            member=findMember.get();
+        }
+
+
+
+
         return MyUserDetails.builder()
                 .member(member)
                 .build();
