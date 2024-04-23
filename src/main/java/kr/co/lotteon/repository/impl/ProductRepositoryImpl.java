@@ -20,10 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.beans.Expression;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @Repository
@@ -142,6 +139,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
                 .where(qOption.prodNo.eq(prodNo))
                 .groupBy(qOption.opName)
                 .fetch();
+
         log.info("impl 1" + result);
 
         Map<String, List<String>> resultMap = new HashMap<>();
@@ -152,12 +150,16 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
             String opValue = tuple.get(Expressions.stringTemplate("GROUP_CONCAT({0})", qOption.opValue));
             log.info("opValue : " + opValue);
 
+            // opValue를 배열로 만들기
+            List<String> opValueList = Arrays.asList(opValue.split(","));
+            log.info("opValue List impl 2" + opValueList);
+
             // opName이 이미 resultMap에 존재하는지 확인, 없으면 빈 리스트를 새로 생성하여 추가
             resultMap.putIfAbsent(opName, new ArrayList<>());
 
-            resultMap.get(opName).add(opValue);
+            resultMap.put(opName, opValueList);
         }
-        log.info("impl 2" + resultMap);
+        log.info("impl 3" + resultMap);
 
         return resultMap;
     }
