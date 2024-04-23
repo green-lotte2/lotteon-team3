@@ -83,8 +83,17 @@ public class AdminController {
     // config banner (관리자 배너 관리) 페이지 매핑
     @GetMapping("/admin/config/banner")
     public String banner(Model model){
-        List<BannerDTO> banners = adminService.bannerList();
-        model.addAttribute("banners", banners);
+        // 배너 cate 별 조회 ㅎㅎ;
+        List<BannerDTO> mtBanner = adminService.bannerList("main-top");
+        List<BannerDTO> msBanner = adminService.bannerList("main-slider");
+        List<BannerDTO> pBanner = adminService.bannerList("product");
+        List<BannerDTO> lBanner = adminService.bannerList("login");
+        List<BannerDTO> myBanner = adminService.bannerList("myPage");
+        model.addAttribute("mtBanner", mtBanner);
+        model.addAttribute("msBanner", msBanner);
+        model.addAttribute("pBanner", pBanner);
+        model.addAttribute("lBanner", lBanner);
+        model.addAttribute("myBanner", myBanner);
         return "/admin/config/banner";
     }
     // config register (관리자 배너 등록) 전송
@@ -94,6 +103,21 @@ public class AdminController {
         log.info("관리자 배너 등록 Cont 2 : " + bannerDTO);
         adminService.bannerRegister(imgFile, bannerDTO);
         return "redirect:/admin/config/banner";
+    }
+
+    // 배너 삭제
+    @ResponseBody
+    @PostMapping("/admin/banner/delete")
+    public ResponseEntity<?> bannerDelete(@RequestBody Map<String, int[]> requestData){
+        int[] bnoArray = requestData.get("bnoArray");
+        log.info("배너 삭제 Cont 1 : " + requestData);
+        return adminService.bannerDelete(bnoArray);
+    }
+
+    // 배너 활성화 관리
+    @GetMapping("/admin/banner/change/{bno}")
+    public ResponseEntity<?> bannerActChange(@PathVariable("bno") int bno){
+        return adminService.bannerActChange(bno);
     }
     // config info (관리자 기본 환경 정보) 페이지 매핑
     @GetMapping("/admin/config/info")

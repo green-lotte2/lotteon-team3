@@ -147,10 +147,10 @@ public class AdminService {
         return dtoList;
     }
     // 관리자 배너 목록
-    public List<BannerDTO> bannerList(){
+    public List<BannerDTO> bannerList(String cate){
 
         // 조회된 Entity List -> DTO List
-        return bannerRepository.findAll().stream()
+        return bannerRepository.findByCate(cate).stream()
                 .map(banner ->
                     modelMapper.map(banner, BannerDTO.class))
                 .collect(Collectors.toList());
@@ -230,6 +230,36 @@ public class AdminService {
         // banner Table에 저장
         bannerRepository.save(modelMapper.map(bannerDTO, Banner.class));
     }
+
+    // 관리자 배너 활성화 관리
+    public ResponseEntity<?> bannerActChange(int bno){
+        Banner banner = bannerRepository.findById(bno).get();
+
+        // 활성화 -> 비활성화
+        if(banner.getActivation() == 1) {
+            banner.setActivation(0);
+
+            // 비활성화 -> 활성화
+        } else if(banner.getActivation() == 0){
+            banner.setActivation(1);
+        }
+
+        bannerRepository.save(banner);
+
+        return ResponseEntity.ok().body(banner);
+    }
+
+    // 관리자 배너 삭제
+    public ResponseEntity<?> bannerDelete(int[] bnoArray) {
+        log.info("관리자 상품 삭제 Serv 1 : " + Arrays.toString(bnoArray));
+
+        for (int bno : bnoArray) {
+            // 상품 배너 삭제 반복
+            bannerRepository.deleteById(bno);
+        }
+        return ResponseEntity.ok().body("ok");
+    }
+
     // 관리자 상품 등록 cate1 조회
     public List<Cate1DTO> findAllCate1() {
         List<Cate1> cate1s = cate1Repository.findAll();

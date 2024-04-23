@@ -19,6 +19,8 @@ public class QBanner extends EntityPathBase<Banner> {
 
     public static final QBanner banner = new QBanner("banner");
 
+    public final NumberPath<Integer> activation = createNumber("activation", Integer.class);
+
     public final DatePath<java.time.LocalDate> beginDate = createDate("beginDate", java.time.LocalDate.class);
 
     public final TimePath<java.time.LocalTime> beginTime = createTime("beginTime", java.time.LocalTime.class);

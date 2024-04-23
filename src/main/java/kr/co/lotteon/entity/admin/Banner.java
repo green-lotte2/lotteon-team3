@@ -30,4 +30,5 @@ public class Banner {
     private LocalTime beginTime;
     private LocalDate endDate;
     private LocalTime endTime;
+    private int activation;
 }
