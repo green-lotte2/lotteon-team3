@@ -21,27 +21,25 @@ public class CsCateService {
     private final BoardTypeRepository boardTypeRepository;
     private final ModelMapper modelMapper;
 
-
+    // QnA list - 1차 분류
     public List<BoardCateEntity> getCate(){
         List<BoardCateEntity> boardCateEntities = boardCateRepository.findAll();
         return boardCateEntities;
     }
 
-    public List<BoardTypeEntity> getTypeName(){
+    // QnA list - 2차 분류
+    public List<BoardTypeEntity> getType(){
         List<BoardTypeEntity> boardTypeEntities = boardTypeRepository.findAll();
         return boardTypeEntities;
     }
 
-
     public List<BoardTypeEntity> findByCate(String cate){
         return boardTypeRepository.findByCate(cate);
-
     }
+
     public List<BoardTypeDTO> findByCateTypeDTOS(String cate){
         return boardTypeRepository.findByCate(cate).stream()
                 .map(entity -> modelMapper.map(entity, BoardTypeDTO.class ))
                 .toList();
-
     }
-
 }

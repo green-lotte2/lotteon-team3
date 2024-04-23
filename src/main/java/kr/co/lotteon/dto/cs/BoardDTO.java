@@ -36,7 +36,7 @@ public class BoardDTO {
 
     private List<BoardFileDTO> fileDTOList;     // 게시글에 첨부된 파일들(리스트)
 
-    private BoardEntity toEntity(){
+    public BoardEntity toEntity(){
         return BoardEntity.builder()
                 .bno(bno)
                 .uid(uid)
