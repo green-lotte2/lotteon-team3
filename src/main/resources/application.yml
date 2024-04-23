@@ -86,8 +86,8 @@ spring:
               - profile_image
 
           google:
-            client-id: 798155618029-5l08jbeia24v5k5jvq605sojv2uml6os.apps.googleusercontent.com
-            client-secret: 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
+            client-id: 224975630827-8nl3vpsfn2uve9q1hsna5ao3lnj6452b.apps.googleusercontent.com
+            client-secret: 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
             redirect-uri: http://localhost:8080/farmstory/login/oauth2/code/google
             scope:
               - email
