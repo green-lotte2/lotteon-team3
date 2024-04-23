@@ -40,9 +40,9 @@ public class SecurityConfig {
 
         // OAuth 설정
         httpSecurity.oauth2Login(oauth -> oauth
-                .loginPage("/member/login")
+                .loginPage("/member/login") 
                 .defaultSuccessUrl("/")
-                .userInfoEndpoint(userInfo -> userInfo.userService(oauth2UserService)));
+                .userInfoEndpoint(userInfo -> userInfo.userService(oauth2UserService))); //소셜로그인 완료된 후 후처리
 
         ///////////배포전 인가 수정하기/////////
         httpSecurity.authorizeHttpRequests(authorize -> authorize

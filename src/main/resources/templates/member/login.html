@@ -18,12 +18,19 @@
 
         }
     </script>
+    <style>
+        .login> .kakao{
+            width: 100px;
+
+        }
+    </style>
+
             <div class="login">
                 <nav>
                     <h1>로그인</h1>                    
                 </nav>
                 
-				<form th:action="@{/member/login}" method="POST">
+				<form th:action="@{/member/login}" method="POST" class="login">
 
                     <table border="0">
                         <tr>
@@ -42,6 +49,12 @@
 						<a th:href="@{/member}">비밀번호찾기</a>
 						<a th:href="@{/member/join}">회원가입</a>
 					</span>
+                    <a th:href="@{/oauth2/authorization/google}">
+                        <img th:src="@{/member/images/web_light_rd_na.svg}" alt="로그인"/>
+                    </a>
+                    <a th:href="@{/oauth2/authorization/kakao}" class="kakao">
+                        <img th:src="@{/member/images/icon_easy_kakao.svg}" alt="로그인"/>
+                    </a>
 
                     <a th:href="@{/member}" class="banner"><img th:src="@{/member/images/member_login_banner.jpg}" alt="1만원 할인 쿠폰 받기"></a>
 

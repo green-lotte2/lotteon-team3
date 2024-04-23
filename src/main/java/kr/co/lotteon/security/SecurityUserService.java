@@ -27,9 +27,9 @@ public class SecurityUserService implements UserDetailsService {
 
         if(!result.isEmpty()){
             // 해당하는 사용자가 존재하면 인증 객체 생성
-            userDetails = MyUserDetails.builder()
-                                        .member(result.get())
-                                        .build();
+            Member member = result.get();
+            userDetails = MyUserDetails.builder().member(member).build();
+            log.info(userDetails.toString());
         }
 
         // Security ContextHolder 저장
