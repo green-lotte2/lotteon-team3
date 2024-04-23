@@ -82,7 +82,9 @@ public class AdminController {
 
     // config banner (관리자 배너 관리) 페이지 매핑
     @GetMapping("/admin/config/banner")
-    public String banner(){
+    public String banner(Model model){
+        List<BannerDTO> banners = adminService.bannerList();
+        model.addAttribute("banners", banners);
         return "/admin/config/banner";
     }
     // config register (관리자 배너 등록) 전송
