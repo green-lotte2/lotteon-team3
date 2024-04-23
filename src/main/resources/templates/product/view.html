@@ -47,7 +47,7 @@
                         <nav th:each="option : ${prodOptions}">
                             <select  class="form-select" aria-label="Default select example">
                                 <option selected>옵션</option>
-                                <option value="1">[[${option.key}]]</option>
+                                <option th:value="${option.key}">[[${option.key}]]</option>
 
                             </select>
                             <br>
