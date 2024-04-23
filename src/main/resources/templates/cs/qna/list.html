@@ -2,7 +2,29 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{/layout/csLayout}">
+<head>
+    <!-- 다른 스크립트나 스타일 등 -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var btnWrite = document.querySelector('.btnWrite');
 
+            // 문의하기 버튼 클릭 이벤트
+            btnWrite.addEventListener('click', function() {
+                // 로그인 상태 확인
+                var isAuthenticated = [[${#authorization.expression('isAuthenticated()')}]];
+
+                // 만약 로그인되어 있지 않다면
+                if (!isAuthenticated) {
+                    // 알림창 띄우기
+                    alert('로그인 후에 이용 가능합니다.');
+                    // 로그인 페이지로 이동
+                    window.location.href = '/member/login'; // 로그인 페이지 URL로 변경해주세요.
+                }
+            });
+        });
+    </script>
+
+</head>
 <section id="cs" layout:fragment = "content">
         <div class="qna">
             <nav>
@@ -52,7 +74,10 @@
                   <td>
                     <a th:href="@{/cs/qna/view(group=${csPageResponseDTO.group},cate=${csPageResponseDTO.cate},bno=${article.bno})}" >[<span th:text="${article.typeName}" style="font-size: 16px;"></span>] [[${article.title}]]</a>
                   </td>
-                  <td th:text="${#temporals.format(article.rdate, 'yyyy.MM.dd')}"></td>
+                    <td>
+                        <span th:text="${#strings.substring(article.uid, 0, 3)} + '***'"></span>
+                    </td>
+                    <td th:text="${#temporals.format(article.rdate, 'yyyy.MM.dd')}"></td>
                 </tr>
               </table>
 
@@ -72,8 +97,8 @@
                 </div>
               </th:block>
 
-                <a th:href="@{/cs/qna/write(group=${group})}" class="btnWrite">문의하기</a>
-
+                <a th:if="${#authorization.expression('isAuthenticated()')}" th:href="@{/cs/qna/write(group=${group})}" class="btnWrite">문의하기</a>
+                <a th:unless="${#authorization.expression('isAuthenticated()')}" th:href="@{/member/login}" class="btnWrite">문의하기</a>
 
             </article>
           </section>
