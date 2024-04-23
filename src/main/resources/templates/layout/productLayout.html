@@ -17,7 +17,33 @@
     <link rel="stylesheet" th:href="@{https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.css}">
     <link rel="stylesheet" th:href="@{/css/common.css}"/>
     <link rel="stylesheet" th:href="@{/css/product.css}">
-    <style></style>
+    <script>
+        window.onload= function (){
+
+            // 옵션 select 요소
+            const selectOption = document.querySelectorAll('.selectOption');
+            // 각 옵션 select 요소에 대해 이벤트 등록
+            selectOption.forEach(function (select) {
+
+                console.log("select : "+select);
+
+                // 옵션 선택시
+                select.addEventListener('change', function() {
+
+                    // 해당하는 상세 select 태그를 가져옵니다.
+                    const detailSelect = select.nextElementSibling.querySelector('.selectDetail');
+
+                    // 상세 select 태그를 활성화합니다.
+                    detailSelect.disabled = false;
+
+                });
+            });
+
+
+
+        }
+
+    </script>
 </head>
 <body>
 <div id="wrapper">

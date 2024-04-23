@@ -15,9 +15,10 @@ public interface ProductRepositoryCustom {
 
     public Page<Product> adminSearchProducts(AdminProductPageRequestDTO adminProductPageRequestDTO, Pageable pageable);
 
-
+    // 상품 기본 리스트
     public Page<Product> productList(PageRequestDTO pageRequestDTO, Pageable pageable);
 
+    // 뷰페이지 상품 옵션 띄우기
     public Map<String, List<String>> selectProdOption(int prodNo);
 
     public Product findProductByProdCode(int prodCode);
