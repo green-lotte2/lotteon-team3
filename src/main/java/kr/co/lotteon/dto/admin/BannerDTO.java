@@ -24,4 +24,7 @@ public class BannerDTO {
     private LocalTime beginTime;
     private LocalDate endDate;
     private LocalTime endTime;
+
+    @Builder.Default
+    private int activation = 1;
 }

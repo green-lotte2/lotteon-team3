@@ -1261,6 +1261,29 @@ col {
     box-sizing: border-box;
     cursor: pointer;
 }
+/* 배너 활성화 버튼 */
+.btnChangeAct{
+    border: 1px solid #959595;
+    font-size: 12px;
+    background: #242238;
+    padding: 7px 13px;
+    border-radius: 8px;
+    color: #fff;
+    vertical-align: top;
+}
+.btnBannerInact{
+    border: 1px solid #242238;
+    font-size: 12px;
+    background: #fff;
+    padding: 7px 13px;
+    border-radius: 8px;
+    color: #242238;
+    vertical-align: top;
+}
+.btnChangeAct:hover {
+    border: 2px solid #959595;
+    font-size: 12px;
+}
 /* 배너 tabs */
 #tabs{
     position: relative;
@@ -1447,6 +1470,51 @@ col {
     color: white;
     margin-right: 5px;
     margin-bottom: 5px;
+    cursor: pointer;
+}
+/* 배너 이미지 모달 */
+/* 이미지 클릭 시, 밝기 조절 */
+.bannerImg:hover {opacity: 0.8;}
+
+.modal {
+    display: none; /* 모달창 숨겨 놓기 */
+    position: fixed;
+    z-index: 1; /* 모달창을 제일 앞에 두기 */
+    padding-top: 100px;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    overflow: auto; /* 스크롤 허용 auto */
+    cursor: pointer; /* 마우스 손가락모양 */
+    background-color: rgba(0, 0, 0, 0.8);
+}
+/* 모달창 이미지 */
+.modal_content {
+    margin: auto;
+    display: block;
+    width: 50%; height: auto;
+    max-width: 1000px;
+    border-radius: 10px;
+    animation-name: zoom;
+    animation-duration: 0.8s;
+}
+/* 모달창 애니메이션 추가 */
+@keyframes zoom {
+    from {transform: scale(0)}
+    to {transform: scale(1)}
+}
+/* 닫기 버튼 꾸미기 */
+.close {
+    position: absolute;
+    top: 15px;
+    right: 35px;
+    color: #f1f1f1;
+    font-size: 40px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+.close:hover, .close:focus{
+    color: #bbb;
+    text-decoration: none;
     cursor: pointer;
 }
 
