@@ -7,6 +7,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -20,11 +21,13 @@ public class Banner {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int bno;
+    private String bnName;
     private String thumb;
     private String cate;
+    private String link;
 
-    @CreationTimestamp
-    private LocalDate startdate;
-    @CreationTimestamp
-    private LocalTime starttime;
+    private Date beginDate;
+    private Date beginTime;
+    private Date endDate;
+    private Date endTime;
 }

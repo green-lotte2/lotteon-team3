@@ -1237,7 +1237,7 @@ col {
 
 #admin-config-banner .btnPositive {
     float: right;
-    width: 100px;
+    width: 74px;
     padding: 6px;
     margin-top: 10px;
     border: 1px solid #8798a3;
@@ -1350,7 +1350,7 @@ col {
     height: auto;
     padding: 10px;
     box-sizing: border-box;
-    background: #0e3a47;
+    background: #0e0d15;
     overflow: hidden;
 }
 .popup > div > nav > h1 {
@@ -1435,9 +1435,22 @@ col {
     border: 1px solid #0b8404;
     box-sizing: border-box;
     color: white;
-    margin: 0 auto;
+    margin-right: 5px;
+    margin-bottom: 5px;
     cursor: pointer;
 }
+/* 배너 popup tbn */
+.btnBannerSubmit {
+    padding: 10px !important;
+    background: #242238;
+    border: 1px solid #0e0d15;
+    box-sizing: border-box;
+    color: white;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    cursor: pointer;
+}
+
 /* 관리자 - 글목록 */
 #adminCsList > table {
     width: 100%;

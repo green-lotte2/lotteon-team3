@@ -1,13 +1,11 @@
-package kr.co.lotteon.service;
+package kr.co.lotteon.service.admin;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.querydsl.core.Tuple;
-import kr.co.lotteon.dto.admin.AdminBoardPageRequestDTO;
-import kr.co.lotteon.dto.admin.AdminBoardPageResponseDTO;
-import kr.co.lotteon.dto.admin.AdminProductPageRequestDTO;
-import kr.co.lotteon.dto.admin.AdminProductPageResponseDTO;
+import kr.co.lotteon.dto.admin.*;
 import kr.co.lotteon.dto.cs.*;
 import kr.co.lotteon.dto.product.*;
+import kr.co.lotteon.entity.admin.Banner;
 import kr.co.lotteon.entity.cs.BoardCateEntity;
 import kr.co.lotteon.entity.cs.BoardEntity;
 import kr.co.lotteon.entity.cs.BoardTypeEntity;
@@ -15,6 +13,7 @@ import kr.co.lotteon.entity.member.Terms;
 import kr.co.lotteon.entity.product.Cate1;
 import kr.co.lotteon.entity.product.Option;
 import kr.co.lotteon.entity.product.Product;
+import kr.co.lotteon.repository.BannerRepository;
 import kr.co.lotteon.repository.cs.BoardCateRepository;
 import kr.co.lotteon.repository.cs.BoardRepository;
 import kr.co.lotteon.repository.cs.BoardTypeRepository;
@@ -31,8 +30,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.beans.Transient;
@@ -57,6 +54,7 @@ public class AdminService {
     private final OrderRepository orderRepository;
     private final MemberRepository memberRepository;
     private final BoardTypeRepository typeRepository;
+    private final BannerRepository bannerRepository;
 
     private final ModelMapper modelMapper;
 
@@ -148,7 +146,81 @@ public class AdminService {
 
         return dtoList;
     }
+    // 관리자 배너 등록
+    public void bannerRegister(MultipartFile imgFile ,BannerDTO bannerDTO){
 
+        // 이미지 파일 등록 : 해당 디렉토리 없을 경우 자동 생성
+        File file = new File(imgUploadPath);
+        if (!file.exists()) {
+            file.mkdir();
+        }
+        String path = file.getAbsolutePath();
+
+        // 원본 파일 폴더 자동 생성
+        String orgPath = path + "/orgImage";
+        File orgFile = new File(orgPath);
+        if (!orgFile.exists()) {
+            orgFile.mkdir();
+        }
+        // 이미지 리사이징
+        if (!imgFile.isEmpty()){
+
+            // oName, sName 구하기
+            String oFile = imgFile.getOriginalFilename();
+            String ext = oFile.substring(oFile.lastIndexOf("."));
+            String sFile = UUID.randomUUID().toString() + ext;
+
+            try {
+                // 원본 파일 저장
+                imgFile.transferTo(new File(orgFile, sFile));
+
+                // 파일 이름 DTO에 저장
+                bannerDTO.setThumb(sFile);
+
+                // cate에 맞는 사이즈로 바꾸기
+                switch (bannerDTO.getCate()) {
+                    case "main-top":
+                        // 리사이징 1200 * 80
+                        Thumbnails.of(new File(orgPath, sFile)) // 원본 파일 (경로, 이름)
+                                .size(1200, 80) // 원하는 사이즈
+                                .toFile(new File(path, sFile)); // 리사이징 파일 (경로, 이름)
+                        break;
+                    case "main-slider":
+                        // 리사이징 985 * 447
+                        Thumbnails.of(new File(orgPath, sFile)) // 원본 파일 (경로, 이름)
+                                .size(985, 447) // 원하는 사이즈
+                                .toFile(new File(path, sFile)); // 리사이징 파일 (경로, 이름)
+                        break;
+                    case "product":
+                        // 리사이징 456 * 60
+                        Thumbnails.of(new File(orgPath, sFile)) // 원본 파일 (경로, 이름)
+                                .size(456, 60) // 원하는 사이즈
+                                .toFile(new File(path, sFile)); // 리사이징 파일 (경로, 이름)
+                        break;
+                    case "login":
+                        // 리사이징 425 * 260
+                        Thumbnails.of(new File(orgPath, sFile)) // 원본 파일 (경로, 이름)
+                                .size(425, 260) // 원하는 사이즈
+                                .toFile(new File(path, sFile)); // 리사이징 파일 (경로, 이름)
+                        break;
+                    case "myPage":
+                        // 리사이징 810 * 86
+                        Thumbnails.of(new File(orgPath, sFile)) // 원본 파일 (경로, 이름)
+                                .size(810, 86) // 원하는 사이즈
+                                .toFile(new File(path, sFile)); // 리사이징 파일 (경로, 이름)
+                        break;
+                    default:
+                        break;
+                }
+
+                log.info("리사이징 끝");
+            }catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        // banner Table에 저장
+        bannerRepository.save(modelMapper.map(bannerDTO, Banner.class));
+    }
     // 관리자 상품 등록 cate1 조회
     public List<Cate1DTO> findAllCate1() {
         List<Cate1> cate1s = cate1Repository.findAll();
