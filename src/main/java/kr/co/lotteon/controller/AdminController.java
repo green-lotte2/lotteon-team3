@@ -2,20 +2,16 @@ package kr.co.lotteon.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
-import kr.co.lotteon.dto.admin.AdminBoardPageRequestDTO;
-import kr.co.lotteon.dto.admin.AdminBoardPageResponseDTO;
-import kr.co.lotteon.dto.admin.AdminProductPageRequestDTO;
-import kr.co.lotteon.dto.admin.AdminProductPageResponseDTO;
+import kr.co.lotteon.dto.admin.*;
 import kr.co.lotteon.dto.cs.BoardCateDTO;
 import kr.co.lotteon.dto.cs.BoardDTO;
 import kr.co.lotteon.dto.cs.BoardTypeDTO;
 import kr.co.lotteon.dto.cs.CommentDTO;
 import kr.co.lotteon.dto.product.*;
-import kr.co.lotteon.entity.cs.BoardCateEntity;
 import kr.co.lotteon.entity.cs.Comment;
 import kr.co.lotteon.entity.member.Terms;
 import kr.co.lotteon.security.MyUserDetails;
-import kr.co.lotteon.service.AdminService;
+import kr.co.lotteon.service.admin.AdminService;
 import kr.co.lotteon.service.cs.CommentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +24,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 
@@ -89,6 +84,14 @@ public class AdminController {
     @GetMapping("/admin/config/banner")
     public String banner(){
         return "/admin/config/banner";
+    }
+    // config register (관리자 배너 등록) 전송
+    @PostMapping("/admin/config/register")
+    public String bannerRegister(@RequestParam("imgFile") MultipartFile imgFile, BannerDTO bannerDTO){
+        log.info("관리자 배너 등록 Cont 1 : " + imgFile);
+        log.info("관리자 배너 등록 Cont 2 : " + bannerDTO);
+        adminService.bannerRegister(imgFile, bannerDTO);
+        return "redirect:/admin/config/banner";
     }
     // config info (관리자 기본 환경 정보) 페이지 매핑
     @GetMapping("/admin/config/info")

@@ -1,0 +1,97 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/adminLayout}">
+<section id="admin-product-register" layout:fragment="content">
+    <script>
+        // 이미지 파일만 올릴 수 있게 Check
+        function chkImg(obj) {
+            const file_kind = obj.value.lastIndexOf('.');
+            const file_name = obj.value.substring(file_kind+1,obj.length);
+            const file_type = file_name.toLowerCase();
+
+            const chkImg = ['jpg', 'gif', 'png', 'jpeg', 'bmp'];
+
+            // 이미지 파일이 아닌 경우
+            if(chkImg.indexOf(file_type) == -1){
+                alert('이미지 파일만 선택할 수 있습니다.');
+                const parent_Obj = obj.parentNode
+                const node = parent_Obj.replaceChild(obj.cloneNode(true),obj);
+
+                // input 태그 비우기
+                const inputFile = document.getElementById("file").select();
+                inputFile.value = "";
+                return false;
+            }
+        }
+    </script>
+                <nav>
+                    <h3>배너등록</h3>
+                    <p>
+                        HOME > 환경설정 > <strong>배너등록</strong>
+                    </p>
+                </nav>
+                <!-- 배너 등록 컨텐츠 시작 -->
+                <article>
+                    <form th:action="@{/admin/cs/register}" method="post" enctype="multipart/form-data" id="prodForm">
+                        <!-- 배너 분류 -->
+                        <section>
+                            <h4>배너 위치</h4>
+                            <p>
+                                배너 위치는 반드시 선택하셔야 합니다. 하나의 배너에 1개의 위치를 지정 합니다.
+                            </p>
+                            <table>
+                                <tr>
+                                    <td>배너위치</td>
+                                    <td>
+                                        <select name="cate" id="cate">
+                                            <option value="main-top">메인 - 상단</option>
+                                            <option value="main-slider">메인 - 슬라이더</option>
+                                            <option value="product-view">상품 상세보기</option>
+                                            <option value="login">회원 로그인</option>
+                                            <option value="myPage">마이페이지</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                            </table>
+                        </section>
+
+                        <!-- 기본정보 -->
+                        <section>
+                            <h4>기본정보</h4>
+                            <p>
+                                기본정보는 반드시 입력해야 합니다.
+                            </p>
+                            <table>
+                                <tr>
+                                    <td>시작날짜</td>
+                                    <td><label for="startdate">날짜를 선택하세요:
+                                        <input type="date" id="startdate" name="startdate" >
+                                    </label></td>
+                                </tr>
+                                <tr>
+                                    <td>시작시간</td>
+                                    <td>
+                                        <span>상품명 하단에 상품에 대한 추가적인 설명이 필요한 경우에 입력</span>
+                                        <input type="time" name="starttime"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>배너 이미지</td>
+                                    <td>
+                                        <span>크기 최대 10MB</span>
+                                        <input type="file" name="imgFile" onchange="chkImg(this)" accept=".gif, .jpg, .png, .jpeg, .bmp">
+                                    </td>
+                                </tr>
+                            </table>                                
+                        </section>
+                        <input type="hidden" name="optionDTOList" id="optionDTOList">
+                        <input type="submit" value="등록하기" onclick="optionCheckOk(this)"/>
+                    </form>
+                </article>
+
+                <p class="ico alert">
+                    <strong>Warning!</strong>
+                    전자상거래 등에서의 상품 등의 정보제공에 관한 고시에 따라 총 35개 상품군에 대해 상품 특성 등을 양식에 따라 입력할 수 있습니다.
+                </p>
+                <!-- 상품등록 컨텐츠 끝 -->
+            </section>
