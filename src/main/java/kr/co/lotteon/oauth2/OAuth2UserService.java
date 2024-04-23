@@ -27,7 +27,7 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
 
         String accessToken = userRequest.getAccessToken().getTokenValue();
         log.info("loadUser...2 : " + accessToken);
-
+        //로그인 진행중인 서비스 구분(구글 or 카카오 or 네이버)
         String provider = userRequest.getClientRegistration().getRegistrationId();
         log.info("loadUser...3 : " + provider);
 
