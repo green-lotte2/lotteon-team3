@@ -38,7 +38,7 @@
 
 #product h6.rating {
     font-size: 11px;
-    background-image: url('../../templates/product/images/rating_star.png');
+    background-image: url('../product/images/rating_star.png');
     background-repeat: no-repeat;
     background-position: 36px 0px;
     background-size: auto 100%;
@@ -53,7 +53,7 @@
     width: 150px;
     height: 20px;
     font-size: 0px;
-    background-image: url(../../templates/product/images/ico_rating_star.png);
+    background-image: url(../product/images/ico_rating_star.png);
     background-repeat: no-repeat;
     background-position: 36px 0px;
     text-indent: 86px;
@@ -71,10 +71,10 @@
     background-repeat: no-repeat;
 }
 
-#product .badge.power {background-image: url('../../templates/product/images/ico_power_dealer.gif');}
-#product .badge.great {background-image: url('../../templates/product/images/ico_great_seller.gif');}
+#product .badge.power {background-image: url('../product/images/ico_power_dealer.gif');}
+#product .badge.great {background-image: url('../product/images/ico_great_seller.gif');}
 #product .badge.power.great {
-    background: url('../../templates/product/images/ico_power_dealer.gif') no-repeat, url('../../templates/product/images/ico_great_seller.gif') no-repeat 63px;
+    background: url('../product/images/ico_power_dealer.gif') no-repeat, url('../product/images/ico_great_seller.gif') no-repeat 63px;
     width: 160px;
 }
 
@@ -165,7 +165,7 @@
   vertical-align: text-bottom;
   width: 55px;
   height: 13px;
-  background: url('../../templates/product/images/ico_free_delivery.gif') no-repeat;
+  background: url('../product/images/ico_free_delivery.gif') no-repeat;
   margin-top: 4px;
 }
 
@@ -524,13 +524,13 @@
 	position: absolute;
   width: 21px;
   height: 21px;
-  background-image: url('../../templates/product/images/ico_sprites.png');
+  background-image: url('../product/images/ico_sprites.png');
   font-size: 0;
   background-color: transparent;
   border: none;
 }
 #product > .view > .info > .summary .count > .decrease {
-	left:0;
+    left:0;
   top:0;
   background-position: 0px -74px;
 }
@@ -1375,7 +1375,7 @@
   vertical-align: text-bottom;
   width: 55px;
   height: 13px;
-  background: url('../../templates/product/images/ico_free_delivery.gif') no-repeat;
+  background: url('../product/images/ico_free_delivery.gif') no-repeat;
   margin-top: 4px;
 }
 
