@@ -146,6 +146,15 @@ public class AdminService {
 
         return dtoList;
     }
+    // 관리자 배너 목록
+    public List<BannerDTO> bannerList(){
+
+        // 조회된 Entity List -> DTO List
+        return bannerRepository.findAll().stream()
+                .map(banner ->
+                    modelMapper.map(banner, BannerDTO.class))
+                .collect(Collectors.toList());
+    }
     // 관리자 배너 등록
     public void bannerRegister(MultipartFile imgFile ,BannerDTO bannerDTO){
 

@@ -20,8 +20,8 @@ public class BannerDTO {
     private String cate;
     private String link;
 
-    private Date beginDate;
-    private Date beginTime;
-    private Date endDate;
-    private Date endTime;
+    private LocalDate beginDate;
+    private LocalTime beginTime;
+    private LocalDate endDate;
+    private LocalTime endTime;
 }
