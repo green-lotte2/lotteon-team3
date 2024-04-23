@@ -36,6 +36,9 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
             memberInfo = new GoogleInfo(oauth2User.getAttributes());
         } else if (registrationId.equals("kakao")) {
             memberInfo = new KakaoInfo(oauth2User.getAttributes());
+        }else if(registrationId.equals("naver")){
+            //네이버는 (Map)으로 캐스팅을 해주어 getAttributes().get("response")를 해주어야 NaverUserInfo의 attributes에 값이 전달
+            memberInfo=new NaverInfo((Map)oauth2User.getAttributes().get("response"));
         }
 
 
@@ -45,9 +48,12 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
         String uid = email.substring(0, email.lastIndexOf("@"));
         String name = memberInfo.getName();
         String provider = memberInfo.getProvider();
+
+
         int level=1;
         String regip=memberInfo.getRegip(request);
 
+        //email로 수정할필요
         Optional<Member> findMember = memberRepository.findById(uid);
         Member member=null;
 

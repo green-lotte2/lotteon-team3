@@ -1,5 +1,12 @@
 /* member 공통 */
+
+/* 소셜로그인 */
 .login> .kakao> img{
+  width: 40px;
+
+}
+
+.login> .naver> img{
   width: 40px;
 
 }
