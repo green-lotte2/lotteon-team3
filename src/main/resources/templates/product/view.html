@@ -3,7 +3,6 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{/layout/productLayout}">
 
-
             <!-- 상품 상세페이지 시작 -->
             <section class="view" layout:fragment="content">
 
@@ -39,24 +38,26 @@
                                 <ins>27,000</ins>
                             </div>
                         </nav>
-                        <nav th:if="${productDTO.delivery} == 0">
-                            <span class="delivery">무료배송</span>
-                            <span class="arrival">모레(금) [[${productDTO.rdate}]] 도착예정</span>
+                        <nav>
+                            <span class="delivery">[[${productDTO.delivery eq 0? '무료배송' : '배송비 :' + productDTO.delivery +'원'}]]</span>
+                            <span class="arrival">모레(금) [[${#temporals.format(productDTO.rdate, 'yy-MM-dd')}]] 도착예정</span>
                             <span class="desc">본 상품은 국내배송만 가능합니다.</span>
                         </nav>
-                        <nav th:each="option : ${prodOptions}">
-                            <select  class="form-select" aria-label="Default select example">
+
+                        <!-- 옵션 선택 nav -->
+                        <nav class="selectNav" th:each="option : ${prodOptions}">
+                            <select class="form-select selectOption" aria-label="Default select example">
                                 <option selected>옵션</option>
                                 <option th:value="${option.key}">[[${option.key}]]</option>
-
                             </select>
                             <br>
-                            <select class="form-select" aria-label="Default select example">
+                            <select class="form-select selectDetail" aria-label="Default select example" disabled>
                                 <option selected>상세</option>
-                                <option value="1">[[${option.value}]]</option>
+                                <option th:each="opValue : ${option.value}" th:value="${opValue}">[[${opValue}]]</option>
 
                             </select>
                         </nav>
+
                         <nav>
                             <span class="origin">원산지-상세설명 참조</span>
                         </nav>
