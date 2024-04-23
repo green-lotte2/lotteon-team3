@@ -17,7 +17,7 @@ import java.util.List;
 public class OrderRepositoryImpl implements OrderRepositoryCustom {
 
     private final JPAQueryFactory jpaQueryFactory;
-    private final QOrder qOrder =QOrder.order;
+    private final QOrder qOrder = QOrder.order;
 
     // 월별 주문 count 조회 - 오늘 기준 12개월 전 까지
     @Override

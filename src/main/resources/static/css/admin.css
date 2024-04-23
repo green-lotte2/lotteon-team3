@@ -263,6 +263,9 @@ textarea {
     box-sizing: border-box;
     resize: none;            
 }
+textarea:focus {
+    outline: none;
+}
 
 /* span {
     vertical-align: bottom;
@@ -1495,6 +1498,25 @@ col {
     border-radius: 5px;
     box-sizing: border-box;
 }
+#adminGoWrite {
+    float: right;
+    display: inline-block;
+    width: 55px;
+    height: 34px;
+    margin-top: 5px;
+    margin-right: 50px;
+    box-sizing: border-box;
+    text-align: center;
+    line-height: 34px;
+    font-size: 13px;
+    font-weight: bold;
+    vertical-align: bottom;
+    background-color: #5c5f68;
+    border-radius: 5px;
+    color: #fff;
+    font-family: "돋움", Dotum, Tahoma, sans-serif;
+    letter-spacing: -1px;
+}
 #adminCsList > .page {
     text-align: center;
     margin-top: 26px;
@@ -1510,7 +1532,107 @@ col {
     font-weight: bold;
     vertical-align: bottom;
 }
+/* qna - 글쓰기 */
+.writeArt table {
+    width: 100%;
+    border-collapse: collapse;
+    border-top: 2px solid #111;
+}
+.writeArt table tr {
+    width: 100%;
+    height: 26px;
+}
 
+.writeArt table td {
+    padding: 16px;
+    border-bottom: 1px solid #ccc;
+    font-size: 16px;
+}
+
+.writeArt table td:first-child {
+    width: 100px;
+}
+
+.writeArt table input {
+    width: 100%;
+    height: 40px;
+    font-size: 16px;
+    box-sizing: border-box;
+    text-indent: 10px;
+}
+
+.writeArt table select {
+    width: 130px;
+    height: 40px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+.writeArt table select * {
+    font-size: inherit;
+}
+
+.writeArt table textarea {
+    width: 100%;
+    height: 360px;
+    resize: none;
+    font-size: 16px;
+    padding: 10px;
+    box-sizing: border-box;
+}
+#adminWriteForm > table > tbody > tr:nth-child(4) > td.form-group > label {
+    padding: 16px;
+    font-size: 16px;
+}
+#adminWriteForm > table > tbody > tr:nth-child(4) > td:nth-child(2) > input[type=file]{
+    margin-top: 10px;
+}
+/* 입력 태그 */
+#adminWriteForm input {
+    border: none;
+}
+#adminWriteForm textarea {
+    border: none;
+    background-color: #fbfcfd;
+}
+/* 버튼 */
+#adminWriteForm > div > .btnSubmit {
+    display: inline-block;
+    width: 100px;
+    height: 40px;
+    margin-left: 3px;
+    margin-bottom: 3px;
+    background-color: #3a365a;
+    border: 1px solid #1c1a28;
+    border-radius: 34px;
+    font-size: 16px;
+    color: #fff;
+    text-align: center;
+    box-sizing: border-box;
+}
+#adminWriteForm > div > .btnWriteCancel {
+    display: inline-block;
+    width: 100px;
+    height: 40px;
+    margin: 40px auto 0;
+    border: 1px solid #ccc;
+    border-radius: 34px;
+    padding-top: 2px;
+    font-size: 16px;
+    color: #000;
+    line-height: 30px;
+    text-align: center;
+    box-sizing: border-box;
+}
+#adminWriteForm > div > .btnSubmit:hover {
+    background-color: #0954f6;
+}
+#adminWriteForm > div > .btnWriteCancel:hover {
+    background-color: #e4e4e4;
+}
+#adminWriteForm > div {
+    float: right;
+}
 /***article-view***/
 .articleForm {
     display: flex;
@@ -1587,16 +1709,39 @@ col {
     border: 1px solid #a8d031;
     background-color: #a8d031;
 }
+.filebox label {
+    display: inline-block;
+    padding: .7em .75em;
+    width: 60px;
+    font-size: 14px;
+    line-height: normal;
+    vertical-align: middle;
+    cursor: pointer;
+    color: #fff;
+    background-color: #3a365a;
+    border-color: #1a1928;
+    border-radius: 10em;
+}
+
+.filebox input[type="file"] {  /* 파일 필드 숨기기 */
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip:rect(0,0,0,0);
+    border: 0;
+}
 /*aritlce-view-btn*/
 .articleBtnBox {
-    padding: 10px 0;
+    float: right;
+    padding: 14px 2;
     justify-content: end;
-    border-top: 1px solid #d6d6d6;
-    border-bottom: 2px solid #d6d6d6;
 }
 .articleBtnBox > a {
-    font-size: 14px;
-    padding: 6px;
+    font-size: 15px;
+    padding: 8px;
     margin: 0 4px;
     border: 1px solid #d6d6d6;
     border-radius: 10px;
@@ -1616,6 +1761,7 @@ col {
     margin-top: 10px;
     padding-left: 4px;
     font-weight: bold;
+    font-size: 20px;
 }
 .commentBox > form > textarea {
     width: 100%;
@@ -1627,6 +1773,7 @@ col {
     font-size: 16px;
     outline: none;
     resize: none;
+    background-color: #eaeaea;
     border: 1px solid #d6d6d6;
     border-radius: 10px;
 }
@@ -1638,6 +1785,7 @@ col {
 .commentBox > form > div > button {
     padding: 6px;
     margin-left: 4px;
+    color: #0e0101;
     border: 1px solid #d6d6d6;
     border-radius: 10px;
     background-color: transparent;
@@ -1645,8 +1793,8 @@ col {
 }
 .commentBox > form > div > button:hover {
     color: white;
-    border: 1px solid #a8d031;
-    background-color: #a8d031;
+    border: 1px solid #454c5f;
+    background-color: #2b2f38;
 }
 .commentBox > .comment {
     padding: 5px 10px;
@@ -1679,6 +1827,7 @@ col {
 .commentBox > .comment > div > button {
     padding: 6px;
     margin-right: 8px;
+
     border: 1px solid #d6d6d6;
     border-radius: 10px;
     background-color: white;
