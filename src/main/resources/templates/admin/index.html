@@ -7,7 +7,6 @@
                         // 주문 차트
                         let ordCt = document.getElementById('orderChart');
 
-                        let orderData = "";
                         // 주문 데이터 가져오기
                         const response = await fetch('/lotteon/admin/orderChart');
                         const dataText = await response.text(); // JSON 형식의 문자열을 가져옴
@@ -25,14 +24,10 @@
                             type: 'bar',
                             data: {
                                 labels: data.map(row => row.month),
-                                datasets: [
-                                    {
+                                datasets: [{
                                         label: '월별 주문 건수',
                                         data: data.map(row => row.count),
-                                        backgroundColor: '#848a8e',
-                                    }
-                                ]
-                            },
+                                        backgroundColor: '#848a8e',}]},
                             options: {
                                 // 크기 조절을 위해 false
                                 responsive: false,
@@ -42,8 +37,8 @@
                                 scales: {
                                     yAxes: [{
                                         ticks: {
-                                            beginAtZero: true, // 0부터 시작하게 합니다.
-                                            stepSize: 1   // 1 씩 증가하도록 설정합니다.
+                                            beginAtZero: true,
+                                            stepSize: 1
                                         }
                                     }]
                                 }
@@ -51,42 +46,45 @@
                         });
                         // 회원 차트
                         let memCt = document.getElementById('memChart');
+
+                        // 회원 가입 데이터 가져오기
+                        const memResp = await fetch('/lotteon/admin/memberChart');
+                        const memDataText = await memResp.text(); // JSON 형식의 문자열을 가져옴
+                        let memData = [];
+
+                        try {
+                            // JSON 형식의 문자열을 JavaScript 객체로 변환
+                            memData = JSON.parse(memDataText);
+                            console.log("가입 데이터 : ", memData);
+                        } catch (error) {
+                            console.error('가입 데이터 변환 오류:', error);
+                        }
+
                         let memChart = new Chart(memCt, {
                             type: 'line',
                             data: {
-                                labels: ['2020', '2021', '2022', '2023'],
-                                datasets: [
-                                    {
-                                        label: 'Dataset',
-                                        data: [10,20,30,40],
+                                labels: memData.map(row => row.month),
+                                datasets: [{
+                                        label: '월별 가입 건수',
+                                        data: memData.map(row => row.count),
                                         fill: false,
                                         borderColor: 'rgb(75, 192, 192)',
-                                        tension: 0.1
-                                    }
-                                ]
-                            },
+                                        tension: 0.1}]},
                             options: {
                                 // 크기 조절을 위해 false
                                 responsive: false,
                                 title: {
                                     display: true,
                                 },
-                                scales: { // x축과 y축에 대한 설정
-                                    x: {
-                                        grid: { // 축에 대한 격자선
-                                            display: false, // grid 활성화 (기본값 true)
+                                scales: {
+                                    yAxes: [{
+                                        ticks: {
+                                            beginAtZero: true, // 0부터 시작
+                                            stepSize: 1   // 1 씩 증가
                                         }
-                                    },
-                                    y: {
-                                        min: 0, // y축에 대한 최소값
-                                        max: 10, // y축에 대한 최대값
-                                        border: { // 축에 대한 테두리 속성
-                                            dash: [5, 5] // 점선 형태
-                                        },
-                                    }
+                                    }]
                                 }
                             }
-
                         });
                     }
                 </script>

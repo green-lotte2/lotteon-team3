@@ -6,19 +6,19 @@ import kr.co.lotteon.dto.admin.AdminBoardPageRequestDTO;
 import kr.co.lotteon.dto.admin.AdminBoardPageResponseDTO;
 import kr.co.lotteon.dto.admin.AdminProductPageRequestDTO;
 import kr.co.lotteon.dto.admin.AdminProductPageResponseDTO;
-import kr.co.lotteon.dto.cs.BoardCateDTO;
-import kr.co.lotteon.dto.cs.BoardDTO;
-import kr.co.lotteon.dto.cs.CsPageRequestDTO;
-import kr.co.lotteon.dto.cs.CsPageResponseDTO;
+import kr.co.lotteon.dto.cs.*;
 import kr.co.lotteon.dto.product.*;
 import kr.co.lotteon.entity.cs.BoardCateEntity;
 import kr.co.lotteon.entity.cs.BoardEntity;
+import kr.co.lotteon.entity.cs.BoardTypeEntity;
 import kr.co.lotteon.entity.member.Terms;
 import kr.co.lotteon.entity.product.Cate1;
 import kr.co.lotteon.entity.product.Option;
 import kr.co.lotteon.entity.product.Product;
 import kr.co.lotteon.repository.cs.BoardCateRepository;
 import kr.co.lotteon.repository.cs.BoardRepository;
+import kr.co.lotteon.repository.cs.BoardTypeRepository;
+import kr.co.lotteon.repository.member.MemberRepository;
 import kr.co.lotteon.repository.member.TermsRepository;
 import kr.co.lotteon.repository.product.*;
 import lombok.RequiredArgsConstructor;
@@ -55,6 +55,8 @@ public class AdminService {
     private final Cate3Repository cate3Repository;
     private final TermsRepository termsRepository;
     private final OrderRepository orderRepository;
+    private final MemberRepository memberRepository;
+    private final BoardTypeRepository typeRepository;
 
     private final ModelMapper modelMapper;
 
@@ -87,6 +89,29 @@ public class AdminService {
                 .collect(Collectors.toList());
 
         log.info("월별 주문 count 조회 Serv 3: " + jsonResult);
+        return jsonResult;
+    }
+
+    // 관리자 인덱스 회원 가입 차트 조회
+    public List<Map<String, Object>> selectMemberForChart() {
+        log.info("월별 가입자 count 조회 Serv 1");
+        List<Tuple> tuples = memberRepository.selectMemberForChart();
+        log.info("월별 가입자 count 조회 Serv 2: " + tuples);
+
+        // 조회 결과 List로 반환
+        List<Map<String, Object>> jsonResult = tuples.stream()
+                .map(tuple -> {
+                    int year = tuple.get(0, Integer.class);
+                    int month = tuple.get(1, Integer.class);
+                    long count = tuple.get(2, long.class);
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("month", month + "월");
+                    map.put("count", count);
+                    return map;
+                })
+                .collect(Collectors.toList());
+
+        log.info("월별 가입자 count 조회 Serv 3: " + jsonResult);
         return jsonResult;
     }
 
@@ -145,7 +170,6 @@ public class AdminService {
         List<Cate2DTO> cate2List = cate2Repository.findByCate1(cate1).stream()
                 .map(cate2 -> modelMapper.map(cate2, Cate2DTO.class))
                 .collect(Collectors.toList());
-        ;
 
         return ResponseEntity.ok().body(cate2List);
     }
@@ -342,14 +366,14 @@ public class AdminService {
                         log.info("관리자 상품 등록 service8 product : " + product.toString());
 
                         // 옵션 정보 Product Entity에 저장
-                        /*
+
                         log.info("관리자 상품 등록 service9 " + option);
                         product.setColor(option.getColor());
                         product.setColorName(option.getColorName());
                         product.setOpStock(option.getOpStock());
                         product.setSize(option.getSize());
                         log.info("optionDTO List : " + option);
-                        */
+
                         // 상품 정보 DB 저장
                         saveProduct = productRepository.save(product);
                         log.info("관리자 상품 등록 service10 savedProduct : " + saveProduct.toString());
@@ -456,7 +480,7 @@ public class AdminService {
                 .total(total)
                 .build();
     }
-    // 관리자 게시판 관리 - 게시글 등록
+    // 관리자 게시판 관리 - 게시글 등록 카테고리 조회
     public List<BoardCateDTO> findBoardCate(){
 
         List<BoardCateEntity> boardCates = boardCateRepository.findAll();
@@ -465,8 +489,24 @@ public class AdminService {
                 .map(cate -> modelMapper.map(cate, BoardCateDTO.class))
                 .collect(Collectors.toList());
     }
+    // 관리자 게시판 관리 - 게시글 등록 type(말머리) 조회
+    public ResponseEntity<?> findBoardType(String cate){
+
+        List<BoardTypeEntity> boardTypes = typeRepository.findByCate(cate);
+        // 조회된 Entity List -> DTO List
+        List<BoardTypeDTO> typeList = boardTypes.stream()
+                .map(type -> modelMapper.map(type, BoardTypeDTO.class))
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok().body(typeList);
+    }
     // 관리자 게시판 관리 - 게시글 등록
-    public void registerBoard(){
+    public void adminBoardWrite(BoardDTO boardDTO){
+        log.info("게시글 등록 Cont 1 : " + boardDTO);
+        BoardEntity boardEntity = modelMapper.map(boardDTO, BoardEntity.class);
+        boardRepository.save(boardEntity);
+
+        // file 등록 구현되면 할 것
 
     }
     // 관리자 게시판 관리 - 게시글 삭제
