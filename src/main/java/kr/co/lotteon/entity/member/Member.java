@@ -42,6 +42,7 @@ public class Member {
     private String managerHp;
     private String fax;
     private String regip;
+    private String provider;
     private LocalDateTime wdate;
     @CreationTimestamp
     private LocalDateTime rdate;

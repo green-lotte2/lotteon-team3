@@ -47,7 +47,7 @@ public class MemberController {
 
     // login 페이지 매핑
     @GetMapping("/member/login")
-    public String login(){
+    public String login(@ModelAttribute("success") String success){
         return "/member/login";
     }
 
