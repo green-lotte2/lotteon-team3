@@ -3,57 +3,55 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{/layout/csLayout}">
 
-<section id="cs" layout:fragment = "content">
-        <div class="qna">
-          <nav>
-            <div>
-              <p>홈
-                <span>></span>
-                <span th:switch="${group}">
-                      <span th:case="notice" style="font-size: 16px; color: black;">공지사항</span>
-                      <span th:case="qna" style="font-size: 16px; color: black;">고객문의</span>
-                      <span th:case="faq" style="font-size: 16px; color: black;">자주묻는질문</span>
-                      </span>
-              </p>
-            </div>
-          </nav>
-          <section class="view">
-            <aside>
-              <h2>문의하기</h2>
-              <ul>
-                <li th:class="${(cate=='member') ? 'on' : ''}"><a th:href="@{/cs/qna/list(group='qna',cate='member')}">회원</a></li>
-                <li th:class="${(cate=='coupon') ? 'on' : ''}"><a th:href="@{/cs/qna/list(group='qna',cate='coupon')}">쿠폰/이벤트</a></li>
-                <li th:class="${(cate=='order') ? 'on' : ''}"><a th:href="@{/cs/qna/list(group='qna',cate='order')}">주문/결제</a></li>
-                <li th:class="${(cate=='delivery') ? 'on' : ''}"><a th:href="@{/cs/qna/list(group='qna',cate='delivery')}">배송</a></li>
-                <li th:class="${(cate=='refund') ? 'on' : ''}"><a th:href="@{/cs/qna/list(group='qna',cate='refund')}">취소/반품/교환</a></li>
-                <li th:class="${(cate=='travel') ? 'on' : ''}"><a th:href="@{/cs/qna/list(group='qna',cate='travel')}">여행/숙박/항공</a></li>
-                <li th:class="${(cate=='safe') ? 'on' : ''}"><a th:href="@{/cs/qna/list(group='qna',cate='safe')}">안전거래</a></li>
-              </ul>
-            </aside>
-            <article>
-              <nav>
-                <h2 class="title">
-                  [<span style="font-size: 32px; font-weight: bold" th:text="${boardDTO.typeName}"></span>]
-                  [[${boardDTO.title}]]
-                </h2>
-                <p>
-                  <span class="uid" style="font-size: 14px;" th:text="${#strings.length(boardDTO.uid) >= 3 ? #strings.substring(boardDTO.uid, 0, 3) + '***' : #strings.substring(boardDTO.uid, 0, 1)+'*'}"></span>
-                  <span style="font: normal 14px 'Noto Sans CJK KR'; color: #777;" th:text="${#temporals.format(boardDTO.rdate, 'yyyy.MM.dd')}"></span>
-                </p>
-              </nav>
+<section id="cs" layout:fragment="content">
+  <div class="qna">
+    <nav>
+      <div>
+        <p>홈
+          <span>></span>
+          <span th:switch="${group}">
+                        <span th:case="notice" style="font-size: 16px; color: black;">공지사항</span>
+                        <span th:case="qna" style="font-size: 16px; color: black;">고객문의</span>
+                        <span th:case="faq" style="font-size: 16px; color: black;">자주묻는질문</span>
+                    </span>
+        </p>
+      </div>
+    </nav>
+    <section class="view">
+      <aside>
+        <h2>문의하기</h2>
+        <ul>
+          <li th:class="${(cate=='member') ? 'on' : ''}"><a th:href="@{/cs/qna/list(group='qna',cate='member')}">회원</a></li>
+          <li th:class="${(cate=='coupon') ? 'on' : ''}"><a th:href="@{/cs/qna/list(group='qna',cate='coupon')}">쿠폰/이벤트</a></li>
+          <li th:class="${(cate=='order') ? 'on' : ''}"><a th:href="@{/cs/qna/list(group='qna',cate='order')}">주문/결제</a></li>
+          <li th:class="${(cate=='delivery') ? 'on' : ''}"><a th:href="@{/cs/qna/list(group='qna',cate='delivery')}">배송</a></li>
+          <li th:class="${(cate=='refund') ? 'on' : ''}"><a th:href="@{/cs/qna/list(group='qna',cate='refund')}">취소/반품/교환</a></li>
+          <li th:class="${(cate=='travel') ? 'on' : ''}"><a th:href="@{/cs/qna/list(group='qna',cate='travel')}">여행/숙박/항공</a></li>
+          <li th:class="${(cate=='safe') ? 'on' : ''}"><a th:href="@{/cs/qna/list(group='qna',cate='safe')}">안전거래</a></li>
+        </ul>
+      </aside>
+      <article>
+        <nav>
+          <h2 class="title">
+            [<span style="font-size: 32px; font-weight: bold" th:text="${boardDTO.typeName}"></span>]
+            [[${boardDTO.title}]]
+          </h2>
+          <p>
+            <span class="uid" style="font-size: 14px;" th:text="${#strings.length(boardDTO.uid) >= 3 ? #strings.substring(boardDTO.uid, 0, 3) + '***' : #strings.substring(boardDTO.uid, 0, 1)+'*'}"></span>
+            <span style="font: normal 14px 'Noto Sans CJK KR'; color: #777;" th:text="${#temporals.format(boardDTO.rdate, 'yyyy.MM.dd')}"></span>
+          </p>
+        </nav>
 
-              <div class="content">
-                <p>
-                  [[${boardDTO.content}]]
-                </p><br><br>
-
-              </div>
-              <a th:href="@{/cs/qna/list(group='qna', cate=${cate})}" class="btnList">목록보기</a>
-
-            </article>
-          </section>
+        <div class="content">
+          <p>
+            [[${boardDTO.content}]]
+          </p><br><br>
         </div>
-      </section>
 
-    </div>
+        <a th:href="@{/cs/qna/list(group='qna', cate=${cate})}" class="btnList">목록보기</a>
+      </article>
+    </section>
+  </div>
+</section>
+
 </html>

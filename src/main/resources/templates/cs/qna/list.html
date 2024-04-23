@@ -2,37 +2,59 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{/layout/csLayout}">
+<head>
+    <!-- 다른 스크립트나 스타일 등 -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var btnWrite = document.querySelector('.btnWrite');
 
+            // 문의하기 버튼 클릭 이벤트
+            btnWrite.addEventListener('click', function() {
+                // 로그인 상태 확인
+                var isAuthenticated = [[${#authorization.expression('isAuthenticated()')}]];
+
+                // 만약 로그인되어 있지 않다면
+                if (!isAuthenticated) {
+                    // 알림창 띄우기
+                    alert('로그인 후에 이용 가능합니다.');
+                    // 로그인 페이지로 이동
+                    window.location.href = '/member/login'; // 로그인 페이지 URL로 변경해주세요.
+                }
+            });
+        });
+    </script>
+
+</head>
 <section id="cs" layout:fragment = "content">
-        <div class="qna">
-            <nav>
-                <div>
-                    <p>홈
-                        <span>></span>
-                        <span th:switch="${group}">
+    <div class="qna">
+        <nav>
+            <div>
+                <p>홈
+                    <span>></span>
+                    <span th:switch="${group}">
                       <span th:case="notice" style="font-size: 16px; color: black;">공지사항</span>
                       <span th:case="qna" style="font-size: 16px; color: black;">고객문의</span>
                       <span th:case="faq" style="font-size: 16px; color: black;">자주묻는질문</span>
                       </span>
-                    </p>
-                </div>
-            </nav>
-          <section class="list">
+                </p>
+            </div>
+        </nav>
+        <section class="list">
             <aside>
-              <h2>문의하기</h2>
-              <ul>
-                <li th:class="${(cate=='member') ? 'on' : ''}"><a th:href="@{/cs/qna/list(group='qna',cate='member')}">회원</a></li>
-                <li th:class="${(cate=='coupon') ? 'on' : ''}"><a th:href="@{/cs/qna/list(group='qna',cate='coupon')}">쿠폰/이벤트</a></li>
-                <li th:class="${(cate=='order') ? 'on' : ''}"><a th:href="@{/cs/qna/list(group='qna',cate='order')}">주문/결제</a></li>
-                <li th:class="${(cate=='delivery') ? 'on' : ''}"><a th:href="@{/cs/qna/list(group='qna',cate='delivery')}">배송</a></li>
-                <li th:class="${(cate=='refund') ? 'on' : ''}"><a th:href="@{/cs/qna/list(group='qna',cate='refund')}">취소/반품/교환</a></li>
-                <li th:class="${(cate=='travel') ? 'on' : ''}"><a th:href="@{/cs/qna/list(group='qna',cate='travel')}">여행/숙박/항공</a></li>
-                <li th:class="${(cate=='safe') ? 'on' : ''}"><a th:href="@{/cs/qna/list(group='qna',cate='safe')}">안전거래</a></li>
-              </ul>
+                <h2>문의하기</h2>
+                <ul>
+                    <li th:class="${(cate=='member') ? 'on' : ''}"><a th:href="@{/cs/qna/list(group='qna',cate='member')}">회원</a></li>
+                    <li th:class="${(cate=='coupon') ? 'on' : ''}"><a th:href="@{/cs/qna/list(group='qna',cate='coupon')}">쿠폰/이벤트</a></li>
+                    <li th:class="${(cate=='order') ? 'on' : ''}"><a th:href="@{/cs/qna/list(group='qna',cate='order')}">주문/결제</a></li>
+                    <li th:class="${(cate=='delivery') ? 'on' : ''}"><a th:href="@{/cs/qna/list(group='qna',cate='delivery')}">배송</a></li>
+                    <li th:class="${(cate=='refund') ? 'on' : ''}"><a th:href="@{/cs/qna/list(group='qna',cate='refund')}">취소/반품/교환</a></li>
+                    <li th:class="${(cate=='travel') ? 'on' : ''}"><a th:href="@{/cs/qna/list(group='qna',cate='travel')}">여행/숙박/항공</a></li>
+                    <li th:class="${(cate=='safe') ? 'on' : ''}"><a th:href="@{/cs/qna/list(group='qna',cate='safe')}">안전거래</a></li>
+                </ul>
             </aside>
             <article>
 
-              <nav>
+                <nav>
                 <span th:switch="${cate}">
                         <span th:case="member">회원</span>
                         <span th:case="coupon">쿠폰/이벤트</span>
@@ -42,41 +64,44 @@
                         <span th:case="travel">여행/숙박/항공</span>
                         <span th:case="safe">안전거래</span>
                     </span>
-                <h2><span th:utext="${(cate eq 'member') ? '회원' : (cate eq 'coupon') ? '쿠폰/이벤트' : (cate eq 'order') ? '주문/결제'
+                    <h2><span th:utext="${(cate eq 'member') ? '회원' : (cate eq 'coupon') ? '쿠폰/이벤트' : (cate eq 'order') ? '주문/결제'
                 : (cate eq 'delivery') ? '배송' : (cate eq 'refund') ? '취소/반품/교환' : (cate eq 'travel') ? '여행/숙박/항공'
                 : (cate eq 'safe') ? '안전거래' : ''}" style="font-size: 20px;"></span>관련 문의 내용입니다.</h2>
 
-              </nav>
-              <table>
-                <tr th:each="article : ${csPageResponseDTO.dtoList}" >
-                  <td>
-                    <a th:href="@{/cs/qna/view(group=${csPageResponseDTO.group},cate=${csPageResponseDTO.cate},bno=${article.bno})}" >[<span th:text="${article.typeName}" style="font-size: 16px;"></span>] [[${article.title}]]</a>
-                  </td>
-                  <td th:text="${#temporals.format(article.rdate, 'yyyy.MM.dd')}"></td>
-                </tr>
-              </table>
+                </nav>
+                <table>
+                    <tr th:each="article : ${csPageResponseDTO.dtoList}" >
+                        <td>
+                            <a th:href="@{/cs/qna/view(group=${csPageResponseDTO.group},cate=${csPageResponseDTO.cate},bno=${article.bno})}" >[<span th:text="${article.typeName}" style="font-size: 16px;"></span>] [[${article.title}]]</a>
+                        </td>
+                        <td>
+                            <span th:text="${#strings.substring(article.uid, 0, 3)} + '***'"></span>
+                        </td>
+                        <td th:text="${#temporals.format(article.rdate, 'yyyy.MM.dd')}"></td>
+                    </tr>
+                </table>
 
-              <th:block th:if="${csPageResponseDTO.end gt 0 }">
-                <div class="page">
+                <th:block th:if="${csPageResponseDTO.end gt 0 }">
+                    <div class="page">
                       <span th:if="${csPageResponseDTO.prev}" class="prev">
                         <a th:href="@{/cs/qna/list(group=${csPageResponseDTO.group},cate=${csPageResponseDTO.cate},pg=${csPageResponseDTO.start - 1})}">이전</a>
                       </span>
 
-                  <span th:each="num: ${#numbers.sequence(csPageResponseDTO.start, csPageResponseDTO.end)}" class="num">
+                        <span th:each="num: ${#numbers.sequence(csPageResponseDTO.start, csPageResponseDTO.end)}" class="num">
                         <a th:href="@{/cs/qna/list(group=${csPageResponseDTO.group},cate=${csPageResponseDTO.cate},pg=${num})}" th:class="${csPageResponseDTO.pg eq num ? 'on' : 'off'}">[[${num}]]</a>
                       </span>
 
-                  <span th:if="${csPageResponseDTO.next}" class="next">
+                        <span th:if="${csPageResponseDTO.next}" class="next">
                         <a th:href="@{/cs/qna/list(group=${csPageResponseDTO.group},cate=${csPageResponseDTO.cate},pg=${csPageResponseDTO.end + 1})}">다음</a>
                       </span>
-                </div>
-              </th:block>
+                    </div>
+                </th:block>
 
-                <a th:href="@{/cs/qna/write(group=${group})}" class="btnWrite">문의하기</a>
-
+                <a th:if="${#authorization.expression('isAuthenticated()')}" th:href="@{/cs/qna/write(group=${group})}" class="btnWrite">문의하기</a>
+                <a th:unless="${#authorization.expression('isAuthenticated()')}" th:href="@{/member/login}" class="btnWrite">문의하기</a>
 
             </article>
-          </section>
-        </div>
+        </section>
+    </div>
 </section>
 </html>
