@@ -8,19 +8,21 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.co.lotteon.dto.admin.AdminProductPageRequestDTO;
 import kr.co.lotteon.dto.product.PageRequestDTO;
+import kr.co.lotteon.dto.product.ProductDTO;
 import kr.co.lotteon.entity.product.Product;
 import kr.co.lotteon.entity.product.QOption;
 import kr.co.lotteon.entity.product.QProduct;
 import kr.co.lotteon.repository.custom.ProductRepositoryCustom;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
-import java.beans.Expression;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Repository
@@ -28,6 +30,7 @@ import java.util.*;
 public class ProductRepositoryImpl implements ProductRepositoryCustom {
 
     private final JPAQueryFactory jpaQueryFactory;
+    private final ModelMapper modelMapper;
     private final QProduct qProduct = QProduct.product;
     private final QOption qOption = QOption.option;
 
@@ -176,6 +179,62 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
         return product;
     }
 
+    // ==== 메인 페이지 ====
+    // 베스트 상품
+    @Override
+    public List<ProductDTO> bestProductMain() {
+        // SELECT * FROM PRODUCT ORDER BY sold DESC LIMIT 5
+        List<Product> products = jpaQueryFactory.selectFrom(qProduct)
+                .orderBy(qProduct.sold.desc())
+                .limit(5)
+                .fetch();
+
+        return products.stream()
+                .map(product -> modelMapper.map(product, ProductDTO.class))
+                .collect(Collectors.toList());
+    }
+
+    // 최신상품
+    @Override
+    public List<ProductDTO> recentProductMain() {
+        // SELECT * FROM PRODUCT ORDER BY rdate DESC LIMIT 8
+        List<Product> products = jpaQueryFactory.selectFrom(qProduct)
+                                                .orderBy(qProduct.rdate.desc())
+                                                .limit(8)
+                                                .fetch();
+
+        return products.stream()
+                    .map(product -> modelMapper.map(product, ProductDTO.class))
+                    .collect(Collectors.toList());
+    }
+
+    // 할인상품
+    @Override
+    public List<ProductDTO> discountProductMain() {
+        // SELECT * FROM PRODUCT ORDER BY discount DESC LIMIT 8
+        List<Product> products = jpaQueryFactory.selectFrom(qProduct)
+                                                .orderBy(qProduct.discount.desc())
+                                                .limit(8)
+                                                .fetch();
+        return products.stream()
+                    .map(product -> modelMapper.map(product, ProductDTO.class))
+                    .collect(Collectors.toList());
+    }
+
+    // 히트상품
+    @Override
+    public List<ProductDTO> hitProductMain() {
+        // SELECT * FROM PRODUCT ORDER BY discount DESC LIMIT 8
+        List<Product> products = jpaQueryFactory.selectFrom(qProduct)
+                                                .orderBy(qProduct.hit.desc())
+                                                .limit(8)
+                                                .fetch();
+
+        return products.stream()
+                .map(product -> modelMapper.map(product, ProductDTO.class))
+                .collect(Collectors.toList());
+    }
+    // =====================
 }
 
 
