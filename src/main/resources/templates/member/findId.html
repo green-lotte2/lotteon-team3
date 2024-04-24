@@ -7,12 +7,12 @@
     <nav>
         <h1>아이디 찾기</h1>
     </nav>
-    <form id="formFindId" th:action="@{/member/findIdResult}" method="POST">
+    <form id="formFind" th:action="@{/member/findIdResult}" method="POST">
         <table>
             <tr>
                 <th>이름</th>
                 <td>
-                    <input type="text" id="inputName" name="name" placeholder="이름 입력" required/>
+                    <input type="text" id="input" name="name" placeholder="이름 입력" required/>
                     <span id="result_name"></span>
                 </td>
             </tr>
@@ -21,7 +21,7 @@
                 <td>
                     <div>
                         <input type="email" id="inputEmail" name="email" placeholder="이메일 입력"/>
-                        <button type="button" id="btn_email" class="btnAuth" data-type="findEmail">인증번호 받기</button>
+                        <button type="button" id="btn_email" class="btnAuth" data-type="findIdEmail">인증번호 받기</button>
                         <span id="result_email"></span>
                     </div>
                     <div class="auth">

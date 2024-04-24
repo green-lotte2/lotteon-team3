@@ -2,28 +2,29 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{/layout/memberLayout}">
 <main id="member" layout:fragment="content">
+    <script th:src="@{/js/find.js}"></script>
     <div class="find">
     <nav>
         <h1>비밀번호 찾기</h1>
     </nav>
-    <form id="formFindPass" th:action="@{/member/findPassChange}" method="POST">
-        <input type="hidden" name="type" value="FIND_PASS"/>
+    <form id="formFind" th:action="@{/member/findPassChange}" method="POST">
         <table>
             <tr>
                 <th>아이디</th>
-                <td><input type="text" name="uid" placeholder="아이디 입력"/></td>
+                <td><input type="text" name="uid" id="input" placeholder="아이디 입력"/></td>
             </tr>
             <tr>
                 <th>이메일</th>
                 <td>
                     <div>
-                        <input type="email" name="email" placeholder="이메일 입력"/>
-                        <button type="button" id="btnEmailCode" class="btnAuth">인증번호 받기</button>
-                        <span class="resultEmailForPass"></span>
+                        <input type="email" id="inputEmail" name="email" placeholder="이메일 입력"/>
+                        <button type="button" id="btn_email" class="btnAuth" data-type="findPassEmail">인증번호 받기</button>
+                        <span id="result_email"></span>
                     </div>
-                    <div>
-                        <input type="text" name="auth" placeholder="인증번호 입력"/>
-                        <button type="button" id="btnEmailAuth" class="btnConfirm">확인</button>
+                    <div class="auth">
+                        <input type="text" name="auth" id="inputEmailCode" placeholder="인증번호 입력" disabled/>
+                        <button type="button" id="btnCheckEmailCode" class="btnConfirm">확인</button>
+                        <span id="resultEmailCode"></span>
                     </div>
                 </td>
             </tr>
