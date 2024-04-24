@@ -1,6 +1,7 @@
 package kr.co.lotteon.dto.member;
 
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
@@ -34,6 +35,7 @@ public class MemberDTO {
     private String fax;
     private String regip;
     private LocalDateTime wdate;
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime rdate;
 
 

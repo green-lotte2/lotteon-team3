@@ -7,4 +7,6 @@ import org.apache.ibatis.annotations.Param;
 @Mapper
 public interface MemberMapper {
     public int selectCountMember(@Param("type") String type, @Param("value") String value);
+    public int countByNameAndEmail(@Param("type")String type,@Param("name")String name,@Param("email")String email);
+
 }
