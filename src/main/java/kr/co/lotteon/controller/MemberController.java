@@ -3,8 +3,10 @@ package kr.co.lotteon.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import kr.co.lotteon.dto.admin.BannerDTO;
 import kr.co.lotteon.dto.member.MemberDTO;
 import kr.co.lotteon.entity.member.Terms;
+import kr.co.lotteon.service.admin.BannerService;
 import kr.co.lotteon.service.member.MemberService;
 import kr.co.lotteon.service.member.TermsService;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +17,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -24,6 +27,7 @@ public class MemberController {
 
     private final TermsService termsService;
     private final MemberService memberService;
+    private final BannerService bannerService;
 
     // signup (약관 동의) 페이지 매핑
     @GetMapping("/member/signup")
@@ -47,7 +51,13 @@ public class MemberController {
 
     // login 페이지 매핑
     @GetMapping("/member/login")
-    public String login(@ModelAttribute("success") String success){
+    public String login(Model model, @ModelAttribute("success") String success){
+
+        // 로그인 배너
+        List<BannerDTO> loginBanners = bannerService.selectBanners("login");
+
+        model.addAttribute("loginBanners",loginBanners);
+
         return "/member/login";
     }
 

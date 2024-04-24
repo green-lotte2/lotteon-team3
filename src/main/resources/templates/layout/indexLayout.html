@@ -63,7 +63,11 @@
 <body>
 <div id="bannerTop" class="on" style="background: #e4dfdf;">
     <article>
-        <a th:href="@{#}"><img th:src="@{/images/topBanner1.png}"/></a>
+        <th:block th:each="banner : ${topBanners}">
+            <a th:href="@{${banner.link}}">
+                <img th:src="@{'/prodImg/'+ ${banner.thumb}}" alt="t1" />
+            </a>
+        </th:block>
         <button class="btnClose">close</button>
     </article>
 </div>

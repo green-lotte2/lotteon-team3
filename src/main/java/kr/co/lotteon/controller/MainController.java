@@ -1,10 +1,12 @@
 package kr.co.lotteon.controller;
 
 import kr.co.lotteon.config.AppInfo;
+import kr.co.lotteon.dto.admin.BannerDTO;
 import kr.co.lotteon.dto.product.Cate1DTO;
 import kr.co.lotteon.dto.product.Cate2DTO;
 import kr.co.lotteon.dto.product.Cate3DTO;
 import kr.co.lotteon.dto.product.ProductDTO;
+import kr.co.lotteon.service.admin.BannerService;
 import kr.co.lotteon.service.product.CateService;
 import kr.co.lotteon.service.product.ProductService;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,7 @@ public class MainController {
 
     private final CateService cateService;
     private final ProductService productService;
+    private final BannerService bannerService;
     
     // 메인페이지 매핑
     @GetMapping(value = {"/","/index"})
@@ -52,6 +55,12 @@ public class MainController {
         List<ProductDTO> discountProducts = productService.discountProductMain();
         log.info("할인 : " + discountProducts);
 
+
+        // 메인 - 상단 배너
+        List<BannerDTO> topBanners = bannerService.selectBanners("main-top");
+        // 메인 - 슬라이더 배너
+        List<BannerDTO> sdBanners = bannerService.selectBanners("main-slider");
+
         // ==== 참조 ====
         // 베스트 상품
         model.addAttribute("bestProducts",bestProducts);
@@ -61,6 +70,12 @@ public class MainController {
         model.addAttribute("recentProducts",recentProducts);
         // 할인상품
         model.addAttribute("discountProducts",discountProducts);
+
+        // 메인 - 상단 배너
+        model.addAttribute("topBanners",topBanners);
+        // 메인 - 슬라이더 배너
+        model.addAttribute("sdBanners",sdBanners);
+
         return "/index";
     }
 

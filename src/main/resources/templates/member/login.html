@@ -4,59 +4,61 @@
 <main id="member" layout:fragment="content">
     <script th:inline="javascript">
 
-        window.onload = function (){
+        window.onload = function () {
 
             const success = [[${success}]];
 
-            if(success == 100){
+            if (success == 100) {
                 alert('로그인에 실패했습니다.\n다시 한번 아이디, 비밀번호를 확인 하시기 바랍니다. 😢');
-            }else if(success == 200) {
+            } else if (success == 200) {
                 alert('회원 가입 되었습니다. 😊');
-            }else if(success == 300){
+            } else if (success == 300) {
                 alert('로그아웃 되었습니다. 안녕히 가세요. 😃');
             }
 
         }
     </script>
 
-            <div class="login">
-                <nav>
-                    <h1>로그인</h1>                    
-                </nav>
-                
-				<form th:action="@{/member/login}" method="POST" class="login">
+    <div class="login">
+        <nav>
+            <h1>로그인</h1>
+        </nav>
 
-                    <table border="0">
-                        <tr>
-                            <td>아이디</td>
-                            <td><input type="text" id="inputUid" name="uid" placeholder="아이디 입력"></td>
-                        </tr>
-                        <tr>
-                            <td>비밀번호</td>
-                            <td><input type="password" id="inputPassword" name="pass" placeholder="비밀번호 입력"></td>
-                        </tr>
-                    </table>					
-					<input type="submit" value="로그인" />
-					<span>
+        <form th:action="@{/member/login}" method="POST" class="login">
+
+            <table border="0">
+                <tr>
+                    <td>아이디</td>
+                    <td><input type="text" id="inputUid" name="uid" placeholder="아이디 입력"></td>
+                </tr>
+                <tr>
+                    <td>비밀번호</td>
+                    <td><input type="password" id="inputPassword" name="pass" placeholder="비밀번호 입력"></td>
+                </tr>
+            </table>
+            <input type="submit" value="로그인"/>
+            <span>
                         <label><input type="checkbox" id="rememberMe" name="rememberMe"/>자동 로그인</label>
 						<a th:href="@{/member}">아이디찾기</a>
 						<a th:href="@{/member}">비밀번호찾기</a>
 						<a th:href="@{/member/join}">회원가입</a>
 					</span>
-                    <a th:href="@{/oauth2/authorization/google}">
-                        <img th:src="@{/member/images/web_light_rd_na.svg}" alt="로그인"/>
-                    </a>
-                    <a th:href="@{/oauth2/authorization/kakao}" class="kakao">
-                        <img th:src="@{/member/images/icon_easy_kakao.svg}" alt="로그인"/>
-                    </a>
+            <a th:href="@{/oauth2/authorization/google}">
+                <img th:src="@{/member/images/web_light_rd_na.svg}" alt="로그인"/>
+            </a>
+            <a th:href="@{/oauth2/authorization/kakao}" class="kakao">
+                <img th:src="@{/member/images/icon_easy_kakao.svg}" alt="로그인"/>
+            </a>
 
-                    <a th:href="@{/oauth2/authorization/naver}" class="naver">
-                        <img th:src="@{/member/images/icon_easy_naver.svg}" alt="로그인"/>
-                    </a>
-
-                    <a th:href="@{/member}" class="banner"><img th:src="@{/member/images/member_login_banner.jpg}" alt="1만원 할인 쿠폰 받기"></a>
-
-				</form>
-				<img th:src="@{/member/images/member_certifi_logo.gif}" alt="banner">
-            </div>
-        </main>        
+            <a th:href="@{/oauth2/authorization/naver}" class="naver">
+                <img th:src="@{/member/images/icon_easy_naver.svg}" alt="로그인"/>
+            </a>
+            <th:block th:each="banner : ${loginBanners}">
+                <a th:href="@{${banner.link}}" class="banner">
+                    <img th:src="@{'/prodImg/'+ ${banner.thumb}}" alt="t1"/>
+                </a>
+            </th:block>
+        </form>
+        <img th:src="@{/member/images/member_certifi_logo.gif}" alt="banner">
+    </div>
+</main>
