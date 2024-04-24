@@ -7,6 +7,7 @@ import kr.co.lotteon.repository.cs.BoardFileRepository;
 import kr.co.lotteon.repository.cs.BoardRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.coobird.thumbnailator.Thumbnails;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
@@ -49,16 +50,32 @@ public class FileService {
         String path = new File(fileUploadPath).getAbsolutePath();  //실제 업로드 할 시스템상의 경로 구하기
         int bno = boardDTO.getBno();
         int count = 0;
+
+        // 원본 파일 폴더 자동 생성
+        String orgPath = path + "/orgImage";
+        File orgFile = new File(orgPath);
+        if (!orgFile.exists()) {
+            orgFile.mkdir();
+        }
+
         for(MultipartFile mf : boardDTO.getFiles()){
             if(mf.getOriginalFilename() !=null && mf.getOriginalFilename() != ""){
+                // oName, sName 구하기
                 String ofile = mf.getOriginalFilename();
                 String ext = ofile.substring(ofile.lastIndexOf(".")); //확장자
                 String sfile = UUID.randomUUID().toString()+ ext;
 
                 log.info("ofile : "+ofile);
+
+                // 파일 업로드
                 try{
-                    //upload directory에 upload가 됨
-                    mf.transferTo(new File(path, sfile));
+                    //upload directory에 upload가 됨 - 원본파일 저장
+                    mf.transferTo(new File(orgPath, sfile));
+
+                    //리사이징
+                    Thumbnails.of(new File(orgPath, sfile)) // 원본 파일 (경로, 이름)
+                            .size(200, 200) // 원하는 사이즈
+                            .toFile(new File(path, sfile)); // 리사이징 파일 (경로, 이름)
 
                     BoardFileDTO fileDTO = BoardFileDTO.builder()
                             .bno(bno)

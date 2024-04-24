@@ -1,6 +1,7 @@
 package kr.co.lotteon.service.cs;
 
 
+import jakarta.transaction.Transactional;
 import kr.co.lotteon.dto.cs.BoardDTO;
 import kr.co.lotteon.dto.cs.BoardFileDTO;
 import kr.co.lotteon.dto.cs.CsPageRequestDTO;
@@ -228,4 +229,10 @@ public class CsService {
         fileService.fileUpload(dto);
     }
 
+    // 글 삭제
+    @Transactional
+    public void deleteBoard (int bno){
+        boardRepository.deleteById(bno);
+        boardRepository.deleteBoardsByParent(bno);
+    }
 }

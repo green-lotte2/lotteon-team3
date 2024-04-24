@@ -21,6 +21,7 @@ public class BoardEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int bno;
     private String uid;
+    private int parent;
 
     @Column(name = "\"group\"")
     private String group;

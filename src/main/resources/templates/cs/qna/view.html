@@ -31,6 +31,7 @@
         </ul>
       </aside>
       <article>
+
         <nav>
           <h2 class="title">
             [<span style="font-size: 32px; font-weight: bold" th:text="${boardDTO.typeName}"></span>]
@@ -44,19 +45,28 @@
 
         <div class="content">
           <p>
-            [[${boardFileDTO.ofile}]]
+            [[${boardDTO.content}]]
           </p><br>
-        </div>
-        <div class="filebox">
-          <p>
-            <img th:src="@{|/uploads/${BoardFileDTO.sfile}|}" alt="상품이미지"/>
-          </p><br>
-        </div>
 
-
+          <div class="filebox" th:if="${boardDTO.fileDTOList != null and not #lists.isEmpty(boardDTO.fileDTOList)}">
+            <p th:each="fileDTO, iterStat : ${boardDTO.fileDTOList}" th:style="'display: inline-block; margin-right: 10px;' + (${iterStat.last} ? 'margin-right: 0;' : '')">
+              <img th:src="@{|/uploads/${fileDTO.sfile}|}" alt="상품이미지"/>
+            </p>
+          </div>
+        </div>
 
         <a th:href="@{/cs/qna/list(group='qna', cate=${cate})}" class="btnList">목록보기</a>
-
+        <!-- 로그인한 사용자일 때만 삭제 버튼과 수정 버튼을 표시 -->
+        <th:block th:if="${#authentication.principal != 'anonymousUser'}">
+          <!-- 삭제 버튼 -->
+          <a th:if="${#authentication.principal.member.uid == boardDTO.uid}"
+             th:href="@{/cs/qna/delete(cate=${cate}, bno=${boardDTO.bno}, group=${group})}"
+             onclick="return confirm('정말로 삭제하시겠습니까?');"
+             class="btn btnRemove">삭제</a>
+          <!-- 수정 버튼 -->
+          <a th:if="${#authentication.principal.member.uid == boardDTO.uid}"
+             th:href="@{/cs/qna/modify(cate=${cate}, bno=${boardDTO.bno}, group=${group})}" class="btn btnModify">수정</a>
+        </th:block>
       </article>
     </section>
   </div>
