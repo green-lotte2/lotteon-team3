@@ -51,7 +51,7 @@ public class MemberController {
 
     // login 페이지 매핑
     @GetMapping("/member/login")
-    public String login(Model model, @ModelAttribute("success") String success){
+    public String login(Model model, @ModelAttribute("success") String success, HttpServletRequest request){
 
         // 로그인 배너
         List<BannerDTO> loginBanners = bannerService.selectBanners("login");
