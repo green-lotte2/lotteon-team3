@@ -1,7 +1,9 @@
 package kr.co.lotteon.service.product;
 
 import kr.co.lotteon.dto.product.*;
+import kr.co.lotteon.entity.product.Cart;
 import kr.co.lotteon.entity.product.Product;
+import kr.co.lotteon.mapper.ProductMapper;
 import kr.co.lotteon.repository.product.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +19,7 @@ import java.util.Map;
 @Service @RequiredArgsConstructor @Slf4j
 public class ProductService {
     private final ProductRepository productRepository;
+    private final ProductMapper productMapper;
     private final ModelMapper modelMapper;
 
     private final SqlSession sqlSession;
@@ -56,6 +59,12 @@ public class ProductService {
     public Map<String, List<String>> selectProdOption(int prodNo){
         return productRepository.selectProdOption(prodNo);
     }
+
+    // 히트 올리기
+    public void updateProductHit(int prodNo){
+        productMapper.updateProductHit(prodNo);
+    }
+
 
     // ========== 메인페이지 ==========
     // 최신상품
