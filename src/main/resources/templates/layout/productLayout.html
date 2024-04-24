@@ -93,16 +93,21 @@
             let countValue = parseInt(countValueText);
 
             decrease.addEventListener('click', await function (){
-                countValue = countValue -1;
-                count.value = countValue;
-                // 30000원 이상 무료배송
-                if(totalPrice>=30000){
-                    let totalPrice = (discountPrice*count.value);
-                    totalSpan.innerText = totalPrice;
-                }else if(totalPrice <= 30000){
-                    let totalPrice = (discountPrice*count.value)+deliveryInt;
-                    totalSpan.innerText = totalPrice;
+                if (countValue >= 1){
+                    countValue = countValue -1;
+                    count.value = countValue;
+                    // 30000원 이상 무료배송
+                    if(totalPrice>=30000){
+                        let totalPrice = (discountPrice*count.value);
+                        totalSpan.innerText = totalPrice;
+                    }else if(totalPrice <= 30000){
+                        let totalPrice = (discountPrice*count.value)+deliveryInt;
+                        totalSpan.innerText = totalPrice;
+                    }
+                }else if(countValue < 1){
+                    alert('안돼');
                 }
+
 
             });
 

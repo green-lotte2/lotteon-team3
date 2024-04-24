@@ -63,5 +63,6 @@ public class ProductService {
     public List<ProductDTO> recentProductMain(){return productRepository.recentProductMain();}
     public List<ProductDTO> discountProductMain(){return productRepository.discountProductMain();}
     public List<ProductDTO> hitProductMain(){return productRepository.hitProductMain();}
+    public List<ProductDTO> recommendProductMain(){return productRepository.recommendProductMain();}
     // ==============================
 }

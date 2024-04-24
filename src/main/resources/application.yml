@@ -135,12 +135,18 @@ img:
   upload:
     path: prodImg/
 
-# 배포 시 정적 리소스의 경로 설정
-myServer:
+# ======= 배포 시 정적 리소스의 경로 설정 ========
+myServerProd:
   static-resources-path: /home/lotteon/prodImg/
+MyServerImg:
+  static-resources-pathImg: /home/lotteon/uplodas/
+# =================================
 
-local:
-  static-resources-path: prodImg/
+# ====== 로컬 정적 리소스의 경로 설정 ======
+localProd:
+  static-resources-pathProd: prodImg/
+localImg:
+  static-resources-pathImg: uplodas/
 
 logging:
   level:
@@ -151,4 +157,3 @@ logging:
           descriptor:
             sql: trace
 
-            

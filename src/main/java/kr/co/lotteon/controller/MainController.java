@@ -44,10 +44,11 @@ public class MainController {
         List<ProductDTO> bestProducts = productService.bestProductMain();
         log.info("베스트 상품 : " + bestProducts);
         // 히트상품
-        List<ProductDTO> hitProducts = productService.recentProductMain();
+        List<ProductDTO> hitProducts = productService.hitProductMain();
         log.info("히트상품 : " + hitProducts);
         // 추천상품
-        //
+        List<ProductDTO> recommendProducts = productService.recommendProductMain();
+        log.info("추천상품 : " + recommendProducts);
         // 최신상품
         List<ProductDTO> recentProducts = productService.recentProductMain();
         log.info("최신상품 : " + recentProducts);
@@ -66,6 +67,8 @@ public class MainController {
         model.addAttribute("bestProducts",bestProducts);
         // 히트상품
         model.addAttribute("hitProducts",hitProducts);
+        // 추천상품
+        model.addAttribute("recommendProducts",recommendProducts);
         // 최신상품
         model.addAttribute("recentProducts",recentProducts);
         // 할인상품

@@ -142,9 +142,10 @@
             <!-- 베스트상품 배너 -->
             <article class="best">
                 <h1><i class="fas fa-crown"></i>베스트상품</h1>
-                <ol th:each="best, iterStat : ${bestProducts}">
-                    <li th:hidden="${iterStat.index}">
-                        <a th:href="@{/product/view(prodNo=${best.prodNo},cate1=${best.cate1},cate2=${best.cate2},cate3=${best.cate3})}">
+                <ol >
+                    <li th:each="best, iterStat : ${bestProducts}" th:if="${iterStat.index == 0}">
+                        <a th:hidden="${iterStat.index}"
+                           th:href="@{/product/view(prodNo=${best.prodNo},cate1=${best.cate1},cate2=${best.cate2},cate3=${best.cate3})}">
                             <div class="thumb">
                                 <i>1</i>
                                 <img th:src="@{'/prodImg/'+ ${best.thumb1}}" alt="item1" />
@@ -161,20 +162,21 @@
                         </a>
                     </li>
 
-                    <li th:hidden="${iterStat.index}">
-                        <a th:href="@{/product/view}">
+                    <li th:each="best, iterStat : ${bestProducts}" th:if="${iterStat.index != 0}">
+                        <a th:href="@{/product/view(cate1=${best.cate1})}">
                             <div class="thumb">
-                                <i>2</i>
-                                <img th:src="@{https://via.placeholder.com/50}" alt="item1" />
+                                <i>[[${iterStat.index+1}]]</i>
+                                <img th:src="@{'/prodImg/'+ ${best.thumb1}}" alt="item1" />
                             </div>
                             <article>
-                                <h2>상품명</h2>
-                                <div class="org_price">
-                                    <del>30,000</del>
-                                    <span>10%</span>
+                                <h2>[[${best.prodName}]]</h2>
+                                <div th:if="${best.discount != 0}" class="org_price">
+                                    <del>[[${best.price}]]</del>
+                                    <span>[[${best.discount}]]%</span>
                                 </div>
                                 <div class="dis_price">
-                                    <ins>27,000</ins>
+                                    <ins th:if="${best.discount != 0}">[[${((100-best.discount)/100.0)*best.price}]]</ins>
+                                    <ins th:if="${best.discount == 0}">[[${best.price}]]</ins>
                                 </div>
                             </article>
                         </a>
