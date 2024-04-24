@@ -11,6 +11,7 @@ import java.util.List;
 public interface BoardFileRepository extends JpaRepository<BoardFileEntity, Integer> {
 
     public List<BoardFileEntity> findByBno(int bno);
-    public BoardFileEntity findSfileByFno(int fno);
+
+    public List<BoardFileEntity> findFilesByBno(int bno);
 
 }

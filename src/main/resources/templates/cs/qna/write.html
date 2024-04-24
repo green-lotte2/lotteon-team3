@@ -69,8 +69,8 @@
       </aside>
       <article>
         <form id="writeForm" th:action="@{/cs/qna/write}" method="POST" enctype="multipart/form-data">
-          <input type="" name="group" readonly th:value="${group}" />
-          <input type="" name="uid" th:value="${#authentication.principal.member.uid}" />
+          <input type="hidden" name="group" readonly th:value="${group}" />
+          <input type="hidden" name="uid" th:value="${#authentication.principal.member.uid}" />
           <table>
             <tr>
               <td>문의유형</td>
@@ -110,13 +110,14 @@
             <tr>
               <td>파일</td>
               <td>
+                <span>크기 456 x 456, 상품 상세에 출력될 이미지 입니다. </span>
                 <input style="margin-top: 12px;" type="file" name="files" multiple="multiple" pl/>
               </td>
             </tr>
           </table>
           <div>
             <a th:href="@{/cs/qna/list(group='qna', cate='member')}" class="btnWriteCancel">취소하기</a>
-            <button type="submit" class="btnSubmit" value="등록하기">등록하기</button>
+            <input type="submit" value="등록하기" class="btnSubmit" id="formFileMultiple" multiple/>
           </div>
         </form>
       </article>

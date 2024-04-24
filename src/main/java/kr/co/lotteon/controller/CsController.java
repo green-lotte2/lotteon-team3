@@ -75,7 +75,7 @@ public class CsController {
     }
     // QnA write(페이지)
     @GetMapping("/cs/qna/write")
-    public String qnaWrite(HttpServletRequest request, Model model, String group) {
+    public String qnaWriteForm(HttpServletRequest request, Model model, String group) {
         model.addAttribute("group", group);
 
         // 1차 분류 선택
@@ -88,12 +88,12 @@ public class CsController {
 
         return "/cs/qna/write";
     }
-    @PostMapping("cs/qna/write")
-    public String qnaWriteForm(HttpServletRequest request, BoardDTO dto){
+    @PostMapping("/cs/qna/write")
+    public String qnaWrite(HttpServletRequest request, BoardDTO dto, String cate){
         dto.setStatus("검토중");
         csService.save(dto);
 
-        return "redirect:/cs/qna/list?group=qna&cate=member&success=200";
+        return "redirect:/cs/qna/list?group=qna&cate=" + cate + "&success=200";
     }
 
 
