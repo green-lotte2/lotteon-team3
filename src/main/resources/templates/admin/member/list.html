@@ -1,0 +1,211 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/adminLayout}">
+<section id="admin-member-list" layout:fragment="content">
+    <script>
+        // 검색 type 선택 시 select 태그 추가
+        async function findCate(type){
+            console.log(type);
+
+            // 성별 조회일 경우
+            if(type == 'gender') {
+                const searchForm = document.getElementById('searchForm');
+                const keywordInput = document.getElementById('keywordInput');
+                console.log(type);
+                // 기존 <input> 태그 삭제
+                keywordInput.remove();
+
+                // gender <select> 태그 생성
+                let genderOption = `<select name="keyword" id="keywordInput" onchange="formSubmit()">
+                                    <option value="F">여성</option>
+                                    <option value="M">남성</option>
+                                    </select>`;
+
+                console.log("genderOption : " + genderOption);
+                // 태그 문자열 삽입
+                searchForm.insertAdjacentHTML('beforeend', genderOption);
+            }else if(type == 'level'){
+                const searchForm = document.getElementById('searchForm');
+                const keywordInput = document.getElementById('keywordInput');
+                console.log(type);
+
+                // 기존 <input> 태그 삭제
+                keywordInput.remove();
+
+                // level <select> 태그 생성
+                let levelOption = `<select name="keyword" id="keywordInput" onchange="formSubmit()">
+                                    <option value="1">ACE</option>
+                                    <option value="2">GOLD</option>
+                                    <option value="3">VIP</option>
+                                    <option value="4">MVG</option>
+                                    <option value="5">판매자</option>
+                                    <option value="6">매니저</option>
+                                    <option value="7">최고관리자</option>
+                                    </select>`;
+                console.log("levelOption : " + levelOption);
+                // 태그 문자열 삽입
+                searchForm.insertAdjacentHTML('beforeend', levelOption);
+            }else {
+                const searchForm = document.getElementById('searchForm');
+                const keywordInput = document.getElementById('keywordInput');
+                console.log(type);
+
+                // 기존 <input> 태그 삭제
+                keywordInput.remove();
+                const inputKeyword = `<input type="text" name="keyword" placeholder="검색어를 입력하세요" id="keywordInput"/>`;
+                console.log("inputKeyword : " + inputKeyword);
+                // 태그 문자열 삽입
+                searchForm.insertAdjacentHTML('beforeend', inputKeyword);
+            }
+        }
+        // 폼 전송
+        function formSubmit(){
+            const searchForm = document.getElementById('searchForm');
+            searchForm.submit();
+        }
+        let checkedTurn = 0;
+        // 전체 선택 클릭
+        function totalCheck(){
+            const uidCheckBox = document.querySelectorAll('.uidCheckBox');
+                // 체크한 경우
+                if (checkedTurn === 0) {
+                    uidCheckBox.forEach(function(checkbox) {
+                        checkbox.checked = true;
+                    });
+                    checkedTurn = 1;
+                    // 체크 해제한 경우
+                } else {
+                    uidCheckBox.forEach(function(checkbox) {
+                        checkbox.checked = false;
+                    });
+                    checkedTurn = 0;
+                }
+        }
+        // 회원 삭제
+        function prodDelete(){
+            if(confirm('선택한 회원을 삭제하시겠습니까?')){
+                const uidCheckBox = document.querySelectorAll('.uidCheckBox');
+                // 삭제할 상품의 번호를 저장하는 배열
+                let prodNoArray = [];
+
+                // forEach로 순회하며 checked된 상품의 번호 찾기
+                uidCheckBox.forEach(check => {
+                    // check된 상품번호 배열에 저장
+                    if (check.checked){
+                        prodNoArray.push(check.value);
+                    }
+                })
+                fetch("/lotteon/admin/product/delete", {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({prodNoArray: prodNoArray})
+                })
+                    .then(response => {
+                        // 새로고침
+                        if(response.ok == true){
+                            location.reload();
+                        }
+                    })
+                    .catch(err =>{
+                        console.log(err);
+                    });
+            }
+        }
+    </script>
+                <nav>
+                    <h3>회원현황</h3>
+                    <p>
+                        HOME > 회원관리 > <strong>회원현황</strong>
+                    </p>
+                </nav>
+                <!-- 회원 목록 컨텐츠 시작 -->
+                <section>
+                    <form th:action="@{/admin/member/list}" method="get" id="searchForm">
+                        <select name="type" onchange="findCate(this.value)">
+                            <option value="uid">아이디</option>
+                            <option value="name">이름</option>
+                            <option value="nick">닉네임</option>
+                            <option value="gender">성별</option>
+                            <option value="level">등급</option>
+                        </select>
+                        <input type="text" name="keyword" placeholder="검색어를 입력하세요" id="keywordInput"/>
+                    </form>
+                    <!-- 회원 없을 때 -->
+                    <th:block th:if="${pageResponseDTO.dtoList.isEmpty()}">
+                        <div>
+                            <img th:src="@{/admin/images/nodata.png}" style="width: 900px; height: 460px">
+                        </div>
+                    </th:block>
+                    <!-- 회원 목록 -->
+                    <table>
+                        <form id="formCheck" th:action="@{/admin/member/delete}" method="get">
+                            <tr th:if="${!pageResponseDTO.dtoList.isEmpty()}">
+                                <th><input type="checkbox" name="all" onclick="totalCheck()"/></th>
+                                <th>아이디</th>
+                                <th>이름</th>
+                                <th>닉네임</th>
+                                <th>성별</th>
+                                <th>등급</th>
+                                <th>포인트</th>
+                                <th>가입일</th>
+                                <th>주소</th>
+                                <th>이메일</th>
+                                <th>전화</th>
+                                <th>관리</th>
+                            </tr>
+                            <th:block th:each="member : ${pageResponseDTO.dtoList}">
+                                <tr>
+                                    <td><input type="checkbox" name="uid" class="uidCheckBox"/></td>
+                                    <td th:text="${member.uid}"></td>
+                                    <td th:text="${member.name}"></td>
+                                    <td th:text="${member.nick}"></td>
+                                    <td th:if="${member.gender == 'M'}">남성</td>
+                                    <td th:if="${member.gender == 'F'}">여성</td>
+                                    <td th:text="${member.level}"></td>
+                                    <td th:text="${member.point}"></td>
+                                    <td th:text="${#temporals.format(member.rdate, 'yyyy-MM-dd')}"></td>
+                                    <td>
+                                        <p>
+                                            [[${member.zip}]] <br>
+                                            [[${member.addr1}]] <br>
+                                            [[${member.addr2}]] <br>
+                                        </p>
+                                    </td>
+                                    <td th:text="${member.email}"></td>
+                                    <td th:text="${member.hp}"></td>
+                                    <td>
+                                        <a>수정</a>
+                                    </td>
+                                </tr>
+                            </th:block>
+                        </form>
+                    </table>
+                    <button onclick="prodDelete()">선택삭제</button>
+                    <!-- 페이지 -->
+                    <div class="paging" th:if="${!pageResponseDTO.dtoList.isEmpty()}">
+                    <span class="prev">
+                        <a th:if="${pageResponseDTO.keyword == null}" class="page-link" th:href="@{/admin/member/list(pg=${pageResponseDTO.start - 1})}">&#60;</a>
+                        <a th:if="${pageResponseDTO.keyword != null}" class="page-link" th:href="@{/admin/member/list(pg=${pageResponseDTO.start - 1}, type=${pageResponseDTO.type}, keyword=${pageResponseDTO.keyword})}">&#60;</a>
+                    </span>
+                        <span class="num"> <!-- 해당 페이지 class on-->
+                            <th:block th:each="num:${#numbers.sequence(pageResponseDTO.start, pageResponseDTO.end)}">
+                                <a  th:if="${pageResponseDTO.keyword == null}" th:classappend="${pageResponseDTO.pg == num} ? 'page-link on' : 'page-link'" th:href="@{/admin/member/list(pg=${num})}">
+                                    [[${num}]]
+                                </a>
+                                <a  th:if="${pageResponseDTO.keyword != null}" th:classappend="${pageResponseDTO.pg == num} ? 'page-link on' : 'page-link'" th:href="@{/admin/member/list(pg=${num})}">
+                                    [[${num}]]
+                                </a>
+                            </th:block>
+                        </span>
+                        <span class="next">
+                            <a th:if="${pageResponseDTO.keyword == null}" class="page-link" th:href="@{/admin/member/list(pg=${pageResponseDTO.end + 1})}" >&#62;</a>
+                            <a th:if="${pageResponseDTO.keyword != null}" class="page-link" th:href="@{/admin/member/list(pg=${pageResponseDTO.end + 1}, type=${pageResponseDTO.type}, keyword=${pageResponseDTO.keyword})}">&#62;</a>
+                    </span>
+                    </div>
+                </section>
+                <p class="ico info">
+                    <strong>Tip!</strong>
+                    전자상거래 등에서의 상품 등의 정보제공에 관한 고시에 따라 총 35개 상품군에 대해 상품 특성 등을 양식에 따라 입력할 수 있습니다.
+                </p>
+                <!-- 상품목록 컨텐츠 끝 -->
+            </section>

@@ -4,17 +4,20 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.querydsl.core.Tuple;
 import kr.co.lotteon.dto.admin.*;
 import kr.co.lotteon.dto.cs.*;
+import kr.co.lotteon.dto.member.MemberDTO;
 import kr.co.lotteon.dto.product.*;
 import kr.co.lotteon.entity.admin.Banner;
 import kr.co.lotteon.entity.cs.BoardCateEntity;
 import kr.co.lotteon.entity.cs.BoardEntity;
 import kr.co.lotteon.entity.cs.BoardTypeEntity;
+import kr.co.lotteon.entity.member.Member;
 import kr.co.lotteon.entity.member.Terms;
 import kr.co.lotteon.entity.product.Cate1;
 import kr.co.lotteon.entity.product.Option;
 import kr.co.lotteon.entity.product.Product;
 import kr.co.lotteon.repository.BannerRepository;
 import kr.co.lotteon.repository.cs.BoardCateRepository;
+import kr.co.lotteon.repository.cs.BoardFileRepository;
 import kr.co.lotteon.repository.cs.BoardRepository;
 import kr.co.lotteon.repository.cs.BoardTypeRepository;
 import kr.co.lotteon.repository.member.MemberRepository;
@@ -56,6 +59,7 @@ public class AdminService {
     private final MemberRepository memberRepository;
     private final BoardTypeRepository typeRepository;
     private final BannerRepository bannerRepository;
+    private final BoardFileRepository fileRepository;
 
     private final ModelMapper modelMapper;
 
@@ -583,7 +587,7 @@ public class AdminService {
         return ResponseEntity.ok().body("option insert");
     }
 
-    // 관리자 게시판관리 - 기본 목록 출력
+    // 관리자 게시판 관리 - 기본 게시글 목록 출력
     public AdminBoardPageResponseDTO findBoardByGroup(String cate, AdminBoardPageRequestDTO adminBoardPageRequestDTO) {
         String group = adminBoardPageRequestDTO.getGroup();
         String keyword = adminBoardPageRequestDTO.getKeyword();
@@ -709,6 +713,49 @@ public class AdminService {
         BoardDTO boardDTO = modelMapper.map(boardEntity, BoardDTO.class);
         log.info("관리자 게시글 보기 Serv 3 : " + boardDTO);
 
+        // file 조회
+        List<BoardFileDTO> boardFileDTOS = fileRepository.findByBno(bno)
+                .stream()
+                .map(entity -> modelMapper.map(entity, BoardFileDTO.class))
+                .toList();
+
+        boardDTO.setFileDTOList(boardFileDTOS);
         return boardDTO;
+    }
+
+    // 관리자 회원 목록 (현황) 조회
+    public AdminMemberPageResponseDTO selectMembers(AdminMemberPageRequestDTO adminMemberPageRequestDTO){
+        log.info("관리자 회원 목록 Serv 1  ");
+        Pageable pageable = adminMemberPageRequestDTO.getPageable("no");
+
+        Page<Member> members = null;
+        // 회원 기본 조회
+        if(adminMemberPageRequestDTO.getKeyword() == null) {
+            // DB 조회
+            members = memberRepository.selectMemberList(adminMemberPageRequestDTO, pageable);
+            log.info("관리자 회원 기본 목록 Serv 2 : " + members);
+
+            // 회원 검색 조회
+        }else {
+            // DB 조회
+            members = memberRepository.searchMemberList(adminMemberPageRequestDTO, pageable);
+            log.info("관리자 회원 검색 목록 Serv 2 : " + members);
+        }
+        // Page<Entity>을 List<DTO>로 변환
+        List<MemberDTO> dtoList = members.getContent().stream()
+                .map(member -> modelMapper.map(member, MemberDTO.class))
+                .toList();
+
+        log.info("관리자 회원 목록 Serv 3 : " + dtoList);
+
+        // total 값
+        int total = (int) members.getTotalElements();
+
+        // List<ProductDTO>와 page 정보 리턴
+        return AdminMemberPageResponseDTO.builder()
+                .adminMemberPageRequestDTO(adminMemberPageRequestDTO)
+                .dtoList(dtoList)
+                .total(total)
+                .build();
     }
 }
