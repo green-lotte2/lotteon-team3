@@ -99,36 +99,39 @@ public class MemberController {
 
         return ResponseEntity.ok().body(resultMap);
     }
+
     //아이디 비밀번호찾기
     @ResponseBody
-    @GetMapping("/member/check/{type}/{name}/{email}")
+    @GetMapping("/member/check/{type}/{value}/{email}")
     public ResponseEntity<?> checkFindUser(HttpSession session,
                                        @PathVariable("type") String type,
-                                       @PathVariable("name") String name, 
+                                       @PathVariable("value") String value,
                                        @PathVariable("email") String email){
         
-        log.info("findEmail들어와야해"+ type);
-        log.info("이름 입력한거"+ name);
-        log.info("이멜 입력한거"+ email);
+        log.info("findIdEmail들어와야해 "+ type);
+        log.info("이름 아디 입력한거 "+ value);
+        log.info("이멜 입력한거 "+ email);
 
-        int count = memberService.CountByNameAndEmail(type, name,email);
+        int count = memberService.CountByNameAndEmail(type, value,email);
 
-        log.info("이름이멜 일치하는 행의 수"+ count);
+        log.info("일치하는 행의 수 "+ count);
 
-        if(type.equals("findEmail") && count > 0){
-            log.info("아디비번 findEmail"+name+email);
+        if(type.equals("findIdEmail") && count > 0){
+            log.info("findIdEmail "+value+email);
             memberService.sendEmailCode(session, email);
         }
+
+        if(type.equals("findPassEmail") && count > 0){
+            log.info("findPassEmail "+value+email);
+            memberService.sendEmailCode(session, email);
+        }
+
 
         Map<String, Object> resultMap = new HashMap<>();
         resultMap.put("result", count);
 
         return ResponseEntity.ok().body(resultMap);
-    
-
-
     }
-
 
 
 
@@ -205,6 +208,29 @@ public class MemberController {
 
         return "/member/findPass";
     }
+
+    @GetMapping("/member/findPassChange")
+    public String findPassChange(){
+
+        return "/member/findPassChange";
+    }
+
+    @PostMapping("/member/findPassChange")
+    public String findPassChange(Model model,String email){
+
+        MemberDTO memberDTO = memberService.findAllByEmail(email);
+        model.addAttribute("memberDTO",memberDTO);
+
+        return "/member/findPassChange";
+    }
+
+    @PostMapping("/member/findPassChangeDo")
+    public String findPassChangeDo(MemberDTO memberDTO,Model model) {
+        memberService.updatePass(memberDTO.getUid(), memberDTO.getPass());
+        return "redirect:/member/login";
+    }
+
+
 
 
 }

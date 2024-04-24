@@ -3,11 +3,16 @@ window.onload = function() {
 
     let isEmailOk = false;
     let isEmailCodeOk = false;
+    let isPassOk=false;
+
+    const rePass = /^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\(\\)\-_=+]).{5,16}$/;
 
     const inputEmail = document.getElementById('inputEmail'); //이메일 입력
     const btn_email = document.getElementById('btn_email'); // 이메일 인증번호받기버튼
     const resultEmail = document.getElementById('result_email');//이메일 중복결과 출력
-    const inputName=document.getElementById('inputName');
+    const inputName=document.getElementById('input');
+
+    if(btn_email){
 
     btn_email.onclick = function () {
 
@@ -106,13 +111,64 @@ window.onload = function() {
         }
     }
 
-
+    //아이디 비밀번호찾기 이메일 인증없이 다음누를때
     const btnAreaNext = document.querySelector('.btnAreaNext');
     btnAreaNext.addEventListener('click', function(event) {
         event.preventDefault();
         if (isEmailOk && isEmailCodeOk)
-            document.getElementById('formFindId').submit();
+            document.getElementById('formFind').submit();
         else
             alert('이메일 인증이 완료되어야 합니다.');
     });
+    }else {
+
+        //비밀번호 변경시 비밀번호 유효성 검사
+        const resultPass = document.getElementById('result_pass');
+
+        document.formFindPassChange.pass2.addEventListener('focusout', () => {
+
+            const inputPass1 = document.formFindPassChange.pass;
+            const inputPass2 = document.formFindPassChange.pass2;
+
+            console.log("비밀번호 입력 : " + inputPass1);
+            console.log("비밀번호 확인 : " + inputPass2);
+
+
+            if (inputPass1.value === inputPass2.value) {
+
+                if (!inputPass1.value.match(rePass)) {
+                    resultPass.innerText = '비밀번호 형식에 맞지 않습니다.';
+                    resultPass.style.color = 'red';
+                    isPassOk = false;
+                } else {
+                    resultPass.innerText = '사용 가능한 비밀번호 입니다.';
+                    resultPass.style.color = 'green';
+                    isPassOk = true;
+                }
+            } else {
+                resultPass.innerText = '비밀번호가 일치하지 않습니다.';
+                resultPass.style.color = 'red';
+                isPassOk = false;
+            }
+        });
+
+        //비밀번호 변경페이지에서 비밀번호 유효성검사 없이 다음누를때
+        const btnAreaNext = document.querySelector('.btnAreaNext');
+        btnAreaNext.addEventListener('click', function(event) {
+            event.preventDefault();
+            if (isPassOk) {
+                document.getElementById('formFindPassChange').submit();
+                alert('비밀번호 변경이 완료되었습니다.');
+            }else {
+                alert('비밀번호를 확인해주세요.');
+            }
+        });
+
+
+    }
+
+
+
+
+
 }

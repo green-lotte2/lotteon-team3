@@ -43,8 +43,8 @@ public class MemberService {
         return memberMapper.selectCountMember(type, value);
     }
 
-    public int CountByNameAndEmail(String type, String name, String email){
-        return memberMapper.countByNameAndEmail(type,name,email);
+    public int CountByNameAndEmail(String type, String value, String email){
+        return memberMapper.countByNameAndEmail(type,value,email);
     }
 
     public MemberDTO findAllByEmail(String email) {
@@ -52,6 +52,14 @@ public class MemberService {
         Member member=memberRepository.findAllByEmail(email);
 
         return modelMapper.map(member, MemberDTO.class);
+    }
+
+    public void updatePass(String uid, String pass) {
+        pass = passwordEncoder.encode(pass);
+        Member member = memberRepository.findById(uid).get();
+        member.setPass(pass);
+        log.info("비밀번호 변경되었니");
+        memberRepository.save(member);
     }
 
 
@@ -145,11 +153,13 @@ public class MemberService {
                 "</html>";
 
         try {
+            log.info("이메일 보내지니?");
             message.setSubject(title);
             message.setFrom(new InternetAddress(sender, "보내는 사람", "UTF-8"));
             message.addRecipient(Message.RecipientType.TO, new InternetAddress(receiver));
             message.setSubject(title);
             message.setContent(content, "text/html;charset=UTF-8");
+
 
             javaMailSender.send(message);
 
