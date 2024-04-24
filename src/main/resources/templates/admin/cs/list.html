@@ -71,12 +71,22 @@
                 </th:block>
                 <!-- 게시글 목록 -->
                 <table>
+                    <tr th:if="${!adminBoardPageResponseDTO.dtoList.isEmpty()}">
+                        <th>카테고리</th>
+                        <th>말머리</th>
+                        <th>제목</th>
+                        <th>작성자</th>
+                        <th>작성일</th>
+                        <th>관리</th>
+                    </tr>
                     <tr th:each="article : ${adminBoardPageResponseDTO.dtoList}" >
                         <td><span style="font-size: 16px;">[ [[${article.cateName}]] ]</span></td>
+                        <td><span style="font-size: 16px;">[[${article.typeName}]]</span></td>
                         <td>
                             <a th:if="${adminBoardPageResponseDTO.keyword == null}" th:href="@{/admin/cs/view(group=${adminBoardPageResponseDTO.group}, bno=${article.bno}, pg=${adminBoardPageResponseDTO.pg})}" > [[${article.title}]]</a>
                             <a th:if="${adminBoardPageResponseDTO.keyword != null}" th:href="@{/admin/cs/view(group=${adminBoardPageResponseDTO.group}, type=${adminBoardPageResponseDTO.type}, keyword=${adminBoardPageResponseDTO.keyword},bno=${article.bno}, pg=${adminBoardPageResponseDTO.pg})}" > [[${article.title}]]</a>
                         </td>
+                        <td th:text="${article.uid}"></td>
                         <td th:text="${#temporals.format(article.rdate, 'yyyy-MM-dd')}"></td>
                         <td>
                             <button id="btnDelete" onclick="deleteBoard(this.value)" th:value="${article.bno}">삭제</button>
@@ -85,7 +95,7 @@
                 </table>
                 <a th:href="@{/admin/cs/write(group=${adminBoardPageResponseDTO.group})}" id="adminGoWrite">등록</a>
                 <!-- 페이지 -->
-                <div class="paging">
+                <div class="paging" th:if="${!adminBoardPageResponseDTO.dtoList.isEmpty()}">
                     <span class="prev">
                         <a th:if="${adminBoardPageResponseDTO.keyword == null}" class="page-link" th:href="@{/admin/cs/list(pg=${adminBoardPageResponseDTO.start - 1}, group=${adminBoardPageResponseDTO.group})}">&#60;</a>
                         <a th:if="${adminBoardPageResponseDTO.keyword != null}" class="page-link" th:href="@{/admin/cs/list(pg=${adminBoardPageResponseDTO.start - 1}, group=${adminBoardPageResponseDTO.group}, type=${adminBoardPageResponseDTO.type}, keyword=${adminBoardPageResponseDTO.keyword})}">&#60;</a>

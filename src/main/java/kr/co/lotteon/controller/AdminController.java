@@ -13,6 +13,7 @@ import kr.co.lotteon.entity.member.Terms;
 import kr.co.lotteon.security.MyUserDetails;
 import kr.co.lotteon.service.admin.AdminService;
 import kr.co.lotteon.service.admin.CommentService;
+import kr.co.lotteon.service.product.ProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -34,6 +35,8 @@ public class AdminController {
 
     private final AdminService adminService;
     private final CommentService commentService;
+    private final ProductService productService;
+
     private final ObjectMapper objectMapper;
 
 
@@ -153,6 +156,21 @@ public class AdminController {
         log.info("관리자 상품 등록 Cont : "+cate1List);
         model.addAttribute("cate1List", cate1List);
         return "/admin/product/register";
+    }
+    // product modify (관리자 상품 수정) 페이지 매핑
+    @GetMapping("/admin/product/modify")
+    public String modify(Model model, int prodNo){
+
+        // Cate1 전체 조회
+        List<Cate1DTO> cate1List = adminService.findAllCate1();
+        log.info("관리자 상품 수정 Cont : "+cate1List);
+
+        // 상품 상세 조회
+        ProductDTO productDTO = productService.selectByprodNo(prodNo);
+
+        model.addAttribute("productDTO", productDTO);
+        model.addAttribute("cate1List", cate1List);
+        return "/admin/product/modify";
     }
 
     // 관리자 상품 목록 검색 - cate1을 type으로 선택 시 cate1 조회
@@ -362,6 +380,13 @@ public class AdminController {
     public ResponseEntity<?> modifyComment(@RequestBody CommentDTO commentDTO){
         log.info("modifyComment : " +commentDTO.toString());
         return commentService.updateComment(commentDTO);
+    }
+    // 관리자 회원 현황 매핑
+    @GetMapping("/admin/member/list")
+    public String memberList(Model model, AdminMemberPageRequestDTO adminMemberPageRequestDTO){
+        AdminMemberPageResponseDTO adminMemberPageResponseDTO = adminService.selectMembers(adminMemberPageRequestDTO);
+        model.addAttribute("pageResponseDTO", adminMemberPageResponseDTO);
+        return "/admin/member/list";
     }
 
 }
