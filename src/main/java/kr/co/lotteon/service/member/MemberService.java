@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpSession;
 import kr.co.lotteon.dto.member.MemberDTO;
 import kr.co.lotteon.entity.member.Member;
 import kr.co.lotteon.mapper.MemberMapper;
+import kr.co.lotteon.repository.custom.MemberRepositoryCustom;
 import kr.co.lotteon.repository.member.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +30,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final MemberMapper memberMapper;
     private final JavaMailSender javaMailSender;
-    
+
     // 회원 가입 - DB 입력
     public void save(MemberDTO memberDTO){
         // 비밀번호 암호화
@@ -41,6 +42,20 @@ public class MemberService {
     public int selectCountMember(String type, String value) {
         return memberMapper.selectCountMember(type, value);
     }
+
+    public int CountByNameAndEmail(String type, String name, String email){
+        return memberMapper.countByNameAndEmail(type,name,email);
+    }
+
+    public MemberDTO findAllByEmail(String email) {
+
+        Member member=memberRepository.findAllByEmail(email);
+
+        return modelMapper.map(member, MemberDTO.class);
+    }
+
+
+
 
     //이메일 전송
     @Value("${spring.mail.username}")
@@ -61,7 +76,7 @@ public class MemberService {
 //        String content = "<h1>인증코드는 " + code + "입니다.<h1>";
 
         //html 불러와서 메일 내용에 삽입할 예정
-        String title = "[롯데ON] 회원가입 인증번호 안내드립니다";
+        String title = "[롯데ON] 인증번호 안내드립니다";
         String content = "<div>\n" +
                 "    <table align=\"center\" cellpadding=\"0\" cellspacing=\"0\" style=\"font-family: 'Noto Sans KR','맑은 고딕','Malgun Gothic','Roboto','돋움','Dotum','Helvetica','Apple SD Gothic Neo', sans-serif; margin: 0 auto; padding: 0 32px; width: 656px;\">";
         content+="<tbody><tr><td style=\"margin: 0; padding: 0;\">\n" +

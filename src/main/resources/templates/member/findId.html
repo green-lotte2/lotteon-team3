@@ -1,0 +1,46 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/memberLayout}">
+<main id="member" layout:fragment="content">
+    <script th:src="@{/js/find.js}"></script>
+    <div class="find">
+    <nav>
+        <h1>아이디 찾기</h1>
+    </nav>
+    <form id="formFindId" th:action="@{/member/findIdResult}" method="POST">
+        <table>
+            <tr>
+                <th>이름</th>
+                <td>
+                    <input type="text" id="inputName" name="name" placeholder="이름 입력" required/>
+                    <span id="result_name"></span>
+                </td>
+            </tr>
+            <tr>
+                <th>이메일</th>
+                <td>
+                    <div>
+                        <input type="email" id="inputEmail" name="email" placeholder="이메일 입력"/>
+                        <button type="button" id="btn_email" class="btnAuth" data-type="findEmail">인증번호 받기</button>
+                        <span id="result_email"></span>
+                    </div>
+                    <div class="auth">
+                        <input type="text" name="auth" id="inputEmailCode" placeholder="인증번호 입력" disabled/>
+                        <button type="button" id="btnCheckEmailCode" class="btnConfirm">확인</button>
+                        <span id="resultEmailCode"></span>
+                    </div>
+                </td>
+            </tr>
+        </table>
+        <p>
+            회원가입한 이메일 주소와 입력한 이메일 주소가 동일해야 인증번호를 받을 수 있습니다.<br>
+            인증번호를 입력 후 확인 버튼을 눌러주세요.
+        </p>
+        <div class="btnArea">
+            <a th:href="@{/member/login}" class="btnAreaCancel">취소</a>
+            <a th:href="@{/member/findIdResult}" class="btnAreaNext">다음</a>
+        </div>
+    </form>
+</div>
+</main>
+</html>
