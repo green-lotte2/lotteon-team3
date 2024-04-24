@@ -159,7 +159,7 @@
                                 <span>[[${best.discount}]]%</span>
                             </div>
                             <div class="dis_price">
-                                <ins th:if="${best.discount != 0}">계산..ㅠ</ins>
+                                <ins th:if="${best.discount != 0}">[[${((100-best.discount)/100.0)*best.price}]]</ins>
                                 <ins th:if="${best.discount == 0}">[[${best.price}]]</ins>
                             </div>
                         </a>

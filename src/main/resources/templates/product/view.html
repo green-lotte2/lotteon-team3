@@ -17,7 +17,7 @@
                 <!-- 상품 전체 정보 내용 -->                
                 <article class="info">
                     <th:block sec:authorize="isAuthenticated()">
-                        <span id="uid">[[${#authentication.principal.member.uid}]]</span>
+                        <input type="text" id="uid" th:value="${#authentication.principal.member.uid}"></input>
                     </th:block>
                     <div class="image">
                         <img th:src="@{|/prodImg/${productDTO.thumb3}|}" alt="상품이미지"/>

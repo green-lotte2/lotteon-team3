@@ -130,42 +130,52 @@
 
             const uid = document.getElementById('uid')
             let uidValue;
+
             if(uid){
-                uidValue = uid.innerText;
+                uidValue = uid.value;
+
             }else{
                 uidValue = null;
             }
             console.log(uidValue);
+
             // 장바구니 버튼
             const cart = document.getElementsByClassName('cart')[0];
 
 
-            cart.onclick = function (e){
+            cart.onclick = async function (e) {
                 e.preventDefault();
-                if(uidValue == null){
+                if (uidValue == null) {
                     location.href = `/lotteon/member/login`;
-                }
-
-                if(confirm("장바구니에 담으시겠습니까?")){
+                }else if (confirm("장바구니에 담으시겠습니까?")) {
                     const prodNoAfter = location.href.split('=')[1];
                     const prodNo = prodNoAfter.split('&')[0];
 
                     const jsonData = {
-                        "prodNo" : prodNo,
-                        "count"  : countValue,
-                        "uid"    : uidValue
+                        "prodNo": prodNo,
+                        "count": countValue,
+                        "uid": uidValue,
+                        "opNo": 1
                     };
 
-                    fetch("/lotteon/product/cart",{
-                        method:'POST',
-                        headers:{"Content-Type": "application/json"},
-                        body:JSON.stringify(jsonData)
+                    console.log(jsonData);
+
+                    await fetch(`/lotteon/cart/insert`, {
+                        method: 'POST',
+                        headers: {"Content-Type": "application/json"},
+                        body: JSON.stringify(jsonData)
                     })
                         .then(response => response.json())
-                        .then(data=>{
-                            console.log(data);
+                        .then(data => {
+                            if(data != null){
+                                if(confirm("장바구니로 이동하시겠습니까?")){
+                                    location.href= `/lotteon/product/cart`;
+                                }
+                            }else{
+                                alert("등록에 실패했습니다.");
+                            }
                         })
-                        .catch((err)=>{
+                        .catch((err) => {
                             console.log(err);
                         });
                 }
