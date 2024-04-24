@@ -2,6 +2,7 @@ package kr.co.lotteon.security;
 
 import kr.co.lotteon.oauth2.OAuth2UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -12,10 +13,12 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
+@Slf4j
 @RequiredArgsConstructor
 public class SecurityConfig {
 
     private final OAuth2UserService oauth2UserService;
+    private final SecurityUserService securityUserService;
 
 
     @Bean
@@ -29,7 +32,15 @@ public class SecurityConfig {
                                         .usernameParameter("uid")
                                         .passwordParameter("pass"));
 
-        ///////////자동로그인 설정 구현예정///////////
+        // 자동로그인 설정
+        // rememberMe 쿠키 확인
+        httpSecurity.rememberMe(config -> config.userDetailsService(securityUserService)
+                .rememberMeParameter("rememberMe")
+                .key("uniqueAndSecret")
+                .tokenValiditySeconds(86400));// 자동 로그인 유효 기간 (초))
+
+                log.info("자동로그인중");
+
 
 
         // 로그아웃 설정

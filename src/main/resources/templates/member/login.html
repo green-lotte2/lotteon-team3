@@ -2,6 +2,7 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{/layout/memberLayout}">
 <main id="member" layout:fragment="content">
+    <script th:src="@{/js/rememberId.js}"></script>
     <script th:inline="javascript">
 
         window.onload = function () {
@@ -38,6 +39,7 @@
             </table>
             <input type="submit" value="로그인"/>
             <span>
+                        <label><input type="checkbox" id="checkId" name="checkId"/>아이디 저장</label>
                         <label><input type="checkbox" id="rememberMe" name="rememberMe"/>자동 로그인</label>
 						<a th:href="@{/member/findId}">아이디찾기</a>
 						<a th:href="@{/member/findPass}">비밀번호찾기</a>
