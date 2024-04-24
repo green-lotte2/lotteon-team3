@@ -9,6 +9,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Map;
@@ -27,6 +30,9 @@ public class ProductController {
     public String cart(){
         return "/product/cart";
     }
+
+
+
     // complete(주문 완료) 페이지 매핑
     @GetMapping("/product/complete")
     public String complete(){
@@ -88,6 +94,8 @@ public class ProductController {
     @GetMapping("/product/view")
     public String view(Model model, ProductDTO productDTO){
 
+        // hit + 1
+        productService.updateProductHit(productDTO.getProdNo());
         ProductDTO prod = productService.selectByprodNo(productDTO.getProdNo());
         log.info("productDTO : " + prod.toString());
         // productDTO 참조
@@ -97,6 +105,7 @@ public class ProductController {
         String c1Name = cateService.getc1Name(productDTO.getCate1());
         String c2Name = cateService.getc2Name(productDTO.getCate1(), productDTO.getCate2());
         String c3Name = cateService.getc3Name( productDTO.getCate2(), productDTO.getCate3());
+
         // 카테 참조
         model.addAttribute("c1Name",c1Name);
         model.addAttribute("c2Name",c2Name);

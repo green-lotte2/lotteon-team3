@@ -23,6 +23,8 @@ public class QCart extends EntityPathBase<Cart> {
 
     public final NumberPath<Integer> count = createNumber("count", Integer.class);
 
+    public final NumberPath<Integer> opNo = createNumber("opNo", Integer.class);
+
     public final NumberPath<Integer> prodNo = createNumber("prodNo", Integer.class);
 
     public final DateTimePath<java.time.LocalDateTime> rdate = createDateTime("rdate", java.time.LocalDateTime.class);
