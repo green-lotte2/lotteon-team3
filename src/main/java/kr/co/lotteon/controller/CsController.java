@@ -12,6 +12,7 @@ import kr.co.lotteon.entity.cs.BoardTypeEntity;
 import kr.co.lotteon.repository.cs.BoardRepository;
 import kr.co.lotteon.service.cs.CsCateService;
 import kr.co.lotteon.service.cs.CsService;
+import kr.co.lotteon.service.cs.FileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
@@ -33,6 +34,7 @@ public class CsController {
     private final CsService csService;
     private final CsCateService csCateService;
     private final BoardRepository boardRepository;
+    private final FileService fileService;
 
     // cs index
     @GetMapping(value = {"/cs","/cs/index"})
@@ -94,6 +96,28 @@ public class CsController {
         csService.save(dto);
 
         return "redirect:/cs/qna/list?group=qna&cate=" + cate + "&success=200";
+    }
+
+    // QnA 글수정(페이지)
+    @GetMapping("/cs/qna/modify")
+    public String qnaModifyForm(Model model, int bno, String cate, String group){
+        BoardDTO boardDTO = csService.findByBnoForBoard(bno);
+        model.addAttribute("boardDTO", boardDTO);
+
+        model.addAttribute("cate", cate);
+        model.addAttribute("group", group);
+
+        return "/cs/qna/modify";
+    }
+
+    // QnA 글삭제
+    @GetMapping("/cs/qna/delete")
+    public String qnaDelete(int bno, String cate, String group) {
+
+        fileService.deleteFiles(bno);
+        csService.deleteBoard(bno);
+
+        return "redirect:/cs/qna/list?cate=" + cate + "&group=" + group;
     }
 
 
