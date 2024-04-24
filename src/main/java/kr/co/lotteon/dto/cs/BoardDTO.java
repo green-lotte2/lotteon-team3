@@ -33,6 +33,7 @@ public class BoardDTO {
     private String typeName;        // 게시글 유형
     private String cateName;        // 게시글이 속한 카테고리
     private int index;              // 게시글의 인덱스
+    private String nick;            // 작성자의 닉네임
 
     private List<BoardFileDTO> fileDTOList;     // 게시글에 첨부된 파일들(리스트)
 

@@ -2,10 +2,12 @@ package kr.co.lotteon.repository.impl;
 
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.co.lotteon.dto.admin.AdminBoardPageRequestDTO;
 import kr.co.lotteon.dto.cs.CsPageRequestDTO;
 import kr.co.lotteon.entity.cs.BoardEntity;
+import kr.co.lotteon.entity.cs.QBoardCateEntity;
 import kr.co.lotteon.entity.cs.QBoardEntity;
 import kr.co.lotteon.entity.cs.QBoardTypeEntity;
 import kr.co.lotteon.entity.member.Member;
@@ -27,7 +29,9 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
 
     private final JPAQueryFactory jpaQueryFactory;
     private final QBoardEntity qBoardEntity = QBoardEntity.boardEntity;
+    private final QBoardCateEntity qCateEntity = QBoardCateEntity.boardCateEntity;
     private final QBoardTypeEntity qBoardTypeEntity = QBoardTypeEntity.boardTypeEntity;
+    private final QMember qMember = QMember.member;
 
     // 관리자 인덱스 글 목록 조회 (최신순 5개)
     @Override
@@ -37,25 +41,27 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
                 .select(qBoardEntity, qBoardTypeEntity.typeName)
                 .from(qBoardEntity)
                 .where(qBoardEntity.group.eq(group))
-                .join(qBoardTypeEntity)
-                .on(qBoardEntity.typeNo.eq(qBoardTypeEntity.typeNo))
+                .join(qMember).on(qBoardEntity.uid.eq(qMember.uid))
+                .join(qBoardTypeEntity).on(qBoardEntity.typeNo.eq(qBoardTypeEntity.typeNo))
+                .join(qCateEntity).on(qBoardEntity.cate.eq(qCateEntity.cate))
                 .orderBy(qBoardEntity.bno.desc())
                 .limit(5)
                 .fetchResults();
         return results.getResults();
     }
 
-    // 관리자 게시판관리 글 목록 조회 (최신순 5개)
+    // 관리자 게시판관리 글 목록 조회 (인덱스 - 최신순 5개, 게시판 - 10개)
     @Override
     public Page<Tuple> selectBoardsByGroup(AdminBoardPageRequestDTO pageRequestDTO, Pageable pageable, String group) {
 
-        // article 테이블과 User 테이블을 Join해서 article목록, 닉네임을 select
+        // board 테이블과 cate, type 테이블을 Join해서 board 목록, cateName, typeName 가져옴
         QueryResults<Tuple> results = jpaQueryFactory
-                .select(qBoardEntity, qBoardTypeEntity.typeName)
+                .select(qBoardEntity, qBoardTypeEntity.typeName, qCateEntity.cateName, qMember.nick)
                 .from(qBoardEntity)
                 .where(qBoardEntity.group.eq(group))
-                .join(qBoardTypeEntity)
-                .on(qBoardEntity.typeNo.eq(qBoardTypeEntity.typeNo))
+                .join(qMember).on(qBoardEntity.uid.eq(qMember.uid))
+                .join(qBoardTypeEntity).on(qBoardEntity.typeNo.eq(qBoardTypeEntity.typeNo))
+                .join(qCateEntity).on(qBoardEntity.cate.eq(qCateEntity.cate))
                 .orderBy(qBoardEntity.bno.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -63,6 +69,82 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
 
         List<Tuple> content = results.getResults();
         long total = results.getTotal();
+        // 페이지 처리용 page 객체 리턴
+        return new PageImpl<>(content, pageable, total);
+    }
+    // 관리자 게시판관리 글 목록 검색 조회 (type, keyword)
+    @Override
+    public Page<Tuple> searchBoardsByGroup(AdminBoardPageRequestDTO pageRequestDTO, Pageable pageable, String group) {
+        log.info("키워드 검색 impl : " + pageRequestDTO.getKeyword());
+        String type = pageRequestDTO.getType();
+        String keyword = pageRequestDTO.getKeyword();
+
+        BooleanExpression expression = null;
+
+        // 검색 종류에 따른 where절 표현식 생성
+        if(type.equals("title")){
+            expression = qBoardEntity.group.eq(group).and(qBoardEntity.title.contains(keyword));
+            log.info("제목 검색 : " + expression);
+
+        }else if(type.equals("content")){
+            expression = qBoardEntity.group.eq(group).and(qBoardEntity.content.contains(keyword));
+            log.info("내용 검색 : " + expression);
+
+        }else if(type.equals("title_content")){
+            BooleanExpression titleContains = qBoardEntity.group.eq(group).and(qBoardEntity.title.contains(keyword));
+            BooleanExpression contentContains = qBoardEntity.group.eq(group).and(qBoardEntity.content.contains(keyword));
+            expression = qBoardEntity.group.eq(group).and(titleContains).or(contentContains);
+            log.info("제목+내용 검색 : " + expression);
+
+        }else if(type.equals("nick")){
+            expression = qBoardEntity.group.eq(group).and(qMember.nick.contains(keyword));
+            log.info("작성자 검색 : " + expression);
+        }
+        // select * from board where `group`= ? and `type` contains(k) limit 0,10;
+        QueryResults<Tuple> results = jpaQueryFactory
+                .select(qBoardEntity, qBoardTypeEntity.typeName, qCateEntity.cateName, qMember.nick)
+                .from(qBoardEntity)
+                .join(qMember).on(qBoardEntity.uid.eq(qMember.uid))
+                .join(qBoardTypeEntity).on(qBoardEntity.typeNo.eq(qBoardTypeEntity.typeNo))
+                .join(qCateEntity).on(qBoardEntity.cate.eq(qCateEntity.cate))
+                .where(expression)
+                .orderBy(qBoardEntity.bno.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetchResults();
+        log.info("키워드 검색 5 "+results.getResults().toString());
+        List<Tuple> content = results.getResults();
+        log.info("키워드 검색 6 ");
+        long total = results.getTotal();
+        log.info("키워드 검색 7 ");
+        // 페이지 처리용 page 객체 리턴
+        return new PageImpl<>(content, pageable, total);
+    }
+    // 관리자 게시판관리 글 목록 카테고리 검색 조회 (type, cate)
+    @Override
+    public Page<Tuple> searchBoardsByCate(AdminBoardPageRequestDTO pageRequestDTO, Pageable pageable, String group, String cate) {
+        log.info("cate 검색 impl 1 : " + pageRequestDTO.getKeyword());
+        log.info("cate 검색 impl 2 group : " + group);
+        log.info("cate 검색 impl 3 cate : " + cate);
+        // select * from board where `group`= ? and `cate`= ? limit 0,10;
+        QueryResults<Tuple> results = jpaQueryFactory
+                .select(qBoardEntity, qBoardTypeEntity.typeName, qCateEntity.cateName, qMember.nick)
+                .from(qBoardEntity)
+                .join(qMember).on(qBoardEntity.uid.eq(qMember.uid))
+                .join(qBoardTypeEntity).on(qBoardEntity.typeNo.eq(qBoardTypeEntity.typeNo))
+                .join(qCateEntity).on(qBoardEntity.cate.eq(qCateEntity.cate))
+                .where(qBoardEntity.group.eq(group).and(qBoardEntity.cate.eq(cate)))
+                .orderBy(qBoardEntity.bno.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetchResults();
+        log.info("cate 검색 impl 2 : " + cate);
+
+        List<Tuple> content = results.getResults();
+        log.info("cate 검색 impl 3 : " + content);
+        long total = results.getTotal();
+        log.info("cate 검색 impl 4 : " + total);
+
         // 페이지 처리용 page 객체 리턴
         return new PageImpl<>(content, pageable, total);
     }

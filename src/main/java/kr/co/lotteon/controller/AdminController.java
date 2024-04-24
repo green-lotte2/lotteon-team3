@@ -12,7 +12,7 @@ import kr.co.lotteon.entity.cs.Comment;
 import kr.co.lotteon.entity.member.Terms;
 import kr.co.lotteon.security.MyUserDetails;
 import kr.co.lotteon.service.admin.AdminService;
-import kr.co.lotteon.service.cs.CommentService;
+import kr.co.lotteon.service.admin.CommentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -241,12 +241,20 @@ public class AdminController {
     }
     // 관리자 게시판 목록 페이지 매핑
     @GetMapping("/admin/cs/list")
-    public String boardList(Model model, AdminBoardPageRequestDTO adminBoardPageRequestDTO) {
+    public String boardList(Model model, String cate, AdminBoardPageRequestDTO adminBoardPageRequestDTO) {
+        String group = adminBoardPageRequestDTO.getGroup();
 
-        AdminBoardPageResponseDTO adminBoardPageResponseDTO = adminService.findBoardByGroup(adminBoardPageRequestDTO);
-        log.info("관리자 게시판 목록 Cont : " +adminBoardPageResponseDTO);
+        log.info("관리자 게시판 목록 Cont 1 : " + cate);
+        // 게시글 조회
+        AdminBoardPageResponseDTO adminBoardPageResponseDTO = adminService.findBoardByGroup(cate, adminBoardPageRequestDTO);
+        log.info("관리자 게시판 목록 Cont 2 : " +adminBoardPageResponseDTO);
+
+        // 검색용 cate 조회
+        List<BoardCateDTO> cates = adminService.findBoardCate();
+
         model.addAttribute(adminBoardPageResponseDTO);
-        model.addAttribute("group", adminBoardPageRequestDTO.getGroup());
+        model.addAttribute("group", group);
+        model.addAttribute("cates", cates);
         return "/admin/cs/list";
     }
     // 관리자 게시글 쓰기 페이지 매핑
@@ -284,15 +292,23 @@ public class AdminController {
     @GetMapping("/admin/cs/view")
     public String boardView(Model model, String group, int bno, AdminBoardPageRequestDTO adminBoardPageRequestDTO){
         log.info("관리자 게시판 보기 Cont 1 : " + adminBoardPageRequestDTO);
+
+        // 글 내용 조회
         BoardDTO board = adminService.selectBoard(bno);
+        // 답변 조회
+        List<CommentDTO> comments = commentService.commentList(bno);
+
         log.info("관리자 게시판 보기 Cont 2 : " + board);
+
         // pg, type, keyword 값
         AdminBoardPageResponseDTO adminBoardPageResponseDTO = AdminBoardPageResponseDTO.builder()
                 .adminBoardPageRequestDTO(adminBoardPageRequestDTO)
                 .build();
         log.info("관리자 게시판 보기 Cont 3 : " + adminBoardPageResponseDTO);
+
         model.addAttribute("group",group );
         model.addAttribute("board",board );
+        model.addAttribute("comments",comments );
         model.addAttribute("adminBoardPageResponseDTO", adminBoardPageResponseDTO);
         return  "/admin/cs/view";
     }
@@ -335,6 +351,7 @@ public class AdminController {
         log.info(commentResponseEntity.getBody().toString());
         return commentResponseEntity;
     }
+
     // 관리자 글 보기 답변 삭제
     @DeleteMapping("/comment/{cno}")
     public ResponseEntity<?> deleteComment(@PathVariable("cno") int cno){
@@ -346,17 +363,5 @@ public class AdminController {
         log.info("modifyComment : " +commentDTO.toString());
         return commentService.updateComment(commentDTO);
     }
-    //// Seller //////////////////////////////////////////////////////////////////////////////////
 
-    // seller index 페이지 매핑
-    @GetMapping(value = {"/seller","/seller/index"})
-    public String seller(Model model){
-        // 공지사항 조회
-        List<BoardDTO> noticeList = adminService.adminSelectNotices();
-        // 고객문의 조회
-        List<BoardDTO> qnaList = adminService.adminSelectQnas();
-        model.addAttribute("noticeList", noticeList);
-        model.addAttribute("qnaList", qnaList);
-        return "/seller/index";
-    }
 }
