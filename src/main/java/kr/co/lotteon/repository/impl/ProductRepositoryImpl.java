@@ -231,8 +231,21 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
                                                 .fetch();
 
         return products.stream()
-                .map(product -> modelMapper.map(product, ProductDTO.class))
-                .collect(Collectors.toList());
+                    .map(product -> modelMapper.map(product, ProductDTO.class))
+                    .collect(Collectors.toList());
+    }
+
+    // 추천 상품
+    @Override
+    public List<ProductDTO> recommendProductMain() {
+        // SELECT * FROM PRODUCT ORDER BY score DESC LIMIT 8
+        List<Product> products = jpaQueryFactory.selectFrom(qProduct)
+                                                .orderBy(qProduct.score.desc())
+                                                .limit(8)
+                                                .fetch();
+        return products.stream()
+                    .map(product -> modelMapper.map(product, ProductDTO.class))
+                    .collect(Collectors.toList());
     }
     // =====================
 }

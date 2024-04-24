@@ -35,7 +35,10 @@ public interface ProductRepositoryCustom {
     // 할인상품
     public List<ProductDTO> discountProductMain();
     
-    //히트상품
+    // 히트상품
     public List<ProductDTO> hitProductMain();
+
+    // 추천상품
+    public List<ProductDTO> recommendProductMain();
 // ===========================================
 }

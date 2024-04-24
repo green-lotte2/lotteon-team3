@@ -15,21 +15,26 @@ public class WebMvcConfig implements WebMvcConfigurer {
     private AppInfo appInfo;
 
     // ====== 배포시엔 해당 어노테이션 사용 ======
-    //@Value("${myServer.static-resources-path}")
-    // 경로 :/home/lotteon/prodImg
-
+    @Value("${myServerProd.static-resources-path}")
     // ====== 개발시엔 해당 어노테이션 사용 ======
-    @Value("${local.static-resources-path}")
-    // 경로 :prod/**
-    private String staticServerPath;
+    //@Value("${localProd.static-resources-pathProd}")
+    private String staticServerPathProd;
 
-    @Value("${local.static-resources-path}")
-    private String localPath;
+    // ====== 배포시엔 해당 어노테이션 사용 ======
+    @Value("${MyServerImg.static-resources-pathImg}")
+    // ====== 개발시엔 해당 어노테이션 사용 ======
+    //@Value("${localImg.static-resources-pathImg}")
+    private String staticServerPathImg;
+
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        // 상품 경로
         registry.addResourceHandler("prodImg/**")
-                .addResourceLocations("file:" + staticServerPath);
+                .addResourceLocations("file:" + staticServerPathProd);
+        // 글 경로
+        registry.addResourceHandler("uploads/**")
+                .addResourceLocations("file:" + staticServerPathImg);
     }
 
     @Override

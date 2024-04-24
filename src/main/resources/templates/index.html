@@ -20,7 +20,7 @@
             <article th:each="hit : ${hitProducts}">
               <a th:href="@{/product/view(prodNo=${hit.prodNo},cate1=${hit.cate1},cate2=${hit.cate2},cate3=${hit.cate3})}">
                 <div class="thumb">
-                  <img th:src="@{'/prodImg/'+ ${hit.thumb1}}" alt="t1" />
+                  <img th:src="@{'/prodImg/'+ ${hit.thumb2}}" alt="t1" />
                 </div>
                 <h2>[[${hit.prodName}]]</h2>
                 <p>[[${hit.descript}]]</p>
@@ -29,7 +29,7 @@
                   <span>[[${hit.discount}]]%</span>
                 </div>
                 <div class="dis_price">
-                  <ins th:if="${hit.discount != 0}">계산해야돼</ins>
+                  <ins th:if="${hit.discount != 0}">[[${((100-hit.discount)/100.0)*hit.price}]]</ins>
                   <ins th:if="${hit.discount == 0}">[[${hit.price}]]</ins>
                   <span th:if="${hit.delivery == 0}" class="free">무료배송</span>
                   <span th:if="${hit.delivery != 0}">배송비 [[${hit.delivery}]]</span>
@@ -40,140 +40,22 @@
           <!-- 추천상품 영역 -->
           <section class="recommend">
             <h3><span>추천상품</span></h3>
-            <article>
-              <a th:href="@{/product
-              /view}">
+            <article th:each="recommend : ${recommendProducts}">
+              <a th:href="@{/product/view(prodNo=${recommend.prodNo},cate1=${recommend.cate1},cate2=${recommend.cate2},cate3=${recommend.cate3})}">
                 <div class="thumb">
-                  <img th:src="@{https://via.placeholder.com/230x230}" alt="t1" />
+                  <img th:src="@{'/prodImg/'+ ${recommend.thumb2}}" alt="t1" />
                 </div>
-                <h2>상품명</h2>
-                <p>간단한 상품 설명</p>
-                <div class="org_price">
-                  <del>30,000</del>
-                  <span>10%</span>
+                <h2>[[${recommend.prodName}]]</h2>
+                <p>[[${recommend.descript}]]</p>
+                <div th:if="${recommend.discount != 0}" class="org_price">
+                  <del>[[${recommend.price}]]</del>
+                  <span>[[${recommend.discount}]]%</span>
                 </div>
                 <div class="dis_price">
-                  <ins>27,000</ins>
-                  <span>배송비 2500</span>
-                </div>
-              </a>
-            </article>
-            <article>
-              <a th:href="@{#}">
-                <div class="thumb">
-                  <img th:src="@{https://via.placeholder.com/230x230}" alt="t1" />
-                </div>
-                <h2>상품명</h2>
-                <p>간단한 상품 설명</p>
-                <div class="org_price">
-                  <del>30,000</del>
-                  <span>10%</span>
-                </div>
-                <div class="dis_price">
-                  <ins>27,000</ins>
-                  <span>배송비 2500</span>
-                </div>
-              </a>
-            </article>
-            <article>
-              <a th:href="@{#}">
-                <div class="thumb">
-                  <img th:src="@{https://via.placeholder.com/230x230}" alt="t1" />
-                </div>
-                <h2>상품명</h2>
-                <p>간단한 상품 설명</p>
-                <div class="org_price">
-                  <del>30,000</del>
-                  <span>10%</span>
-                </div>
-                <div class="dis_price">
-                  <ins>27,000</ins>
-                  <span>배송비 2500</span>
-                </div>
-              </a>
-            </article>
-            <article>
-              <a th:href="@{#}">
-                <div class="thumb">
-                  <img th:src="@{https://via.placeholder.com/230x230}" alt="t1" />
-                </div>
-                <h2>상품명</h2>
-                <p>간단한 상품 설명</p>
-                <div class="org_price">
-                  <del>30,000</del>
-                  <span>10%</span>
-                </div>
-                <div class="dis_price">
-                  <ins>27,000</ins>
-                  <span>배송비 2500</span>
-                </div>
-              </a>
-            </article>
-            <article>
-              <a th:href="@{#}">
-                <div class="thumb">
-                  <img th:src="@{https://via.placeholder.com/230x230}" alt="t1" />
-                </div>
-                <h2>상품명</h2>
-                <p>간단한 상품 설명</p>
-                <div class="org_price">
-                  <del>30,000</del>
-                  <span>10%</span>
-                </div>
-                <div class="dis_price">
-                  <ins>27,000</ins>
-                  <span>배송비 2500</span>
-                </div>
-              </a>
-            </article>
-            <article>
-              <a th:href="@{#}">
-                <div class="thumb">
-                  <img th:src="@{https://via.placeholder.com/230x230}" alt="t1" />
-                </div>
-                <h2>상품명</h2>
-                <p>간단한 상품 설명</p>
-                <div class="org_price">
-                  <del>30,000</del>
-                  <span>10%</span>
-                </div>
-                <div class="dis_price">
-                  <ins>27,000</ins>
-                  <span>배송비 2500</span>
-                </div>
-              </a>
-            </article>
-            <article>
-              <a th:href="@{#}">
-                <div class="thumb">
-                  <img th:src="@{https://via.placeholder.com/230x230}" alt="t1" />
-                </div>
-                <h2>상품명</h2>
-                <p>간단한 상품 설명</p>
-                <div class="org_price">
-                  <del>30,000</del>
-                  <span>10%</span>
-                </div>
-                <div class="dis_price">
-                  <ins>27,000</ins>
-                  <span>배송비 2500</span>
-                </div>
-              </a>
-            </article>
-            <article>
-              <a th:href="@{#}">
-                <div class="thumb">
-                  <img th:src="@{https://via.placeholder.com/230x230}" alt="t1" />
-                </div>
-                <h2>상품명</h2>
-                <p>간단한 상품 설명</p>
-                <div class="org_price">
-                  <del>30,000</del>
-                  <span>10%</span>
-                </div>
-                <div class="dis_price">
-                  <ins>27,000</ins>
-                  <span>배송비 2500</span>
+                  <ins th:if="${recommend.discount == 0}">[[${recommend.price}]]</ins>
+                  <ins th:if="${recommend.discount != 0}">[[${((100-recommend.discount)/100.0)*recommend.price}]]</ins>
+                  <span th:if="${recommend.delivery == 0 }" class="free">무료배송</span>
+                  <span th:if="${recommend.delivery != 0 }">배송비 [[${recommend.delivery}]]</span>
                 </div>
               </a>
             </article>
@@ -184,7 +66,7 @@
             <article th:each="recent : ${recentProducts}">
               <a th:href="@{/product/view(prodNo=${recent.prodNo},cate1=${recent.cate1},cate2=${recent.cate2},cate3=${recent.cate3})}">
                 <div class="thumb">
-                  <img th:src="@{'/prodImg/'+ ${recent.thumb1}}" alt="t1" />
+                  <img th:src="@{'/prodImg/'+ ${recent.thumb2}}" alt="t1" />
                 </div>
                 <h2>[[${recent.prodName}]]</h2>
                 <p>[[${recent.descript}]]</p>
@@ -194,7 +76,7 @@
                 </div>
                 <div class="dis_price">
                   <ins th:if="${recent.discount == 0}">[[${recent.price}]]</ins>
-                  <ins th:if="${recent.discount != 0}">가격계산해야돼</ins>
+                  <ins th:if="${recent.discount != 0}">[[${((100-recent.discount)/100.0)*recent.price}]]</ins>
                   <span th:if="${recent.delivery > 0 }">배송비 [[${recent.delivery}]]원</span>
                   <span th:if="${recent.delivery == 0 }" class="free">무료배송</span>
                 </div>
@@ -208,7 +90,7 @@
             <article th:each="discount : ${discountProducts}">
               <a th:href="@{/product/view(prodNo=${discount.prodNo},cate1=${discount.cate1},cate2=${discount.cate2},cate3=${discount.cate3})}">
                 <div class="thumb">
-                  <img th:src="@{'/prodImg/'+ ${discount.thumb1}}" alt="t1" />
+                  <img th:src="@{'/prodImg/'+ ${discount.thumb2}}" alt="t1" />
                 </div>
                 <h2>[[${discount.prodName}]]</h2>
                 <p>[[${discount.descript}]]</p>
@@ -218,7 +100,7 @@
                 </div>
                 <div class="dis_price">
                   <ins th:if="${discount.discount == 0}">[[${discount.price}]]</ins>
-                  <ins th:if="${discount.discount != 0}">가격계산해야돼</ins>
+                  <ins th:if="${discount.discount != 0}">[[${((100-discount.discount)/100.0)*discount.price}]]</ins>
                   <span th:if="${discount.delivery == 0}" class="free">무료배송</span>
                   <span th:if="${discount.delivery != 0}">배송비 [[${discount.delivery}]]원</span>
                 </div>
