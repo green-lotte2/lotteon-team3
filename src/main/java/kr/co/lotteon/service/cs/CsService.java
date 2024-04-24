@@ -29,6 +29,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
@@ -48,6 +49,7 @@ public class CsService {
     private final BoardCateRepository boardCateRepository;
     private final ModelMapper modelMapper;
     private final BoardFileRepository fileRepository;
+    private final FileService fileService;
 
     // 글목록(notice, qna)
     public CsPageResponseDTO findByCate(CsPageRequestDTO csPageRequestDTO) {
@@ -211,8 +213,19 @@ public class CsService {
 
     // 글 등록 메서드
     public void save(BoardDTO dto) {
-        BoardEntity savedEntity = boardRepository.save(dto.toEntity());
+        dto.setFile(dto.getFiles().size());
 
-        boardRepository.save(savedEntity);
+        for(MultipartFile mf : dto.getFiles()){
+            if(mf.getOriginalFilename() ==null || mf.getOriginalFilename() == ""){
+                dto.setFile(0);
+            }
+        }
+        BoardEntity boardEntity = modelMapper.map(dto, BoardEntity.class);
+        BoardEntity savedArticle= boardRepository.save(boardEntity);
+        int bno = savedArticle.getBno();
+        dto.setBno(bno);
+
+        fileService.fileUpload(dto);
     }
+
 }

@@ -29,6 +29,8 @@ public class BoardDTO {
 
     private LocalDateTime rdate;    // 작성 날짜
 
+    private List<MultipartFile> files;
+
     private MultipartFile fname;    // 첨부된 파일
     private String typeName;        // 게시글 유형
     private String cateName;        // 게시글이 속한 카테고리

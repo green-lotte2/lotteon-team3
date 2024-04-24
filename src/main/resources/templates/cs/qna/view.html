@@ -44,9 +44,15 @@
 
         <div class="content">
           <p>
-            [[${boardDTO.content}]]
-          </p><br><br>
+            [[${boardFileDTO.ofile}]]
+          </p><br>
         </div>
+        <div class="filebox">
+          <p>
+            <img th:src="@{|/uploads/${BoardFileDTO.sfile}|}" alt="상품이미지"/>
+          </p><br>
+        </div>
+
 
 
         <a th:href="@{/cs/qna/list(group='qna', cate=${cate})}" class="btnList">목록보기</a>
