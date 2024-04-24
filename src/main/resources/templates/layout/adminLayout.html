@@ -21,7 +21,7 @@
         <div>
             <a th:href="@{/admin/index}" class="logo"><img th:src="@{/admin/images/admin_logo.png}" alt="admin_logo"/></a>
             <p>
-                <span>홍길동님 반갑습니다.</span>
+                <span>[[${#authentication.principal.member.name}]]님 </span>
                 <a th:href="@{/}">HOME |</a>
                 <a th:href="@{/member/logout}">로그아웃 |</a>
                 <a th:href="@{#}">고객센터</a>
