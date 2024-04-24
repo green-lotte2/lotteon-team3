@@ -1,5 +1,6 @@
 package kr.co.lotteon.dto.cs;
 
+import kr.co.lotteon.dto.member.MemberDTO;
 import kr.co.lotteon.entity.cs.BoardEntity;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,6 +16,7 @@ import java.util.List;
 public class BoardDTO {
     private int bno;                // 게시글 번호
     private String uid;             // 게시글 작성자 ID
+    private int parent;
 
     private String group;           // 게시글이 속한 그룹
     private String cate;            // 게시글이 속한 카테고리
@@ -35,6 +37,7 @@ public class BoardDTO {
     private String typeName;        // 게시글 유형
     private String cateName;        // 게시글이 속한 카테고리
     private int index;              // 게시글의 인덱스
+    private String nick;            // 작성자의 닉네임
 
     private List<BoardFileDTO> fileDTOList;     // 게시글에 첨부된 파일들(리스트)
 

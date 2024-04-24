@@ -1843,7 +1843,7 @@ col {
     font-weight: bold;
     font-size: 20px;
 }
-.commentBox > form > textarea {
+#commentForm > textarea {
     width: 100%;
     min-height: 100px;
     margin-top: 10px;
@@ -1857,12 +1857,12 @@ col {
     border: 1px solid #d6d6d6;
     border-radius: 10px;
 }
-.commentBox > form > div {
+#commentForm > div {
     display: flex;
     justify-content: end;
     margin-top: 10px;
 }
-.commentBox > form > div > button {
+#commentForm > div > button {
     padding: 6px;
     margin-left: 4px;
     color: #0e0101;
@@ -1871,23 +1871,25 @@ col {
     background-color: transparent;
     cursor: pointer;
 }
-.commentBox > form > div > button:hover {
+#commentForm > div > button:hover {
     color: white;
     border: 1px solid #454c5f;
     background-color: #2b2f38;
 }
-.commentBox > .comment {
+.commentBox .comment {
     padding: 5px 10px;
     margin-top: 10px;
     border-radius: 10px;
     border: 1px solid #d6d6d6;
 }
-.commentBox > .comment > p {
+.commentBox .comment > p {
     padding-left: 10px;
     padding-bottom: 4px;
+    font-size: 13px;
     border-bottom: 1px solid #d6d6d6;
 }
-.commentBox > .comment > textarea {
+.commentBox .comment > p > span {font-size: 13px;}
+.commentBox .comment > textarea {
     width: 100%;
     min-height: 60px;
     padding: 10px;
@@ -1899,22 +1901,23 @@ col {
     border: 0;
     background-color: transparent;
 }
-.commentBox > .comment > div {
+.commentBox .comment > div {
     display: flex;
     justify-content: end;
     margin-top: 4px;
 }
-.commentBox > .comment > div > button {
+.commentBox .comment > div > button {
+    float: right;
     padding: 6px;
     margin-right: 8px;
-
+    color: #0e0101;
     border: 1px solid #d6d6d6;
     border-radius: 10px;
     background-color: white;
     cursor: pointer;
 }
-.commentBox > .comment > div > button:hover {
+.commentBox .comment > div > button:hover {
     color: white;
-    border: 1px solid #a8d031;
-    background-color: #a8d031;
+    border: 1px solid #2b2f38;
+    background-color: #454c5f;
 }

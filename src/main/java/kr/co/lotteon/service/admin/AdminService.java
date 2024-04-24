@@ -36,6 +36,7 @@ import java.beans.Transient;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -64,7 +65,7 @@ public class AdminService {
 
 
     // 관리자 환경설정 기본환경 정보 - 약관 조회
-    public Terms findByTerms(){
+    public Terms findByTerms() {
         return termsRepository.findById(1).get();
     }
 
@@ -74,17 +75,29 @@ public class AdminService {
         List<Tuple> tuples = orderRepository.selectOrderForChart();
         log.info("월별 주문 count 조회 Serv 2: " + tuples);
 
+        // 총 주문 수를 저장할 변수
+        AtomicLong totalOrders = new AtomicLong(0);
+
         List<Map<String, Object>> jsonResult = tuples.stream()
                 .map(tuple -> {
                     int year = tuple.get(0, Integer.class);
                     int month = tuple.get(1, Integer.class);
                     long count = tuple.get(2, long.class);
+
+                    // 총 주문 수에 현재 월의 주문 수를 더함
+                    totalOrders.addAndGet(count);
+
                     Map<String, Object> map = new HashMap<>();
                     map.put("month", month + "월");
                     map.put("count", count);
                     return map;
                 })
                 .collect(Collectors.toList());
+
+        // 총 주문 수를 결과에 추가
+        Map<String, Object> totalMap = new HashMap<>();
+        totalMap.put("total", totalOrders.get());
+        jsonResult.add(totalMap);
 
         log.info("월별 주문 count 조회 Serv 3: " + jsonResult);
         return jsonResult;
@@ -96,18 +109,30 @@ public class AdminService {
         List<Tuple> tuples = memberRepository.selectMemberForChart();
         log.info("월별 가입자 count 조회 Serv 2: " + tuples);
 
+        // 총 가입 수를 저장할 변수
+        AtomicLong totalMembers = new AtomicLong(0);
+
         // 조회 결과 List로 반환
         List<Map<String, Object>> jsonResult = tuples.stream()
                 .map(tuple -> {
                     int year = tuple.get(0, Integer.class);
                     int month = tuple.get(1, Integer.class);
                     long count = tuple.get(2, long.class);
+
+                    // 총 주문 수에 현재 월의 가입 수를 더함
+                    totalMembers.addAndGet(count);
+
                     Map<String, Object> map = new HashMap<>();
                     map.put("month", month + "월");
                     map.put("count", count);
                     return map;
                 })
                 .collect(Collectors.toList());
+
+        // 총 가입 수를 결과에 추가
+        Map<String, Object> totalMap = new HashMap<>();
+        totalMap.put("total", totalMembers.get());
+        jsonResult.add(totalMap);
 
         log.info("월별 가입자 count 조회 Serv 3: " + jsonResult);
         return jsonResult;
@@ -146,17 +171,19 @@ public class AdminService {
 
         return dtoList;
     }
+
     // 관리자 배너 목록
-    public List<BannerDTO> bannerList(String cate){
+    public List<BannerDTO> bannerList(String cate) {
 
         // 조회된 Entity List -> DTO List
         return bannerRepository.findByCate(cate).stream()
                 .map(banner ->
-                    modelMapper.map(banner, BannerDTO.class))
+                        modelMapper.map(banner, BannerDTO.class))
                 .collect(Collectors.toList());
     }
+
     // 관리자 배너 등록
-    public void bannerRegister(MultipartFile imgFile ,BannerDTO bannerDTO){
+    public void bannerRegister(MultipartFile imgFile, BannerDTO bannerDTO) {
 
         // 이미지 파일 등록 : 해당 디렉토리 없을 경우 자동 생성
         File file = new File(imgUploadPath);
@@ -172,7 +199,7 @@ public class AdminService {
             orgFile.mkdir();
         }
         // 이미지 리사이징
-        if (!imgFile.isEmpty()){
+        if (!imgFile.isEmpty()) {
 
             // oName, sName 구하기
             String oFile = imgFile.getOriginalFilename();
@@ -223,7 +250,7 @@ public class AdminService {
                 }
 
                 log.info("리사이징 끝");
-            }catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -232,15 +259,15 @@ public class AdminService {
     }
 
     // 관리자 배너 활성화 관리
-    public ResponseEntity<?> bannerActChange(int bno){
+    public ResponseEntity<?> bannerActChange(int bno) {
         Banner banner = bannerRepository.findById(bno).get();
 
         // 활성화 -> 비활성화
-        if(banner.getActivation() == 1) {
+        if (banner.getActivation() == 1) {
             banner.setActivation(0);
 
             // 비활성화 -> 활성화
-        } else if(banner.getActivation() == 0){
+        } else if (banner.getActivation() == 0) {
             banner.setActivation(1);
         }
 
@@ -365,11 +392,11 @@ public class AdminService {
     // 관리자 상품 등록 - DB insert
     @Transient
     public ProductDTO insertProduct(String optionDTOListJson,
-                                 ProductDTO productDTO,
-                                 MultipartFile thumb190,
-                                 MultipartFile thumb230,
-                                 MultipartFile thumb456,
-                                 MultipartFile detail860) {
+                                    ProductDTO productDTO,
+                                    MultipartFile thumb190,
+                                    MultipartFile thumb230,
+                                    MultipartFile thumb456,
+                                    MultipartFile detail860) {
 
         log.info("관리자 상품 등록 service1 productDTO : " + productDTO.toString());
         log.info("관리자 상품 등록 service2 thumb190 : " + thumb190);
@@ -506,19 +533,21 @@ public class AdminService {
         }
         return modelMapper.map(saveProduct, ProductDTO.class);
     }
+
     // 관리자 상품 관리 - 등록한 상품 출력
-    public ProductDTO prodView(int prodNo){
+    public ProductDTO prodView(int prodNo) {
         return modelMapper.map(productRepository.findById(prodNo), ProductDTO.class);
     }
+
     // 관리자 상품 관리 - 등록한 의류 상품 옵션 추가
-    public ResponseEntity<?> colorOptionAdd(int prodCode, List<ColorDTO> colorDTOList){
+    public ResponseEntity<?> colorOptionAdd(int prodCode, List<ColorDTO> colorDTOList) {
         log.info("상품 의류 옵션 추가 Serv 1 : " + prodCode);
         log.info("상품 의류 옵션 추가 Serv 2 : " + colorDTOList);
 
         // 등록된 상품 조회
         Product savedProduct = productRepository.findProductByProdCode(prodCode);
 
-        for(ColorDTO option : colorDTOList ) {
+        for (ColorDTO option : colorDTOList) {
 
             ProductDTO productDTO = modelMapper.map(savedProduct, ProductDTO.class);
             productDTO.setProdNo(0);
@@ -540,46 +569,74 @@ public class AdminService {
         }
         return ResponseEntity.ok().body(savedProduct);
     }
+
     // 관리자 상품 관리 - 등록한 상품 커스텀 옵션 추가
     public ResponseEntity<?> optionAdd(List<OptionDTO> optionDTOS) {
         log.info("상품 의류 옵션 추가 Serv 1 : " + optionDTOS);
 
         // 옵션 리스트 insert
-        for(OptionDTO  optionDTO : optionDTOS) {
+        for (OptionDTO optionDTO : optionDTOS) {
             Option option = modelMapper.map(optionDTO, Option.class);
             log.info("상품 의류 옵션 추가 Serv 2 : " + option);
             optionRepository.save(option);
         }
         return ResponseEntity.ok().body("option insert");
     }
-    // 관리자 게시판관리 - 기본 목록 출력
-    public AdminBoardPageResponseDTO findBoardByGroup(AdminBoardPageRequestDTO adminBoardPageRequestDTO){
-        String group = adminBoardPageRequestDTO.getGroup();
-        Pageable pageable = adminBoardPageRequestDTO.getPageable("bno");
-        log.info("게시판관리 - 목록 Serv 1 : " + group);
 
-        // DB 조회
-        Page<Tuple> boardEntities = boardRepository.selectBoardsByGroup(adminBoardPageRequestDTO, pageable, group);
-        log.info("게시판관리 - 목록 Serv 2 : "+ boardEntities);
+    // 관리자 게시판관리 - 기본 목록 출력
+    public AdminBoardPageResponseDTO findBoardByGroup(String cate, AdminBoardPageRequestDTO adminBoardPageRequestDTO) {
+        String group = adminBoardPageRequestDTO.getGroup();
+        String keyword = adminBoardPageRequestDTO.getKeyword();
+        Pageable pageable = adminBoardPageRequestDTO.getPageable("bno");
+        log.info("게시판관리 - 목록 Serv 1 : " + adminBoardPageRequestDTO);
+        log.info("게시판관리 - 목록 Serv 2 cate : " + cate);
+
+        Page<Tuple> boardEntities = null;
+
+        // 전체 조회
+        if ((keyword == null || "".equals(keyword)) && ("".equals(cate) || "all".equals(cate))){
+            // DB 조회
+            boardEntities = boardRepository.selectBoardsByGroup(adminBoardPageRequestDTO, pageable, group);
+            log.info("게시판관리 - 목록 Serv 3 전체 조회 : " + boardEntities);
+
+        // type이 cate인 검색
+        } else if ((keyword == null || "".equals(keyword)) && !"all".equals(cate)) {
+            // DB 조회
+            boardEntities = boardRepository.searchBoardsByCate(adminBoardPageRequestDTO, pageable, group, cate);
+            log.info("게시판관리 - 목록 Serv 4 cate인 검색 : " + boardEntities);
+
+        // 키워드로 검색
+        } else if (keyword != null) {
+            // DB 조회
+            boardEntities = boardRepository.searchBoardsByGroup(adminBoardPageRequestDTO, pageable, group);
+            log.info("게시판관리 - 목록 Serv 5 키워드로 검색 : " + boardEntities);
+        }
+
 
         // Page<Tuple>을 List<BoardDTO>로 변환
         List<BoardDTO> dtoList = boardEntities.getContent().stream()
-                .map(tuple ->{
-                    log.info("tuple : "+ tuple);
+                .map(tuple -> {
+                    log.info("tuple : " + tuple);
                     // Tuple -> Board 테이블 칼럼
                     BoardEntity boardEntity = tuple.get(0, BoardEntity.class);
                     // Tuple -> Join한 typeName 칼럼
                     String typeName = tuple.get(1, String.class);
+                    // Tuple -> Join한 cateName 칼럼
+                    String cateName = tuple.get(2, String.class);
+                    // Tuple -> Join한 cateName 칼럼
+                    String nick = tuple.get(3, String.class);
                     // Entity -> DTO
                     BoardDTO boardDTO = modelMapper.map(boardEntity, BoardDTO.class);
                     boardDTO.setTypeName(typeName);
+                    boardDTO.setCateName(cateName);
+                    boardDTO.setNick(nick);
 
-                    log.info("게시판관리 - 목록 Serv 3 : "+ boardDTO);
+                    log.info("게시판관리 - 목록 Serv 3 : " + boardDTO);
 
                     return boardDTO;
                 })
                 .toList();
-        log.info("게시판관리 - 목록 Serv 4 : "+ dtoList);
+        log.info("게시판관리 - 목록 Serv 4 : " + dtoList);
 
         // total 값
         int total = (int) boardEntities.getTotalElements();
@@ -591,8 +648,9 @@ public class AdminService {
                 .total(total)
                 .build();
     }
+
     // 관리자 게시판 관리 - 게시글 등록 카테고리 조회
-    public List<BoardCateDTO> findBoardCate(){
+    public List<BoardCateDTO> findBoardCate() {
 
         List<BoardCateEntity> boardCates = boardCateRepository.findAll();
         // 조회된 Entity List -> DTO List
@@ -600,8 +658,9 @@ public class AdminService {
                 .map(cate -> modelMapper.map(cate, BoardCateDTO.class))
                 .collect(Collectors.toList());
     }
+
     // 관리자 게시판 관리 - 게시글 등록 type(말머리) 조회
-    public ResponseEntity<?> findBoardType(String cate){
+    public ResponseEntity<?> findBoardType(String cate) {
 
         List<BoardTypeEntity> boardTypes = typeRepository.findByCate(cate);
         // 조회된 Entity List -> DTO List
@@ -611,8 +670,9 @@ public class AdminService {
 
         return ResponseEntity.ok().body(typeList);
     }
+
     // 관리자 게시판 관리 - 게시글 등록
-    public void adminBoardWrite(BoardDTO boardDTO){
+    public void adminBoardWrite(BoardDTO boardDTO) {
         log.info("게시글 등록 Cont 1 : " + boardDTO);
         BoardEntity boardEntity = modelMapper.map(boardDTO, BoardEntity.class);
         boardRepository.save(boardEntity);
@@ -620,23 +680,25 @@ public class AdminService {
         // file 등록 구현되면 할 것
 
     }
+
     // 관리자 게시판 관리 - 게시글 삭제
-    public ResponseEntity<?> boardDelete(int bno){
+    public ResponseEntity<?> boardDelete(int bno) {
         log.info("관리자 게시글 삭제 Serv 1 : " + bno);
 
         Optional<BoardEntity> boardEntity = boardRepository.findById(bno);
         log.info("관리자 게시글 삭제 Serv 2 : " + bno);
         // 게시글 아직 있으면
-        if(boardEntity.isPresent()){
+        if (boardEntity.isPresent()) {
             // 게시글 삭제
             boardRepository.deleteById(bno);
             return ResponseEntity.ok().body(boardEntity);
-        }else{
+        } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("not found");
         }
     }
+
     // 관리자 게시판 보기
-    public BoardDTO selectBoard(int bno){
+    public BoardDTO selectBoard(int bno) {
         log.info("관리자 게시글 보기 Serv 1 : " + bno);
         // DB 조회
         Optional<BoardEntity> optEntity = boardRepository.findById(bno);

@@ -1,4 +1,4 @@
-package kr.co.lotteon.service.cs;
+package kr.co.lotteon.service.admin;
 
 import com.querydsl.core.Tuple;
 import kr.co.lotteon.dto.cs.CommentDTO;
@@ -22,6 +22,13 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final ModelMapper modelMapper;
 
+    // 답변 목록
+    public List<CommentDTO> commentList(int bno){
+        List<CommentDTO> comments = commentRepository.findByBno(bno).stream()
+                .map(entity -> modelMapper.map(entity, CommentDTO.class)).toList();
+
+        return comments;
+    }
     // 댓글 작성
     public ResponseEntity<Comment> insertComment(CommentDTO commentDTO){
         // DTO -> Entity

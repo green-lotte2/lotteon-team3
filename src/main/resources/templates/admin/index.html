@@ -10,15 +10,25 @@
                         // 주문 데이터 가져오기
                         const response = await fetch('/lotteon/admin/orderChart');
                         const dataText = await response.text(); // JSON 형식의 문자열을 가져옴
+
+                        let total = 0;
                         let data = [];
 
+                        // json 파싱
                         try {
                             // JSON 형식의 문자열을 JavaScript 객체로 변환
                             data = JSON.parse(dataText);
                             console.log("주문 데이터 : ", data);
+
+                            // total 값 추출
+                            total = data.pop().total;
+                            console.log("Total Orders:", total);
                         } catch (error) {
                             console.error('주문 데이터 변환 오류:', error);
                         }
+                        // 차트 상단에 출력
+                        const ordTotal = document.getElementById('ordTotal');
+                        ordTotal.innerText = total;
 
                         let orderChart = new Chart(ordCt,     {
                             type: 'bar',
@@ -50,15 +60,25 @@
                         // 회원 가입 데이터 가져오기
                         const memResp = await fetch('/lotteon/admin/memberChart');
                         const memDataText = await memResp.text(); // JSON 형식의 문자열을 가져옴
+
+                        let totalMem = 0;
                         let memData = [];
 
                         try {
                             // JSON 형식의 문자열을 JavaScript 객체로 변환
                             memData = JSON.parse(memDataText);
                             console.log("가입 데이터 : ", memData);
+
+                            // total 값 추출
+                            totalMem = memData.pop().total;
+                            console.log("Total Memders:", totalMem);
+
                         } catch (error) {
                             console.error('가입 데이터 변환 오류:', error);
                         }
+                        // 차트 상단에 출력
+                        const memTotal = document.getElementById('memTotal');
+                        memTotal.innerText = totalMem;
 
                         let memChart = new Chart(memCt, {
                             type: 'line',
@@ -100,8 +120,8 @@
                     <table>
                         <tr>
                             <td>
-                                <strong>주문건수(건)</strong>
-                                <span>131</span>
+                                <strong>최근 12개월 주문건수(건)</strong>
+                                <span id="ordTotal"></span>
                             </td>
                         </tr>
                         <tr>
@@ -117,8 +137,8 @@
                     <table>
                         <tr>
                             <td>
-                                <strong>가입건수(건)</strong>
-                                <span>131</span>
+                                <strong>최근 12개월 가입건수(건)</strong>
+                                <span id="memTotal"></span>
                             </td>
                         </tr>
                         <tr>

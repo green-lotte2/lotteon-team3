@@ -1,7 +1,9 @@
 package kr.co.lotteon.controller;
 
+import kr.co.lotteon.dto.admin.BannerDTO;
 import kr.co.lotteon.dto.product.*;
 import kr.co.lotteon.repository.product.Cate1Repository;
+import kr.co.lotteon.service.admin.BannerService;
 import kr.co.lotteon.service.product.CateService;
 import kr.co.lotteon.service.product.ProductService;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,7 @@ import java.util.Map;
 public class ProductController {
 
     private final ProductService productService;
+    private final BannerService bannerService;
     // 상품 카테고리를 불러오기 위한 cateService
     private final CateService cateService;
 
@@ -116,10 +119,16 @@ public class ProductController {
         List<Cate2DTO> cate2DTOS = cateService.getCate2List();
         List<Cate3DTO> cate3DTOS = cateService.getCate3List();
 
+        // 상품 상세보기 배너
+        List<BannerDTO> prodBanners = bannerService.selectBanners("product");
+
         // 카테 리스트 참조
         model.addAttribute("cate1DTOS", cate1DTOS);
         model.addAttribute("cate2DTOS", cate2DTOS);
         model.addAttribute("cate3DTOS", cate3DTOS);
+
+        // 배너 리스트 참조
+        model.addAttribute("prodBanners", prodBanners);
 
         // 옵션 가져오기
         Map<String, List<String>> prodOptions = productService.selectProdOption(productDTO.getProdNo());

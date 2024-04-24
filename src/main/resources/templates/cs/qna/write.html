@@ -38,6 +38,17 @@
         writeForm.submit();
       });
     });
+
+    function handleFileSelect(input) {
+      var files = input.files;
+      var fileCount = files.length;
+
+      if (fileCount > 4) {
+        alert("최대 4개의 이미지 파일만 선택할 수 있습니다.");
+        // 파일 선택 취소
+        input.value = '';
+      }
+    }
   </script>
 </head>
 <section id="cs" layout:fragment="content">
@@ -110,8 +121,8 @@
             <tr>
               <td>파일</td>
               <td>
-                <span>크기 456 x 456, 상품 상세에 출력될 이미지 입니다. </span>
-                <input style="margin-top: 12px;" type="file" name="files" multiple="multiple" pl/>
+                <span>크기 200 x 200, 상품 상세에 출력될 이미지 입니다. </span>
+                <input style="margin-top: 12px;" type="file" name="files" multiple="multiple" onchange="handleFileSelect(this)"/>
               </td>
             </tr>
           </table>

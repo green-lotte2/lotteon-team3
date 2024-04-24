@@ -22,4 +22,7 @@ public interface BoardRepository extends JpaRepository<BoardEntity, Integer>, Bo
 
     // 인덱스 - notice, qna 리스트 출력
     public List<BoardEntity> findByGroupOrderByRdateDescBnoDesc(String group, Pageable pageable);
+
+    // 글 삭제
+    public void deleteBoardsByParent(int bno);
 }

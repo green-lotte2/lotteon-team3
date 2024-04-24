@@ -14,4 +14,8 @@ public interface BoardRepositoryCustom {
 
     public Page<Tuple> selectBoardsByGroup(AdminBoardPageRequestDTO adminBoardPageRequestDTO, Pageable pageable, String group);
 
+    public Page<Tuple> searchBoardsByGroup(AdminBoardPageRequestDTO pageRequestDTO, Pageable pageable, String group);
+
+    public Page<Tuple> searchBoardsByCate(AdminBoardPageRequestDTO pageRequestDTO, Pageable pageable, String group, String cate);
+
 }

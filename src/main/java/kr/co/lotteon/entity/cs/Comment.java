@@ -24,6 +24,8 @@ public class Comment {
     private int bno;
     private String uid;
 
+    // 예약어와 같은 이름이라 어노테이션
+    @Column(name = "\"group\"")
     private String group;
     private String cate;
     private String content;

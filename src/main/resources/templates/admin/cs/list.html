@@ -3,6 +3,7 @@
       layout:decorate="~{/layout/adminLayout}">
 <section id="cs" layout:fragment = "content">
     <script>
+        // 게시글 삭제
         async function deleteBoard(bno){
             console.log("bno : " + bno);
             if(confirm('게시글을 삭제 하시겠습니까?')){
@@ -13,6 +14,28 @@
                 }
             }
         }
+        let optionCheck = true;
+
+        // 검색 타입을 cate로 선택 시 cate 조회
+        async function findTypeCate(type){
+            const cateSelect = document.getElementById('cateSelect');
+            const keywordInput = document.getElementById('keywordInput');
+
+            // 카테고리 선택일 경우
+            if(type == "cate"){
+                // cate <select> 태그 공개, keyword <input> 숨김
+                cateSelect.style.display = 'inline-block';
+                keywordInput.style.display = 'none';
+            }else {
+                cateSelect.style.display = 'none';
+                keywordInput.style.display = 'inline-block';
+            }
+        }
+        // 폼 전송
+        function formSubmit(){
+            const searchForm = document.getElementById('searchForm');
+            searchForm.submit();
+        }
     </script>
             <article id="adminCsList">
                 <nav>
@@ -22,10 +45,34 @@
                         <span th:case="faq" style="font-size: 26px; font-weight: bold;">자주묻는질문</span>
                     </span>
                 </nav>
+                <!-- 검색창 -->
+                <form th:action="@{/admin/cs/list}" method="get" id="searchForm">
+                    <input type="hidden" name="group" th:value="${group}">
+                    <select name="type" id="q_searchKeyTy" class="select" onchange="findTypeCate(this.value)">
+                        <option value="title">제목</option>
+                        <option value="content">내용</option>
+                        <option value="title_content">제목+내용</option>
+                        <option value="nick">등록자명</option>
+                        <option value="cate">카테고리</option>
+                    </select>
+                    <select name="cate" onchange="formSubmit()" style="display: none" id="cateSelect">
+                        <option value="all">전체</option>
+                        <th:block th:each="cate : ${cates}">
+                            <option th:value="${cate.cate}">[[${cate.cateName}]]</option>
+                        </th:block>
+                    </select>
+                    <input type="text" name="keyword" placeholder="검색어를 입력하세요" id="keywordInput"/>
+                </form>
+                <!-- 게시글 없을 때 -->
+                <th:block th:if="${adminBoardPageResponseDTO.dtoList.isEmpty()}">
+                    <div>
+                        <img th:src="@{/admin/images/nodata.png}" style="width: 900px; height: 460px">
+                    </div>
+                </th:block>
                 <!-- 게시글 목록 -->
                 <table>
                     <tr th:each="article : ${adminBoardPageResponseDTO.dtoList}" >
-                        <td><span style="font-size: 16px;">[ [[${article.typeName}]] ]</span></td>
+                        <td><span style="font-size: 16px;">[ [[${article.cateName}]] ]</span></td>
                         <td>
                             <a th:if="${adminBoardPageResponseDTO.keyword == null}" th:href="@{/admin/cs/view(group=${adminBoardPageResponseDTO.group}, bno=${article.bno}, pg=${adminBoardPageResponseDTO.pg})}" > [[${article.title}]]</a>
                             <a th:if="${adminBoardPageResponseDTO.keyword != null}" th:href="@{/admin/cs/view(group=${adminBoardPageResponseDTO.group}, type=${adminBoardPageResponseDTO.type}, keyword=${adminBoardPageResponseDTO.keyword},bno=${article.bno}, pg=${adminBoardPageResponseDTO.pg})}" > [[${article.title}]]</a>

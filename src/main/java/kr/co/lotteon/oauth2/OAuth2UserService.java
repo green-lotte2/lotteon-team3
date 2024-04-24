@@ -52,9 +52,9 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
 
         int level=1;
         String regip=memberInfo.getRegip(request);
-
-        //email로 수정할필요
-        Optional<Member> findMember = memberRepository.findById(uid);
+        
+        // 소셜 로그인시 이메일 중복되는 오류 수정
+        Optional<Member> findMember = memberRepository.findByEmail(email);
         Member member=null;
 
         if(findMember.isEmpty()){
