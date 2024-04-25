@@ -22,6 +22,8 @@ public class BoardEntity {
     private int bno;
     private String uid;
     private int parent;
+
+    @Column(name = "prodNo", nullable = true)
     private Integer prodNo;
     
     @Column(name = "\"group\"")
