@@ -80,10 +80,12 @@ header {
   width: 900px;
   height: auto;
   margin: 0 auto;
+  border-bottom: 2px solid #ef2a23;
 }
 #member > .login > img[alt="banner"] {
   display: block;
   margin: 36px auto;
+
 }
 
 #member > .login > nav {
@@ -98,9 +100,10 @@ header {
 #member > .login > form {
   position: relative;
   width: 100%;
-  height: 300px;
+  height: 450px; /* 전체 폼 높이수정 */
   margin-top: 10px;
-  border-bottom: 1px solid #b3b3b3;
+  margin-left: 250px;
+
   padding-top: 60px;
   padding-left: 10px;
   box-sizing: border-box;
@@ -122,7 +125,7 @@ header {
   padding: 2px;
 }
 #member > .login > form > table tr > td:nth-child(1) {
-  font-size: 14px;  
+  font-size: 14px;
 }
 
 #member > .login > form > table div {
@@ -134,7 +137,7 @@ header {
   height: 31px;
   padding: 0 13px;
   border: 0;
-  font-size: 12px;  
+  font-size: 12px;
   color: #0075d4;
   border: 1px solid #e3e3e3;
   border-radius: 4px;
@@ -154,7 +157,6 @@ header {
   clear: left;
   display: block;
   margin-top: 100px;
-  margin-left: 86px;
 }
 #member > .login > form > span a {
   display: inline-block;
@@ -162,9 +164,56 @@ header {
   margin: 0;
   padding: 0 6px;
   color: #676767;
-  border-left: 1px solid #999;  
+  border-left: 1px solid #999;
+}
+/* 소셜 로그인 */
+#member > .login > form > .social{
+  margin-top: 50px;
+  margin-left: 35px;
+}
+#member > .login > form > .social > a{
+  display: inline-block;
+  text-align: center; /* 텍스트 가운데 정렬 */
+  text-decoration: none; /* 링크 밑줄 제거 */
 }
 
+#member > .login > form > .social > a > span {
+  display: block;
+  margin-top: 5px; /* 이미지와 간격 조정 */
+}
+
+#member > .login > form > .social > a > img{
+  display: inline-block;
+  margin: 0 20px;
+  padding-top: 10px;
+  width: 50px;
+  font-size: 15px;
+  letter-spacing: -.27px;
+  color: #000;
+  background-repeat: no-repeat;
+  background-position: top;
+  background-size: 50px 50px;
+  white-space: nowrap;
+  vertical-align: middle; /* 이미지를 수직으로 중앙 정렬 */
+}
+
+#member > .login > form > .social> .socialLogin{
+  margin-bottom: 23px;
+  font-size: 16px;
+  text-align: center;
+
+
+}
+
+#member > .login > form > .social> .socialLogin > .google{
+  display: inline-block;
+
+}
+
+#member > .login > form > .social> .socialLogin > .google  img{
+  vertical-align: middle; /* 이미지를 수직으로 중앙 정렬 */
+
+}
 
 #member > .login > form > span a:last-child {
 }
@@ -178,7 +227,7 @@ header {
 #member > .login > form > span > label {
   left: 64px;
   bottom: -20px;
-  color: #676767;  
+  color: #676767;
   margin-right: 2px;
 }
 
