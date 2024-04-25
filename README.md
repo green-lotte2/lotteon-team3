@@ -1,6 +1,14 @@
 # lotteon-team3
 3조 LotteON 쇼핑몰 프로젝트
 
+<h3> 버전 이력</h3>
+<hr>
+0.0.8 - SNAPSHOT
+<ul>
+  <li>ㅇㅇ</li>
+  <li>ㅇㅇ</li>
+</ul>
+
 ### 메서드 기능설명 주석처리 하기
 
 
