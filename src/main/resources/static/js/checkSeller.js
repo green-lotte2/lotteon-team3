@@ -634,10 +634,6 @@ window.onload = function () {
             alert('전화번호가 유효하지 않습니다.');
             return false;
         }
-        if(!isFaxOk){
-            alert('팩스번호가 유효하지 않습니다.');
-            return false;
-        }
 
         if (!isEmailOk) {
             alert('이메일이 유효하지 않습니다.');
