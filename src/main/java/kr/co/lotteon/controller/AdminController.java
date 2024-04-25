@@ -161,15 +161,24 @@ public class AdminController {
     @GetMapping("/admin/product/modify")
     public String modify(Model model, int prodNo){
 
-        // Cate1 전체 조회
-        List<Cate1DTO> cate1List = adminService.findAllCate1();
-        log.info("관리자 상품 수정 Cont : "+cate1List);
-
         // 상품 상세 조회
         ProductDTO productDTO = productService.selectByprodNo(prodNo);
 
+        // Cate1 전체 조회
+        List<Cate1DTO> cate1List = adminService.findAllCate1();
+        log.info("관리자 상품 수정 Cont 1 : "+cate1List);
+
+        // Cate2 조회
+        List<Cate2DTO> cate2List = (List<Cate2DTO>) adminService.findAllCate2ByCate1(productDTO.getCate1()).getBody();
+        log.info("관리자 상품 수정 Cont 2 : "+cate2List);
+        // Cate3 조회
+        List<Cate3DTO> cate3List = (List<Cate3DTO>) adminService.findAllCate3ByCate2(productDTO.getCate2()).getBody();
+        log.info("관리자 상품 수정 Cont 3 : "+cate3List);
+
         model.addAttribute("productDTO", productDTO);
         model.addAttribute("cate1List", cate1List);
+        model.addAttribute("cate2List", cate2List);
+        model.addAttribute("cate3List", cate3List);
         return "/admin/product/modify";
     }
 

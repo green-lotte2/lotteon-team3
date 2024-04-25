@@ -165,7 +165,9 @@
                                     <td>2차 분류</td>
                                     <td>
                                         <select name="cate2" id="cate2" onchange="prodOption(this.value)">
-                                            <option th:value="${productDTO.cate2}">2차 분류</option>
+                                            <th:block th:each="cate2, loop :${cate2List}">
+                                                <option th:value="${cate2.cate2}" th:selected="${cate2.cate2 == productDTO.cate2}">[[${cate2.c2Name}]]</option>
+                                            </th:block>
                                         </select>
                                     </td>
                                 </tr>
@@ -173,7 +175,9 @@
                                     <td>3차 분류</td>
                                     <td>
                                         <select name="cate3" id="cate3">
-                                            <option th:value="${productDTO.cate3}">3차 분류</option>
+                                            <th:block th:each="cate3, loop :${cate3List}">
+                                                <option th:value="${cate3.cate3}" th:selected="${cate3.cate3 == productDTO.cate3}">[[${cate3.c3Name}]]</option>
+                                            </th:block>
                                         </select>
                                     </td>
                                 </tr>
@@ -181,12 +185,12 @@
                         </section>
 
                         <!-- 기본정보 -->
-                        <section>
+                        <section class="productInfo">
                             <h4>기본정보</h4>
                             <p>
                                 기본정보는 반드시 입력해야 합니다.
                             </p>
-                            <table>
+                            <table class="productTable">
                                 <tr>
                                     <td>상품명</td>
                                     <td><input type="text" name="prodName" th:value="${productDTO.prodName}"/></td>
@@ -237,29 +241,73 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>상품 썸네일</td>
+                                    <td>상품 목록 썸네일</td>
                                     <td>
                                         <span>크기 190 x 190, 상품 목록에 출력될 이미지 입니다. </span>
-                                        <input type="file" name="thumb190"/>
-
+                                        <!-- 파일첨부 -->
+                                        <div class="filebox">
+                                            <label for="thumb190"> 파일선택</label>
+                                            <input class="form-control" type="file" name="thumb190" id="thumb190" multiple>
+                                        </div>
+                                        <p th:style="'display: inline-block; position: relative; margin-right: 10px;'">
+                                            <img th:src="@{'/prodImg/'+${productDTO.thumb1}}"
+                                                 class="thumb" alt="상품이미지" style="width: 200px; height: 200px;display: block;"/>
+                                            <button type="button" onclick="hideImage(this)" style="position: absolute; top: 0; left: 0; font-size: 20px;">X</button>
+                                        </p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>상품 메인 썸네일</td>
+                                    <td>
                                         <span>크기 230 x 230, 상품 메인에 출력될 이미지 입니다. </span>
-                                        <input type="file" name="thumb230"/>
-
+                                        <!-- 파일첨부 -->
+                                        <div class="filebox">
+                                            <label for="thumb230"> 파일선택</label>
+                                            <input class="form-control" type="file" name="thumb230" id="thumb230" multiple>
+                                        </div>
+                                        <p th:style="'display: inline-block; position: relative; margin-right: 10px;'">
+                                            <img th:src="@{'/prodImg/'+${productDTO.thumb2}}"
+                                                 class="thumb" alt="상품이미지" style="width: 200px; height: 200px; display: block;"/>
+                                            <button type="button" onclick="hideImage(this)" style="position: absolute; top: 0; left: 0; font-size: 20px;">X</button>
+                                        </p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>상품 상세 썸네일</td>
+                                    <td>
                                         <span>크기 456 x 456, 상품 상세에 출력될 이미지 입니다. </span>
-                                        <input type="file" name="thumb456"/>
+                                        <!-- 파일첨부 -->
+                                        <div class="filebox">
+                                            <label for="thumb456"> 파일선택</label>
+                                            <input class="form-control" type="file" name="thumb456" id="thumb456" multiple>
+                                        </div>
+                                        <p th:style="'display: inline-block; position: relative; margin-right: 10px;'">
+                                            <img th:src="@{'/prodImg/'+${productDTO.thumb3}}"
+                                                 class="thumb" alt="상품이미지" style="width: 200px; height: 200px; display: block;"/>
+                                            <button type="button" onclick="hideImage(this)" style="position: absolute; top: 0; left: 0; font-size: 20px;">X</button>
+                                        </p>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>상세 상품정보</td>
                                     <td>
                                         <span>크기 가로 860px 높이 제약없음, 크기 최대 1MB, 상세페이지 상품정보에 출력될 이미지 입니다.</span>
-                                        <input type="file" name="detail860"/>
+                                        <!-- 파일첨부 -->
+                                        <div class="filebox">
+                                            <label for="detail860"> 파일선택</label>
+                                            <input class="form-control" type="file" name="detail860" id="detail860" multiple>
+                                        </div>
+                                        <p th:style="'display: inline-block; position: relative; margin-right: 10px;'">
+                                            <img th:src="@{'/prodImg/'+${productDTO.detail}}"
+                                                 class="thumb" alt="상품이미지" style="width: 200px; height: auto; display: block;"/>
+                                            <button type="button" onclick="hideImage(this)" style="position: absolute; top: 0; left: 0; font-size: 20px;">X</button>
+                                        </p>
                                     </td>
                                 </tr>
                             </table>                                
                         </section>
                         <!-- 상품 옵션 추가 -->
-                        <div id="eOptionInputPanel" class="addForm _self_option_wrap" style="display: none;">
+                        <div th:if="${productDTO.color != null}" id="eOptionInputPanel" class="addForm _self_option_wrap">
                             <h4>옵션</h4>
                             <p>
                                 반드시 모든 옵션 품목추가를 하셔야 합니다. 등록된 상품은 같은 상품코드가 부여됩니다.
