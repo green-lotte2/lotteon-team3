@@ -234,6 +234,7 @@ public class AdminController {
     // 관리자 상품 수정 - DB insert
     @RequestMapping(value = "/admin/product/modify", produces = "application/json;charset=UTF-8", method = RequestMethod.POST)
     public String modifyProduct(ProductDTO productDTO,
+                                  @RequestParam("prodNoList") String prodNoList,
                                   @RequestParam("optionDTOList") String optionDTOListJson,
                                   @RequestParam("thumb190") MultipartFile thumb190,
                                   @RequestParam("thumb230") MultipartFile thumb230,
@@ -241,14 +242,20 @@ public class AdminController {
                                   @RequestParam("detail860") MultipartFile detail860){
         log.info("관리자 상품 수정 Cont 1 " + optionDTOListJson);
 
+        log.info("관리자 상품 수정 Cont prodNoList " + prodNoList);
         log.info("관리자 상품 수정 Cont " + productDTO);
 
+        // 수정 정보 저장
         ProductDTO saveProd = adminService.insertProduct(optionDTOListJson, productDTO, thumb190, thumb230, thumb456, detail860);
         int prodNo = saveProd.getProdNo();
+
+        // 삭제한 옵션에 해당하는 상품 삭제
+        adminService.prodArrDelete(prodNoList);
 
         return "redirect:/admin/product/view?prodNo="+prodNo;
     }
 
+    // 관리자 상품 삭제
     // 등록된 상품 보기
     @GetMapping("/admin/product/view")
     public String prodView(Model model, @RequestParam("prodNo") int prodNo){

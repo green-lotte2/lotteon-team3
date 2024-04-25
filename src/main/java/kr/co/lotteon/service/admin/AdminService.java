@@ -282,7 +282,7 @@ public class AdminService {
 
     // 관리자 배너 삭제
     public ResponseEntity<?> bannerDelete(int[] bnoArray) {
-        log.info("관리자 상품 삭제 Serv 1 : " + Arrays.toString(bnoArray));
+        log.info("관리자 배너 삭제 Serv 1 : " + Arrays.toString(bnoArray));
 
         for (int bno : bnoArray) {
             // 상품 배너 삭제 반복
@@ -379,6 +379,27 @@ public class AdminService {
                 .total(total)
                 .build();
 
+    }
+
+    // 관리자 상품 삭제 - json (상품 수정)
+    public void prodArrDelete(String prodNoList) {
+
+        // JON 문자열 파싱 -> int 배열로 변환
+        ObjectMapper objectMapper = new ObjectMapper();
+        Integer[] prodNoArray = null;
+        try {
+            prodNoArray = objectMapper.readValue(prodNoList, Integer[].class);
+            log.info("관리자 상품 삭제 1 - prodNoArray : " + prodNoArray.toString());
+
+            for (int prodNo : prodNoArray) {
+                // 상품 삭제 반복
+                log.info("관리자 상품 삭제 2 - prodNo : " + prodNo);
+                productRepository.deleteById(prodNo);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     // 관리자 상품 삭제
@@ -537,6 +558,149 @@ public class AdminService {
         return modelMapper.map(saveProduct, ProductDTO.class);
     }
 
+    // 관리자 상품 수정 - DB insert
+    @Transient
+    public ProductDTO modifyProduct(String optionDTOListJson,
+                                    ProductDTO productDTO,
+                                    MultipartFile thumb190,
+                                    MultipartFile thumb230,
+                                    MultipartFile thumb456,
+                                    MultipartFile detail860) {
+
+        log.info("관리자 상품 수정 service1 productDTO : " + productDTO.toString());
+        log.info("관리자 상품 수정 service2 thumb190 : " + thumb190);
+        log.info("관리자 상품 수정 service3 thumb230 : " + thumb230);
+        log.info("관리자 상품 수정 service4 thumb456 : " + thumb456);
+        log.info("관리자 상품 수정 service5 detail860 : " + detail860);
+        log.info("관리자 상품 수정 service6 json : " + optionDTOListJson);
+
+        // 이미지 파일 등록 : 해당 디렉토리 없을 경우 자동 생성
+        File file = new File(imgUploadPath);
+        if (!file.exists()) {
+            file.mkdir();
+        }
+        String path = file.getAbsolutePath();
+
+        // 원본 파일 폴더 자동 생성
+        String orgPath = path + "/orgImage";
+        File orgFile = new File(orgPath);
+        if (!orgFile.exists()) {
+            orgFile.mkdir();
+        }
+        // 저장
+        Product saveProduct = new Product();
+
+
+
+
+
+
+
+        // 기존 이미지를 삭제 했다면
+        if (productDTO.getThumb1() == null) {
+            // 리사이징 함수 호출 - 새 이미지 저장
+            String sName190 = imgResizing(thumb190, orgPath, path, 190, 190);
+            // 파일 이름 DTO에 저장
+            productDTO.setThumb1(sName190);
+        }
+        if (productDTO.getThumb2() == null) {
+            String sName230 = imgResizing(thumb230, orgPath, path, 230, 230);
+            productDTO.setThumb2(sName230);
+        }
+        if (productDTO.getThumb3() == null) {
+            String sName456 = imgResizing(thumb456, orgPath, path, 456, 456);
+            productDTO.setThumb3(sName456);
+        }
+        if (productDTO.getDetail() == null) {
+            String sName860 = imgResizing(detail860, orgPath, path, 860);
+            productDTO.setDetail(sName860);
+        }
+
+        // update 마이 바티스 써야함
+       /* <update id="updateProductByProdCode" parameterType="map">
+                UPDATE product
+        SET cate1 = #{cate1},
+        cate2 = #{cate2},
+        cate3 = #{cate3},
+        delivery = #{delivery},
+        discount = #{discount},
+        hit = #{hit},
+        point = #{point},
+        price = #{price},
+        review = #{review},
+        score = #{score},
+        sold = #{sold},
+        stock = #{stock},
+        amount = #{amount},
+        color = #{color},
+        opStock = #{opStock},
+        colorName = #{colorName},
+        size = #{size},
+        bizType = #{bizType},
+        company = #{company},
+        deleteYn = #{deleteYn},
+        descript = #{descript},
+        detail = #{detail},
+        duty = #{duty},
+        ip = #{ip},
+        origin = #{origin},
+        prodName = #{prodName},
+        rdate = #{rdate},
+        receipt = #{receipt},
+        seller = #{seller},
+        status = #{status},
+        thumb1 = #{thumb1},
+        thumb2 = #{thumb2},
+        thumb3 = #{thumb3}
+        WHERE prodCode = #{prodCode}
+</update>
+*/
+                // JON 문자열 파싱 -> OptionDTO 리스트로 변환
+        ObjectMapper objectMapper = new ObjectMapper();
+        List<ColorDTO> optionDTOList = null;
+        try {
+            ColorDTO[] optionDTOArray = objectMapper.readValue(optionDTOListJson, ColorDTO[].class);
+            optionDTOList = Arrays.asList(optionDTOArray);
+            log.info(optionDTOList.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // option 정보 Entity에 입력 후 DB 저장
+        if (optionDTOList != null) {
+            for (ColorDTO option : optionDTOList) {
+
+                // DTO -> Entity : Entity의 영속성 때문에 매번 새로 생성해야함
+                Product product = modelMapper.map(productDTO, Product.class);
+                log.info("관리자 상품 등록 service8 product : " + product.toString());
+
+                // 옵션 정보 Product Entity에 저장
+
+                log.info("관리자 상품 등록 service9 " + option);
+                product.setColor(option.getColor());
+                product.setColorName(option.getColorName());
+                product.setOpStock(option.getOpStock());
+                product.setSize(option.getSize());
+                log.info("optionDTO List : " + option);
+
+                // 상품 정보 DB 저장
+                saveProduct = productRepository.save(product);
+                log.info("관리자 상품 등록 service10 savedProduct : " + saveProduct.toString());
+            }
+            // option 없는 경우
+        } else {
+            // DTO -> Entity
+            Product product = modelMapper.map(productDTO, Product.class);
+            product.setColor("#FFFFFF");
+            log.info("관리자 상품 등록 service8 product : " + product.toString());
+            // 상품 정보 DB 저장
+            saveProduct = productRepository.save(product);
+            log.info("관리자 상품 등록 service10 savedProduct : " + saveProduct.toString());
+
+        }
+        return modelMapper.map(saveProduct, ProductDTO.class);
+    }
+
     // 관리자 상품 관리 - 등록한 상품 출력
     public ProductDTO prodView(int prodNo) {
         return modelMapper.map(productRepository.findById(prodNo), ProductDTO.class);
@@ -597,18 +761,18 @@ public class AdminService {
         Page<Tuple> boardEntities = null;
 
         // 전체 조회
-        if ((keyword == null || "".equals(keyword)) && ("".equals(cate) || "all".equals(cate))){
+        if ((keyword == null || "".equals(keyword)) && ("".equals(cate) || "all".equals(cate))) {
             // DB 조회
             boardEntities = boardRepository.selectBoardsByGroup(adminBoardPageRequestDTO, pageable, group);
             log.info("게시판관리 - 목록 Serv 3 전체 조회 : " + boardEntities);
 
-        // type이 cate인 검색
+            // type이 cate인 검색
         } else if ((keyword == null || "".equals(keyword)) && !"all".equals(cate)) {
             // DB 조회
             boardEntities = boardRepository.searchBoardsByCate(adminBoardPageRequestDTO, pageable, group, cate);
             log.info("게시판관리 - 목록 Serv 4 cate인 검색 : " + boardEntities);
 
-        // 키워드로 검색
+            // 키워드로 검색
         } else if (keyword != null) {
             // DB 조회
             boardEntities = boardRepository.searchBoardsByGroup(adminBoardPageRequestDTO, pageable, group);
@@ -723,19 +887,19 @@ public class AdminService {
     }
 
     // 관리자 회원 목록 (현황) 조회
-    public AdminMemberPageResponseDTO selectMembers(AdminMemberPageRequestDTO adminMemberPageRequestDTO){
+    public AdminMemberPageResponseDTO selectMembers(AdminMemberPageRequestDTO adminMemberPageRequestDTO) {
         log.info("관리자 회원 목록 Serv 1  ");
         Pageable pageable = adminMemberPageRequestDTO.getPageable("no");
 
         Page<Member> members = null;
         // 회원 기본 조회
-        if(adminMemberPageRequestDTO.getKeyword() == null) {
+        if (adminMemberPageRequestDTO.getKeyword() == null) {
             // DB 조회
             members = memberRepository.selectMemberList(adminMemberPageRequestDTO, pageable);
             log.info("관리자 회원 기본 목록 Serv 2 : " + members);
 
             // 회원 검색 조회
-        }else {
+        } else {
             // DB 조회
             members = memberRepository.searchMemberList(adminMemberPageRequestDTO, pageable);
             log.info("관리자 회원 검색 목록 Serv 2 : " + members);
@@ -757,4 +921,55 @@ public class AdminService {
                 .total(total)
                 .build();
     }
+
+    // 이미지 리사이징 함수 - width, height
+    public String imgResizing(MultipartFile file, String orgPath, String path, int targetWidth, int targetHeight) {
+        String oName = file.getOriginalFilename();
+        String ext = oName.substring(oName.lastIndexOf("."));
+
+        String sName = UUID.randomUUID().toString() + ext;
+
+        try {
+            // 원본 파일 저장
+            file.transferTo(new File(orgPath, sName));
+
+            // 리사이징
+            Thumbnails.of(new File(orgPath, sName))
+                    .size(targetWidth, targetHeight)
+                    .toFile(new File(path, sName));
+
+            log.info("이미지 리사이징 완료: " + sName);
+
+            return sName;
+        } catch (IOException e) {
+            log.error("이미지 리사이징 실패: " + e.getMessage());
+            return null;
+        }
+    }
+
+    // 이미지 리사이징 함수 - width만
+    public String imgResizing(MultipartFile file, String orgPath, String path, int targetWidth) {
+        String oName = file.getOriginalFilename();
+        String ext = oName.substring(oName.lastIndexOf("."));
+
+        String sName = UUID.randomUUID().toString() + ext;
+
+        try {
+            // 원본 파일 저장
+            file.transferTo(new File(orgPath, sName));
+
+            // 리사이징
+            Thumbnails.of(new File(orgPath, sName))
+                    .width(targetWidth)
+                    .toFile(new File(path, sName));
+
+            log.info("이미지 리사이징 완료: " + sName);
+
+            return sName;
+        } catch (IOException e) {
+            log.error("이미지 리사이징 실패: " + e.getMessage());
+            return null;
+        }
+    }
+
 }
