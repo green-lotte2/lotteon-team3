@@ -13,6 +13,7 @@ import kr.co.lotteon.entity.member.Terms;
 import kr.co.lotteon.security.MyUserDetails;
 import kr.co.lotteon.service.admin.AdminService;
 import kr.co.lotteon.service.admin.CommentService;
+import kr.co.lotteon.service.product.ProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -34,6 +35,8 @@ public class AdminController {
 
     private final AdminService adminService;
     private final CommentService commentService;
+    private final ProductService productService;
+
     private final ObjectMapper objectMapper;
 
 
@@ -154,6 +157,31 @@ public class AdminController {
         model.addAttribute("cate1List", cate1List);
         return "/admin/product/register";
     }
+    // product modify (관리자 상품 수정) 페이지 매핑 : 상품 코드로 조회
+    @GetMapping("/admin/product/modify")
+    public String modify(Model model, int prodCode){
+
+        // 상품 상세 조회
+        List<ProductDTO> products = productService.selectByprodCode(prodCode);
+        log.info("관리자 상품 수정 Cont 1 : "+products);
+
+        // Cate1 전체 조회
+        List<Cate1DTO> cate1List = adminService.findAllCate1();
+        log.info("관리자 상품 수정 Cont 2 : "+cate1List);
+
+        // Cate2 조회
+        List<Cate2DTO> cate2List = (List<Cate2DTO>) adminService.findAllCate2ByCate1(products.get(0).getCate1()).getBody();
+        log.info("관리자 상품 수정 Cont 3 : "+cate2List);
+        // Cate3 조회
+        List<Cate3DTO> cate3List = (List<Cate3DTO>) adminService.findAllCate3ByCate2(products.get(0).getCate2()).getBody();
+        log.info("관리자 상품 수정 Cont 4 : "+cate3List);
+
+        model.addAttribute("products", products);
+        model.addAttribute("cate1List", cate1List);
+        model.addAttribute("cate2List", cate2List);
+        model.addAttribute("cate3List", cate3List);
+        return "/admin/product/modify";
+    }
 
     // 관리자 상품 목록 검색 - cate1을 type으로 선택 시 cate1 조회
     @GetMapping("/admin/findCate1")
@@ -191,16 +219,11 @@ public class AdminController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         // 로그인 중일 때 해당 사용자 id를 seller에 입력
-        if (authentication != null && authentication.isAuthenticated() && authentication.getPrincipal() instanceof MyUserDetails) {
             MyUserDetails userDetails = (MyUserDetails) authentication.getPrincipal();
             String sellerId = userDetails.getMember().getName();
             productDTO.setSeller(sellerId);
-            log.info("관리자 상품 등록 Cont 1 " + productDTO);
-            // 로그인 상태가 아닐 때 == 개발 중 (배포시 삭제 할 것)
-        } else if(authentication == null) {
-            productDTO.setSeller("developer");
-            log.info("관리자 상품 등록 Cont 2 " + productDTO);
-        }
+            log.info("관리자 상품 등록 Cont 1 sellerId : " + sellerId);
+
         log.info("관리자 상품 등록 Cont " + productDTO);
 
         ProductDTO saveProd = adminService.insertProduct(optionDTOListJson, productDTO, thumb190, thumb230, thumb456, detail860);
@@ -208,7 +231,31 @@ public class AdminController {
 
         return "redirect:/admin/product/view?prodNo="+prodNo;
     }
+    // 관리자 상품 수정 - DB insert
+    @RequestMapping(value = "/admin/product/modify", produces = "application/json;charset=UTF-8", method = RequestMethod.POST)
+    public String modifyProduct(ProductDTO productDTO,
+                                  @RequestParam("prodNoList") String prodNoList,
+                                  @RequestParam("optionDTOList") String optionDTOListJson,
+                                  @RequestParam("thumb190") MultipartFile thumb190,
+                                  @RequestParam("thumb230") MultipartFile thumb230,
+                                  @RequestParam("thumb456") MultipartFile thumb456,
+                                  @RequestParam("detail860") MultipartFile detail860){
+        log.info("관리자 상품 수정 Cont 1 " + optionDTOListJson);
 
+        log.info("관리자 상품 수정 Cont prodNoList " + prodNoList);
+        log.info("관리자 상품 수정 Cont " + productDTO);
+
+        // 수정 정보 저장
+        ProductDTO saveProd = adminService.insertProduct(optionDTOListJson, productDTO, thumb190, thumb230, thumb456, detail860);
+        int prodNo = saveProd.getProdNo();
+
+        // 삭제한 옵션에 해당하는 상품 삭제
+        adminService.prodArrDelete(prodNoList);
+
+        return "redirect:/admin/product/view?prodNo="+prodNo;
+    }
+
+    // 관리자 상품 삭제
     // 등록된 상품 보기
     @GetMapping("/admin/product/view")
     public String prodView(Model model, @RequestParam("prodNo") int prodNo){
@@ -362,6 +409,13 @@ public class AdminController {
     public ResponseEntity<?> modifyComment(@RequestBody CommentDTO commentDTO){
         log.info("modifyComment : " +commentDTO.toString());
         return commentService.updateComment(commentDTO);
+    }
+    // 관리자 회원 현황 매핑
+    @GetMapping("/admin/member/list")
+    public String memberList(Model model, AdminMemberPageRequestDTO adminMemberPageRequestDTO){
+        AdminMemberPageResponseDTO adminMemberPageResponseDTO = adminService.selectMembers(adminMemberPageRequestDTO);
+        model.addAttribute("pageResponseDTO", adminMemberPageResponseDTO);
+        return "/admin/member/list";
     }
 
 }

@@ -85,9 +85,9 @@ public class CsController {
         model.addAttribute("cates", cates);
 
         // 2차 분류 선택
-        List<BoardTypeEntity> types = csCateService.getType();
+        List<BoardTypeDTO> types = csCateService.getType();
         model.addAttribute("types", types);
-
+        log.info("types : " + types);
         return "/cs/qna/write";
     }
     @PostMapping("/cs/qna/write")
@@ -107,7 +107,20 @@ public class CsController {
         model.addAttribute("cate", cate);
         model.addAttribute("group", group);
 
+        // 2차 분류 선택
+        List<BoardTypeDTO> types = csCateService.getType();
+        model.addAttribute("types", types);
+
         return "/cs/qna/modify";
+    }
+
+    // QnA 글수정
+    @PostMapping("/cs/qna/modify")
+    public String qnaModify(BoardDTO dto) {
+
+        csService.modifyBoard(dto);
+        log.info("csContoller" + dto.toString());
+        return "redirect:/cs/qna/view?group=" + dto.getGroup()+"&cate="+dto.getCate()+"&bno="+dto.getBno()+"&success=200";
     }
 
     // QnA 글삭제

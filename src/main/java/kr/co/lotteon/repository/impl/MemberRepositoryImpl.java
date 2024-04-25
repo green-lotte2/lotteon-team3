@@ -1,12 +1,21 @@
 package kr.co.lotteon.repository.impl;
 
+import com.querydsl.core.QueryResults;
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import kr.co.lotteon.dto.admin.AdminMemberPageRequestDTO;
+import kr.co.lotteon.dto.admin.AdminProductPageRequestDTO;
+import kr.co.lotteon.entity.member.Member;
 import kr.co.lotteon.entity.member.QMember;
+import kr.co.lotteon.entity.product.Product;
 import kr.co.lotteon.entity.product.QOrder;
 import kr.co.lotteon.repository.custom.MemberRepositoryCustom;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -33,5 +42,72 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
                 .groupBy(qMember.rdate.year(), qMember.rdate.month())
                 .orderBy(qMember.rdate.year().asc(), qMember.rdate.month().asc())
                 .fetch();
+    }
+    // 회원 목록 (현황) 기본 조회
+    @Override
+    public Page<Member> selectMemberList(AdminMemberPageRequestDTO adminMemberPageRequestDTO, Pageable pageable){
+        log.info("회원 목록 (현황) 기본 조회 Impl 1 : " + adminMemberPageRequestDTO);
+        QueryResults<Member> results = jpaQueryFactory
+                .select(qMember)
+                .from(qMember)
+                .orderBy(qMember.rdate.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetchResults();
+
+        long total = results.getTotal();
+        log.info("회원 목록 (현황) 기본 조회 Impl 2 : " + total);
+        List<Member> memberList = results.getResults();
+        log.info("회원 목록 (현황) 기본 조회 Impl 3 : " + memberList);
+        return new PageImpl<>(memberList, pageable, total);
+    }
+    // 회원 목록 (현황) 검색 조회
+    public Page<Member> searchMemberList(AdminMemberPageRequestDTO adminMemberPageRequestDTO, Pageable pageable){
+        log.info("회원 목록 (현황) 검색 조회 Impl 1 : " + adminMemberPageRequestDTO);
+        String type = adminMemberPageRequestDTO.getType();
+        String keyword = adminMemberPageRequestDTO.getKeyword();
+        log.info("회원 목록 (현황) 검색 조회 Impl 2 : " + type);
+        log.info("회원 목록 (현황) 검색 조회 Impl 3 : " + keyword);
+
+        BooleanExpression expression = null;
+
+        // 검색 종류에 따른 where절 표현식 생성
+        if(type.equals("uid")){
+            expression = qMember.uid.contains(keyword);
+            log.info("uid 검색 : " + expression);
+
+        }else if(type.equals("name")){
+            expression = qMember.name.contains(keyword);
+            log.info("name 검색 : " + expression);
+
+        }else if(type.equals("nick")){
+            expression = qMember.nick.contains(keyword);
+            log.info("nick 검색 : " + expression);
+
+        }else if(type.equals("gender")){
+            expression = qMember.gender.contains(keyword);
+            log.info("gender 검색 : " + expression);
+
+        }else if(type.equals("level")){
+            // 입력된 키워드를 정수형으로 변환
+            int level = Integer.parseInt(keyword);
+            expression = qMember.level.eq(level);
+            log.info("level 검색 : " + expression);
+        }
+        // DB 조회
+        QueryResults<Member> results = jpaQueryFactory
+                .select(qMember)
+                .from(qMember)
+                .where(expression)
+                .orderBy(qMember.rdate.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetchResults();
+
+        long total = results.getTotal();
+        log.info("회원 목록 (현황) 검색 조회 Impl 2 : " + total);
+        List<Member> memberList = results.getResults();
+        log.info("회원 목록 (현황) 검색 조회 Impl 3 : " + memberList);
+        return new PageImpl<>(memberList, pageable, total);
     }
 }

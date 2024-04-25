@@ -414,7 +414,13 @@ button[type=submit] {
     float: right;
     width: 100px;
 }
-
+/* 상품 등록, 상품 수정 테이블 */
+.productTable span{
+    background: #eaeaea;
+    padding: 10px;
+    margin: 5px 0;
+    box-sizing: border-box;
+}
 /* 의류 상품 옵션 등록 */
 #eOptionInputPanel{
 }
@@ -1127,6 +1133,7 @@ col {
 #admin-product-list > section > table  tr > td:nth-child(9) {width: 80px;}
 #admin-product-list > section > table  tr > td:nth-child(10) {width: 80px;}
 #admin-product-list > section > table  tr > td:nth-child(11) {width: 100px;}
+#admin-product-list > section > table  tr > td:last-child {width: 50px;}
 
 #admin-product-list > section > table img.thumb {width: 60px;}
 
@@ -1139,6 +1146,50 @@ col {
     margin-left: 13px;
     width:35px;
     height:35px;
+}
+
+/* 회원 목록 : member-list */
+#admin-member-list {}
+#admin-member-list > section > div  {
+    margin-bottom: 10px;
+}
+
+#admin-member-list > section > table  {
+    border-top: 2px solid #8798a3;
+}
+#admin-member-list > section > table  tr > th{
+    padding: 10px 0;
+    background: #242238;
+    color: #F0F4F9;
+    border-left: 1px solid #F0F4F9;
+}
+#admin-member-list > section > table  tr > td {
+    background: #fff;
+    text-align: center;
+    font-size: 14px;
+    border-left: 1px solid #f6f6f6;
+    box-sizing: border-box;
+}
+#admin-member-list > section > table  tr > td:nth-child(1) {width: 20px;}
+#admin-member-list > section > table  tr > td:nth-child(2) {width: 80px;}
+#admin-member-list > section > table  tr > td:nth-child(3) {width: 80px; text-align: left;}
+#admin-member-list > section > table  tr > td:nth-child(4) {width: 60px; text-align: left;}
+#admin-member-list > section > table  tr > td:nth-child(5) {width: 60px; text-align: left;}
+#admin-member-list > section > table  tr > td:nth-child(6) {width: 50px; text-align: center;}
+#admin-member-list > section > table  tr > td:nth-child(7) {width: 50px;}
+#admin-member-list > section > table  tr > td:nth-child(8) {width: 80px;}
+#admin-member-list > section > table  tr > td:nth-child(9) {width: auto;}
+#admin-member-list > section > table  tr > td:nth-child(10) {width: 80px;}
+#admin-member-list > section > table  tr > td:nth-child(11) {width: 100px;}
+#admin-member-list > section > table  tr > td:nth-child(12) {width: 20px;}
+#admin-member-list > section > table  tr > td:last-child {width: 50px;}
+
+#admin-member-list > section > table img.thumb {width: 60px;}
+
+#admin-member-list > section input[type=button] {
+    float: left;
+    width: 100px;
+    margin-top: 10px;
 }
 /* 관리자 페이지 공통 */
 .paging {
@@ -1525,6 +1576,12 @@ col {
     border-collapse: collapse;
     border-top: 2px solid #111;
 }
+#adminCsList > table  tr > th{
+    padding: 10px 0;
+    background: #242238;
+    color: #F0F4F9;
+    border-left: 1px solid #F0F4F9;
+}
 #adminCsList > table tr {
     width: 100%;
     height: 26px;
@@ -1534,16 +1591,28 @@ col {
 }
 
 #adminCsList > table td:first-child {
-    width: 10%;
+    width: 12%;
     padding: 10px;
     border-bottom: 1px solid #ccc;
 }
 #adminCsList > table td:nth-child(2) {
-    width: 60%;
+    width: 10%;
     padding: 10px;
     border-bottom: 1px solid #ccc;
 }
 #adminCsList > table td:nth-child(3) {
+    width: 40%;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+}
+#adminCsList > table td:nth-child(4) {
+    width: 10%;
+    padding: 10px;
+    text-align: center;
+    font-size: 14px;
+    border-bottom: 1px solid #ccc;
+}
+#adminCsList > table td:nth-child(5) {
     width: 20%;
     padding: 10px;
     text-align: center;
@@ -1551,7 +1620,7 @@ col {
     border-bottom: 1px solid #ccc;
 }
 #adminCsList > table td:last-child {
-    width: 10%;
+    width: 8%;
     padding: 10px;
     border-bottom: 1px solid #ccc;
 }
@@ -1786,8 +1855,8 @@ col {
 }
 .fileBox > a:hover {
     color: white;
-    border: 1px solid #a8d031;
-    background-color: #a8d031;
+    border: 1px solid #242238;
+    background-color: #3b385b;
 }
 .filebox label {
     display: inline-block;
@@ -1920,4 +1989,8 @@ col {
     color: white;
     border: 1px solid #2b2f38;
     background-color: #454c5f;
+}
+/* 검색 searchForm */
+#searchForm {
+    margin-bottom: 8px;
 }

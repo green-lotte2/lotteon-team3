@@ -3,6 +3,7 @@ package kr.co.lotteon.repository.custom;
 import kr.co.lotteon.dto.admin.AdminProductPageRequestDTO;
 import kr.co.lotteon.dto.product.PageRequestDTO;
 import kr.co.lotteon.dto.product.ProductDTO;
+import kr.co.lotteon.entity.product.Option;
 import kr.co.lotteon.entity.product.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,8 +20,6 @@ public interface ProductRepositoryCustom {
     // 상품 목록 기본 리스트
     public Page<Product> productList(PageRequestDTO pageRequestDTO, Pageable pageable);
 
-    // 뷰페이지 상품 옵션 띄우기
-    public Map<String, List<String>> selectProdOption(int prodNo);
 
     public Product findProductByProdCode(int prodCode);
 

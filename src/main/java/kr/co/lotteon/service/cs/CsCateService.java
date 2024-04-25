@@ -11,6 +11,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Log4j2
 @RequiredArgsConstructor
@@ -28,9 +29,11 @@ public class CsCateService {
     }
 
     // QnA list - 2차 분류
-    public List<BoardTypeEntity> getType(){
+    public List<BoardTypeDTO> getType(){
         List<BoardTypeEntity> boardTypeEntities = boardTypeRepository.findAll();
-        return boardTypeEntities;
+        return boardTypeEntities.stream()
+                .map(type -> modelMapper.map(type, BoardTypeDTO.class))
+                .collect(Collectors.toList());
     }
 
     public List<BoardTypeEntity> findByCate(String cate){

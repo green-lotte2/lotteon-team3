@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
     <meta charset="UTF-8">
@@ -57,20 +58,93 @@
                 totalSpan.innerText = discountPrice+deliveryInt;
             }
 
+            // 상품 번호
+            const prodNoAfter = location.href.split('=')[1];
+            const prodNo = prodNoAfter.split('&')[0];
+
             // 옵션 select 요소
             const selectOption = document.querySelectorAll('.selectOption');
+
             // 각 옵션 select 요소에 대해 이벤트 등록
             selectOption.forEach(function (select) {
 
                 console.log("select : "+select);
 
                 // 옵션 선택시
-                select.addEventListener('change', function() {
-
-                    const nav = select.closest('nav');
+                select.addEventListener('change', async function() {
+                    var opName = this.value;
 
                     // 상세 select 선택
+                    const nav = select.closest('nav');
                     const selectDetail = nav.querySelector('.selectDetail');
+
+                    await fetch(`/lotteon/cart/opValue/${prodNo}/${opName}`)
+                        .then(response => response.json())
+                        .then(data=> {
+
+                            console.log(data);
+                            data.forEach(function (obj){
+
+                                // 새로운 옵션
+                                const newOption = document.createElement("option");
+
+                                // 동적으로 새로운 밸류, text 만들어주기
+                                newOption.textContent = obj.opValue;
+                                newOption.value = obj.opNo;
+
+                                // 옵션을 추가해주기
+                                selectDetail.appendChild(newOption);
+
+                                // 선택한 옵션 값
+                                selectDetail.addEventListener('change', function (){
+
+                                    // 선택된 옵션의 value값 가져오기
+                                    const selectedValue = this.value;
+                                    console.log('선택된 옵션의 값 : ' + selectedValue);
+                                });
+
+                                // 장바구니 버튼
+                                const cart = document.getElementsByClassName('cart')[0];
+                                cart.onclick = async function (e) {
+                                    e.preventDefault();
+                                    if (uidValue == null) {
+                                        location.href = `/lotteon/member/login`;
+                                    }else if (confirm("장바구니에 담으시겠습니까?")) {
+
+                                        const jsonData = {
+                                            "prodNo": prodNo,
+                                            "count": countValue,
+                                            "uid": uidValue,
+                                            "opNo": 1
+                                        };
+
+                                        console.log(jsonData);
+
+                                        await fetch(`/lotteon/cart/insert`, {
+                                            method: 'POST',
+                                            headers: {"Content-Type": "application/json"},
+                                            body: JSON.stringify(jsonData)
+                                        })
+                                            .then(response => response.json())
+                                            .then(data => {
+                                                if(data != null){
+                                                    if(confirm("장바구니로 이동하시겠습니까?")){
+                                                        location.href= `/lotteon/product/cart`;
+                                                    }
+                                                }else{
+                                                    alert("등록에 실패했습니다.");
+                                                }
+                                            })
+                                            .catch((err) => {
+                                                console.log(err);
+                                            });
+                                    }
+
+                                }
+                            });
+                        })
+                        .catch(err=>{
+                        console.log(err)});
 
                     // 상세 select disabled 삭제
                     selectDetail.disabled = false;
@@ -130,47 +204,16 @@
 
             const uid = document.getElementById('uid')
             let uidValue;
+
             if(uid){
-                uidValue = uid.innerText;
+                uidValue = uid.value;
+
             }else{
                 uidValue = null;
             }
             console.log(uidValue);
-            // 장바구니 버튼
-            const cart = document.getElementsByClassName('cart')[0];
 
 
-            cart.onclick = function (e){
-                e.preventDefault();
-                if(uidValue == null){
-                    location.href = `/lotteon/member/login`;
-                }
-
-                if(confirm("장바구니에 담으시겠습니까?")){
-                    const prodNoAfter = location.href.split('=')[1];
-                    const prodNo = prodNoAfter.split('&')[0];
-
-                    const jsonData = {
-                        "prodNo" : prodNo,
-                        "count"  : countValue,
-                        "uid"    : uidValue
-                    };
-
-                    fetch("/lotteon/product/cart",{
-                        method:'POST',
-                        headers:{"Content-Type": "application/json"},
-                        body:JSON.stringify(jsonData)
-                    })
-                        .then(response => response.json())
-                        .then(data=>{
-                            console.log(data);
-                        })
-                        .catch((err)=>{
-                            console.log(err);
-                        });
-                }
-
-            }
 
         }
 
@@ -181,10 +224,18 @@
     <header>
         <div class="top">
             <div>
-                <a th:href="@{/member/login}">로그인</a>
-                <a th:href="@{/member/join}">회원가입</a>
-                <a th:href="@{/my/home}">마이페이지</a>
-                <a th:href="@{/product/cart}"><i class="fa fa-shopping-cart" aria-hidden="true"></i>&nbsp;장바구니</a>
+                <th:block sec:authorize="isAnonymous()">
+                    <a th:href="@{/member/login}">로그인</a>
+                    <a th:href="@{/member/join}">회원가입</a>
+                </th:block>
+                <th:block sec:authorize="isAuthenticated()">
+                    <span>[[${#authentication.principal.member.name}]]님</span>
+                    <a th:href="@{/member/logout}">로그아웃</a>
+                    <a th:href="@{/my/home}">마이페이지</a>
+                    <a th:href="@{/product/cart}">
+                        <i class="fa fa-shopping-cart" aria-hidden="true"></i>&nbsp;장바구니
+                    </a>
+                </th:block>
             </div>
         </div>
         <div class="logo">

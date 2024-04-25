@@ -23,6 +23,13 @@ public class SecurityUserService implements UserDetailsService {
 
         Optional<Member> result = memberRepository.findById(username);
 
+        Member members=memberRepository.findById(username).orElseThrow(()->new UsernameNotFoundException(username + " NotFound"));
+
+        if (members.getWdate() != null) {
+            throw new UsernameNotFoundException("탈퇴한 회원입니다.");
+        }
+
+
         UserDetails userDetails = null;
 
         if(!result.isEmpty()){
@@ -31,6 +38,7 @@ public class SecurityUserService implements UserDetailsService {
             userDetails = MyUserDetails.builder().member(member).build();
             log.info(userDetails.toString());
         }
+
 
         // Security ContextHolder 저장
         return userDetails;

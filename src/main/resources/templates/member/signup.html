@@ -80,7 +80,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 					<section th:if="${type=='normal'}">
 						<h3><span class="optional">(선택)</span>위치정보 이용약관</h3>
 						<textarea class="location" readonly th:text="${terms.location}"></textarea>
-						<label><input type="checkbox" name="agree4"/>동의합니다.</label>
+						<label><input type="checkbox" name="location" id="location" value="Y"/>동의합니다.</label>
 					</section>
 					<div>
 						<input type="submit" class="agree" value="동의하기" />

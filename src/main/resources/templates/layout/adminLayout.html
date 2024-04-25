@@ -21,10 +21,10 @@
         <div>
             <a th:href="@{/admin/index}" class="logo"><img th:src="@{/admin/images/admin_logo.png}" alt="admin_logo"/></a>
             <p>
-                <span>[[${#authentication.principal.member.name}]]님 </span>
-                <a th:href="@{/}">HOME |</a>
+                <span>[[${#authentication.principal.member.name}]]님</span>
+                <a th:href="@{/index}">HOME |</a>
                 <a th:href="@{/member/logout}">로그아웃 |</a>
-                <a th:href="@{#}">고객센터</a>
+                <a th:href="@{/cs/index}">고객센터</a>
             </p>
         </div>
     </header>
@@ -43,16 +43,13 @@
                     <a href="#"><i class="fas fa-store" aria-hidden="true"></i>상점관리</a>
                     <ol>
                         <li><a th:href="@{/admin/}">판매자현황</a></li>
-                        <li><a th:href="@{/admin/product/list}">재고관리</a></li>
                     </ol>
                 </li>
                 <li>
                     <a href="#"><i class="fa fa-users" aria-hidden="true"></i>회원관리</a>
                     <ol>
-                        <li><a th:href="@{/admin/}">회원현황</a></li>
-                        <li><a th:href="@{/admin/}">포인트관리</a></li>
-                        <li><a th:href="@{/admin/}">비회원관리</a></li>
-                        <li><a th:href="@{/admin/}">접속자집계</a></li>
+                        <li><a th:href="@{/admin/member/list}">회원현황</a></li>
+                        <li><a th:href="@{/admin/member/list}">접속자집계</a></li>
                     </ol>
                 </li>
                 <li>
@@ -60,6 +57,7 @@
                     <ol>
                         <li><a th:href="@{/admin/product/list}">상품현황</a></li>
                         <li><a th:href="@{/admin/product/register}">상품등록</a></li>
+                        <li><a th:href="@{/admin/product/list}">재고관리</a></li>
                     </ol>
                 </li>
                 <li>

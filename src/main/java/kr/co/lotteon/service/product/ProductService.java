@@ -2,8 +2,10 @@ package kr.co.lotteon.service.product;
 
 import kr.co.lotteon.dto.product.*;
 import kr.co.lotteon.entity.product.Cart;
+import kr.co.lotteon.entity.product.Option;
 import kr.co.lotteon.entity.product.Product;
 import kr.co.lotteon.mapper.ProductMapper;
+import kr.co.lotteon.repository.product.OptionRepository;
 import kr.co.lotteon.repository.product.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +13,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,6 +22,7 @@ import java.util.Map;
 @Service @RequiredArgsConstructor @Slf4j
 public class ProductService {
     private final ProductRepository productRepository;
+    private final OptionRepository optionRepository;
     private final ProductMapper productMapper;
     private final ModelMapper modelMapper;
 
@@ -55,15 +59,30 @@ public class ProductService {
         return productDTO;
     }
 
+
+
+
+    // 상품 수정 - 보기
+    public List<ProductDTO> selectByprodCode(int prodCode){
+        List<Product> products = productRepository.findByProdCode(prodCode);
+        return products.stream()
+                .map(product -> modelMapper.map(product, ProductDTO.class))
+                .toList();
+    }
+
+
     // 옵션 불러오기
     public Map<String, List<String>> selectProdOption(int prodNo){
-        return productRepository.selectProdOption(prodNo);
+        return optionRepository.selectProdOption(prodNo);
     }
+ 
 
     // 히트 올리기
     public void updateProductHit(int prodNo){
         productMapper.updateProductHit(prodNo);
     }
+
+
 
 
     // ========== 메인페이지 ==========

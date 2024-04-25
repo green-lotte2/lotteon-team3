@@ -160,7 +160,7 @@
 
             console.log("cno : " + cno);
             if (confirm('답변을 삭제하시겠습니까?')) {
-                const data = await fetchDelete(`/lotton/comment/${cno}`);
+                const data = await fetchDelete(`/lotteon/comment/${cno}`);
                 if (data) {
                     comment.remove();
                 }
@@ -190,6 +190,12 @@
                     <td>내용</td>
                     <td>
                         <textarea name="content" readonly th:text="${board.content}"></textarea>
+                        <!-- 이미지 출력 -->
+                        <div class="filebox" th:if="${board.fileDTOList != null and not #lists.isEmpty(board.fileDTOList)}">
+                            <p th:each="fileDTO, iterStat : ${board.fileDTOList}" th:style="'display: inline-block; margin-right: 10px;' + (${iterStat.last} ? 'margin-right: 0;' : '')">
+                                <img th:src="@{|/uploads/${fileDTO.sfile}|}" alt="상품이미지"/>
+                            </p>
+                        </div>
                     </td>
                 </tr>
                 <tr>
@@ -197,7 +203,6 @@
                     <td>
                         <div class="fileBox">
                             <th:block th:each="file:${board.fileDTOList}">
-                                <label for="formFileMultiple"> 첨부파일</label>
                                 <a th:href="@{/file/fileDownload/{fno}(fno=${file.fno})}" class="fileLink"
                                    id="formFileMultiple"
                                    th:data-fno="${file.fno}">[[${file.ofile}]]</a>

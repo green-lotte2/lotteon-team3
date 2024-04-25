@@ -17,7 +17,7 @@
                 <!-- 상품 전체 정보 내용 -->                
                 <article class="info">
                     <th:block sec:authorize="isAuthenticated()">
-                        <span id="uid">[[${#authentication.principal.member.uid}]]</span>
+                        <input type="text" id="uid" th:value="${#authentication.principal.member.uid}"></input>
                     </th:block>
                     <div class="image">
                         <img th:src="@{|/prodImg/${productDTO.thumb3}|}" alt="상품이미지"/>
@@ -48,15 +48,15 @@
                         </nav>
 
                         <!-- 옵션 선택 nav -->
-                        <nav class="selectNav" th:each="option : ${prodOptions}">
+                        <nav class="selectNav" th:each="option : ${opNames}">
                             <select class="form-select selectOption" aria-label="Default select example">
                                 <option selected>옵션</option>
-                                <option th:value="${option.key}">[[${option.key}]]</option>
+                                <option class="opName" th:value="${option}">[[${option}]]</option>
                             </select>
                             <br>
                             <select class="form-select selectDetail" aria-label="Default select example" disabled>
                                 <option selected>상세</option>
-                                <option th:each="opValue : ${option.value}" th:value="${opValue}">[[${opValue}]]</option>
+
 
                             </select>
                         </nav>

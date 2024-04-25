@@ -2,6 +2,7 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{/layout/memberLayout}">
 <main id="member" layout:fragment="content">
+    <script th:src="@{/js/rememberId.js}"></script>
     <script th:inline="javascript">
 
         window.onload = function () {
@@ -38,27 +39,30 @@
             </table>
             <input type="submit" value="로그인"/>
             <span>
-                        <label><input type="checkbox" id="rememberMe" name="rememberMe"/>자동 로그인</label>
-						<a th:href="@{/member/findId}">아이디찾기</a>
-						<a th:href="@{/member/findPass}">비밀번호찾기</a>
-						<a th:href="@{/member/join}">회원가입</a>
-					</span>
-            <a th:href="@{/oauth2/authorization/google}">
-                <img th:src="@{/member/images/web_light_rd_na.svg}" alt="로그인"/>
-            </a>
-            <a th:href="@{/oauth2/authorization/kakao}" class="kakao">
-                <img th:src="@{/member/images/icon_easy_kakao.svg}" alt="로그인"/>
-            </a>
+                <label><input type="checkbox" id="checkId" name="checkId"/>아이디 저장</label>
+                <label><input type="checkbox" id="rememberMe" name="rememberMe"/>자동 로그인</label>
+                <a th:href="@{/member/findId}">아이디찾기</a>
+                <a th:href="@{/member/findPass}">비밀번호찾기</a>
+                <a th:href="@{/member/join}">회원가입</a>
+            </span>
 
-            <a th:href="@{/oauth2/authorization/naver}" class="naver">
-                <img th:src="@{/member/images/icon_easy_naver.svg}" alt="로그인"/>
-            </a>
-            <th:block th:each="banner : ${loginBanners}">
-                <a th:href="@{${banner.link}}" class="banner">
-                    <img th:src="@{'/prodImg/'+ ${banner.thumb}}" alt="t1"/>
+            <div class="social">
+                <div class="socialLogin">간편 로그인</div>
+                <a th:href="@{/oauth2/authorization/google}" class="google">
+                    <img th:src="@{/member/images/web_light_rd_na.svg}" alt="로그인"/>
+                    <span>구글</span>
                 </a>
-            </th:block>
+                <a th:href="@{/oauth2/authorization/kakao}" class="kakao">
+                    <img th:src="@{/member/images/icon_easy_kakao.svg}" alt="로그인"/>
+                    <span>카카오</span>
+                </a>
+
+                <a th:href="@{/oauth2/authorization/naver}" class="naver">
+                    <img th:src="@{/member/images/icon_easy_naver.svg}" alt="로그인"/>
+                    <span>네이버</span>
+                </a>
+            </div>
+
         </form>
-        <img th:src="@{/member/images/member_certifi_logo.gif}" alt="banner">
     </div>
 </main>

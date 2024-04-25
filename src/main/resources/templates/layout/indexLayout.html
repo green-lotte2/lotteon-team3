@@ -9,7 +9,7 @@
     <link rel="stylesheet" th:href="@{https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css}"/>
     <link rel="stylesheet" th:href="@{https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css}"/>
     <link rel="stylesheet" th:href="@{https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.css}"/>
-    <link rel="stylesheet" th:href="@{/css/common.css}" />
+    <link rel="stylesheet" th:href="@{/css/common.css}"/>
     <script th:src="@{https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js}"></script>
     <script th:src="@{https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js}"></script>
     <script th:src="@{https://kit.fontawesome.com/20962f3e4b.js}" crossorigin="anonymous"></script>
@@ -58,6 +58,19 @@
             });
         });
 
+        window.onload = function (){
+
+
+            const priceIns = document.querySelectorAll(".dis_price > :first-child");
+            priceIns.forEach(price =>{
+                let priceInsValue = price.innerText;
+                var formattedNumber = priceInsValue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','); // "49,770"
+                const formatNumber = formattedNumber.split(".")[0];
+                console.log(formatNumber);
+                price.textContent = formatNumber;
+            });
+
+        }
     </script>
 </head>
 <body>
@@ -111,9 +124,9 @@
                     <li><a th:href="@{/product/list}">할인상품</a></li>
                 </ul>
                 <ul>
-                    <li><a th:href="@{/cs/notice/list}">공지사항</a></li>
-                    <li><a th:href="@{/cs/faq/list}">자주묻는질문</a></li>
-                    <li><a th:href="@{/cs/qna/list}">문의하기</a></li>
+                    <li><a th:href="@{/cs/notice/list(group='notice', cate='null')}">공지사항</a></li>
+                    <li><a th:href="@{/cs/faq/list(group='faq' ,cate='member')}">자주묻는질문</a></li>
+                    <li><a th:href="@{/cs/qna/list(group=qna, cate=member)}">문의하기</a></li>
                     <li><a th:href="@{/cs/index}">고객센터</a></li>
                 </ul>
             </div>
@@ -159,7 +172,7 @@
                                 <span>[[${best.discount}]]%</span>
                             </div>
                             <div class="dis_price">
-                                <ins th:if="${best.discount != 0}">계산..ㅠ</ins>
+                                <ins th:if="${best.discount != 0}">[[${((100-best.discount)/100.0)*best.price}]]</ins>
                                 <ins th:if="${best.discount == 0}">[[${best.price}]]</ins>
                             </div>
                         </a>
