@@ -15,9 +15,9 @@
               </li>
             </ul>
           </section>
+
           <!-- 히트상품 영역 -->
           <section class="hit">
-
             <h3><span>히트상품</span></h3>
             <article th:each="hit : ${hitProducts}">
               <a th:href="@{/product/view(prodNo=${hit.prodNo},cate1=${hit.cate1},cate2=${hit.cate2},cate3=${hit.cate3})}">
