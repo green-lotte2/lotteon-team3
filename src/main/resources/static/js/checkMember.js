@@ -424,11 +424,6 @@ window.onload = function () {
             return false;
         }
 
-        if (document.getElementById('inputZip').value === '') {
-            alert('주소를 입력해주세요');
-            return false;
-        }
-
         // 폼 전송
         return true;
     }
