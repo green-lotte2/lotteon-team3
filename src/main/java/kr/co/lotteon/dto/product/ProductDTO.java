@@ -49,5 +49,9 @@ public class ProductDTO {
 
     List<OptionDTO> optionList;
 
+    // 상품 상세 옵션
+    private int opStock;
+    private String size;
+
     private LocalDateTime rdate;
 }
