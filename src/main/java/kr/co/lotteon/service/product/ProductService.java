@@ -2,6 +2,7 @@ package kr.co.lotteon.service.product;
 
 import kr.co.lotteon.dto.product.*;
 import kr.co.lotteon.entity.product.Cart;
+import kr.co.lotteon.entity.product.Option;
 import kr.co.lotteon.entity.product.Product;
 import kr.co.lotteon.mapper.ProductMapper;
 import kr.co.lotteon.repository.product.ProductRepository;
@@ -11,6 +12,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -55,6 +57,9 @@ public class ProductService {
         return productDTO;
     }
 
+
+
+
     // 상품 수정 - 보기
     public List<ProductDTO> selectByprodCode(int prodCode){
         List<Product> products = productRepository.findByProdCode(prodCode);
@@ -68,11 +73,14 @@ public class ProductService {
     public Map<String, List<String>> selectProdOption(int prodNo){
         return productRepository.selectProdOption(prodNo);
     }
+ 
 
     // 히트 올리기
     public void updateProductHit(int prodNo){
         productMapper.updateProductHit(prodNo);
     }
+
+
 
 
     // ========== 메인페이지 ==========
