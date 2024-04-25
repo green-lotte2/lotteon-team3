@@ -6,30 +6,6 @@
   <script>
     let nowTotal = [[${boardDTO.file}]];
 
-    // 문의유형 가져오기
-    function handleCateChange() {
-      var cateSelect = document.getElementById('cate');
-      var typeSelect = document.getElementById('type');
-
-      var selectedCate = cateSelect.value;
-
-      if (selectedCate === '0') {
-        typeSelect.disabled = true;
-        typeSelect.selectedIndex = 0;
-      } else {
-        var options = typeSelect.getElementsByTagName('option');
-        for (var i = 0; i < options.length; i++) {
-          var option = options[i];
-          if (option.getAttribute('data-cate') === selectedCate) {
-            option.style.display = '';
-          } else {
-            option.style.display = 'none';
-          }
-        }
-        typeSelect.disabled = false;
-      }
-    }
-
     document.addEventListener("DOMContentLoaded", function() {
       var writeForm = document.getElementById('writeForm');
 
@@ -122,6 +98,7 @@
     function hideImage(button) {
       alert('!!!');
       var paragraph = button.parentNode;
+      console.log('dd' + paragraph);
       paragraph.style.display = 'none';
       console.log("nowTotal 빼기 전 1 :" +nowTotal);
       var selectedFiles = document.querySelectorAll('.filebox img').length;
@@ -130,6 +107,7 @@
       nowTotal -= 1;
       var maxFileCount = 4; // 최대 파일 개수
       console.log("nowTotal 뺀 후 3 :" +nowTotal);
+
       // 새로운 파일을 추가할 수 있는지 확인
       var fileInput = document.querySelector('input[type="file"]');
       fileInput.disabled = selectedFiles >= maxFileCount;
@@ -170,7 +148,8 @@
         </ul>
       </aside>
       <article>
-        <form id="writeForm" th:action="@{/cs/qna/write}" method="POST" enctype="multipart/form-data">
+        <input type="text" name="cate" readonly th:value="${boardDTO.cate}" />
+        <form id="writeForm" th:action="@{/cs/qna/modify(cate=${boardDTO.cate}, bno=${boardDTO.bno}, group=${boardDTO.group})}" method="POST" enctype="multipart/form-data">
           <input type="hidden" name="group" readonly th:value="${group}" />
           <input type="hidden" name="uid" th:value="${#authentication.principal.member.uid}" />
           <table>
@@ -188,8 +167,8 @@
                 </select>
 
                 <!-- 2차 분류 선택 상자 -->
-                <select name="typeNo" id="type" required>
-                  <option selected disabled value="0">2차 분류</option>
+                <select name="typeNo" id="type" required disabled>
+                  <option selected disabled value="">[[${boardDTO.typeName}]]</option>
                   <th:block th:each="type : ${types}">
                     <!-- 해당 1차 분류와 일치하는 2차 분류만 표시 -->
                     <option th:if="${type.cate eq cate}" th:value="${type.typeNo}" th:text="${type.typeName}" th:attr="data-cate=${type.cate}"></option>
