@@ -22,7 +22,8 @@ public class BoardEntity {
     private int bno;
     private String uid;
     private int parent;
-
+    private int prodNo;
+    
     @Column(name = "\"group\"")
     private String group;
     private String cate;
