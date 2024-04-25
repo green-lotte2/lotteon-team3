@@ -414,7 +414,13 @@ button[type=submit] {
     float: right;
     width: 100px;
 }
-
+/* 상품 등록, 상품 수정 테이블 */
+.productTable span{
+    background: #eaeaea;
+    padding: 10px;
+    margin: 5px 0;
+    box-sizing: border-box;
+}
 /* 의류 상품 옵션 등록 */
 #eOptionInputPanel{
 }

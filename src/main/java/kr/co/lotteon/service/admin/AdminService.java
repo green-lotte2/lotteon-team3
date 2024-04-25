@@ -300,12 +300,6 @@ public class AdminService {
                 .collect(Collectors.toList());
     }
 
-    // 관리자 상품 목록 검색 - cate1을 type으로 선택 시 cate1 조회
-    public ResponseEntity<?> findCate1s() {
-        List<Cate1> cate1s = cate1Repository.findAll();
-        return ResponseEntity.ok().body(cate1s);
-    }
-
     // 관리자 상품 등록 cate2 조회
     public ResponseEntity<?> findAllCate2ByCate1(int cate1) {
         // 조회된 Entity List -> DTO List
@@ -322,7 +316,6 @@ public class AdminService {
         List<Cate3DTO> cate3List = cate3Repository.findByCate2(cate2).stream()
                 .map(cate3 -> modelMapper.map(cate3, Cate3DTO.class))
                 .collect(Collectors.toList());
-        ;
 
         return ResponseEntity.ok().body(cate3List);
     }
@@ -353,6 +346,12 @@ public class AdminService {
                 .total(total)
                 .build();
 
+    }
+
+    // 관리자 상품 목록 검색 - cate1을 type으로 선택 시 cate1 조회
+    public ResponseEntity<?> findCate1s() {
+        List<Cate1> cate1s = cate1Repository.findAll();
+        return ResponseEntity.ok().body(cate1s);
     }
 
     // 관리자 상품 검색 목록 조회

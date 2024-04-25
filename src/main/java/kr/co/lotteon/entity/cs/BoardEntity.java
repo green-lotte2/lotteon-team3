@@ -22,7 +22,7 @@ public class BoardEntity {
     private int bno;
     private String uid;
     private int parent;
-    private int prodNo;
+    private Integer prodNo;
     
     @Column(name = "\"group\"")
     private String group;
