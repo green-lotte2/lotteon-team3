@@ -9,6 +9,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.co.lotteon.dto.admin.AdminProductPageRequestDTO;
 import kr.co.lotteon.dto.product.PageRequestDTO;
 import kr.co.lotteon.dto.product.ProductDTO;
+import kr.co.lotteon.entity.product.Option;
 import kr.co.lotteon.entity.product.Product;
 import kr.co.lotteon.entity.product.QOption;
 import kr.co.lotteon.entity.product.QProduct;
@@ -132,40 +133,6 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
         return new PageImpl<>(results.getResults(), pageable, results.getTotal());
     }
 
-    @Override
-    public Map<String, List<String>> selectProdOption(int prodNo) {
-
-        // SELECT opName, group_concat(opValue) from product_option where prodNo =? GROUP BY opName;
-        List<Tuple> result = jpaQueryFactory
-                .select(qOption.opName, Expressions.stringTemplate("GROUP_CONCAT({0})",qOption.opValue))
-                .from(qOption)
-                .where(qOption.prodNo.eq(prodNo))
-                .groupBy(qOption.opName)
-                .fetch();
-
-        log.info("impl 1" + result);
-
-        Map<String, List<String>> resultMap = new HashMap<>();
-
-        for (Tuple tuple : result) {
-            String opName = tuple.get(qOption.opName);
-            log.info("opName : " + opName);
-            String opValue = tuple.get(Expressions.stringTemplate("GROUP_CONCAT({0})", qOption.opValue));
-            log.info("opValue : " + opValue);
-
-            // opValue를 배열로 만들기
-            List<String> opValueList = Arrays.asList(opValue.split(","));
-            log.info("opValue List impl 2" + opValueList);
-
-            // opName이 이미 resultMap에 존재하는지 확인, 없으면 빈 리스트를 새로 생성하여 추가
-            resultMap.putIfAbsent(opName, new ArrayList<>());
-
-            resultMap.put(opName, opValueList);
-        }
-        log.info("impl 3" + resultMap);
-
-        return resultMap;
-    }
 
     // 관리자 - 의류 옵션 추가 상품 코드 조회
     public Product findProductByProdCode(int prodCode){

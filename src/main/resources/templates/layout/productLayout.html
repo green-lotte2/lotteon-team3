@@ -57,6 +57,10 @@
                 totalSpan.innerText = discountPrice+deliveryInt;
             }
 
+            // 상품 번호
+            const prodNoAfter = location.href.split('=')[1];
+            const prodNo = prodNoAfter.split('&')[0];
+
             // 옵션 select 요소
             const selectOption = document.querySelectorAll('.selectOption');
             // 각 옵션 select 요소에 대해 이벤트 등록
@@ -65,12 +69,33 @@
                 console.log("select : "+select);
 
                 // 옵션 선택시
-                select.addEventListener('change', function() {
-
-                    const nav = select.closest('nav');
+                select.addEventListener('change', async function() {
+                    var opName = this.value;
+                    console.log('opName : ' + opName);
+                    console.log('prodNo : ' + prodNo);
 
                     // 상세 select 선택
+                    const nav = select.closest('nav');
                     const selectDetail = nav.querySelector('.selectDetail');
+
+                    await fetch(`/lotteon/cart/opValue/${prodNo}/${opName}`)
+                        .then(response => response.json())
+                        .then(data=> {
+
+
+                            console.log(data);
+                            data.forEach(function (obj){
+                                console.log(obj.opValue);
+                                console.log(obj.opNo);
+
+                                const newOption = document.createElement("option");
+                                newOption.textContent = obj.opValue;
+                                newOption.value = obj.opNo;
+                                selectDetail.appendChild(newOption);
+                            });
+                        })
+                        .catch(err=>{
+                        console.log(err)});
 
                     // 상세 select disabled 삭제
                     selectDetail.disabled = false;
@@ -148,8 +173,6 @@
                 if (uidValue == null) {
                     location.href = `/lotteon/member/login`;
                 }else if (confirm("장바구니에 담으시겠습니까?")) {
-                    const prodNoAfter = location.href.split('=')[1];
-                    const prodNo = prodNoAfter.split('&')[0];
 
                     const jsonData = {
                         "prodNo": prodNo,

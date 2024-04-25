@@ -1,0 +1,17 @@
+package kr.co.lotteon.repository.custom;
+
+import kr.co.lotteon.dto.product.OptionDTO;
+import kr.co.lotteon.entity.product.Option;
+
+import java.util.List;
+import java.util.Map;
+
+public interface OptionRepositoryCustom {
+
+    public List<String> selectOpName(int prodNo);
+
+    // 뷰페이지 상품 옵션 띄우기
+    public Map<String, List<String>> selectProdOption(int prodNo);
+
+    public List<OptionDTO> selectOpvalueAndopNo(int prodNo, String opName);
+}

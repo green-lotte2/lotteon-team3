@@ -5,6 +5,7 @@ import kr.co.lotteon.dto.product.*;
 import kr.co.lotteon.repository.product.Cate1Repository;
 import kr.co.lotteon.service.admin.BannerService;
 import kr.co.lotteon.service.product.CateService;
+import kr.co.lotteon.service.product.OptionService;
 import kr.co.lotteon.service.product.ProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,14 +28,13 @@ public class ProductController {
     private final BannerService bannerService;
     // 상품 카테고리를 불러오기 위한 cateService
     private final CateService cateService;
+    private final OptionService optionService;
 
     // cart 페이지 매핑
     @GetMapping("/product/cart")
     public String cart(){
         return "/product/cart";
     }
-
-
 
     // complete(주문 완료) 페이지 매핑
     @GetMapping("/product/complete")
@@ -131,12 +131,18 @@ public class ProductController {
         model.addAttribute("prodBanners", prodBanners);
 
         // 옵션 가져오기
-        Map<String, List<String>> prodOptions = productService.selectProdOption(productDTO.getProdNo());
+        Map<String, List<String>> prodOptions = optionService.selectProdOption(productDTO.getProdNo());
 
         log.info("prodOptions : " + prodOptions);
 
         // 옵션 맵 참조
         model.addAttribute("prodOptions", prodOptions);
+
+        // 옵션 네임 가져오기
+        List<String> opNames = optionService.selectOpName(productDTO.getProdNo());
+        log.info("opNames : " + opNames);
+        model.addAttribute("opNames", opNames);
+
 
         return "/product/view";
     }
