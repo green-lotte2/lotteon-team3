@@ -21,10 +21,10 @@
         <div>
             <a th:href="@{/admin/index}" class="logo"><img th:src="@{/admin/images/admin_logo.png}" alt="admin_logo"/></a>
             <p>
-                <span>개발 끝나면 adminLayout에서 #authentication.principal.member.name으로 바꿀거임</span>
-                <a th:href="@{/}">HOME |</a>
+                <span>[[${#authentication.principal.member.name}]]님</span>
+                <a th:href="@{/index}">HOME |</a>
                 <a th:href="@{/member/logout}">로그아웃 |</a>
-                <a th:href="@{#}">고객센터</a>
+                <a th:href="@{/cs/index}">고객센터</a>
             </p>
         </div>
     </header>
