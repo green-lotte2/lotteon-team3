@@ -28,7 +28,7 @@ public class Member {
     private int point;
     @ColumnDefault("1")
     private int level;
-//    // 위치기반 약관 동의여부 추가(Y/N)
+    // 위치기반 약관 동의여부 추가(Y/N)
     private String location;
     private String zip;
     private String addr1;
