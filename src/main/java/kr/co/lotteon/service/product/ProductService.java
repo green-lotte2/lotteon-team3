@@ -59,6 +59,22 @@ public class ProductService {
 
 
 
+
+    // 상품 수정 - 보기
+    public List<ProductDTO> selectByprodCode(int prodCode){
+        List<Product> products = productRepository.findByProdCode(prodCode);
+        return products.stream()
+                .map(product -> modelMapper.map(product, ProductDTO.class))
+                .toList();
+    }
+
+
+    // 옵션 불러오기
+    public Map<String, List<String>> selectProdOption(int prodNo){
+        return productRepository.selectProdOption(prodNo);
+    }
+ 
+
     // 히트 올리기
     public void updateProductHit(int prodNo){
         productMapper.updateProductHit(prodNo);

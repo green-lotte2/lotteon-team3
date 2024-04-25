@@ -43,6 +43,7 @@ public class MemberController {
         return "/member/signup";
     }
 
+
     // join (회원 가입 구분) 페이지 매핑
     @GetMapping("/member/join")
     public String join(){
@@ -63,11 +64,14 @@ public class MemberController {
 
     // register 페이지 매핑
     @GetMapping("/member/register")
-    public String register(Model model, String type){
+    public String register(Model model, String type,String location){
 
         log.info("회원가입 type = "+type);
+        log.info("동의 "+location);
 
         model.addAttribute("type", type);
+        model.addAttribute("location", location);
+
         // type이 판매자(seller)로 들어오면 판매자 회원가입 페이지로 리다이렉트
         if(type.equals("seller")){
             return "redirect:/member/registerSeller?type=seller";
@@ -159,8 +163,12 @@ public class MemberController {
 
 
         log.info("PASSWORD "+memberDTO.getPass());
+
         memberDTO.setLevel(1); // 일반회원시 level 1
         memberDTO.setRegip(request.getRemoteAddr());
+        memberDTO.setLocation(memberDTO.getLocation());
+
+        log.info("memberDTO"+memberDTO);
         memberService.save(memberDTO);
 
         return "redirect:/member/login?success=200";
