@@ -22,6 +22,8 @@ public class MemberDTO {
     private String email;
     private int point;
     private int level;
+    // 위치기반 약관 동의여부 추가(Y/N)
+    private String location;
     private String zip;
     private String addr1;
     private String addr2;
