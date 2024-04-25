@@ -1303,7 +1303,7 @@ footer p > strong {
     float: right;
     width: 30px;
     height: 30px;
-    background-image: url('../../images/ico_sprites.png');
+    background-image: url('../images/ico_sprites.png');
     background-color: transparent;
     background-position: 227px -25px;
     border: none;
