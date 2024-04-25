@@ -5,6 +5,7 @@ import kr.co.lotteon.entity.product.Cart;
 import kr.co.lotteon.entity.product.Option;
 import kr.co.lotteon.entity.product.Product;
 import kr.co.lotteon.mapper.ProductMapper;
+import kr.co.lotteon.repository.product.OptionRepository;
 import kr.co.lotteon.repository.product.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +22,7 @@ import java.util.Map;
 @Service @RequiredArgsConstructor @Slf4j
 public class ProductService {
     private final ProductRepository productRepository;
+    private final OptionRepository optionRepository;
     private final ProductMapper productMapper;
     private final ModelMapper modelMapper;
 
@@ -71,7 +73,7 @@ public class ProductService {
 
     // 옵션 불러오기
     public Map<String, List<String>> selectProdOption(int prodNo){
-        return productRepository.selectProdOption(prodNo);
+        return optionRepository.selectProdOption(prodNo);
     }
  
 
