@@ -81,13 +81,52 @@
             const newRow = document.querySelector('.eManualOptionRow').cloneNode(true);
             const tableBody = document.querySelector('#prodOptionTable');
             const newColorInput = newRow.querySelector('.colorInput');
+
+            // 새 tr 태그의 버튼 요소 삭제
+            const odBtn = newRow.querySelector('.btnTd')
+            odBtn.remove();
+
+            // 추가 옵션용 버튼 td 생성 : 삭제 함수가 다름
+            const newTd = `<td class="left eBubbleArea btnTd">
+                           <div class="button">
+                           <button type="button" class="btnOption lv1Minus vaBottom" onclick="removeNewOption(this)"><span>삭제</span></button>
+                           <button type="button" class="btnOption lv1Plus vaBottom" onclick="addOption(this)"><span>추가</span></button>
+                           </div>
+                           </td>`;
+
+            newRow.insertAdjacentHTML('beforeend', newTd);
+
+
             // 이전에 선택한 색상값 넣어주기
             newColorInput.value = colorValue;
 
             tableBody.appendChild(newRow);
         }
-        // option 입력란 삭제
+        // 삭제할 prodNo 배열
+        let prodNoList = [];
+        // 옵션 삭제
         function removeOption(button) {
+            // option 입력란 삭제
+            const tr = button.closest('tr');
+            tr.remove();
+
+            const prodNoInput = document.getElementById('prodNoList');
+
+            // 해당 옵션의 prodNo 가져오기
+            const prodNo = button.dataset.prod;
+            console.log("옵션 삭제 1 prodNo :" + prodNo);
+
+            // 삭제할 prodNo 배열에 넣기
+            prodNoList.push(prodNo);
+
+            console.log("옵션 삭제 2 prodNoList :" + prodNoList);
+            // 배열을 JSON 문자열로 변환하여 할당
+            prodNoInput.value = JSON.stringify(prodNoList);
+
+        }
+        // 추가된 옵션 삭제
+        function removeNewOption(button){
+            // option 입력란 삭제
             const tr = button.closest('tr');
             tr.remove();
         }
@@ -142,28 +181,37 @@
                 prodForm.submit();
             }
         }
+
         // 이미지 삭제 (숨겼다가 form 전송)
         function hideImage(button){
+            // 원래 이미지 이름을 가진 히든 태그
+            const orgThumb1 = document.getElementById('orgThumb1');
+            const orgThumb2 = document.getElementById('orgThumb2');
+            const orgThumb3 = document.getElementById('orgThumb3');
+            const orgDetail = document.getElementById('orgDetail');
 
             // 이미지 숨기기
             const tagP = button.parentNode;
-            tagP.style.display = 'none';
+            tagP.remove();
 
             // 이미지 개수 갱신
             const imgType = button.dataset.img;
-
             switch (imgType) {
                 case 'thumb1':
                     thumb1Check -= 1;
+                    orgThumb1.value = null;
                     break;
                 case 'thumb2':
                     thumb2Check -= 1;
+                    orgThumb2.value = null;
                     break;
                 case 'thumb3':
                     thumb3Check -= 1;
+                    orgThumb3.value = null;
                     break;
                 case 'detail':
                     detailCheck -= 1;
+                    orgDetail.value = null;
                     break;
             }
         }
@@ -243,6 +291,16 @@
                 <!-- 상품수정 컨텐츠 시작 -->
                 <article>
                     <form th:action="@{/admin/product/modify}" method="post" enctype="multipart/form-data" id="prodForm">
+                        <!-- 이미지 sName -->
+                        <input type="hidden" name="thumb1" th:value="${products[0].thumb1}" id="orgThumb1"/>
+                        <input type="hidden" name="thumb2" th:value="${products[0].thumb2}" id="orgThumb2"/>
+                        <input type="hidden" name="thumb3" th:value="${products[0].thumb3}" id="orgThumb3"/>
+                        <input type="hidden" name="hit" th:value="${products[0].hit}"/>
+                        <input type="hidden" name="review" th:value="${products[0].review}"/>
+                        <input type="hidden" name="score" th:value="${products[0].score}"/>
+                        <input type="hidden" name="sold" th:value="${products[0].sold}"/>
+                        <input type="hidden" name="ip" th:value="${products[0].ip}"/>
+                        <input type="hidden" name="detail" th:value="${products[0].detail}"/>
                         <!-- 상품분류 -->
                         <section>
                             <h4>상품분류</h4>
@@ -448,9 +506,9 @@
                                                 </div>
                                             </div>
                                         </td>
-                                        <td class="left eBubbleArea">
+                                        <td class="left eBubbleArea btnTd">
                                             <div class="button">
-                                                <button type="button" class="btnOption lv1Minus vaBottom" onclick="removeOption(this)"><span>삭제</span></button>
+                                                <button type="button" class="btnOption lv1Minus vaBottom" onclick="removeOption(this)" th:data-prod="${product.prodNo}"><span>삭제</span></button>
                                                 <button type="button" class="btnOption lv1Plus vaBottom" onclick="addOption(this)"><span>추가</span></button>
                                             </div>
                                         </td>
@@ -475,27 +533,29 @@
                             <table>
                                 <tr>
                                     <td>상품상태</td>
-                                    <td><input type="text" name="status" value="새상품"/></td>
+                                    <td><input type="hidden" name="status" th:value="${products[0].status}" id="orgStatus"/><input type="text" value="${products[0].status}" disabled/></td>
                                 </tr>
                                 <tr>
                                     <td>부가세 면세여부</td>
-                                    <td><input type="text" name="duty" value="과세상품"/></td>
+                                    <td><input type="hidden" name="duty" th:value="${products[0].duty}" id="orgDuty"/><input type="text" value="${products[0].duty}" disabled/></td>
                                 </tr>
                                 <tr>
                                     <td>영수증발행</td>
-                                    <td><input type="text" name="receipt" value="발행가능 - 신용카드 전표, 온라인 현금영수증"/></td>
+                                    <td><input type="hidden" name="receipt" th:value="${products[0].receipt}" id="orgReceipt"/><input type="text" value="${products[0].receipt}" disabled/></td>
                                 </tr>
                                 <tr>
                                     <td>사업자구분</td>
-                                    <td><input type="text" name="bizType" value="사업자 판매자"/></td>
-                                </tr>                                
+                                    <td><input type="hidden" name="bizType" th:value="${products[0].bizType}" id="orgBizType"/><input type="text" value="${products[0].bizType}" disabled/></td>
+                                </tr>
                                 <tr>
                                     <td>원산지</td>
-                                    <td><input type="text" name="origin" value="국내산"/></td>
-                                </tr>                                
+                                    <td><input type="hidden" name="origin" th:value="${products[0].origin}" id="orgOrigin"/><input type="text" value="${products[0].origin}" disabled/></td>
+                                </tr>
+
                             </table>                                
                         </section>
                         <input type="hidden" name="optionDTOList" id="optionDTOList">
+                        <input type="text" name="prodNoList" id="prodNoList">
                         <input type="submit" value="등록하기" onclick="optionCheckOk(this)"/>
                     </form>
                 </article>
