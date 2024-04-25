@@ -1042,11 +1042,9 @@ footer p > strong {
   box-sizing: border-box;
 }
 .btnModify:hover {
-  font-weight: bolder;
   background-color: #f7f7f7;
 }
 .btnDelete:hover {
-  font-weight: bolder;
   background-color: #f7f7f7;
 }
 #thumb {
@@ -1298,4 +1296,35 @@ footer p > strong {
 #cs > .qna > .view > article > .filebox * {
   font-size: 16px;
   line-height: 32px;
+}
+
+.btnModify {
+  display: inline-block;
+  width: 200px;
+  height: 60px;
+  margin: 40px 400px;
+  border: 1px solid #ccc;
+  border-radius: 34px;
+  font-size: 16px;
+  color: #000;
+  line-height: 58px;
+  text-align: center;
+  box-sizing: border-box;
+}
+.btnModify:hover {
+  background-color: #f7f7f7;
+}
+
+.btnDelete {
+  display: inline-block;
+  width: 200px;
+  height: 60px;
+  margin: 40px 400px;
+  border: 1px solid #ccc;
+  border-radius: 34px;
+  font-size: 16px;
+  color: #000;
+  line-height: 58px;
+  text-align: center;
+  box-sizing: border-box;
 }

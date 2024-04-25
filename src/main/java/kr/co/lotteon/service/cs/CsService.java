@@ -99,7 +99,6 @@ public class CsService {
                 .dtoList(dtoList)
                 .total(totalElement)
                 .build();
-
     }
 
     // 글보기
@@ -189,7 +188,6 @@ public class CsService {
                 .map(entity -> modelMapper.map(entity, BoardDTO.class))
                 .toList();
 
-
         List<BoardCateEntity> boardCateEntitieList = boardCateRepository.findAll();
         List<BoardTypeEntity> boardTypeEntitieList = typeRepository.findAll();
 
@@ -205,9 +203,17 @@ public class CsService {
         }
 
         for (BoardDTO boardDTO : dtoList) {
-            boardDTO.setTypeName(
-                    cateMap.get(boardDTO.getCate()).get(boardDTO.getTypeNo())
-            );
+            String cate = boardDTO.getCate();
+            if (cate != null) {
+                Map<Integer, String> typeMap = cateMap.get(cate);
+                if (typeMap != null) {
+                    Integer typeNo = boardDTO.getTypeNo();
+                    if (typeNo != null) {
+                        String typeName = typeMap.get(typeNo);
+                        boardDTO.setTypeName(typeName);
+                    }
+                }
+            }
         }
         return dtoList;
     }
@@ -227,6 +233,24 @@ public class CsService {
         dto.setBno(bno);
 
         fileService.fileUpload(dto);
+    }
+
+    // 글 수정
+    public void modifyBoard(BoardDTO boardDTO){
+        BoardEntity oBoardEntity = boardRepository.findById(boardDTO.getBno()).get();
+        BoardDTO oBoardDTO = modelMapper.map(oBoardEntity, BoardDTO.class);
+
+        oBoardDTO.setContent(boardDTO.getContent());
+        oBoardDTO.setTitle(boardDTO.getTitle());
+        oBoardDTO.setFiles(boardDTO.getFiles());
+
+        int count = fileService.fileUpload(oBoardDTO);
+
+        oBoardDTO.setFile(oBoardDTO.getFile()+count);
+
+        BoardEntity boardEntity = modelMapper.map(oBoardDTO, BoardEntity.class);
+        boardRepository.save(boardEntity);
+
     }
 
     // 글 삭제

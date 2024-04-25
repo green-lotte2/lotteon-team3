@@ -4,6 +4,9 @@
       layout:decorate="~{/layout/csLayout}">
 <head>
   <script>
+    let nowTotal = [[${boardDTO.file}]];
+
+    // 문의유형 가져오기
     function handleCateChange() {
       var cateSelect = document.getElementById('cate');
       var typeSelect = document.getElementById('type');
@@ -39,25 +42,42 @@
       });
     });
 
+    // 이미지 추가
     function handleFileSelect(input) {
+      console.log("nowTotal 더하기 전 1 :" +nowTotal);
       var files = input.files;
-      var fileCount = files.length;
+      var addFile = files.length; // 추가하려는 파일 개수
+      console.log("추가하려는 파일 개수 2 :" +addFile);
+
+
       var maxFileCount = 4; // 최대 파일 개수
 
+      console.log("nowTotal 더한 후 3 :" +nowTotal);
       // 현재 이미 선택된 파일의 개수 가져오기
-      var selectedFiles = document.querySelectorAll('.filebox img').length;
-
+      console.log("현재 이미 선택된 파일 개수 4 :" +nowTotal);
       // 기존 파일의 개수와 새로 추가할 파일의 개수를 합쳐서 최대 파일 개수를 초과하는지 확인
-      if (selectedFiles + fileCount > maxFileCount) {
-        alert("현재 " + selectedFiles + "개의 이미지가 선택되어 있습니다. 최대 " + maxFileCount + "개의 이미지 파일만 선택할 수 있습니다.");
+      // 이미지 개수가 초과한 경우
+      if (nowTotal + addFile > maxFileCount) {
+        alert("현재 " + nowTotal + "개의 이미지가 선택되어 있습니다. 최대 " + maxFileCount + "개의 이미지 파일만 선택할 수 있습니다.");
+        nowTotal -= addFile;
+
         // 파일 선택 취소
         input.value = '';
+        console.log("이미지 개수가 초과한 경우 총 파일 수 :" +nowTotal);
+
+        // 이미지 개수가 OK
       } else {
         var filebox = document.querySelector('.filebox');
-        for (var i = 0; i < fileCount; i++) {
+
+        console.log("이미지 개수가 OK 5 :" +nowTotal);
+        nowTotal += addFile;
+        for (var i = 0; i < addFile; i++) {
           var file = files[i];
+
           var reader = new FileReader();
           reader.onload = function(e) {
+
+            // 새로 추가된 이미지
             var img = document.createElement('img');
             img.src = e.target.result;
             img.alt = "새로 추가된 이미지";
@@ -66,28 +86,30 @@
             img.style.marginRight = '10px'; // 우측 여백 설정
             img.style.position = 'relative'; // 상대적 위치 설정
 
+            // 새로 추가된 <P>
             var p = document.createElement('p');
             p.style.display = 'inline-block'; // 인라인-블록 요소로 설정
             p.style.position = 'relative'; // 상대적 위치 설정
             p.appendChild(img);
 
+            // 새로 추가된 버튼
             var button = document.createElement('button');
             button.type = 'button';
             button.textContent = 'X';
-            button.onclick = function() {
-              // 이미지를 삭제할 때 첨부 가능한 파일의 수 갱신
-              var selectedFiles = document.querySelectorAll('.filebox img').length;
-              var fileInput = document.querySelector('input[type="file"]');
-              fileInput.disabled = selectedFiles >= maxFileCount;
-              // 이미지를 삭제하고 상위 요소(p)를 삭제
-              this.parentNode.remove();
-            };
+
+            // 새로 추가된 버튼의 인덱스
+            const index = nowTotal + i + 1;
+
+            const newBtn = `<button type="button" onclick="hideImage(this)" style="position: absolute; top: 0; left: 0; font-size: 20px;" th:data-count="${index}">X</button>`;
+
+            // p태그 </p> 전에 삽입
+            p.insertAdjacentHTML('beforeend', newBtn);
+
             button.style.position = 'absolute'; // 절대 위치 설정
             button.style.top = '0'; // 위쪽 여백 설정
             button.style.left = '0'; // 왼쪽 여백 설정
             button.style.fontSize = '20px'; // 글꼴 크기 설정
-
-            p.appendChild(button);
+            console.log("이미지 개수가 OK 총 파일 수 :" +nowTotal);
             filebox.appendChild(p);
           };
 
@@ -98,21 +120,25 @@
 
 
     function hideImage(button) {
+      alert('!!!');
       var paragraph = button.parentNode;
       paragraph.style.display = 'none';
-
-      // 이미 선택된 파일의 개수 다시 계산
+      console.log("nowTotal 빼기 전 1 :" +nowTotal);
       var selectedFiles = document.querySelectorAll('.filebox img').length;
-      var maxFileCount = 4; // 최대 파일 개수
 
+      console.log("selectedFiles 빼기 전 2 :" +selectedFiles);
+      nowTotal -= 1;
+      var maxFileCount = 4; // 최대 파일 개수
+      console.log("nowTotal 뺀 후 3 :" +nowTotal);
       // 새로운 파일을 추가할 수 있는지 확인
       var fileInput = document.querySelector('input[type="file"]');
       fileInput.disabled = selectedFiles >= maxFileCount;
 
+      console.log("총 파일 수 :" +nowTotal);
+
       // 이미지를 삭제할 때마다 첨부 가능한 파일의 수를 증가시킴
       fileInput.removeAttribute('disabled');
     }
-
 
   </script>
 </head>
@@ -151,22 +177,22 @@
             <tr>
               <td>문의유형</td>
               <td>
-                <select name="cate" id="cate" required onchange="handleCateChange()">
-                  <option selected disabled th:value="0">1차 분류 선택</option>
-                  <option value="member">회원</option>
-                  <option value="coupon">쿠폰/이벤트</option>
-                  <option value="order">주문/결제</option>
-                  <option value="delivery">배송</option>
-                  <option value="refund">취소/반품/교환</option>
-                  <option value="travel">여행/숙박/항공</option>
-                  <option value="safe">안전거래</option>
+                <select name="cate" id="cate" required onchange="handleCateChange()" disabled>
+                  <option selected disabled value="">[[${(cate eq 'member') ? '회원' :
+                    (cate eq 'coupon') ? '쿠폰/이벤트' :
+                    (cate eq 'order') ? '주문/결제' :
+                    (cate eq 'delivery') ? '배송' :
+                    (cate eq 'refund') ? '취소/반품/교환' :
+                    (cate eq 'travel') ? '여행/숙박/항공' :
+                    (cate eq 'safe') ? '안전거래' : ''}]]</option>
                 </select>
 
-                <!-- cateName에 따라서 선택지가 달라짐 -->
-                <select name="typeNo" id="type" required disabled>
-                  <option selected disabled th:value="0">2차 분류 선택</option>
+                <!-- 2차 분류 선택 상자 -->
+                <select name="typeNo" id="type" required>
+                  <option selected disabled value="0">2차 분류</option>
                   <th:block th:each="type : ${types}">
-                    <option th:value="${type.typeNo}" th:text="${type.typeName}" th:attr="data-cate=${type.cate}"></option>
+                    <!-- 해당 1차 분류와 일치하는 2차 분류만 표시 -->
+                    <option th:if="${type.cate eq cate}" th:value="${type.typeNo}" th:text="${type.typeName}" th:attr="data-cate=${type.cate}"></option>
                   </th:block>
                 </select>
               </td>
@@ -183,30 +209,27 @@
                 <textarea name="content" placeholder="내용을 입력하세요." th:text="${boardDTO.content}"></textarea>
               </td>
             </tr>
-
             <tr>
               <td>파일</td>
               <td>
                 <span>크기 200 x 200, 상품 상세에 출력될 이미지 입니다. </span>
-                <input style="margin-top: 12px;" type="file" name="files" multiple="multiple" onchange="handleFileSelect(this)"/>
+                <input style="margin-top: 12px;" type="file" name="files" multiple="multiple" onchange="handleFileSelect(this)" accept="image/*"/>
                 <div class="filebox" th:if="${boardDTO.fileDTOList != null and not #lists.isEmpty(boardDTO.fileDTOList)}">
                   <p th:each="fileDTO, iterStat : ${boardDTO.fileDTOList}" th:style="'display: inline-block; position: relative; margin-right: 10px;' + (${iterStat.last} ? 'margin-right: 0;' : '')">
                     <img th:src="@{|/uploads/${fileDTO.sfile}|}" alt="상품이미지" style="display: block;"/>
-                    <button type="button" onclick="hideImage(this)" style="position: absolute; top: 0; left: 0; font-size: 20px;">X</button>
+                    <button type="button" onclick="hideImage(this)" style="position: absolute; top: 0; left: 0; font-size: 20px;" th:data-count="${iterStat}">X</button>
                   </p>
                 </div>
               </td>
             </tr>
 
-
-
-
           </table>
           <div>
             <a th:href="@{/cs/qna/list(group='qna', cate='member')}" class="btnWriteCancel">취소하기</a>
-            <input type="submit" value="수정하기" class="btnSubmit" id="formFileMultiple" multiple/>
+            <input type="submit" value="수정하기" class="btnSubmit" id="formFileMultiple" multiple th:href="@{/cs/qna/modify(group='qna', cate=${cate})}"/>
           </div>
         </form>
+
       </article>
     </section>
   </div>
