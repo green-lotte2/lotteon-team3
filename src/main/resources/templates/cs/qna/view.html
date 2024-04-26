@@ -80,8 +80,8 @@
             </p>
           </div>
         </div>
-        <!--
 
+<!--
         <section class="commentList">
           <h3>댓글목록</h3>
           <th:block th:each="comment : ${comments}">
@@ -91,14 +91,14 @@
               <p class="content" th:text="${comment.content}"></p>
               <div>
                 <th:block th:if="${#authentication.principal != 'anonymousUser'}">
-                  <a th:if="${#authentication.principal.user.uid == comment.writer}" href="#" class="remove" th:data-no="${comment.no}" th:data-parent="${comment.parent}">삭제</a>
-                  <a th:if="${#authentication.principal.user.uid == comment.writer}" href="#" class="modify">수정</a>
+                  <a th:if="${#authentication.principal.member.uid == comment.uid}" href="#" class="remove" th:data-no="${comment.bno}" th:data-parent="${comment.cno}">삭제</a>
+                  <a th:if="${#authentication.principal.member.uid == comment.uid}" href="#" class="modify">수정</a>
                 </th:block>
               </div>
 
               <form class="editForm" style="display: none;">
                 <input type="hidden" name="no" th:value="${comment.bno}" />
-                <input type="hidden" name="uid" th:value="${comment.uid}" />
+                <input type="hidden" name="writer" th:value="${comment.uid}" />
                 <textarea name="content" th:text="${comment.content}"></textarea>
                 <div class="button-group">
                   <input type="submit" value="댓글수정" class="submitEdit" >
@@ -115,14 +115,12 @@
           </th:block>
         </section>
 
-
-
         <th:block th:if="${#authorization.expression('isAuthenticated()')}">
           <section class="commentForm">
             <h3>댓글쓰기</h3>
-            <form name="commentForm" th:action="@{/croptalk/insertComment}" method="post"  id="formModify">
-              <input type="hidden" name="parent" th:value="${articleDTO.no}">
-              <input type="hidden" name="writer" th:value="${#authentication.principal.user.uid}">
+            <form name="commentForm" th:action="@{/cs/qna/insertComment}" method="post"  id="formModify">
+              <input type="hidden" name="parent" th:value="${boardDTO.bno}">
+              <input type="hidden" name="writer" th:value="${#authentication.principal.member.uid}">
               <textarea name="content" placeholder="댓글 입력"></textarea>
               <div>
                 <a th:href="@{#}" class="btn btnCancel">취소</a>
