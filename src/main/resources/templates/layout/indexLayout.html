@@ -74,7 +74,7 @@
     </script>
 </head>
 <body>
-<div id="bannerTop" class="on" style="background: #e4dfdf;">
+<div id="bannerTop" class="on" th:style="${topBanners.size() > 0 ? 'background: ' + topBanners[0].backcolor + ';' : ''}">
     <article>
         <th:block th:each="banner : ${topBanners}">
             <a th:href="@{${banner.link}}">

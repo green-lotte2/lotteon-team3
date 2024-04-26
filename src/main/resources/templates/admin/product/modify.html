@@ -86,6 +86,10 @@
             const odBtn = newRow.querySelector('.btnTd')
             odBtn.remove();
 
+            // 새 tr 태그에 class 추가 (배열 생성시 사용)
+            const newtr = newRow.querySelector('.optionListTr');
+            newRow.classList.add('newOptionListTr');
+
             // 추가 옵션용 버튼 td 생성 : 삭제 함수가 다름
             const newTd = `<td class="left eBubbleArea btnTd">
                            <div class="button">
@@ -133,7 +137,7 @@
         // 모든 옵션 품목추가 버튼 클릭
         function pushOptionList(e){
             e.preventDefault();
-            const trList = document.getElementsByClassName('optionListTr');
+            const trList = document.getElementsByClassName('newOptionListTr');
             const optionDTOList = [];
             optionDTOList.length = 0;
             optionCheck = true;
@@ -301,6 +305,7 @@
                         <input type="hidden" name="sold" th:value="${products[0].sold}"/>
                         <input type="hidden" name="ip" th:value="${products[0].ip}"/>
                         <input type="hidden" name="detail" th:value="${products[0].detail}"/>
+                        <input type="hidden" name="prodCode" th:value="${products[0].prodCode}"/>
                         <!-- 상품분류 -->
                         <section>
                             <h4>상품분류</h4>
@@ -466,7 +471,7 @@
                         </section>
                         <!-- 상품 옵션 추가 -->
 
-                        <div th:if="${products[0].color != null}" id="eOptionInputPanel" class="addForm _self_option_wrap">
+                        <div th:if="${products[0].colorName != null and !products[0].colorName.isEmpty()}" id="eOptionInputPanel" class="addForm _self_option_wrap">
                             <h4>옵션</h4>
                             <p>
                                 반드시 모든 옵션 품목 등록을 하셔야 합니다. 등록된 상품은 같은 상품코드가 부여됩니다.
@@ -533,29 +538,29 @@
                             <table>
                                 <tr>
                                     <td>상품상태</td>
-                                    <td><input type="hidden" name="status" th:value="${products[0].status}" id="orgStatus"/><input type="text" value="${products[0].status}" disabled/></td>
+                                    <td><input type="hidden" name="status" th:value="${products[0].status}" id="orgStatus"/><input type="text" th:value="${products[0].status}" disabled/></td>
                                 </tr>
                                 <tr>
                                     <td>부가세 면세여부</td>
-                                    <td><input type="hidden" name="duty" th:value="${products[0].duty}" id="orgDuty"/><input type="text" value="${products[0].duty}" disabled/></td>
+                                    <td><input type="hidden" name="duty" th:value="${products[0].duty}" id="orgDuty"/><input type="text" th:value="${products[0].duty}" disabled/></td>
                                 </tr>
                                 <tr>
                                     <td>영수증발행</td>
-                                    <td><input type="hidden" name="receipt" th:value="${products[0].receipt}" id="orgReceipt"/><input type="text" value="${products[0].receipt}" disabled/></td>
+                                    <td><input type="hidden" name="receipt" th:value="${products[0].receipt}" id="orgReceipt"/><input type="text" th:value="${products[0].receipt}" disabled/></td>
                                 </tr>
                                 <tr>
                                     <td>사업자구분</td>
-                                    <td><input type="hidden" name="bizType" th:value="${products[0].bizType}" id="orgBizType"/><input type="text" value="${products[0].bizType}" disabled/></td>
+                                    <td><input type="hidden" name="bizType" th:value="${products[0].bizType}" id="orgBizType"/><input type="text" th:value="${products[0].bizType}" disabled/></td>
                                 </tr>
                                 <tr>
                                     <td>원산지</td>
-                                    <td><input type="hidden" name="origin" th:value="${products[0].origin}" id="orgOrigin"/><input type="text" value="${products[0].origin}" disabled/></td>
+                                    <td><input type="hidden" name="origin" th:value="${products[0].origin}" id="orgOrigin"/><input type="text" th:value="${products[0].origin}" disabled/></td>
                                 </tr>
 
                             </table>                                
                         </section>
                         <input type="hidden" name="optionDTOList" id="optionDTOList">
-                        <input type="text" name="prodNoList" id="prodNoList">
+                        <input type="hidden" name="prodNoList" id="prodNoList">
                         <input type="submit" value="등록하기" onclick="optionCheckOk(this)"/>
                     </form>
                 </article>
