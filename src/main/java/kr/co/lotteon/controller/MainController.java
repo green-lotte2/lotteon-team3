@@ -76,6 +76,7 @@ public class MainController {
 
         // 메인 - 상단 배너
         model.addAttribute("topBanners",topBanners);
+        log.info("탑배너 : "+topBanners);
         // 메인 - 슬라이더 배너
         model.addAttribute("sdBanners",sdBanners);
 
