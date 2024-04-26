@@ -8,5 +8,29 @@
     <update id="updateProductHit">
         UPDATE product SET hit = hit+1 WHERE prodNo =#{value};
     </update>
-
+    <update id="updateProductByProdCode" parameterType="map">
+        UPDATE product
+        SET cate1 = #{cate1},
+        cate2 = #{cate2},
+        cate3 = #{cate3},
+        delivery = #{delivery},
+        discount = #{discount},
+        point = #{point},
+        price = #{price},
+        stock = #{stock},
+        amount = #{amount},
+        bizType = #{bizType},
+        company = #{company},
+        deleteYn = #{deleteYn},
+        descript = #{descript},
+        detail = #{detail},
+        duty = #{duty},
+        origin = #{origin},
+        prodName = #{prodName},
+        status = #{status},
+        thumb1 = #{thumb1},
+        thumb2 = #{thumb2},
+        thumb3 = #{thumb3}
+        WHERE prodCode = #{prodCode}
+    </update>
 </mapper>
