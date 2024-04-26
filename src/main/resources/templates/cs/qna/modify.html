@@ -12,29 +12,6 @@
     const bno = urlsplit1.split('=')[1];
     console.log(bno);
 
-    document.addEventListener("DOMContentLoaded", function() {
-      var writeForm = document.getElementById('writeForm');
-
-      writeForm.addEventListener('submit', function(event) {
-        // 글 등록 후 알림 창 표시
-        alert('글이 성공적으로 등록되었습니다.');
-
-        // 이벤트 기본 동작 중단하지 않고 폼 제출
-        writeForm.submit();
-       /*
-        const jsonData = {
-          "":11,
-          "":22,
-
-        };
-        */
-        fetch(`/lotteon/file/delete/${bno}`).then()
-                .then()
-                .catch((err)=>{
-          console.log(err);
-        })
-      });
-    });
 
     // 이미지 추가
     function handleFileSelect(input) {
@@ -112,7 +89,8 @@
       }
     }
 
-    function hideImage(button) {
+
+     async function hideImage(button) {
       alert('사진 안보이게');
       var paragraph = button.parentNode;
       paragraph.style.display = 'none';
@@ -134,6 +112,27 @@
       fileInput.removeAttribute('disabled');
     }
 
+    document.addEventListener("DOMContentLoaded",  function() {
+      var writeForm = document.getElementById('writeForm');
+
+      writeForm.addEventListener('submit', async function(event) {
+        // 글 등록 후 알림 창 표시
+
+        // 파일 하나씩 삭제
+        const sfile = button.dataset.sfile;
+        console.log('sfile : ' + sfile);
+        const data = await fetchGet(`/lotteon/file/delete/${sfile}`);
+        console.log(data);
+        //
+
+        alert('글이 성공적으로 등록되었습니다.');
+
+        // 이벤트 기본 동작 중단하지 않고 폼 제출
+        writeForm.submit();
+
+
+      });
+    });
 
   </script>
 </head>
@@ -208,7 +207,7 @@
                 <div class="filebox" th:if="${boardDTO.fileDTOList != null and not #lists.isEmpty(boardDTO.fileDTOList)}">
                   <p th:each="fileDTO, iterStat : ${boardDTO.fileDTOList}" th:style="'display: inline-block; position: relative; margin-right: 10px;' + (${iterStat.last} ? 'margin-right: 0;' : '')">
                     <img th:src="@{|/uploads/${fileDTO.sfile}|}" alt="상품이미지" style="display: block;"/>
-                    <button type="button" onclick="hideImage(this)" style="position: absolute; top: 0; left: 0; font-size: 20px;" th:data-count="${iterStat}">X</button>
+                    <button type="button" onclick="hideImage(this)" style="position: absolute; top: 0; left: 0; font-size: 20px;" th:data-sfile="${fileDTO.sfile}" th:data-count="${iterStat}">X</button>
                   </p>
                 </div>
               </td>
