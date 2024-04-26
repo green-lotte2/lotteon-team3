@@ -26,6 +26,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MemberRepositoryImpl implements MemberRepositoryCustom {
 
+    
     private final JPAQueryFactory jpaQueryFactory;
     private final QMember qMember = QMember.member;
 
