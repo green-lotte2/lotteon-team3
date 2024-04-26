@@ -15,6 +15,7 @@ import kr.co.lotteon.entity.member.Terms;
 import kr.co.lotteon.entity.product.Cate1;
 import kr.co.lotteon.entity.product.Option;
 import kr.co.lotteon.entity.product.Product;
+import kr.co.lotteon.mapper.ProductMapper;
 import kr.co.lotteon.repository.BannerRepository;
 import kr.co.lotteon.repository.cs.BoardCateRepository;
 import kr.co.lotteon.repository.cs.BoardFileRepository;
@@ -60,6 +61,8 @@ public class AdminService {
     private final BoardTypeRepository typeRepository;
     private final BannerRepository bannerRepository;
     private final BoardFileRepository fileRepository;
+
+    private final ProductMapper productMapper;
 
     private final ModelMapper modelMapper;
 
@@ -587,75 +590,31 @@ public class AdminService {
         if (!orgFile.exists()) {
             orgFile.mkdir();
         }
-        // 저장
         Product saveProduct = new Product();
 
-
-
-
-
-
-
         // 기존 이미지를 삭제 했다면
-        if (productDTO.getThumb1() == null) {
+        if (productDTO.getThumb1() == null || productDTO.getThumb1().isEmpty()) {
             // 리사이징 함수 호출 - 새 이미지 저장
             String sName190 = imgResizing(thumb190, orgPath, path, 190, 190);
             // 파일 이름 DTO에 저장
             productDTO.setThumb1(sName190);
         }
-        if (productDTO.getThumb2() == null) {
+        if (productDTO.getThumb2() == null || productDTO.getThumb2().isEmpty()) {
             String sName230 = imgResizing(thumb230, orgPath, path, 230, 230);
             productDTO.setThumb2(sName230);
         }
-        if (productDTO.getThumb3() == null) {
+        if (productDTO.getThumb3() == null || productDTO.getThumb3().isEmpty()) {
             String sName456 = imgResizing(thumb456, orgPath, path, 456, 456);
             productDTO.setThumb3(sName456);
         }
-        if (productDTO.getDetail() == null) {
+        if (productDTO.getDetail() == null || productDTO.getDetail().isEmpty()) {
             String sName860 = imgResizing(detail860, orgPath, path, 860);
             productDTO.setDetail(sName860);
         }
-
         // update 마이 바티스 써야함
-       /* <update id="updateProductByProdCode" parameterType="map">
-                UPDATE product
-        SET cate1 = #{cate1},
-        cate2 = #{cate2},
-        cate3 = #{cate3},
-        delivery = #{delivery},
-        discount = #{discount},
-        hit = #{hit},
-        point = #{point},
-        price = #{price},
-        review = #{review},
-        score = #{score},
-        sold = #{sold},
-        stock = #{stock},
-        amount = #{amount},
-        color = #{color},
-        opStock = #{opStock},
-        colorName = #{colorName},
-        size = #{size},
-        bizType = #{bizType},
-        company = #{company},
-        deleteYn = #{deleteYn},
-        descript = #{descript},
-        detail = #{detail},
-        duty = #{duty},
-        ip = #{ip},
-        origin = #{origin},
-        prodName = #{prodName},
-        rdate = #{rdate},
-        receipt = #{receipt},
-        seller = #{seller},
-        status = #{status},
-        thumb1 = #{thumb1},
-        thumb2 = #{thumb2},
-        thumb3 = #{thumb3}
-        WHERE prodCode = #{prodCode}
-</update>
-*/
-                // JON 문자열 파싱 -> OptionDTO 리스트로 변환
+        productMapper.updateProductByProdCode(productDTO);
+
+        // JON 문자열 파싱 -> OptionDTO 리스트로 변환
         ObjectMapper objectMapper = new ObjectMapper();
         List<ColorDTO> optionDTOList = null;
         try {
@@ -672,30 +631,35 @@ public class AdminService {
 
                 // DTO -> Entity : Entity의 영속성 때문에 매번 새로 생성해야함
                 Product product = modelMapper.map(productDTO, Product.class);
-                log.info("관리자 상품 등록 service8 product : " + product.toString());
+                log.info("관리자 상품 수정 service8 product : " + product.toString());
 
                 // 옵션 정보 Product Entity에 저장
+                log.info("관리자 상품 수정 service9 " + option);
 
-                log.info("관리자 상품 등록 service9 " + option);
                 product.setColor(option.getColor());
                 product.setColorName(option.getColorName());
                 product.setOpStock(option.getOpStock());
                 product.setSize(option.getSize());
+                product.setThumb1(productDTO.getThumb1());
+                product.setThumb2(productDTO.getThumb2());
+                product.setThumb3(productDTO.getThumb3());
+                product.setDetail(productDTO.getDetail());
                 log.info("optionDTO List : " + option);
+                log.info("option 정보 저장 setThumb2 : " + productDTO.getThumb2());
 
                 // 상품 정보 DB 저장
                 saveProduct = productRepository.save(product);
-                log.info("관리자 상품 등록 service10 savedProduct : " + saveProduct.toString());
+                log.info("관리자 상품 수정 service10 savedProduct : " + saveProduct.toString());
             }
             // option 없는 경우
         } else {
             // DTO -> Entity
             Product product = modelMapper.map(productDTO, Product.class);
             product.setColor("#FFFFFF");
-            log.info("관리자 상품 등록 service8 product : " + product.toString());
+            log.info("관리자 상품 수정 service8 product : " + product.toString());
             // 상품 정보 DB 저장
             saveProduct = productRepository.save(product);
-            log.info("관리자 상품 등록 service10 savedProduct : " + saveProduct.toString());
+            log.info("관리자 상품 수정 service10 savedProduct : " + saveProduct.toString());
 
         }
         return modelMapper.map(saveProduct, ProductDTO.class);

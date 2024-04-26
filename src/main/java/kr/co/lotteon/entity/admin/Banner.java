@@ -25,6 +25,7 @@ public class Banner {
     private String thumb;
     private String cate;
     private String link;
+    private String backcolor;
 
     private LocalDate beginDate;
     private LocalTime beginTime;
