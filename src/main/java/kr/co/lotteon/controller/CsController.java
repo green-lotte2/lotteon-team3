@@ -1,15 +1,13 @@
 package kr.co.lotteon.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
-import kr.co.lotteon.dto.cs.BoardDTO;
-import kr.co.lotteon.dto.cs.BoardTypeDTO;
-import kr.co.lotteon.dto.cs.CsPageRequestDTO;
-import kr.co.lotteon.dto.cs.CsPageResponseDTO;
+import kr.co.lotteon.dto.cs.*;
 
 import kr.co.lotteon.entity.cs.BoardCateEntity;
 import kr.co.lotteon.entity.cs.BoardFileEntity;
 import kr.co.lotteon.entity.cs.BoardTypeEntity;
 import kr.co.lotteon.repository.cs.BoardRepository;
+import kr.co.lotteon.service.admin.CommentService;
 import kr.co.lotteon.service.cs.CsCateService;
 import kr.co.lotteon.service.cs.CsService;
 import kr.co.lotteon.service.cs.FileService;
@@ -35,6 +33,7 @@ public class CsController {
     private final CsCateService csCateService;
     private final BoardRepository boardRepository;
     private final FileService fileService;
+    private final CommentService commentService;
 
     // cs index
     @GetMapping(value = {"/cs","/cs/index"})
@@ -69,12 +68,22 @@ public class CsController {
     public String qnaView(Model model, int bno, String cate, String group){
         BoardDTO boardDTO = csService.findByBnoForBoard(bno);
 
+        // 관리자 답변 조회
+        List<CommentDTO> comments = commentService.commentList(bno);
+
+        // 조회수 증가 로직 추가
+        boardDTO.setHit(boardDTO.getHit() + 1);
+        csService.updateHit(boardDTO);
+
         model.addAttribute("boardDTO", boardDTO);
         model.addAttribute("cate", cate);
         model.addAttribute("group", group);
 
+        model.addAttribute("comments",comments );
+
         return "/cs/qna/view";
     }
+
     // QnA write(페이지)
     @GetMapping("/cs/qna/write")
     public String qnaWriteForm(HttpServletRequest request, Model model, String group) {
@@ -120,7 +129,7 @@ public class CsController {
 
         csService.modifyBoard(dto);
         log.info("csContoller" + dto.toString());
-        return "redirect:/cs/qna/view?group=" + dto.getGroup()+"&cate="+dto.getCate()+"&bno="+dto.getBno()+"&success=200";
+        return "redirect:/cs/qna/view?group=qna&cate="+dto.getCate()+"&bno="+dto.getBno()+"&success=200";
     }
 
     // QnA 글삭제
@@ -152,6 +161,10 @@ public class CsController {
     @GetMapping("/cs/notice/view")
     public String noticeView(Model model, int bno, String cate, String group){
         BoardDTO boardDTO = csService.findByBnoForBoard(bno);
+
+        // 조회수 증가 로직 추가
+        boardDTO.setHit(boardDTO.getHit() + 1);
+        csService.updateHit(boardDTO);
 
         model.addAttribute("boardDTO", boardDTO);
         model.addAttribute("cate", cate);

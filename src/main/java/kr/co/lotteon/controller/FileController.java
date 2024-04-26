@@ -1,11 +1,13 @@
 package kr.co.lotteon.controller;
 
+import kr.co.lotteon.dto.cs.BoardDTO;
 import kr.co.lotteon.service.cs.FileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
@@ -26,4 +28,19 @@ public class FileController {
         log.info("fileDownloadCount : " + fno);
         return fileService.fileDownloadCount(fno);
     }
+
+    /*
+    @GetMapping("/file/delete/${bno}")
+    public ResponseEntity<?> fildDelete(int bno){
+        fileService.deleteFiles(bno);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/file/modify")
+    public ResponseEntity<?> fileModify(@RequestBody BoardDTO boardDTO){
+        // jsondata로 만들어야 할거 : bno
+        fileService.fileUpload(boardDTO);
+        return ResponseEntity.ok().build();
+    }
+     */
 }

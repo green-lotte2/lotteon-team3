@@ -79,6 +79,9 @@
                         <span th:text="${#strings.substring(article.uid, 0, 3)} + '***'"></span>
                     </td>
                     <td th:text="${#temporals.format(article.rdate, 'yyyy.MM.dd')}"></td>
+                    <td>
+                        조회: [[${article.hit}]]
+                    </td>
                 </tr>
               </table>
 

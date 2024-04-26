@@ -259,4 +259,20 @@ public class CsService {
         boardRepository.deleteById(bno);
         boardRepository.deleteBoardsByParent(bno);
     }
+
+    // hit 증가
+    public BoardDTO updateHit(BoardDTO boardDTO) {
+        // 게시글 엔터티를 찾습니다.
+        BoardEntity boardEntity = boardRepository.findById(boardDTO.getBno()).orElse(null);
+
+        // 만약 게시글 엔터티가 존재한다면 조회수를 업데이트하고 저장합니다.
+        if (boardEntity != null) {
+            boardEntity.setHit(boardEntity.getHit() + 1);
+            boardRepository.save(boardEntity);
+        }
+
+        // 엔터티를 DTO로 매핑하여 반환합니다.
+        return modelMapper.map(boardEntity, BoardDTO.class);
+    }
+
 }

@@ -1,3 +1,17 @@
+/* 내가 넣은 css */
+
+.hit:hover{
+  transfrom : scale(1.02);
+}
+.recommend{
+
+}
+.new{
+
+}
+.discount{
+
+}
 /* 초기화 */
 * {
   margin: 0;
@@ -424,7 +438,7 @@ main > section > section > article h2 {
   font-size: 15px;
   font-weight: bold;
   margin-top: 4px;
-  text-align: center;
+  text-align: left;
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
@@ -489,12 +503,32 @@ main > section > .slider > .bx-wrapper {
 }
 
 main > section > .hit {
+  margin-bottom: 20px;
+  transition : transform 0.3s;
+}
+main > section > .hit :hover {
+  transform : scale(1.02);
 }
 main > section > .recommend {
+  margin-bottom: 20px;
+  transition : transform 0.3s;
+}
+main > section > .recommend :hover{
+  transform : scale(1.02);
 }
 main > section > .new {
+  margin-bottom: 20px;
+  transition : transform 0.3s;
+}
+main > section > .new :hover{
+  transform : scale(1.02);
 }
 main > section > .discount {
+  margin-bottom: 20px;
+  transition : transform 0.3s;
+}
+main > section > .discount :hover{
+  transform : scale(1.02);
 }
 
 /* 푸터영역 */
@@ -557,7 +591,7 @@ footer p > strong {
 #top {
   position: fixed;
   left: 50%;
-  bottom: 10px;
+  bottom: 50px;
   margin-left: 600px;
   /* display: none; */
   width: 42px;

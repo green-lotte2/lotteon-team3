@@ -19,6 +19,7 @@ public class BannerDTO {
     private String bnName;
     private String cate;
     private String link;
+    private String backcolor;
 
     private LocalDate beginDate;
     private LocalTime beginTime;
