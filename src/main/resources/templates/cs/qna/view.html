@@ -80,7 +80,61 @@
             </p>
           </div>
         </div>
+        <!--
 
+        <section class="commentList">
+          <h3>댓글목록</h3>
+          <th:block th:each="comment : ${comments}">
+            <article>
+              <span class="uid" th:text="${comment.uid}"></span>
+              <span class="date" th:text="${#strings.substring(comment.rdate, 2, 10)}"></span>
+              <p class="content" th:text="${comment.content}"></p>
+              <div>
+                <th:block th:if="${#authentication.principal != 'anonymousUser'}">
+                  <a th:if="${#authentication.principal.user.uid == comment.writer}" href="#" class="remove" th:data-no="${comment.no}" th:data-parent="${comment.parent}">삭제</a>
+                  <a th:if="${#authentication.principal.user.uid == comment.writer}" href="#" class="modify">수정</a>
+                </th:block>
+              </div>
+
+              <form class="editForm" style="display: none;">
+                <input type="hidden" name="no" th:value="${comment.bno}" />
+                <input type="hidden" name="uid" th:value="${comment.uid}" />
+                <textarea name="content" th:text="${comment.content}"></textarea>
+                <div class="button-group">
+                  <input type="submit" value="댓글수정" class="submitEdit" >
+                  <button type="button" class="cancelEdit">취소</button>
+                </div>
+              </form>
+
+            </article>
+
+          </th:block>
+
+          <th:block th:if="${#lists.isEmpty(comments)}">
+            <p class="empty">등록된 댓글이 없습니다.</p>
+          </th:block>
+        </section>
+
+
+
+        <th:block th:if="${#authorization.expression('isAuthenticated()')}">
+          <section class="commentForm">
+            <h3>댓글쓰기</h3>
+            <form name="commentForm" th:action="@{/croptalk/insertComment}" method="post"  id="formModify">
+              <input type="hidden" name="parent" th:value="${articleDTO.no}">
+              <input type="hidden" name="writer" th:value="${#authentication.principal.user.uid}">
+              <textarea name="content" placeholder="댓글 입력"></textarea>
+              <div>
+                <a th:href="@{#}" class="btn btnCancel">취소</a>
+                <input type="submit" name="submit" value="작성완료" id="btnSubmit" class="btn btnComplete"/>
+              </div>
+            </form>
+          </section>
+        </th:block>
+      </article>
+    </section>
+  </div>
+-->
         <a th:href="@{/cs/qna/list(group='qna', cate=${cate})}" class="btnList">목록보기</a>
         <!-- 로그인한 사용자일 때만 삭제 버튼과 수정 버튼을 표시 -->
         <th:block th:if="${#authentication.principal != 'anonymousUser'}">

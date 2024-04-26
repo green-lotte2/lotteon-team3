@@ -4,7 +4,13 @@
       layout:decorate="~{/layout/csLayout}">
 <head>
   <script>
+
     let nowTotal = [[${boardDTO.file}]];
+    const url = location.href;
+
+    const urlsplit1 = url.split('&')[1];
+    const bno = urlsplit1.split('=')[1];
+    console.log(bno);
 
     document.addEventListener("DOMContentLoaded", function() {
       var writeForm = document.getElementById('writeForm');
@@ -15,6 +21,18 @@
 
         // 이벤트 기본 동작 중단하지 않고 폼 제출
         writeForm.submit();
+       /*
+        const jsonData = {
+          "":11,
+          "":22,
+
+        };
+        */
+        fetch(`/lotteon/file/delete/${bno}`).then()
+                .then()
+                .catch((err)=>{
+          console.log(err);
+        })
       });
     });
 
@@ -94,11 +112,9 @@
       }
     }
 
-
     function hideImage(button) {
-      alert('!!!');
+      alert('사진 안보이게');
       var paragraph = button.parentNode;
-      console.log('dd' + paragraph);
       paragraph.style.display = 'none';
       console.log("nowTotal 빼기 전 1 :" +nowTotal);
       var selectedFiles = document.querySelectorAll('.filebox img').length;
@@ -107,9 +123,9 @@
       nowTotal -= 1;
       var maxFileCount = 4; // 최대 파일 개수
       console.log("nowTotal 뺀 후 3 :" +nowTotal);
-
       // 새로운 파일을 추가할 수 있는지 확인
       var fileInput = document.querySelector('input[type="file"]');
+      console.log('파일 html부분'+fileInput)
       fileInput.disabled = selectedFiles >= maxFileCount;
 
       console.log("총 파일 수 :" +nowTotal);
@@ -117,6 +133,7 @@
       // 이미지를 삭제할 때마다 첨부 가능한 파일의 수를 증가시킴
       fileInput.removeAttribute('disabled');
     }
+
 
   </script>
 </head>
@@ -148,7 +165,6 @@
         </ul>
       </aside>
       <article>
-        <input type="text" name="cate" readonly th:value="${boardDTO.cate}" />
         <form id="writeForm" th:action="@{/cs/qna/modify(cate=${boardDTO.cate}, bno=${boardDTO.bno}, group=${boardDTO.group})}" method="POST" enctype="multipart/form-data">
           <input type="hidden" name="group" readonly th:value="${group}" />
           <input type="hidden" name="uid" th:value="${#authentication.principal.member.uid}" />
@@ -156,7 +172,7 @@
             <tr>
               <td>문의유형</td>
               <td>
-                <select name="cate" id="cate" required onchange="handleCateChange()" disabled>
+                <select name="cate" id="cate" required disabled>
                   <option selected disabled value="">[[${(cate eq 'member') ? '회원' :
                     (cate eq 'coupon') ? '쿠폰/이벤트' :
                     (cate eq 'order') ? '주문/결제' :
@@ -167,12 +183,8 @@
                 </select>
 
                 <!-- 2차 분류 선택 상자 -->
-                <select name="typeNo" id="type" required disabled>
+                <select name="type" id="type" required disabled>
                   <option selected disabled value="">[[${boardDTO.typeName}]]</option>
-                  <th:block th:each="type : ${types}">
-                    <!-- 해당 1차 분류와 일치하는 2차 분류만 표시 -->
-                    <option th:if="${type.cate eq cate}" th:value="${type.typeNo}" th:text="${type.typeName}" th:attr="data-cate=${type.cate}"></option>
-                  </th:block>
                 </select>
               </td>
             </tr>

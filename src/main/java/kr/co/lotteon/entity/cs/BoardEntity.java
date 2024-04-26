@@ -35,8 +35,10 @@ public class BoardEntity {
 
     @Builder.Default
     private Integer file = -1;
+
     @ColumnDefault("0")
     private int hit;
+
     private String status;
     private int reply;
 
