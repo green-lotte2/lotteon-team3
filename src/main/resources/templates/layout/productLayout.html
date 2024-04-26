@@ -212,9 +212,11 @@
                 uidValue = null;
             }
             console.log(uidValue);
+        }
 
-
-
+        // 최상단 이동 (topButton) 함수 //
+        function movePageTop() {
+            window.scrollTo(0, 0);
         }
 
     </script>
@@ -229,7 +231,10 @@
                     <a th:href="@{/member/join}">회원가입</a>
                 </th:block>
                 <th:block sec:authorize="isAuthenticated()">
-                    <span>[[${#authentication.principal.member.name}]]님</span>
+                    <span>[[${#authentication.principal.member.name}]]님 </span>
+                    <a sec:authorize="hasRole('ROLE_6')" th:href="@{/admin}">관리자</a>
+                    <a sec:authorize="hasRole('ROLE_7')" th:href="@{/admin}">관리자</a>
+                    <a sec:authorize="hasRole('ROLE_5')" th:href="@{/seller}">판매자</a>
                     <a th:href="@{/member/logout}">로그아웃</a>
                     <a th:href="@{/my/home}">마이페이지</a>
                     <a th:href="@{/product/cart}">
@@ -322,7 +327,7 @@
                 </p>
             </div>
         </footer>
-        <button type="button" id="top">상단이동</button>
+    <button type="button" id="top" onclick="movePageTop()">상단이동</button>
 </div>
 </body>
 

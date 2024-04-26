@@ -71,6 +71,11 @@
             });
 
         }
+
+        // 최상단 이동 (topButton) 함수 //
+        function movePageTop() {
+            window.scrollTo(0, 0);
+        }
     </script>
 </head>
 <body>
@@ -234,7 +239,7 @@
             </p>
         </div>
     </footer>
-    <button type="button" id="top">상단이동</button>
+    <button type="button" id="top" onclick="movePageTop()">상단이동</button>
 </div>
 </body>
 </html>

@@ -1,18 +1,30 @@
 package kr.co.lotteon.controller;
 
+import kr.co.lotteon.dto.admin.BannerDTO;
+import kr.co.lotteon.service.admin.BannerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
 @Controller
 public class MyController {
 
+    private final BannerService bannerService;
+
     // my - home (마이페이지 메인) 페이지 매핑
     @GetMapping("/my/home")
-    public String home(){
+    public String home(Model model){
+
+        // 마이페이지 배너
+        List<BannerDTO> myPageBanners = bannerService.selectBanners("myPage");
+
+        model.addAttribute("myPageBanners",myPageBanners);
         return "/my/home";
     }
     // my - info (나의 설정) 페이지 매핑

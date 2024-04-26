@@ -557,7 +557,7 @@ footer p > strong {
 #top {
   position: fixed;
   left: 50%;
-  bottom: 10px;
+  bottom: 50px;
   margin-left: 600px;
   /* display: none; */
   width: 42px;
