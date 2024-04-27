@@ -20,7 +20,7 @@ public class Cart {
     private String uid;
     private int prodNo;
     private int count;
-    private int opNo;
+    private String opNo;
 
     @CreationTimestamp
     private LocalDateTime rdate;

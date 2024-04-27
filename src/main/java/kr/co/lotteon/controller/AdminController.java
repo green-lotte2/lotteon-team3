@@ -159,10 +159,10 @@ public class AdminController {
     }
     // product modify (관리자 상품 수정) 페이지 매핑 : 상품 코드로 조회
     @GetMapping("/admin/product/modify")
-    public String modify(Model model, int prodCode){
+    public String modify(Model model, int prodNo){
 
         // 상품 상세 조회
-        List<ProductDTO> products = productService.selectByprodCode(prodCode);
+        List<ProductDTO> products = (List<ProductDTO>) productService.selectByprodNo(prodNo);
         log.info("관리자 상품 수정 Cont 1 : "+products);
 
         // Cate1 전체 조회
@@ -202,35 +202,7 @@ public class AdminController {
     public ResponseEntity<?> registerCate3(@PathVariable int cate2){
         return adminService.findAllCate3ByCate2(cate2);
     }
-    // 관리자 상품 등록 - DB insert
-    @RequestMapping(value = "/admin/product/register", produces = "application/json;charset=UTF-8", method = RequestMethod.POST)
-    public String registerProduct(HttpServletRequest httpServletRequest,
-                                  ProductDTO productDTO,
-                                  @RequestParam("optionDTOList") String optionDTOListJson,
-                                  @RequestParam("thumb190") MultipartFile thumb190,
-                                  @RequestParam("thumb230") MultipartFile thumb230,
-                                  @RequestParam("thumb456") MultipartFile thumb456,
-                                  @RequestParam("detail860") MultipartFile detail860){
-        productDTO.setIp(httpServletRequest.getRemoteAddr());
-        log.info("관리자 상품 등록 Cont 1 " + optionDTOListJson);
 
-
-        // 현재 로그인 중인 사용자 정보 불러오기
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        // 로그인 중일 때 해당 사용자 id를 seller에 입력
-            MyUserDetails userDetails = (MyUserDetails) authentication.getPrincipal();
-            String sellerId = userDetails.getMember().getName();
-            productDTO.setSeller(sellerId);
-            log.info("관리자 상품 등록 Cont 1 sellerId : " + sellerId);
-
-        log.info("관리자 상품 등록 Cont " + productDTO);
-
-        ProductDTO saveProd = adminService.insertProduct(optionDTOListJson, productDTO, thumb190, thumb230, thumb456, detail860);
-        int prodNo = saveProd.getProdNo();
-
-        return "redirect:/admin/product/view?prodNo="+prodNo;
-    }
     // 관리자 상품 수정 - DB insert
     @RequestMapping(value = "/admin/product/modify", produces = "application/json;charset=UTF-8", method = RequestMethod.POST)
     public String modifyProduct(ProductDTO productDTO,
@@ -245,14 +217,10 @@ public class AdminController {
         log.info("관리자 상품 수정 Cont prodNoList " + prodNoList);
         log.info("관리자 상품 수정 Cont " + productDTO);
 
-        // 수정 정보 저장
-        ProductDTO saveProd = adminService.insertProduct(optionDTOListJson, productDTO, thumb190, thumb230, thumb456, detail860);
-        int prodNo = saveProd.getProdNo();
-
         // 삭제한 옵션에 해당하는 상품 삭제
         adminService.prodArrDelete(prodNoList);
 
-        return "redirect:/admin/product/view?prodNo="+prodNo;
+        return "redirect:/admin/product/view?prodNo=";
     }
 
     // 관리자 상품 삭제
@@ -264,13 +232,6 @@ public class AdminController {
         return "/admin/product/view";
     }
 
-    // 등록된 상품 의류 옵션 추가
-    @RequestMapping(value = "/admin/option/color/{prodCode}", produces = "application/json;charset=UTF-8", method = RequestMethod.POST)
-    public ResponseEntity<?> colorOptionAdd(@PathVariable("prodCode") int prodCode, @RequestBody List<ColorDTO> colorDTOList) {
-        log.info("상품 의류 옵션 추가 Cont 1 : " + prodCode);
-        log.info("상품 의류 옵션 추가 Cont 2 : " + colorDTOList);
-        return adminService.colorOptionAdd(prodCode, colorDTOList);
-    }
     // 등록된 상품 커스텀 옵션 추가
     @RequestMapping(value = "/admin/option", produces = "application/json;charset=UTF-8", method = RequestMethod.POST)
     public ResponseEntity<?> optionAdd(@RequestBody List<OptionDTO> optionDTOS) {

@@ -13,15 +13,18 @@ import java.util.Map;
 
 public interface ProductRepositoryCustom {
 
+    // 관리자 상품 목록 조회
     public Page<Product> adminSelectProducts(AdminProductPageRequestDTO adminProductPageRequestDTO, Pageable pageable);
 
     public Page<Product> adminSearchProducts(AdminProductPageRequestDTO adminProductPageRequestDTO, Pageable pageable);
 
+    // 판매자 상품 목록 조회 (where seller = 본인)
+    public Page<Product> sellerSelectProducts(AdminProductPageRequestDTO adminProductPageRequestDTO, Pageable pageable, String sellerId);
+    public Page<Product> sellerSearchProducts(AdminProductPageRequestDTO adminProductPageRequestDTO, Pageable pageable, String sellerId);
+
     // 상품 목록 기본 리스트
     public Page<Product> productList(PageRequestDTO pageRequestDTO, Pageable pageable);
 
-
-    public Product findProductByProdCode(int prodCode);
 
     // ========== 메인페이지 상품리스트 ==========
     

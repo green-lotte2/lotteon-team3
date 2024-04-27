@@ -5,61 +5,44 @@
 <!-- 상품 상세페이지 시작 -->
 <section class="prodView" layout:fragment="content">
     <script>
+        let optionOk = true;
         function goList() {
-            location.href = '/lotteon/admin/product/list';
+
+            if (confirm('작성 중인 내용이 모두 사라집니다. 목록으로 이동하시겠습니까?')) {
+                location.href = '/lotteon/admin/product/list';
+            }
         }
         // option 선택 Div 공개
         async function prodOption() {
             const cate2 = [[${productDTO.cate2}]];
             console.log("cate2" + cate2);
 
-            // 남성의류나 여성의류
-            if (cate2 == '11' || cate2 == '12') {
-                document.getElementById('eOptionInputPanel').style.display = 'block';
-                document.getElementById('optionInputPanel').style.display = 'none';
-                // 그 외
-            } else {
-                document.getElementById('eOptionInputPanel').style.display = 'none';
-                document.getElementById('optionInputPanel').style.display = 'block';
-            }
-        }
+            optionOk = false;
 
-        // 의류 option 입력란 추가
-        function addOption(button) {
-            const tr = button.closest('tr');
-            const colorInput = tr.querySelector('.colorInput');
-            const colorValue = colorInput.value;
-            console.log("colorValue" + colorValue);
+            document.getElementById('optionInputPanel').style.display = 'block';
 
-            // 기존 tr 태그 복사
-            const newRow = document.querySelector('.eManualOptionRow').cloneNode(true);
-            const tableBody = document.querySelector('#prodOptionTable');
-            const newColorInput = newRow.querySelector('.colorInput');
-            // 이전에 선택한 색상값 넣어주기
-            newColorInput.value = colorValue;
-
-            tableBody.appendChild(newRow);
         }
         let optionCount = 1;
         // 그 외 option 입력란 추가
         function addEtcOption(button) {
 
             if(optionCount < 3) {
+                optionCount ++;
                 // tr 태그 생성 : node를 복사해서 appendChild하면 증가된 option div까지 전부 복사됨
                 const tr = document.createElement('tr');
                 const tableBody = document.querySelector('#optionTable');
 
                 const innerTr = `<td>
-                        <datalist id="list2" class="optionName">
+                        <datalist id="list${optionCount}" >
                             <option>색상</option>
                             <option>사이즈</option>
                             <option>소재</option>
                         </datalist>
-                        <input type="text" name="name" list="list2" class="optionName">
+                        <input type="text" name="opName" list="list${optionCount}" class="optionName">
                     </td>
                     <td class="left eBubbleArea">
                         <div class="optionDiv">
-                        <input id="optionValue" name="colorName" type="text" class="fText colorName"
+                        <input id="optionValue" name="colorName" type="text" class="fText optionValue"
                                style="width:150px;" placeholder="옵션 값을 입력">
                         <span class="spanBtn btnOption lv1Minus vaBottom" onclick="minusValueInput(this)">옵션 값 삭제</span>
                         <span class="spanBtn btnOption lv1Plus vaBottom" onclick="plusValueInput(this)">옵션 값 추가</span>
@@ -73,9 +56,11 @@
                                 <span>추가</span></button>
                         </div>
                     </td>`;
+
+                tr.classList.add('eHeading', 'manualOptionRow', 'optionEtcListTr');
                 tr.innerHTML = innerTr;
                 tableBody.appendChild(tr);
-                optionCount ++;
+
             }else{
                 alert('옵션 분류는 세개가 최대입니다.');
             }
@@ -101,63 +86,7 @@
             const optionDiv = span.closest('div');
             optionDiv.remove();
         }
-
-        // 의류 : 모든 옵션 품목추가 버튼 클릭
-        async function pushOptionList(e){
-            e.preventDefault();
-            const prodCode = [[${productDTO.prodCode}]];
-
-            const trList = document.getElementsByClassName('optionListTr');
-            const optionDTOList = [];
-            optionDTOList.length = 0;
-            optionCheck = true;
-            // 각 tr 요소에 대해 반복
-            for (const tr of trList) {
-                const colorInput = tr.querySelector('.colorInput');
-                const colorValue = colorInput.value;
-
-                const sizeSelect = tr.querySelector('.sizeSelect');
-                const selectedSize = sizeSelect.value;
-
-                const opStockInput = tr.querySelector('.opStockInput');
-                const opStockValue = opStockInput.value;
-
-                const colorNameInput = tr.querySelector('.colorName');
-                const colorNameValue = colorNameInput.value;
-
-                // OptionDTO 객체 생성
-                const optionDTO = {
-                    opStock: opStockValue,
-                    color: colorValue,
-                    colorName: colorNameValue,
-                    size: selectedSize
-                };
-
-                // OptionDTO 객체를 배열에 추가
-                optionDTOList.push(optionDTO);
-                console.log(optionDTOList);
-
-            }
-            const jsonData = JSON.stringify(optionDTOList);
-            console.log("aaaa : " + jsonData);
-            // 서버에 전송
-            await fetch(`/lotteon/admin/option/color/${prodCode}`, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(optionDTOList)
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('수량 변경에 실패했습니다.');
-                    }
-                    return response.json()
-                })
-                .catch(err => console.log(err))
-            console.log(optionDTOList);
-            alert('옵션 등록 성공');
-
-        }
-        // 그 외 : 모든 옵션 품목추가 버튼 클릭
+        // 모든 옵션 품목추가 버튼 클릭
         async function pushEtcOptionList(e){
             e.preventDefault();
             const prodNo = [[${productDTO.prodNo}]];
@@ -165,7 +94,7 @@
             const trList = document.getElementsByClassName('optionEtcListTr');
             const optionList = [];
             optionList.length = 0;
-            optionCheck = true;
+            optionOk = true;
             // 각 tr 요소에 대해 반복
             for (const tr of trList) {
                 const optionName = tr.querySelector('.optionName');
@@ -193,7 +122,7 @@
             const jsonData = JSON.stringify(optionList);
             console.log("aaaa : " + jsonData);
             // 서버에 전송
-            await fetch('/lotteon/admin/option', {
+            await fetch('/lotteon/seller/option', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(optionList)
@@ -206,7 +135,12 @@
                 })
                 .catch(err => console.log(err))
             console.log(optionList);
+
             alert('옵션 등록 성공');
+            // 3초 뒤에 페이지 이동
+            setTimeout(() => {
+                window.location.href = '/lotteon/seller/product/list';
+            }, 3000);
         }
     </script>
 
@@ -248,74 +182,6 @@
             </div>
         </div>
     </article>
-    <!-- 의류 상품 옵션 추가 -->
-    <div id="eOptionInputPanel" class="addForm _self_option_wrap" style="display: none;">
-        <h4>옵션</h4>
-        <p>
-            반드시 모든 옵션 품목추가를 하셔야 합니다. 등록된 상품은 같은 상품코드가 부여됩니다.
-        </p>
-        <div class="mBoard gCellSingle">
-            <table border="1" summary="" id="prodOptionTable" class="prodOptionTable">
-                <thead>
-                <tr>
-                    <th scope="col">색상</th>
-                    <th scope="col">사이즈</th>
-                    <th scope="col">재고량</th>
-                    <th scope="col">관리</th>
-                </tr>
-                </thead>
-                <tbody class="center" id="eManualOptionTbody">
-                <tr class="eHeading eManualOptionRow optionListTr" optiongroup="0">
-                    <td>
-                        <datalist id="list" class="list">
-                            <option>#d8cec5</option>
-                            <option>#1a1dee</option>
-                            <option>#1e1e15</option>
-                            <option>#303030</option>
-                            <option>#bb0000</option>
-                        </datalist>
-                        <input type="color" name="color" list="list" style="width:70px;" class="colorInput">
-                        <input id="colorName" name="colorName" type="text" class="fText colorName" style="width:150px;"
-                               placeholder="색상 이름을 입력">
-                    </td>
-                    <td>
-                        <select name="size" id="sizeSelect" class="sizeSelect">
-                            <option value="S">S</option>
-                            <option value="M">M</option>
-                            <option value="L">L</option>
-                            <option value="Xl">XL</option>
-                            <option value="XXL">XXL</option>
-                        </select>
-                    </td>
-                    <td class="left eBubbleArea" id="eOptionBubbleArea_0">
-                        <div class="bubbleArea">
-                            <div class="mBubble">
-                                <div class="box">
-                                    <input class="ec-uipack-bubble-move-ctrl opStockInput" type="text" name="opStock"
-                                           id="prodOptionStock">
-                                </div>
-                            </div>
-                        </div>
-                    </td>
-                    <td class="left eBubbleArea">
-                        <div class="button">
-                            <button type="button" class="btnOption lv1Minus vaBottom" onclick="removeOption(this)">
-                                <span>삭제</span></button>
-                            <button type="button" class="btnOption lv1Plus vaBottom" onclick="addOption(this)">
-                                <span>추가</span></button>
-                        </div>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <div class="mCtrl typeFooter">
-            <div class="gRight">
-                <button id="optionSubmit" onclick="pushOptionList(event)">모든 옵션 품목추가</button>
-            </div>
-        </div>
-    </div>
     <!-- 그 외 상품 옵션 추가 -->
     <div id="optionInputPanel" class="addForm _self_option_wrap" style="display: none;">
         <h4>옵션</h4>
@@ -334,12 +200,12 @@
                 <tbody class="center" id="optionTbody">
                 <tr class="eHeading manualOptionRow optionEtcListTr" optiongroup="0">
                     <td>
-                        <datalist id="list2" class="list">
+                        <datalist id="list1" class="list" >
                             <option>색상</option>
                             <option>사이즈</option>
                             <option>소재</option>
                         </datalist>
-                        <input type="text" name="opName" list="list2" class="optionName">
+                        <input type="text" name="opName" list="list1" class="optionName">
                     </td>
                     <td class="left eBubbleArea">
                         <div class="optionDiv">

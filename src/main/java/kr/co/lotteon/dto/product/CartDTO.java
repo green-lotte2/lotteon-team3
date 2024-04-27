@@ -16,6 +16,6 @@ public class CartDTO {
     private String uid;
     private int prodNo;
     private int count;
-    private int opNo;
+    private String opNo;
     private LocalDateTime rdate;
 }

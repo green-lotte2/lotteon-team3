@@ -1,0 +1,278 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/sellerLayout}">
+<section id="cs" layout:fragment="content">
+    <script>
+        window.onload = function (){
+            // 페이지 로드시 textarea 자동 높이 조절
+            const textareas = document.querySelectorAll('textarea');
+
+            // 선택된 각 textarea 요소에 대해 autoResize 함수를 호출합니다.
+            textareas.forEach(textarea => {
+                autoResize(textarea);
+            });
+        }
+        // 텍스트 입력시 textarea 자동 높이 조절
+        function autoResize(textarea) {
+            // 텍스트 영역의 스크롤 높이 설정을 임시로 해제
+            textarea.style.height = 'auto';
+
+            // 텍스트 영역의 스크롤 높이를 내용에 맞게 조절
+            textarea.style.height = textarea.scrollHeight + 'px';
+        }
+
+        function confirmDelete() {
+            return confirm("게시글을 삭제하시겠습니까?");
+        }
+
+        // cate 선택 시 type 조회
+        async function findType(cate) {
+            const typeSelect = document.getElementById('typeSelect');
+            console.log(typeSelect);
+            const types = await fetchGet(`/lotteon/admin/cs/type/${cate}`);
+            console.log(types);
+            // 기존 <option> 태그들 삭제
+            typeSelect.innerHTML = "";
+            for (const type of types) {
+                const typeOption = `<option value="${type.typeNo}">${type.typeName}</option>`;
+                console.log("typeOption : " + typeOption);
+                // 태그 문자열 삽입
+                typeSelect.insertAdjacentHTML('beforeend', typeOption);
+            }
+        }
+        // 답변 등록 버튼 클릭
+        async function submitComment(e){
+            e.preventDefault();
+            const commentBox = document.getElementById('commentBox');
+            const commentForm = document.getElementById('commentForm');
+
+            const uid = document.getElementById('uid').value;
+
+            const bno = document.getElementById('bno').value;
+            const cate = document.getElementById('cate').value;
+            const group = document.getElementById('group').value;
+            const content = document.getElementById('content').value;
+
+            const jsonData = {
+                "uid" : uid,
+                "bno" : bno,
+                "cate" : cate,
+                "group" : group,
+                "content" : content
+            };
+            console.log(jsonData);
+
+            // 답변 등록
+            const data = await fetchPost('/lotteon/comment', jsonData);
+
+            // 새 답변 목록에 추가
+            const commentArticle = `<div class="comment">
+                                            <p><span>${data.uid}</span>&nbsp;&nbsp;<span>${data.rdate.substring(0, 10)}</span></p>
+                                            <textarea name="" id="" readonly>${data.content}</textarea>
+                                            <div>
+                                            <button id="commentModify">수정</button>
+                                            <button id="commentRemove">삭제</button>
+                                            </div>
+                                            </div>`;
+            // 태그 문자열 삽입
+            commentBox.insertAdjacentHTML('beforeend', commentArticle);
+            // 답변 작성 폼 비우기
+            commentForm.content.value = "";
+        }
+        // 답변 작성 취소
+        function commentCancel(e){
+            e.preventDefault();
+            const commentForm = document.getElementById('commentForm');
+            // 답변 작성 폼 비우기
+            commentForm.content.value = "";
+        }
+        // 답변 수정 시작
+        function commentModify(event){
+            event.preventDefault();
+            // 이벤트가 발생한 요소(button)
+            const button = event.target;
+            const commentForm = button.closest('form');
+            // button의 부모 요소
+            const commentDiv = button.parentNode;
+
+            // readonly 해제
+            const textarea = commentForm.querySelector('textarea');
+            textarea.readOnly = false;
+
+            const btnModify = commentDiv.querySelector('.commentModify');
+            const btnSubmit = commentDiv.querySelector('.modifySubmit');
+            const btnCancel = commentDiv.querySelector('.modifyCancel');
+
+            // 수정 버튼 숨기기, 수정 완료 버튼 보이기
+            btnModify.style.display = 'none';
+            btnSubmit.style.display = 'block';
+            btnCancel.style.display = 'block';
+        }
+
+        // 답변 수정 완료
+        async function modifySubmit(event){
+            event.preventDefault();
+            // 이벤트가 발생한 요소(button)
+            const button = event.target;
+            // form 태그 선택
+            const commentForm = button.closest('form');
+
+            // form 안의 input 요소들을 모두 선택하여 JSON 데이터 생성
+            const formData = new FormData(commentForm);
+            const jsonData = {};
+
+            formData.forEach((value, key) => {
+                jsonData[key] = value;
+            });
+            // 답변 수정 정보 전송
+            const data = await fetchPut("/lotteon/comment", jsonData);
+
+            // 수정 모드 해제
+            modifyCancel(event);
+        }
+        // 답변 수정 취소
+        function modifyCancel(event){
+            event.preventDefault();
+
+            const button = event.target;
+            const commentDiv = button.parentNode;
+            const commentForm = button.closest('form');
+            // readonly 속성 추가
+            const textarea = commentForm.querySelector('textarea');
+            textarea.readOnly = true;
+
+            const btnModify = commentDiv.querySelector('.commentModify');
+            const btnSubmit = commentDiv.querySelector('.modifySubmit');
+            const btnCancel = commentDiv.querySelector('.modifyCancel');
+
+            // 수정 버튼 보이기, 수정 완료 버튼과 수정 취소 버튼 숨기기
+            btnModify.style.display = 'block';
+            btnSubmit.style.display = 'none';
+            btnCancel.style.display = 'none';
+        }
+        // 답변 삭제
+        async function deleteComment(event){
+            event.preventDefault();
+            // 이벤트가 발생한 요소(button)
+            const button = event.target;
+            const cno = button.dataset.cno;
+            const comment = button.closest('.comment');
+
+            console.log("cno : " + cno);
+            if (confirm('답변을 삭제하시겠습니까?')) {
+                const data = await fetchDelete(`/lotteon/comment/${cno}`);
+                if (data) {
+                    comment.remove();
+                }
+            }
+        }
+    </script>
+    <nav>
+        <span th:switch="${group}">
+            <span th:case="notice" style="font-size: 26px; font-weight: bold;">공지사항</span>
+            <span th:case="qna" style="font-size: 26px; font-weight: bold;">고객문의</span>
+            <span th:case="faq" style="font-size: 26px; font-weight: bold;">자주묻는질문</span>
+        </span>
+    </nav>
+    <!-- 내용 시작 -->
+    <article class="writeArt">
+        <form th:action="@{/admin/cs/write}" id="adminWriteForm" method="POST" enctype="multipart/form-data">
+            <input type="hidden" name="group" readonly th:value="${group}"/>
+            <!--<input type="hidden" name="uid" th:value="${#authentication.principal.member.uid}" /> 나중에 추가하기-->
+            <table>
+                <tr>
+                    <td>제목</td>
+                    <td>
+                        <input type="text" name="title" placeholder="제목을 입력하세요." th:value="${board.title}"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>내용</td>
+                    <td>
+                        <textarea name="content" readonly th:text="${board.content}"></textarea>
+                        <!-- 이미지 출력 -->
+                        <div class="filebox" th:if="${board.fileDTOList != null and not #lists.isEmpty(board.fileDTOList)}">
+                            <p th:each="fileDTO, iterStat : ${board.fileDTOList}" th:style="'display: inline-block; margin-right: 10px;' + (${iterStat.last} ? 'margin-right: 0;' : '')">
+                                <img th:src="@{|/uploads/${fileDTO.sfile}|}" alt="상품이미지"/>
+                            </p>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>첨부파일</td>
+                    <td>
+                        <div class="fileBox">
+                            <th:block th:each="file:${board.fileDTOList}">
+                                <a th:href="@{/file/fileDownload/{fno}(fno=${file.fno})}" class="fileLink"
+                                   id="formFileMultiple"
+                                   th:data-fno="${file.fno}">[[${file.ofile}]]</a>
+                            </th:block>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </form>
+        <!-- 수정 / 삭제 / 목록 버튼 -->
+        <div class="articleBtnBox">
+            <!-- 수정 버튼 -->
+            <a th:if="${adminBoardPageResponseDTO.keyword == null}"
+               th:href="@{/admin/cs/modify(group=${adminBoardPageResponseDTO.group}, bno=${board.bno}, pg=${adminBoardPageResponseDTO.pg})}"
+               class="btn btn-secondary btn-sm" data-art="artModify">수정</a>
+            <a th:if="${adminBoardPageResponseDTO.keyword != null}"
+               th:href="@{/admin/cs/modify(group=${adminBoardPageResponseDTO.group}, bno=${board.bno}, type=${adminBoardPageResponseDTO.type},keyword=${adminBoardPageResponseDTO.keyword}, pg=${adminBoardPageResponseDTO.pg})}"
+               class="btn btn-secondary btn-sm" data-art="artModify">수정</a>
+            <!-- 삭제 버튼 -->
+            <a th:if="${adminBoardPageResponseDTO.keyword == null}"
+               th:href="@{/admin/cs/delete(group=${adminBoardPageResponseDTO.group}, bno=${board.bno}, pg=${adminBoardPageResponseDTO.pg})}"
+               class="btn btn-secondary btn-sm btnDelete " data-art="artRemove"
+               onclick="return confirmDelete()">삭제</a>
+            <a th:if="${adminBoardPageResponseDTO.keyword != null}"
+               th:href="@{/admin/cs/delete(group=${adminBoardPageResponseDTO.group}, bno=${board.bno}, type=${adminBoardPageResponseDTO.type},keyword=${adminBoardPageResponseDTO.keyword}, pg=${adminBoardPageResponseDTO.pg})}"
+               class="btn btn-secondary btn-sm btnDelete" data-art="artRemove"
+               onclick="return confirmDelete()">삭제</a>
+            <!-- 목록 버튼 -->
+            <a th:if="${adminBoardPageResponseDTO.keyword == null}"
+               th:href="@{/admin/cs/list(group=${adminBoardPageResponseDTO.group}, pg=${adminBoardPageResponseDTO.pg})}"
+               class="btn btnList">목록</a>
+            <a th:if="${adminBoardPageResponseDTO.keyword != null}"
+               th:href="@{/admin/cs/list(group=${adminBoardPageResponseDTO.group}, pg=${adminBoardPageResponseDTO.pg}, type=${adminBoardPageResponseDTO.type}, keyword=${adminBoardPageResponseDTO.keyword})}"
+               class="btn btnList">목록</a>
+        </div>
+    </article>
+    <!-- 답변쓰기 -->
+    <div class="commentBox" id="commentBox">
+        <p>답변쓰기</p>
+        <form th:action="@{/comment}" name="commentForm" method="post" id="commentForm">
+            <th:block th:unless="${#authentication.principal eq 'anonymousUser'}">
+                <input type="hidden" name="uid" th:value="${#authentication.principal.member.uid}" id="uid">
+            </th:block>
+            <input type="hidden" name="bno" th:value="${board.bno}" id="bno"/>
+            <input type="hidden" name="cate" th:value="${board.cate}" id="cate"/>
+            <input type="hidden" name="group" th:value="${board.group}" id="group"/>
+            <textarea name="content" class="commentContent" id="content"></textarea>
+            <div>
+                <button id="btnCancel" data-form="commentCancel" onclick="commentCancel(event)">취소</button>
+                <button id="btnComment" data-form="commentWrite" onclick="submitComment(event)">답변등록</button>
+            </div>
+        </form>
+        <!-- 답변 목록 -->
+        <th:block th:each="comment : ${comments}">
+            <form th:action="@{/comment/modify}" name="commentForm" method="post">
+                <input type="hidden" name="uid" th:value="${comment.uid}">
+                <input type="hidden" name="bno" th:value="${comment.bno}">
+                <input type="hidden" name="cno" th:value="${comment.cno}">
+            <div class="comment">
+                <p><span th:text="${comment.uid}"></span>&nbsp;&nbsp;<span th:text="${#temporals.format(comment.rdate,'yyyy-mm-dd')}"></span></p>
+                <textarea name="content" id="" readonly th:text="${comment.content}"></textarea>
+                <div>
+                    <button class="btnComment commentModify" onclick="commentModify(event)">수정</button>
+                    <button class="btnComment modifySubmit" onclick="modifySubmit(event)" style="display: none">수정완료</button>
+                    <button class="btnComment modifyCancel" onclick="modifyCancel(event)" style="display: none">수정취소</button>
+                    <button class="btnComment commentRemove" onclick="deleteComment(event)" th:data-cno="${comment.cno}">삭제</button>
+                </div>
+            </div>
+            </form>
+        </th:block>
+    </div>
+
+</section>
