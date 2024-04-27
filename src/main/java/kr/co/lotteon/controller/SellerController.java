@@ -98,24 +98,30 @@ public class SellerController {
     public String modify(Model model, int prodNo){
 
         // 상품 상세 조회
-        List<ProductDTO> products = (List<ProductDTO>) productService.selectByprodNo(prodNo);
-        log.info("관리자 상품 수정 Cont 1 : "+products);
+        ProductDTO product = productService.selectByprodNo(prodNo);
+        log.info("관리자 상품 수정 Cont 1 : "+product);
 
         // Cate1 전체 조회
         List<Cate1DTO> cate1List = sellerService.findAllCate1();
         log.info("관리자 상품 수정 Cont 2 : "+cate1List);
 
         // Cate2 조회
-        List<Cate2DTO> cate2List = (List<Cate2DTO>) sellerService.findAllCate2ByCate1(products.get(0).getCate1()).getBody();
+        List<Cate2DTO> cate2List = (List<Cate2DTO>) sellerService.findAllCate2ByCate1(product.getCate1()).getBody();
         log.info("관리자 상품 수정 Cont 3 : "+cate2List);
+
         // Cate3 조회
-        List<Cate3DTO> cate3List = (List<Cate3DTO>) sellerService.findAllCate3ByCate2(products.get(0).getCate2()).getBody();
+        List<Cate3DTO> cate3List = (List<Cate3DTO>) sellerService.findAllCate3ByCate2(product.getCate2()).getBody();
         log.info("관리자 상품 수정 Cont 4 : "+cate3List);
 
-        model.addAttribute("products", products);
+        // optionList 조회
+        Map<String, List<String>> optionList = sellerService.selectProdOption(prodNo);
+        log.info("optionList Map : "+optionList);
+
+        model.addAttribute("product", product);
         model.addAttribute("cate1List", cate1List);
         model.addAttribute("cate2List", cate2List);
         model.addAttribute("cate3List", cate3List);
+        model.addAttribute("optionList", optionList);
         return "/seller/product/modify";
     }
 
@@ -169,22 +175,21 @@ public class SellerController {
     // 관리자 상품 수정 - DB insert
     @RequestMapping(value = "/seller/product/modify", produces = "application/json;charset=UTF-8", method = RequestMethod.POST)
     public String modifyProduct(ProductDTO productDTO,
-                                @RequestParam("prodNoList") String prodNoList,
+                                @RequestParam("opNoList") String opNoList,
                                 @RequestParam("thumb190") MultipartFile thumb190,
                                 @RequestParam("thumb230") MultipartFile thumb230,
                                 @RequestParam("thumb456") MultipartFile thumb456,
                                 @RequestParam("detail860") MultipartFile detail860){
-        log.info("관리자 상품 수정 Cont 1 " + prodNoList);
+        log.info("관리자 상품 수정 Cont 1 " + productDTO);
 
-        log.info("관리자 상품 수정 Cont prodNoList " + prodNoList);
-        log.info("관리자 상품 수정 Cont " + productDTO);
+        log.info("관리자 상품 수정 Cont 2 opNoList " + opNoList);
 
         // 수정 정보 저장
-        ProductDTO saveProd = sellerService.insertProduct( productDTO, thumb190, thumb230, thumb456, detail860);
+        ProductDTO saveProd = sellerService.modifyProduct( productDTO, thumb190, thumb230, thumb456, detail860);
         int prodNo = saveProd.getProdNo();
 
 
-        return "redirect:/seller/product/view?prodNo="+prodNo;
+        return "redirect:/seller/product/list";
     }
 
     // 관리자 상품 삭제
@@ -260,7 +265,7 @@ public class SellerController {
         return  "/seller/cs/view";
     }
     // 관리자 글 보기 답변 등록
-    @PostMapping("/seller/seller/comment")
+    @PostMapping("/seller/comment")
     public ResponseEntity<Comment> commentWrite(@RequestBody CommentDTO commentDTO) {
         log.info("commentWrite : " + commentDTO);
 
@@ -271,12 +276,12 @@ public class SellerController {
     }
 
     // 관리자 글 보기 답변 삭제
-    @DeleteMapping("/seller/seller/comment/{cno}")
+    @DeleteMapping("/seller/comment/{cno}")
     public ResponseEntity<?> deleteComment(@PathVariable("cno") int cno){
         return commentService.deleteComment(cno);
     }
     // 관리자 글 보기 답변 수정
-    @PutMapping("/seller/seller/comment")
+    @PutMapping("/seller/comment")
     public ResponseEntity<?> modifyComment(@RequestBody CommentDTO commentDTO){
         log.info("modifyComment : " +commentDTO.toString());
         return commentService.updateComment(commentDTO);
