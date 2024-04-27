@@ -140,8 +140,6 @@
                                 <th>이미지</th>
                                 <th>상품코드</th>
                                 <th>상품명</th>
-                                <th>색상명</th>
-                                <th>색상</th>
                                 <th>판매가격</th>
                                 <th>할인율</th>
                                 <th>포인트</th>
@@ -158,10 +156,8 @@
                                              class="thumb"
                                              style="width: 60px; height: 60px;">
                                     </td>
-                                    <td th:text="${product.prodCode}">상품코드</td>
+                                    <td th:text="${product.prodNo}">상품코드</td>
                                     <td th:text="${product.prodName}">상품명</td>
-                                    <td th:text="${product.colorName}">색상</td>
-                                    <td><div th:style="'background-color: ' + ${product.color}" class="colorListDiv">ㅤ</div></td>
                                     <td th:text="${product.price}">가격</td>
                                     <td th:text="${product.discount}">할인율</td>
                                     <td th:text="${product.point}">적립금</td>
@@ -169,7 +165,7 @@
                                     <td th:text="${product.company}">제조사</td>
                                     <td th:text="${product.hit}">조회</td>
                                     <td>
-                                        <a th:href="@{/admin/product/modify(prodCode = ${product.prodCode})}">수정</a>
+                                        <a th:href="@{/admin/product/modify(prodNo = ${product.prodNo})}">수정</a>
                                     </td>
                                 </tr>
                             </th:block>

@@ -297,6 +297,11 @@ public class SellerService {
         return modelMapper.map(saveProduct, ProductDTO.class);
     }
 
+    // 판매자 상품 수정 - 옵션 조회
+    public Map<String, List<String>> selectProdOption(int prodNo){
+        return optionRepository.selectProdOption(prodNo);
+    }
+
     // 판매자 상품 수정 - DB insert
     @Transient
     public ProductDTO modifyProduct(ProductDTO productDTO,
