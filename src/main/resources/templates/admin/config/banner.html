@@ -28,6 +28,7 @@
                 inputFile.value = "";
                 return false;
             }
+            findImgColor(obj);
         }
 
         // 배너 위치 선택하면 사이즈 크기 알려주기
@@ -134,6 +135,119 @@
                 button.innerText = "비활성화";
                 button.classList.add('btnBannerInact');
             }
+        }
+        // 이미지 파일을 읽어서 가장 많은 색상을 추출하는 함수
+        function extractOuterColor(imageUrl, callback) {
+            const img = new Image();
+
+            // 이미지 CORS 문제 해결
+            img.crossOrigin = "Anonymous";
+            /*
+            이미지를 가져오는 사이트가 이미지 소유자의 사이트와 다를 경우, CORS 정책으로 인해 이미지를 로드하는 데 문제가 발생
+            */
+
+            // 이미지 불러와서 분석
+            img.onload = function() {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                canvas.width = img.width;
+                canvas.height = img.height;
+                ctx.drawImage(img, 0, 0);
+
+                // 이미지의 주변 10px 픽셀을 분석
+                const borderSize = 10;
+                // 이미지 색상 배열들
+                const topColors = [];
+                const bottomColors = [];
+                const leftColors = [];
+                const rightColors = [];
+
+                // 윗 부분
+                for (let  x = 0; x < canvas.width; x++) {
+                    for (let  y = 0; y < borderSize; y++) {
+                        const pixelData = ctx.getImageData(x, y, 1, 1).data;
+                        // RGB -> HEX(#000000 형식)
+                        const color = rgbToHex(pixelData[0], pixelData[1], pixelData[2]);
+                        // 이미지 색상 배열에 삽입
+                        topColors.push(color);
+                    }
+                }
+
+                // 아랫 부분
+                for (let  x = 0; x < canvas.width; x++) {
+                    for (let  y = canvas.height - borderSize; y < canvas.height; y++) {
+                        const pixelData = ctx.getImageData(x, y, 1, 1).data;
+                        const color = rgbToHex(pixelData[0], pixelData[1], pixelData[2]);
+                        bottomColors.push(color);
+                    }
+                }
+
+                // 왼쪽 부분
+                for (let  y = 0; y < canvas.height; y++) {
+                    for (let  x = 0; x < borderSize; x++) {
+                        const pixelData = ctx.getImageData(x, y, 1, 1).data;
+                        const color = rgbToHex(pixelData[0], pixelData[1], pixelData[2]);
+                        leftColors.push(color);
+                    }
+                }
+
+                // 오른쪽 부분
+                for (let  y = 0; y < canvas.height; y++) {
+                    for (let  x = canvas.width - borderSize; x < canvas.width; x++) {
+                        const pixelData = ctx.getImageData(x, y, 1, 1).data;
+                        const color = rgbToHex(pixelData[0], pixelData[1], pixelData[2]);
+                        rightColors.push(color);
+                    }
+                }
+
+                // 각 측면의 색상 배열을 합쳐서 빈도를 계산
+                const allColors = topColors.concat(bottomColors, leftColors, rightColors);
+                const colorCounts = {};
+                let maxColor = '';
+                let maxCount = 0;
+
+                for (let i = 0; i < allColors.length; i++) {
+                    const color = allColors[i];
+                    // 각 색상이 나타난 횟수 ++
+                    colorCounts[color] = (colorCounts[color] || 0) + 1;
+
+                    // 최대 등장 횟수와 비교 후 저장
+                    if (colorCounts[color] > maxCount) {
+                        maxColor = color;
+                        maxCount = colorCounts[color];
+                    }
+                }
+                callback(maxColor);
+            };
+            img.src = imageUrl;
+        }
+
+        // RGB 값을 HEX(#000000 형식)으로 변환하는 함수
+        function rgbToHex(r, g, b) {
+            return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+        }
+        // RGB 값을 HEX(#000000 형식)으로 변환하는 함수 2
+        function componentToHex(c) {
+            const hex = c.toString(16);
+            return hex.length == 1 ? "0" + hex : hex;
+        }
+
+        // 이미지 파일이 변경될 때 실행되는 함수
+        function findImgColor(input) {
+            const file = input.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function(event) {
+                const imageUrl = event.target.result;
+
+                // 최다 색상 값 구하기
+                extractOuterColor(imageUrl, function(outerColor) {
+                    // outerColor : extractOuterColor() 에서 콜백된 maxColor
+                    document.getElementById('backcolorInput').value = outerColor;
+                });
+            };
+
+            reader.readAsDataURL(file);
         }
     </script>
     <nav>
@@ -512,6 +626,12 @@
                                         <option value="login">회원-로그인</option>
                                         <option value="myPage">마이페이지</option>
                                     </select>
+                                </td>
+                            </tr>
+                            <tr class="eHeading eManualOptionRow optionListTr" optiongroup="0">
+                                <td>배경색상</td>
+                                <td>
+                                    <input type="color" name="backcolor" style="width:70px; height: 30px" class="colorInput" id="backcolorInput">
                                 </td>
                             </tr>
                             <tr>

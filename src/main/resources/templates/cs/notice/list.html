@@ -48,6 +48,9 @@
                             <a th:href="@{/cs/notice/view(group=${csPageResponseDTO.group},cate=${csPageResponseDTO.cate},bno=${article.bno})}" >[<span th:text="${article.typeName}" style="font-size: 16px;"></span>] [[${article.title}]]</a>
                         </td>
                         <td th:text="${#temporals.format(article.rdate, 'yyyy.MM.dd')}"></td>
+                        <td>
+                            조회: [[${article.hit}]]
+                        </td>
                     </tr>
                 </table>
                 <!-- 페이지 -->

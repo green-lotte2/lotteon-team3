@@ -220,7 +220,14 @@ public class AdminController {
         // 삭제한 옵션에 해당하는 상품 삭제
         adminService.prodArrDelete(prodNoList);
 
-        return "redirect:/admin/product/view?prodNo=";
+        // 수정 정보 저장
+        ProductDTO saveProd = adminService.modifyProduct(optionDTOListJson, productDTO, thumb190, thumb230, thumb456, detail860);
+        int prodNo = saveProd.getProdNo();
+
+        // 삭제한 옵션에 해당하는 상품 삭제
+        adminService.prodArrDelete(prodNoList);
+
+        return "redirect:/admin/product/list";
     }
 
     // 관리자 상품 삭제

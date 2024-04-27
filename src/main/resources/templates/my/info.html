@@ -16,7 +16,6 @@
                 </div>
             </nav>
 
-
             <div class="info">
                 <ul>
                     <span class="menu_else"></span>
@@ -38,7 +37,8 @@
                         <table border="0">
                             <tr>
                                 <td>사용자 ID</td>
-                                <td>chh****</td>
+                                <!-- 아이디 뒤 네자리 마스킹 처리 -->
+                                <td th:text="${#strings.substring(#authentication.principal.member.uid, 0, #authentication.principal.member.uid.length() - 4)} + '****'"></td>
                             </tr>
                             <tr>
                                 <td>비밀번호</td>
@@ -48,17 +48,26 @@
                             </tr>
                             <tr>
                                 <td>이름</td>
-                                <td>김*학</td>
+                                <td th:text="${#strings.substring(#authentication.principal.member.name, 0, 1)} + '*' + ${#strings.substring(#authentication.principal.member.name, 2)}"></td>
+
+                            </tr>
+                            <!-- 추가 -->
+                            <tr>
+                                <td>닉네임</td>
+                                <td>
+                                    <input text th:value="${#authentication.principal.member.nick}">
+                                    <button id="btnChangeNick">수정하기</button>
+                                </td>
                             </tr>
                             <tr>
-                                <td>생년월일</td>
-                                <td>1983년 05월 03일</td>
+                                <td>가입날짜</td>
+                                <td th:text="${#temporals.format(#authentication.principal.member.rdate, 'yyyy-MM-dd')}"></td>
                             </tr>
                             <tr>
                                 <td>E-mail</td>
                                 <td>
-                                    <input type="text" name="email1" value="chakh101">@
-                                    <input type="text" name="email2" value="naver.com">
+                                    <input type="text" name="email1" th:value="${#strings.substring(#authentication.principal.member.email, 0, #strings.indexOf(#authentication.principal.member.email, '@'))}">@
+                                    <input type="text" name="email2" th:value="${#strings.substring(#authentication.principal.member.email, #strings.indexOf(#authentication.principal.member.email, '@') + 1)}">
                                     <select>
                                         <option>직접입력</option>
                                         <option>naver.com</option>
@@ -74,9 +83,9 @@
                                 <td>휴대폰</td>
                                 <td>
                                     <p class="hp">
-                                        <input type="text" name="hp1" value="010"/>-
-                                        <input type="text" name="hp2" value="1234"/>-
-                                        <input type="text" name="hp3" value="1001"/>
+                                        <input type="text" name="hp1" th:value="${#strings.substring(#authentication.principal.member.hp, 0, 3)}"/>-
+                                        <input type="text" name="hp2" th:value="${#strings.substring(#authentication.principal.member.hp, 4, 8)}"/>-
+                                        <input type="text" name="hp3" th:value="${#strings.substring(#authentication.principal.member.hp, 9)}"/>
                                         <button id="btnChangeHp">수정하기</button>
                                     </p>
                                 </td>
@@ -84,11 +93,11 @@
                             <tr>
                                 <td>주소</td>
                                 <td>
-                                    <input type="text" name="zip"/>
+                                    <input type="text" name="zip" th:value="${#authentication.principal.member.zip}"/>
                                     <button id="btnFindZip">주소검색</button>
                                     <p class="address">
-                                        <input type="text" name="addr1"/>
-                                        <input type="text" name="addr2"/>
+                                        <input type="text" name="addr1" th:value="${#authentication.principal.member.addr1}"/>
+                                        <input type="text" name="addr2" th:value="${#authentication.principal.member.addr2}"/>
                                     </p>
                                 </td>
                             </tr>

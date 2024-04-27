@@ -17,8 +17,6 @@ public class BoardDTO {
     private int bno;                // 게시글 번호
     private String uid;             // 게시글 작성자 ID
     private int parent;
-
-
     private Integer prodNo;
     private String group;           // 게시글이 속한 그룹
     private String cate;            // 게시글이 속한 카테고리
