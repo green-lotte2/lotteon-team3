@@ -49,14 +49,6 @@ public class Product {
     private String thumb2;
     private String thumb3;
 
-    // 상품 상세 옵션
-    private int prodCode;
-    private int opStock;
-    private String color;
-    private String colorName;
-    private String size;
-
-
     @CreationTimestamp
     private LocalDateTime rdate;
 }

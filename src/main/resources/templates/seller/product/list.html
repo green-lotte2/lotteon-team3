@@ -11,7 +11,7 @@
                 const keywordInput = document.getElementById('keywordInput');
                 console.log(type);
 
-                const cate1s = await fetchGet('/lotteon/admin/findCate1')
+                const cate1s = await fetchGet('/lotteon/seller/findCate1')
                 // 기존 <input> 태그 삭제
                 keywordInput.remove();
 
@@ -77,7 +77,7 @@
                         prodNoArray.push(check.value);
                     }
                 })
-                fetch("/lotteon/admin/product/delete", {
+                fetch("/lotteon/seller/product/delete", {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({prodNoArray: prodNoArray})
@@ -102,18 +102,17 @@
                 </nav>
                 <!-- 상품목록 컨텐츠 시작 -->                                
                 <section>
-                    <form th:action="@{/admin/product/list}" method="get" id="searchForm">
+                    <form th:action="@{/seller/product/list}" method="get" id="searchForm">
                         <select name="type" onchange="findCate(this.value)">
                             <option value="prodName">상품명</option>
-                            <option value="prodCode">상품코드</option>
+                            <option value="prodNo">상품번호</option>
                             <option value="cate1" >상품분류</option>
                             <option value="company">제조사</option>
-                            <option value="seller">판매자</option>
                         </select>
                         <input type="text" name="keyword" placeholder="검색어를 입력하세요" id="keywordInput"/>
                     </form>
                     <table>
-                        <form id="formCheck" th:action="@{/admin/product/delete}" method="get">
+                        <form id="formCheck" th:action="@{/seller/product/delete}" method="get">
                             <tr>
                                 <th><input type="checkbox" name="all" onclick="totalCheck()"/></th>
                                 <th>이미지</th>

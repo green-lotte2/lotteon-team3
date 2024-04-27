@@ -27,9 +27,6 @@ public class ProductDTO {
     private int sold;
     private int stock;
     private int amount;
-    private int prodCode;
-    private String colorName;
-    private String color;
 
     private String bizType;
     private String company;
@@ -48,10 +45,6 @@ public class ProductDTO {
     private String thumb3;
 
     List<OptionDTO> optionList;
-
-    // 상품 상세 옵션
-    private int opStock;
-    private String size;
 
     private LocalDateTime rdate;
 }
