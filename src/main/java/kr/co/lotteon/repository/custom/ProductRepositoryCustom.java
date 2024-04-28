@@ -18,10 +18,12 @@ public interface ProductRepositoryCustom {
 
     public Page<Product> adminSearchProducts(AdminProductPageRequestDTO adminProductPageRequestDTO, Pageable pageable);
 
-    // 판매자 상품 목록 조회 (where seller = 본인)
+    // 판매자 상품 목록 (Page) 조회 (where seller = 본인)
     public Page<Product> sellerSelectProducts(AdminProductPageRequestDTO adminProductPageRequestDTO, Pageable pageable, String sellerId);
     public Page<Product> sellerSearchProducts(AdminProductPageRequestDTO adminProductPageRequestDTO, Pageable pageable, String sellerId);
 
+    // 판매자 상품 문의글 조회용 상품 (List) 조회 (where seller = 본인)
+    public List<Integer> selectProdNoForQna(String sellerId);
     // 상품 목록 기본 리스트
     public Page<Product> productList(PageRequestDTO pageRequestDTO, Pageable pageable);
 

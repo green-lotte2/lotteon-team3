@@ -3,6 +3,7 @@ package kr.co.lotteon.service.admin;
 import com.querydsl.core.Tuple;
 import kr.co.lotteon.dto.cs.CommentDTO;
 import kr.co.lotteon.entity.cs.Comment;
+import kr.co.lotteon.repository.cs.BoardRepository;
 import kr.co.lotteon.repository.cs.CommentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.beans.Transient;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,6 +22,7 @@ import java.util.Optional;
 public class CommentService {
 
     private final CommentRepository commentRepository;
+    private final BoardRepository boardRepository;
     private final ModelMapper modelMapper;
 
     // 답변 목록
@@ -30,6 +33,7 @@ public class CommentService {
         return comments;
     }
     // 댓글 작성
+    @Transient
     public ResponseEntity<Comment> insertComment(CommentDTO commentDTO){
         // DTO -> Entity
         Comment comment = modelMapper.map(commentDTO, Comment.class);
@@ -49,6 +53,9 @@ public class CommentService {
         Comment saveComment = saveTuple.get(0, Comment.class);
         String nick = saveTuple.get(1, String.class);
         saveComment.setNick(nick);
+
+        // Board reply ++
+        boardRepository.incrementReplyByBno(commentDTO.getBno());
 
         log.info("insertComment saveComment : " + saveComment.toString());
         return ResponseEntity.ok().body(saveComment);

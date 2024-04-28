@@ -213,12 +213,19 @@ public class SellerService {
     }
 
     // 판매자 상품 검색 목록 조회
-    public AdminProductPageResponseDTO adminSearchProducts(AdminProductPageRequestDTO adminProductPageRequestDTO) {
+    public AdminProductPageResponseDTO sellerSearchProducts(AdminProductPageRequestDTO adminProductPageRequestDTO) {
         log.info("판매자 상품 목록 검색 조회 Serv 1 : " + adminProductPageRequestDTO);
         Pageable pageable = adminProductPageRequestDTO.getPageable("no");
 
+        // 현재 로그인 중인 사용자 정보 불러오기
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        // 로그인 중일 때 해당 사용자 id를 seller에 입력
+        MyUserDetails userDetails = (MyUserDetails) authentication.getPrincipal();
+        String sellerId = userDetails.getMember().getName();
+
         // DB 조회
-        Page<Product> pageProducts = productRepository.adminSearchProducts(adminProductPageRequestDTO, pageable);
+        Page<Product> pageProducts = productRepository.sellerSearchProducts(adminProductPageRequestDTO, pageable, sellerId);
         log.info("판매자 상품 목록 검색 조회 Serv 2 : " + pageProducts);
 
         // Page<Product>을 List<ProductDTO>로 변환
@@ -415,22 +422,34 @@ public class SellerService {
 
         Page<Tuple> boardEntities = null;
 
+        // 현재 로그인 중인 사용자 정보 불러오기
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        // 로그인 중일 때 해당 사용자 id를 seller에 입력
+        MyUserDetails userDetails = (MyUserDetails) authentication.getPrincipal();
+        String sellerId = userDetails.getMember().getName();
+
+        // 해당 판매자의 상품번호 전부 조회
+        List<Integer> prodNos = productRepository.selectProdNoForQna(sellerId);
+        log.info("상품번호 전부 조회 "+ prodNos.toString());
+
+
         // 전체 조회
         if ((keyword == null || "".equals(keyword)) && ("".equals(cate) || "all".equals(cate))) {
             // DB 조회
-            boardEntities = boardRepository.selectBoardsByGroup(adminBoardPageRequestDTO, pageable, group);
+            boardEntities = boardRepository.selectBoardBySeller(adminBoardPageRequestDTO, pageable, prodNos);
             log.info("게시판관리 - 목록 Serv 3 전체 조회 : " + boardEntities);
 
             // type이 cate인 검색
         } else if ((keyword == null || "".equals(keyword)) && !"all".equals(cate)) {
             // DB 조회
-            boardEntities = boardRepository.searchBoardsByCate(adminBoardPageRequestDTO, pageable, group, cate);
+            boardEntities = boardRepository.searchBoardBySellerAndCate(adminBoardPageRequestDTO, pageable, prodNos, cate);
             log.info("게시판관리 - 목록 Serv 4 cate인 검색 : " + boardEntities);
 
             // 키워드로 검색
         } else if (keyword != null) {
             // DB 조회
-            boardEntities = boardRepository.searchBoardsByGroup(adminBoardPageRequestDTO, pageable, group);
+            boardEntities = boardRepository.searchBoardsBySellerAndKeyword(adminBoardPageRequestDTO, pageable, prodNos);
             log.info("게시판관리 - 목록 Serv 5 키워드로 검색 : " + boardEntities);
         }
 

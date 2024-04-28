@@ -78,7 +78,7 @@ public class SellerController {
         }else {
             // 검색 상품 목록 조회
             log.info("키워드 검색 Cont" + adminProductPageRequestDTO.getKeyword());
-            adminPageResponseDTO = sellerService.adminSearchProducts(adminProductPageRequestDTO);
+            adminPageResponseDTO = sellerService.sellerSearchProducts(adminProductPageRequestDTO);
         }
         log.info("판매자 상품 목록 Cont 2 : " + adminPageResponseDTO);
         model.addAttribute("adminPageResponseDTO", adminPageResponseDTO);

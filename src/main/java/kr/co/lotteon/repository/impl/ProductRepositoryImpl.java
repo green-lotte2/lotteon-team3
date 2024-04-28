@@ -199,6 +199,19 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
         return new PageImpl<>(results.getResults(), pageable, results.getTotal());
     }
 
+    // 판매자 - 상품 목록 All
+    public List<Integer> selectProdNoForQna(String sellerId){
+        // SELECT ProdNo FROM product WHERE seller = ?;
+
+        List<Integer> prodNos = jpaQueryFactory
+                .select(qProduct.prodNo)
+                .from(qProduct)
+                .where(qProduct.seller.eq(sellerId))
+                .fetch();
+
+        log.info("판매자 상품 번호 All 조회 Impl");;
+        return prodNos;
+    }
     // ==== 메인 페이지 ====
     // 베스트 상품
     @Override
