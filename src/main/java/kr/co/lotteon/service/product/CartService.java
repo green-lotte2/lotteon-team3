@@ -1,19 +1,19 @@
 package kr.co.lotteon.service.product;
 
 import kr.co.lotteon.dto.product.CartDTO;
+import kr.co.lotteon.dto.product.CartInfoDTO;
 import kr.co.lotteon.entity.product.Cart;
 import kr.co.lotteon.repository.product.CartRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Service @Slf4j @RequiredArgsConstructor
 public class CartService {
     private final CartRepository cartRepository;
+
     // 카트 넣기
     public void insertCart(CartDTO cartDTO){
         // 장바구니에 해당 상품이 있는지 확인
@@ -60,6 +60,16 @@ public class CartService {
             }
 
         }
+    }
+
+
+    // 장바구니 조회하기
+    public List<CartInfoDTO> findCartUid(String uid){
+        List<Cart> carts = cartRepository.findCartByUid(uid);
+        log.info("cartService..1" + carts);
+
+
+        return null;
     }
 
 }
