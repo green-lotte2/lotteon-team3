@@ -579,7 +579,7 @@
                                     </th:block>
                                     <!-- 기존 상품 옵션 -->
                                     <th:block th:if="${!optionMap.isEmpty()}">
-                                    <tr class="eHeading manualOptionRow optionEtcListTr" optiongroup="0" th:each="entry, loop : ${optionMap}">
+                                    <tr class="eHeading manualOptionRow" optiongroup="0" th:each="entry, loop : ${optionMap}">
                                         <td>
                                             <datalist th:id="'list' + ${loop.index + 1}" class="list">
                                                 <option>색상</option>
@@ -646,7 +646,7 @@
 
                             </table>                                
                         </section>
-                        <input type="text" name="opNoList" id="opNoList">
+                        <input type="hidden" name="opNoList" id="opNoList">
                         <input type="submit" value="등록하기" onclick="optionOkOk(this)"/>
                     </form>
                 </article>
