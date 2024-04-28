@@ -88,4 +88,43 @@ public class OptionRepositoryImpl implements OptionRepositoryCustom {
                 })
                 .collect(Collectors.toList());
     }
+
+    // 관리자 - 상품 수정 옵션 조회
+    @Override
+    public Map<String, List<Map<String, String>>> adminSelectProdOption(int prodNo) {
+
+        // opName을 그룹화하고, opValue와 opNo를 '_'을 사이에 넣고 concat해서 조회
+        // SELECT opName, group_concat(concat(opValue, '_', opNo)) from product_option where prodNo =? GROUP BY opName;
+        List<Tuple> result = jpaQueryFactory
+                .select(qOption.opName, Expressions.stringTemplate("GROUP_CONCAT(CONCAT({0}, '_', {1}))", qOption.opValue, qOption.opNo))
+                .from(qOption)
+                .where(qOption.prodNo.eq(prodNo))
+                .groupBy(qOption.opName)
+                .fetch();
+
+        log.info("상품 수정 옵션  impl 1" + result);
+
+        Map<String, List<Map<String, String>>> resultMap = new HashMap<>();
+
+        for (Tuple tuple : result) {
+            String opName = tuple.get(qOption.opName);
+            List<Map<String, String>> options = new ArrayList<>();
+            String opValueOpNo = tuple.get(Expressions.stringTemplate("GROUP_CONCAT(CONCAT({0}, '_', {1}))", qOption.opValue, qOption.opNo));
+            String[] opValueOpNoArray = opValueOpNo.split(",");
+
+            for (String opValueOpNoItem : opValueOpNoArray) {
+                String[] parts = opValueOpNoItem.split("_");
+                Map<String, String> optionMap = new HashMap<>();
+                optionMap.put("opValue", parts[0]);
+                optionMap.put("opNo", parts[1]);
+                options.add(optionMap);
+            }
+
+            resultMap.put(opName, options);
+        }
+        log.info("상품 수정 옵션 impl 3" + resultMap);
+
+        return resultMap;
+    }
+
 }

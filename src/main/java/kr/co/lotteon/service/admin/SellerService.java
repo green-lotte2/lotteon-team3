@@ -18,6 +18,7 @@ import kr.co.lotteon.entity.member.Terms;
 import kr.co.lotteon.entity.product.Cate1;
 import kr.co.lotteon.entity.product.Option;
 import kr.co.lotteon.entity.product.Product;
+import kr.co.lotteon.mapper.ProductMapper;
 import kr.co.lotteon.repository.BannerRepository;
 import kr.co.lotteon.repository.cs.BoardCateRepository;
 import kr.co.lotteon.repository.cs.BoardFileRepository;
@@ -68,7 +69,7 @@ public class SellerService {
     private final BoardFileRepository fileRepository;
 
     private final ModelMapper modelMapper;
-
+    private final ProductMapper productMapper;
 
     @Value("${img.upload.path}")
     private String imgUploadPath;
@@ -298,13 +299,13 @@ public class SellerService {
     }
 
     // 판매자 상품 수정 - 옵션 조회
-    public Map<String, List<String>> selectProdOption(int prodNo){
-        return optionRepository.selectProdOption(prodNo);
+    public Map<String, List<Map<String, String>>> selectProdOption(int prodNo){
+        return optionRepository.adminSelectProdOption(prodNo);
     }
 
     // 판매자 상품 수정 - DB insert
     @Transient
-    public ProductDTO modifyProduct(ProductDTO productDTO,
+    public void modifyProduct(ProductDTO productDTO,
                                     MultipartFile thumb190,
                                     MultipartFile thumb230,
                                     MultipartFile thumb456,
@@ -349,16 +350,33 @@ public class SellerService {
             String sName860 = imgResizing(detail860, orgPath, path, 860);
             productDTO.setDetail(sName860);
         }
-            // DTO -> Entity
-            Product product = modelMapper.map(productDTO, Product.class);
-            log.info("판매자 상품 등록 service8 product : " + product.toString());
+        log.info("판매자 상품 수정 service10 savedProduct : " + productDTO.toString());
             // 상품 정보 DB 저장
-        Product saveProduct = productRepository.save(product);
-            log.info("판매자 상품 등록 service10 savedProduct : " + saveProduct.toString());
-
-        return modelMapper.map(saveProduct, ProductDTO.class);
+            productMapper.updateProductByProdNo(productDTO);
     }
 
+    // 판매자 상품 수정 - 옵션 삭제
+    public void deleteOptions(String opNoList){
+
+        // JON 문자열 파싱 -> int 배열로 변환
+        ObjectMapper objectMapper = new ObjectMapper();
+        Integer[] opNoArray = null;
+
+        try {
+            opNoArray = objectMapper.readValue(opNoList, Integer[].class);
+            log.info("판매자 상품 수정 - 옵션 삭제 - opNoArray : " + opNoArray.toString());
+
+            for (int opNo : opNoArray) {
+                // 상품 삭제 반복
+                log.info("판매자 상품 수정 - 옵션 삭제- opNo : " + opNo);
+                optionRepository.deleteById(opNo);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
     // 판매자 상품 관리 - 등록한 상품 출력
     public ProductDTO prodView(int prodNo) {
         return modelMapper.map(productRepository.findById(prodNo), ProductDTO.class);

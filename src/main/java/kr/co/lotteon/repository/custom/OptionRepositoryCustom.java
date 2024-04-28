@@ -14,4 +14,7 @@ public interface OptionRepositoryCustom {
     public Map<String, List<String>> selectProdOption(int prodNo);
 
     public List<OptionDTO> selectOpvalueAndopNo(int prodNo, String opName);
+
+    // 관리자 상품 수정 옵션 띄우기
+    public Map<String, List<Map<String, String>>> adminSelectProdOption(int prodNo);
 }
