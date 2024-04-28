@@ -8,7 +8,6 @@
 
         <main id="product">            
 
-
             <!-- 장바구니 페이지 시작 -->
             <section class="cart" layout:fragment="content">
               <script>
@@ -23,82 +22,60 @@
               </nav>
                             
               <form action="#">
-                <!-- 장바구니 목록 -->
-                <table>
-                  <thead>
-                    <tr>
-                      <th><input type="checkbox" name="all"></th>
-                      <th>상품명</th>
-                      <th>총수량</th>
-                      <th>판매가</th>
-                      <th>할인</th>
-                      <th>포인트</th>
-                      <th>배송비</th>
-                      <th>소계</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr class="empty">
-                      <td colspan="7">장바구니에 상품이 없습니다.</td>
-                    </tr>
-                    <tr>
-                      <td><input type="checkbox" name=""></td>
-                      <td>
-                        <article>
-                          <a href="#"><img src="https://via.placeholder.com/80x80" alt=""></a>
-                          <div>
-                            <h2><a href="#">상품명</a></h2>
-                            <p>상품설명</p>
+                <div class="itemController">
+                  <div class="checkboxController">
+                    <input id="checkboxController" type="checkbox" class="cur_hand">
+                    <label for="checkboxController" class="cur_hand">전체선택</label>
+                  </div>
+                  <div class="deleteBtnGroup">
+                    <button type="button" class="deleteCartItems">
+                      <span>선택삭제</span>
+                    </button>
+                  </div>
+                </div>
+                <div class="accordion" id="accordionPanelsStayOpenExample">
+                  <div class="accordion-item">
+                    <h2 class="accordion-header">
+                      <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
+                        <input type="checkbox" class="checkbox" value="0">
+                        주식회사박컴퍼니
+                      </button>
+                    </h2>
+                    <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show">
+                      <div class="accordion-body">
+                        <div>
+                          <label>
+                            <input type="checkbox" class="checkbox" value="0">
+                          </label>
+                          <a th:href="@{#}">
+                            <img th:src="@{/product/3d1b2c82-a8c2-45af-b2a3-4bc9026c50c9.png}" style="width: 80px; height: auto;" alt="상품이미지">
+                          </a>
+
+                          <div class="details">
+                            <a th:href="@{#}">
+                              <p class="productDetail"> 와르 [-6cm 숏버전 추가] M194 와이드 데님</p>
+                            </a>
+                            <div class="optionDiv">옵션 밸류</div>
+                            <p class="productDeliveryInfo"> 4/30(화) 이내 도착 </p>
                           </div>
-                        </article>
-                      </td>
-                      <td>1</td>
-                      <td>27,000</td>
-                      <td>5%</td>
-                      <td>270</td>
-                      <td>무료배송</td>
-                      <td>27,000</td>
-                    </tr>
-                    <tr>
-                      <td><input type="checkbox" name=""></td>
-                      <td>
-                        <article>
-                          <a href="#"><img src="https://via.placeholder.com/80x80" alt=""></a>
-                          <div>
-                            <h2><a href="#">상품명</a></h2>
-                            <p>상품설명</p>
+
+                          <div class="count">
+                            <button class="decrease">-</button>
+                            <input type="text" class="number" name="num" readonly/>
+                            <button class="increase">+</button>
                           </div>
-                        </article>
-                      </td>
-                      <td>1</td>
-                      <td>27,000</td>
-                      <td>5%</td>
-                      <td>270</td>
-                      <td>무료배송</td>
-                      <td>27,000</td>
-                    </tr>
-                    <tr>
-                      <td><input type="checkbox" name=""></td>
-                      <td>
-                        <article>
-                          <a href="#"><img src="https://via.placeholder.com/80x80" alt=""></a>
-                          <div>
-                            <h2><a href="#">상품명</a></h2>
-                            <p>상품설명</p>
+
+                          <div class="cartPrice order-3">
+                            <p class="originalPrice"><span data-v-15ea7d62="">119,000원</span></p>
+                            <p class="currentPrice" style="">
+                              <strong>32,670</strong><span>원</span>
+                            </p>
                           </div>
-                        </article>
-                      </td>
-                      <td>1</td>
-                      <td>27,000</td>
-                      <td>5%</td>
-                      <td>270</td>
-                      <td>무료배송</td>
-                      <td>27,000</td>
-                    </tr>
-                    
-                  </tbody>
-                </table>
-                <input type="button" name="del" value="선택삭제">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
 
                 <!-- 장바구니 전체합계 -->
                 <div class="total">
