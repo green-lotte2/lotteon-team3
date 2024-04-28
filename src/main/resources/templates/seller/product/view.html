@@ -73,7 +73,7 @@
             const optionDiv = document.querySelector('.optionDiv').cloneNode(true);
             td.appendChild(optionDiv);
         }
-        // option 입력란 삭제
+        // option (이름) 입력란 삭제
         function removeOption(button) {
             const tr = button.closest('tr');
             if(optionCount > 1) {
@@ -86,6 +86,7 @@
             const optionDiv = span.closest('div');
             optionDiv.remove();
         }
+
         // 모든 옵션 품목추가 버튼 클릭
         async function pushEtcOptionList(e){
             e.preventDefault();

@@ -468,7 +468,7 @@ public class AdminService {
             productDTO.setDetail(sName860);
         }
         // update 마이 바티스 써야함
-        productMapper.updateProductByProdCode(productDTO);
+        productMapper.updateProductByProdNo(productDTO);
 
         // JON 문자열 파싱 -> OptionDTO 리스트로 변환
         ObjectMapper objectMapper = new ObjectMapper();

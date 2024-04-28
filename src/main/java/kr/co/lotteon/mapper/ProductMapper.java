@@ -7,5 +7,5 @@ import org.apache.ibatis.annotations.Mapper;
 public interface ProductMapper {
     public void updateProductHit(int prodNo);
 
-    public void updateProductByProdCode(ProductDTO productDTO);
+    public void updateProductByProdNo(ProductDTO productDTO);
 }
