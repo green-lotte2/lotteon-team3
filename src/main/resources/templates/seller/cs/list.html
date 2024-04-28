@@ -3,29 +3,22 @@
       layout:decorate="~{/layout/sellerLayout}">
 <section id="cs" layout:fragment = "content">
     <script>
-        // 게시글 삭제
-        async function deleteBoard(bno){
-            console.log("bno : " + bno);
-            if(confirm('게시글을 삭제 하시겠습니까?')){
-                const data = await fetchDelete(`/lotteon/admin/cs/delete/${bno}`);
-                if(data != null){
-                    alert('삭제 완료되었습니다.');
-                    location.reload();
-                }
-            }
-        }
         let optionCheck = true;
 
         // 검색 타입을 cate로 선택 시 cate 조회
         async function findTypeCate(type){
             const cateSelect = document.getElementById('cateSelect');
             const keywordInput = document.getElementById('keywordInput');
-
+            const searchForm = document.getElementById('searchForm');
             // 카테고리 선택일 경우
             if(type == "cate"){
                 // cate <select> 태그 공개, keyword <input> 숨김
                 cateSelect.style.display = 'inline-block';
                 keywordInput.style.display = 'none';
+                // 전체 조회면
+            }else if(type == 'all'){
+                location.href = '/lotteon/seller/cs/list?group=qna&cate=';
+
             }else {
                 cateSelect.style.display = 'none';
                 keywordInput.style.display = 'inline-block';
@@ -46,9 +39,10 @@
                     </span>
                 </nav>
                 <!-- 검색창 -->
-                <form th:action="@{/admin/cs/list}" method="get" id="searchForm">
+                <form th:action="@{/seller/cs/list}" method="get" id="searchForm">
                     <input type="hidden" name="group" th:value="${group}">
                     <select name="type" id="q_searchKeyTy" class="select" onchange="findTypeCate(this.value)">
+                        <option value="all">전체</option>
                         <option value="title">제목</option>
                         <option value="content">내용</option>
                         <option value="title_content">제목+내용</option>
@@ -77,42 +71,37 @@
                         <th>제목</th>
                         <th>작성자</th>
                         <th>작성일</th>
-                        <th>관리</th>
                     </tr>
                     <tr th:each="article : ${adminBoardPageResponseDTO.dtoList}" >
                         <td><span style="font-size: 16px;">[ [[${article.cateName}]] ]</span></td>
                         <td><span style="font-size: 16px;">[[${article.typeName}]]</span></td>
                         <td>
-                            <a th:if="${adminBoardPageResponseDTO.keyword == null}" th:href="@{/admin/cs/view(group=${adminBoardPageResponseDTO.group}, bno=${article.bno}, pg=${adminBoardPageResponseDTO.pg})}" > [[${article.title}]]</a>
-                            <a th:if="${adminBoardPageResponseDTO.keyword != null}" th:href="@{/admin/cs/view(group=${adminBoardPageResponseDTO.group}, type=${adminBoardPageResponseDTO.type}, keyword=${adminBoardPageResponseDTO.keyword},bno=${article.bno}, pg=${adminBoardPageResponseDTO.pg})}" > [[${article.title}]]</a>
+                            <a th:if="${adminBoardPageResponseDTO.keyword == null}" th:href="@{/seller/cs/view(group=${adminBoardPageResponseDTO.group}, bno=${article.bno}, pg=${adminBoardPageResponseDTO.pg})}" > [[${article.title}]]</a>
+                            <a th:if="${adminBoardPageResponseDTO.keyword != null}" th:href="@{/seller/cs/view(group=${adminBoardPageResponseDTO.group}, type=${adminBoardPageResponseDTO.type}, keyword=${adminBoardPageResponseDTO.keyword},bno=${article.bno}, pg=${adminBoardPageResponseDTO.pg})}" > [[${article.title}]]</a>
                         </td>
                         <td th:text="${article.uid}"></td>
                         <td th:text="${#temporals.format(article.rdate, 'yyyy-MM-dd')}"></td>
-                        <td>
-                            <button id="btnDelete" onclick="deleteBoard(this.value)" th:value="${article.bno}">삭제</button>
-                        </td>
                     </tr>
                 </table>
-                <a th:href="@{/admin/cs/write(group=${adminBoardPageResponseDTO.group})}" id="adminGoWrite">등록</a>
                 <!-- 페이지 -->
                 <div class="paging" th:if="${!adminBoardPageResponseDTO.dtoList.isEmpty()}">
                     <span class="prev">
-                        <a th:if="${adminBoardPageResponseDTO.keyword == null}" class="page-link" th:href="@{/admin/cs/list(pg=${adminBoardPageResponseDTO.start - 1}, group=${adminBoardPageResponseDTO.group})}">&#60;</a>
-                        <a th:if="${adminBoardPageResponseDTO.keyword != null}" class="page-link" th:href="@{/admin/cs/list(pg=${adminBoardPageResponseDTO.start - 1}, group=${adminBoardPageResponseDTO.group}, type=${adminBoardPageResponseDTO.type}, keyword=${adminBoardPageResponseDTO.keyword})}">&#60;</a>
+                        <a th:if="${adminBoardPageResponseDTO.keyword == null}" class="page-link" th:href="@{/seller/cs/list(pg=${adminBoardPageResponseDTO.start - 1}, group=${adminBoardPageResponseDTO.group})}">&#60;</a>
+                        <a th:if="${adminBoardPageResponseDTO.keyword != null}" class="page-link" th:href="@{/seller/cs/list(pg=${adminBoardPageResponseDTO.start - 1}, group=${adminBoardPageResponseDTO.group}, type=${adminBoardPageResponseDTO.type}, keyword=${adminBoardPageResponseDTO.keyword})}">&#60;</a>
                     </span>
                     <span class="num"> <!-- 해당 페이지 class on-->
                             <th:block th:each="num:${#numbers.sequence(adminBoardPageResponseDTO.start, adminBoardPageResponseDTO.end)}">
-                                <a  th:if="${adminBoardPageResponseDTO.keyword == null}" th:classappend="${adminBoardPageResponseDTO.pg == num} ? 'page-link on' : 'page-link'" th:href="@{/admin/cs/list(pg=${num}, group=${adminBoardPageResponseDTO.group})}">
+                                <a  th:if="${adminBoardPageResponseDTO.keyword == null}" th:classappend="${adminBoardPageResponseDTO.pg == num} ? 'page-link on' : 'page-link'" th:href="@{/seller/cs/list(pg=${num}, group=${adminBoardPageResponseDTO.group})}">
                                     [[${num}]]
                                 </a>
-                                <a  th:if="${adminBoardPageResponseDTO.keyword != null}" th:classappend="${adminBoardPageResponseDTO.pg == num} ? 'page-link on' : 'page-link'" th:href="@{/admin/cs/list(pg=${num}, group=${adminBoardPageResponseDTO.group})}">
+                                <a  th:if="${adminBoardPageResponseDTO.keyword != null}" th:classappend="${adminBoardPageResponseDTO.pg == num} ? 'page-link on' : 'page-link'" th:href="@{/seller/cs/list(pg=${num}, group=${adminBoardPageResponseDTO.group})}">
                                     [[${num}]]
                                 </a>
                             </th:block>
                         </span>
                     <span class="next">
-                            <a th:if="${adminBoardPageResponseDTO.keyword == null}" class="page-link" th:href="@{/admin/cs/list(pg=${adminBoardPageResponseDTO.end + 1}, group=${adminBoardPageResponseDTO.group})}" >&#62;</a>
-                            <a th:if="${adminBoardPageResponseDTO.keyword != null}" class="page-link" th:href="@{/admin/cs/list(pg=${adminBoardPageResponseDTO.end + 1}, group=${adminBoardPageResponseDTO.group}, type=${adminBoardPageResponseDTO.type}, keyword=${adminBoardPageResponseDTO.keyword})}">&#62;</a>
+                            <a th:if="${adminBoardPageResponseDTO.keyword == null}" class="page-link" th:href="@{/seller/cs/list(pg=${adminBoardPageResponseDTO.end + 1}, group=${adminBoardPageResponseDTO.group})}" >&#62;</a>
+                            <a th:if="${adminBoardPageResponseDTO.keyword != null}" class="page-link" th:href="@{/seller/cs/list(pg=${adminBoardPageResponseDTO.end + 1}, group=${adminBoardPageResponseDTO.group}, type=${adminBoardPageResponseDTO.type}, keyword=${adminBoardPageResponseDTO.keyword})}">&#62;</a>
                     </span>
                 </div>
             </article>

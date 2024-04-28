@@ -2,9 +2,11 @@ package kr.co.lotteon.repository.cs;
 
 import kr.co.lotteon.entity.cs.BoardEntity;
 import kr.co.lotteon.repository.custom.BoardRepositoryCustom;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import org.springframework.stereotype.Repository;
@@ -25,4 +27,9 @@ public interface BoardRepository extends JpaRepository<BoardEntity, Integer>, Bo
 
     // 글 삭제
     public void deleteBoardsByParent(int bno);
+
+    // 댓글 개수 ++
+    @Modifying
+    @Query("UPDATE BoardEntity a SET a.reply = a.reply + 1 WHERE a.bno = :bno")
+    void incrementReplyByBno(@Param("bno") int bno);
 }
