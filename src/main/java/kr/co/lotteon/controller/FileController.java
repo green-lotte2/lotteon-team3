@@ -29,6 +29,15 @@ public class FileController {
         return fileService.fileDownloadCount(fno);
     }
 
+    @GetMapping("/file/delete/{sfile}")
+    public ResponseEntity<?> fileDeleteBySfile(@PathVariable("sfile") String sfile){
+
+        log.info("fileDeleteBySfile : " + sfile);
+        fileService.deleteFileBysName(sfile);
+
+        return ResponseEntity.ok().build();
+    }
+
     /*
     @GetMapping("/file/delete/${bno}")
     public ResponseEntity<?> fildDelete(int bno){
