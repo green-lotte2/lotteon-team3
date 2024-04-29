@@ -2,6 +2,7 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{/layout/myLayout}">
 <main id="myLayout" layout:fragment="content">
+    <script th:src="@{/js/changeInfo.js}"></script>
         <div id="my">
             <nav>
                 <div>
@@ -54,8 +55,8 @@
                             <!-- 추가 -->
                             <tr>
                                 <td>닉네임</td>
-                                <td>
-                                    <input text th:value="${#authentication.principal.member.nick}">
+                                <td id="newNick">
+                                    <span id="nick">[[${#authentication.principal.member.nick}]]</span>
                                     <button id="btnChangeNick">수정하기</button>
                                 </td>
                             </tr>
@@ -65,18 +66,12 @@
                             </tr>
                             <tr>
                                 <td>E-mail</td>
-                                <td>
-                                    <input type="text" name="email1" th:value="${#strings.substring(#authentication.principal.member.email, 0, #strings.indexOf(#authentication.principal.member.email, '@'))}">@
-                                    <input type="text" name="email2" th:value="${#strings.substring(#authentication.principal.member.email, #strings.indexOf(#authentication.principal.member.email, '@') + 1)}">
-                                    <select>
-                                        <option>직접입력</option>
-                                        <option>naver.com</option>
-                                        <option>daum.net</option>
-                                        <option>gmail.com</option>
-                                        <option>nate.com</option>
-                                        <option>outlook.com</option>
-                                    </select>
+                                <td id="newEmail">
+                                    <span id="email">[[${#authentication.principal.member.email}]]</span>
                                     <button id="btnChangeEmail">수정하기</button>
+                                    <div id="resultEmail">
+
+                                    </div>
                                 </td>
                             </tr>
                             <tr>
