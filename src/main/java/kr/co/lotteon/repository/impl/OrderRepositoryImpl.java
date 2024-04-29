@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Repository
@@ -32,5 +33,11 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
                 .groupBy(qOrder.ordDate.year(), qOrder.ordDate.month())
                 .orderBy(qOrder.ordDate.year().asc(), qOrder.ordDate.month().asc())
                 .fetch();
+    }
+    // 판매자 인덱스 - 주문 내역, 매출 금액 조회
+    @Override
+    public Map<Integer, Long> selectCountAndSum(){
+
+        return null;
     }
 }

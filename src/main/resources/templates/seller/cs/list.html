@@ -79,7 +79,7 @@
                             <a th:if="${adminBoardPageResponseDTO.keyword == null}" th:href="@{/seller/cs/view(group=${adminBoardPageResponseDTO.group}, bno=${article.bno}, pg=${adminBoardPageResponseDTO.pg})}" > [[${article.title}]]</a>
                             <a th:if="${adminBoardPageResponseDTO.keyword != null}" th:href="@{/seller/cs/view(group=${adminBoardPageResponseDTO.group}, type=${adminBoardPageResponseDTO.type}, keyword=${adminBoardPageResponseDTO.keyword},bno=${article.bno}, pg=${adminBoardPageResponseDTO.pg})}" > [[${article.title}]]</a>
                         </td>
-                        <td th:text="${article.uid}"></td>
+                        <td th:text="${article.nick}"></td>
                         <td th:text="${#temporals.format(article.rdate, 'yyyy-MM-dd')}"></td>
                     </tr>
                 </table>

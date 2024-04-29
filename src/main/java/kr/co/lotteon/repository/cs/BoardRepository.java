@@ -32,4 +32,9 @@ public interface BoardRepository extends JpaRepository<BoardEntity, Integer>, Bo
     @Modifying
     @Query("UPDATE BoardEntity a SET a.reply = a.reply + 1 WHERE a.bno = :bno")
     void incrementReplyByBno(@Param("bno") int bno);
+
+    // 게시글 상태 변경
+    @Modifying
+    @Query("UPDATE BoardEntity a set a.status = '답변완료' where a.bno = :bno")
+    void modifyStatusByBno(@Param("bno") int bno);
 }
