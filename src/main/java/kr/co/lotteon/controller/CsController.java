@@ -216,18 +216,15 @@ public class CsController {
 
     /* qna 댓글 구현중 ------------------------------------------------------------------------------------------------*/
     /*
-    // 댓글작성(기능) - 동적
-    @PostMapping("/lotte/cs/qna/insertComment")
-    public ResponseEntity<Comment> commentInsert(@RequestBody BoardDTO boardDTO) {
-        log.info("commentInsert ...1 : " + boardDTO);
+    @PostMapping("/comment")
+    public ResponseEntity<Comment> commentWrite(@RequestBody CommentDTO commentDTO) {
+        log.info("commentWrite : " + commentDTO);
 
-        ResponseEntity responseEntity = csService.insertComment(boardDTO);
-        log.info("commentInsert ...2 : ");
-        return ResponseEntity.<Comment>ok(responseEntity.getBody(), responseEntity.getStatusCode());
-
-
+        ResponseEntity<Comment> commentResponseEntity = commentService.insertComment(commentDTO);
+        log.info("commentWrite ...2 : ");
+        log.info(commentResponseEntity.getBody().toString());
+        return commentResponseEntity;
     }
 */
-
 
 }

@@ -10,10 +10,7 @@ import kr.co.lotteon.entity.cs.BoardCateEntity;
 import kr.co.lotteon.entity.cs.BoardEntity;
 import kr.co.lotteon.entity.cs.BoardFileEntity;
 import kr.co.lotteon.entity.cs.BoardTypeEntity;
-import kr.co.lotteon.repository.cs.BoardCateRepository;
-import kr.co.lotteon.repository.cs.BoardFileRepository;
-import kr.co.lotteon.repository.cs.BoardTypeRepository;
-import kr.co.lotteon.repository.cs.BoardRepository;
+import kr.co.lotteon.repository.cs.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -51,6 +48,7 @@ public class CsService {
     private final ModelMapper modelMapper;
     private final BoardFileRepository fileRepository;
     private final FileService fileService;
+    private final CommentRepository commentRepository;
 
     // 글목록(notice, qna)
     public CsPageResponseDTO findByCate(CsPageRequestDTO csPageRequestDTO) {
@@ -255,9 +253,9 @@ public class CsService {
 
     // 글 삭제
     @Transactional
-    public void deleteBoard (int bno){
+    public void deleteBoard(int bno) {
+        commentRepository.deleteCommentByBno(bno); // 댓글 먼저 삭제
         boardRepository.deleteById(bno);
-        boardRepository.deleteBoardsByParent(bno);
     }
 
     // hit 증가

@@ -2,71 +2,56 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{/layout/csLayout}">
-<head>
-  <style>
-    .btnList {
-      float: left; /* 왼쪽으로 이동 */
-    }
 
-    .btnModify, .btnDelete {
-      float: right; /* 오른쪽으로 이동 */
-    }
+<section id="cs" layout:fragment="content">
+  <script>
+    window.onload = function () {
 
-    .btnList, .btnModify, .btnDelete {
-      display: inline-block;
-      width: 200px;
-      height: 60px;
-      margin: 40px 10px; /* 좌우 여백을 조정하여 간격을 설정 */
-      border: 1px solid #ccc;
-      border-radius: 34px;
-      font-size: 16px;
-      color: #000;
-      line-height: 58px;
-      text-align: center;
-      box-sizing: border-box;
-    }
-  </style>
+      // 댓글쓰기 취소 버튼 클릭 이벤트 처리(textarea 내용 삭제)
+      document.addEventListener('click', function (e) {
+        if (e.target.classList.contains('btnCancel1')) {
+          e.preventDefault();
+          const commentForm = document.forms['commentForm'];
+          commentForm.reset(); // textarea 내용 초기화
+        }
+      });
 
-</head>
+      /*
+      // 댓글 입력 이벤트 처리
+      btnSubmit.onclick = function (e) {
+        e.preventDefault();
 
-<script>
-        window.onload = function () {
+        const parent = form.parent.value;
+        const writer = form.writer.value;
+        const content = form.content.value;
 
-          // 댓글 입력 이벤트 처리
-          btnSubmit.onclick = function (e) {
-            e.preventDefault();
+        // 입력된 내용이 없는 경우 처리
+        if (!content.trim()) {
+          alert('댓글을 입력해주세요.');
+          return;
+        }
 
-            const parent = form.parent.value;
-            const writer = form.writer.value;
-            const content = form.content.value;
+        const jsonData = {
+          "parent": parent,
+          "writer": writer,
+          "content": content
+        };
 
-            // 입력된 내용이 없는 경우 처리
-            if (!content.trim()) {
-              alert('댓글을 입력해주세요.');
-              return;
-            }
+        // 댓글 추가 요청
+        fetch('/lotte/cs/qna/insertComment', {
+          method: 'POST',
+          headers: {"Content-type": "application/json"},
+          body: JSON.stringify(jsonData)
+        })
+                .then((resp) => resp.json())
+                .then((data) => {
+                  if (data.pk > 0) {
+                    const today = new Date();
+                    const year = today.getFullYear();
+                    const month = today.getMonth() + 1;
+                    const date = today.getDate();
 
-            const jsonData = {
-              "parent": parent,
-              "writer": writer,
-              "content": content
-            };
-
-            // 댓글 추가 요청
-            fetch('/lotte/cs/qna/insertComment', {
-              method: 'POST',
-              headers: { "Content-type": "application/json" },
-              body: JSON.stringify(jsonData)
-            })
-                    .then((resp) => resp.json())
-                    .then((data) => {
-                      if (data.pk > 0) {
-                        const today = new Date();
-                        const year = today.getFullYear();
-                        const month = today.getMonth() + 1;
-                        const date = today.getDate();
-
-                        const commentArticle = `<article>
+                    const commentArticle = `<article>
                         <span class="uid">${sessUser.uid}</span>
                         <span class="date">${year}-${month}-${date}</span>
                         <p class="content">${content}</p>
@@ -75,157 +60,148 @@
                             <a href="#" class="modify">수정</a>
                         </div>
                     </article>`;
-                        // 댓글 목록에 삽입
-                        commentList.insertAdjacentHTML('beforeend', commentArticle);
-                      }
-                      alert('댓글이 추가되었습니다.');
-                    })
-                    .catch((err) => {
-                      console.log(err);
-                    });
-          };
-        }
-/*
-            // 댓글 삭제 이벤트 처리
-            document.addEventListener('click', function (e) {
-                if (e.target.classList.contains('remove')) {
-                    e.preventDefault();
-
-                    const no = e.target.dataset.no;
-                    const parent = e.target.dataset.parent;
-
-                    // 댓글 삭제 요청
-                    fetch(`/lotteon/cs/qna/deleteComment/${bno}`, {
-                        method: 'DELETE'
-                    })
-                        .then(response => {
-                            if (response.ok) {
-                                return response.json();
-                            } else {
-                                throw new Error('Network response was not ok.');
-                            }
-                        })
-                        .then(data => {
-                            if (data.success) {
-                                const article = e.target.closest('article');
-                                article.remove();
-                                alert('삭제 되었습니다.');
-                            } else {
-                                alert('삭제에 실패하였습니다.');
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                            alert('삭제 도중 에러가 발생하였습니다.');
-                        });
-                }
-            });
-
-
-
-            // 수정 폼 숨기기
-            function hideEditForm() {
-                const editForms = document.querySelectorAll('.editForm');
-                editForms.forEach(form => {
-                    form.style.display = 'none';
+                    // 댓글 목록에 삽입
+                    commentList.insertAdjacentHTML('beforeend', commentArticle);
+                  }
+                  alert('댓글이 추가되었습니다.');
+                })
+                .catch((err) => {
+                  console.log(err);
                 });
-            }
 
-            hideEditForm(); // 페이지 로드 시 숨김
+        // 댓글 삭제 이벤트 처리
+        document.addEventListener('click', function (e) {
+          if (e.target.classList.contains('remove')) {
+            e.preventDefault();
 
-            // 댓글 수정 버튼 클릭 이벤트 처리
-            document.addEventListener('click', function (e) {
-                if (e.target.classList.contains('modify')) {
-                    e.preventDefault();
-                    const article = e.target.closest('article');
-                    const commentContent = article.querySelector('.content');
-                    const editForm = article.querySelector('.editForm');
+            const no = e.target.dataset.no;
+            const parent = e.target.dataset.parent;
 
-                    // 댓글 내용 설정
-                    const content = commentContent.innerText;
-                    editForm.querySelector('textarea[name="content"]').value = content;
-
-                    // 댓글 수정 폼 표시 및 버튼 숨김
-                    commentContent.style.display = 'none';
-                    editForm.style.display = 'block';
-                    e.target.style.display = 'none';
-                }
-            });
-
-            // 취소 버튼 클릭 시 수정 폼 숨기기
-            document.addEventListener('click', function (e) {
-                if (e.target.classList.contains('cancelEdit')) {
-                    e.preventDefault();
-                    const editForm = e.target.closest('.editForm');
-                    const commentContent = editForm.parentElement.querySelector('.content');
-
-                    // 수정 폼 숨김 및 댓글 내용 표시
-                    editForm.style.display = 'none';
-                    commentContent.style.display = 'block';
-
-                    // 수정 버튼 표시
-                    const modifyButton = editForm.parentElement.querySelector('.modify');
-                    modifyButton.style.display = 'inline-block';
-                }
-            });
-
-            // 댓글 수정 폼 제출 이벤트 처리
-            document.addEventListener('submit', function (e) {
-                e.preventDefault();
-                if (e.target.classList.contains('editForm')) {
-                    const formData = new FormData(e.target);
-                    const jsonData = {};
-                    formData.forEach((value, key) => jsonData[key] = value);
-
-                    // 댓글 수정 요청
-                    fetch('/lotte/cs/qna/modifyComment', {
-                        method: 'PUT',
-                        headers: { "Content-type": "application/json" },
-                        body: JSON.stringify(jsonData)
+            // 댓글 삭제 요청
+            fetch(`/lotteon/cs/qna/deleteComment/${bno}`, {
+              method: 'DELETE'
+            })
+                    .then(response => {
+                      if (response.ok) {
+                        return response.json();
+                      } else {
+                        throw new Error('Network response was not ok.');
+                      }
                     })
-                        .then(response => {
-                            if (response.ok) {
-                                return response.json();
-                            } else {
-                                throw new Error('Network response was not ok.');
-                            }
-                        })
-                        .then(data => {
-                            // 수정 성공 시 댓글 내용 업데이트
-                            const modifiedComment = e.target.closest('article');
-                            const contentElement = modifiedComment.querySelector('.content');
-                            contentElement.innerText = data.article.content;
+                    .then(data => {
+                      if (data.success) {
+                        const article = e.target.closest('article');
+                        article.remove();
+                        alert('삭제 되었습니다.');
+                      } else {
+                        alert('삭제에 실패하였습니다.');
+                      }
+                    })
+                    .catch(error => {
+                      console.error('Error:', error);
+                      alert('삭제 도중 에러가 발생하였습니다.');
+                    });
+          }
+        });
 
-                            // 수정 폼 숨김 및 댓글 내용 표시
-                            const editForm = modifiedComment.querySelector('.editForm');
-                            editForm.style.display = 'none';
-                            contentElement.style.display = 'block';
 
-                            // 수정 버튼 표시
-                            const modifyButton = modifiedComment.querySelector('.modify');
-                            modifyButton.style.display = 'inline-block';
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                            alert('댓글 수정 도중 에러가 발생하였습니다.');
-                        });
-                }
-            });
-
-            // 댓글쓰기 취소 버튼 클릭 이벤트 처리(textarea 내용 삭제)
-            document.addEventListener('click', function (e) {
-                if (e.target.classList.contains('btnCancel')) {
-                    e.preventDefault();
-                    const commentForm = document.forms['commentForm'];
-                    commentForm.reset(); // textarea 내용 초기화
-                }
-            });
-
+        // 수정 폼 숨기기
+        function hideEditForm() {
+          const editForms = document.querySelectorAll('.editForm');
+          editForms.forEach(form => {
+            form.style.display = 'none';
+          });
         }
-*/
-    </script>
 
-<section id="cs" layout:fragment="content">
+        hideEditForm(); // 페이지 로드 시 숨김
+
+        // 댓글 수정 버튼 클릭 이벤트 처리
+        document.addEventListener('click', function (e) {
+          if (e.target.classList.contains('modify')) {
+            e.preventDefault();
+            const article = e.target.closest('article');
+            const commentContent = article.querySelector('.content');
+            const editForm = article.querySelector('.editForm');
+
+            // 댓글 내용 설정
+            const content = commentContent.innerText;
+            editForm.querySelector('textarea[name="content"]').value = content;
+
+            // 댓글 수정 폼 표시 및 버튼 숨김
+            commentContent.style.display = 'none';
+            editForm.style.display = 'block';
+            e.target.style.display = 'none';
+          }
+        });
+
+        // 취소 버튼 클릭 시 수정 폼 숨기기
+        document.addEventListener('click', function (e) {
+          if (e.target.classList.contains('cancelEdit')) {
+            e.preventDefault();
+            const editForm = e.target.closest('.editForm');
+            const commentContent = editForm.parentElement.querySelector('.content');
+
+            // 수정 폼 숨김 및 댓글 내용 표시
+            editForm.style.display = 'none';
+            commentContent.style.display = 'block';
+
+            // 수정 버튼 표시
+            const modifyButton = editForm.parentElement.querySelector('.modify');
+            modifyButton.style.display = 'inline-block';
+          }
+        });
+
+        // 댓글 수정 폼 제출 이벤트 처리
+        document.addEventListener('submit', function (e) {
+          e.preventDefault();
+          if (e.target.classList.contains('editForm')) {
+            const formData = new FormData(e.target);
+            const jsonData = {};
+            formData.forEach((value, key) => jsonData[key] = value);
+
+            // 댓글 수정 요청
+            fetch('/lotte/cs/qna/modifyComment', {
+              method: 'PUT',
+              headers: {"Content-type": "application/json"},
+              body: JSON.stringify(jsonData)
+            })
+                    .then(response => {
+                      if (response.ok) {
+                        return response.json();
+                      } else {
+                        throw new Error('Network response was not ok.');
+                      }
+                    })
+                    .then(data => {
+                      // 수정 성공 시 댓글 내용 업데이트
+                      const modifiedComment = e.target.closest('article');
+                      const contentElement = modifiedComment.querySelector('.content');
+                      contentElement.innerText = data.article.content;
+
+                      // 수정 폼 숨김 및 댓글 내용 표시
+                      const editForm = modifiedComment.querySelector('.editForm');
+                      editForm.style.display = 'none';
+                      contentElement.style.display = 'block';
+
+                      // 수정 버튼 표시
+                      const modifyButton = modifiedComment.querySelector('.modify');
+                      modifyButton.style.display = 'inline-block';
+                    })
+                    .catch(error => {
+                      console.error('Error:', error);
+                      alert('댓글 수정 도중 에러가 발생하였습니다.');
+                    });
+          }
+
+        });
+
+
+      }
+       */
+
+    }
+
+  </script>
   <div class="qna">
     <nav>
       <div>
@@ -293,8 +269,8 @@
               </div><br><br>
 
               <form class="editForm" style="display: none;">
-                <input type="hidden" name="no" th:value="${comment.bno}" />
-                <input type="hidden" name="writer" th:value="${comment.uid}" />
+                <input type="hidden" name="bno" th:value="${comment.bno}" />
+                <input type="hidden" name="uid" th:value="${comment.uid}" />
                 <textarea name="content" th:text="${comment.content}"></textarea>
                 <div class="button-group">
                   <input type="submit" value="댓글수정" class="submitEdit">
@@ -314,7 +290,7 @@
         <th:block th:if="${#authorization.expression('isAuthenticated()')}">
           <section class="commentForm">
             <h3>댓글쓰기</h3>
-            <form name="commentForm" th:action="@{/cs/qna/insertComment}" method="post"  id="formModify">
+            <form name="commentForm" th:action="@{/comment}" method="post"  id="commentForm">
               <input type="hidden" name="parent" th:value="${boardDTO.bno}">
               <input type="hidden" name="writer" th:value="${#authentication.principal.member.uid}">
               <textarea name="content" placeholder="댓글 입력"></textarea>
