@@ -11,6 +11,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.beans.Transient;
 import java.util.List;
@@ -33,7 +34,7 @@ public class CommentService {
         return comments;
     }
     // 댓글 작성
-    @Transient
+    @Transactional
     public ResponseEntity<Comment> insertComment(CommentDTO commentDTO){
         // DTO -> Entity
         Comment comment = modelMapper.map(commentDTO, Comment.class);
@@ -56,6 +57,8 @@ public class CommentService {
 
         // Board reply ++
         boardRepository.incrementReplyByBno(commentDTO.getBno());
+        // Board status = 답변완료
+        boardRepository.modifyStatusByBno(commentDTO.getBno());
 
         log.info("insertComment saveComment : " + saveComment.toString());
         return ResponseEntity.ok().body(saveComment);
