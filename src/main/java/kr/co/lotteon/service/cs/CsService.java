@@ -274,5 +274,18 @@ public class CsService {
         // 엔터티를 DTO로 매핑하여 반환합니다.
         return modelMapper.map(boardEntity, BoardDTO.class);
     }
+/*
+    //comment
+    public ResponseEntity insertComment(BoardDTO boardDTO){
+        BoardEntity savedBoard = boardRepository.save(modelMapper.map(boardDTO, BoardEntity.class));
 
+        BoardDTO savedBoardDTO = modelMapper.map(savedBoard, BoardDTO.class);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("success", true);
+        response.put("comment", savedBoardDTO);
+
+        return ResponseEntity.ok().body(response);
+    }
+*/
 }
