@@ -1401,3 +1401,25 @@ footer p > strong {
   float: right;
   margin-top: 10px;
 }
+
+.btnList {
+  float: left; /* 왼쪽으로 이동 */
+}
+
+.btnModify, .btnDelete {
+  float: right; /* 오른쪽으로 이동 */
+}
+
+.btnList, .btnModify, .btnDelete {
+  display: inline-block;
+  width: 200px;
+  height: 60px;
+  margin: 40px 10px; /* 좌우 여백을 조정하여 간격을 설정 */
+  border: 1px solid #ccc;
+  border-radius: 34px;
+  font-size: 16px;
+  color: #000;
+  line-height: 58px;
+  text-align: center;
+  box-sizing: border-box;
+}
