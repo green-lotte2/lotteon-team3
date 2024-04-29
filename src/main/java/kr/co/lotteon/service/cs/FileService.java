@@ -3,6 +3,7 @@ package kr.co.lotteon.service.cs;
 import jakarta.transaction.Transactional;
 import kr.co.lotteon.dto.cs.BoardDTO;
 import kr.co.lotteon.dto.cs.BoardFileDTO;
+import kr.co.lotteon.entity.cs.BoardFileEntity;
 import kr.co.lotteon.repository.cs.BoardFileRepository;
 import kr.co.lotteon.repository.cs.BoardRepository;
 import lombok.RequiredArgsConstructor;
@@ -156,6 +157,22 @@ public class FileService {
             if(deleteFile.exists()){
                 deleteFile.delete();
             }
+        }
+    }
+
+    @Transactional
+    public void deleteFileBysName(String sfile){
+
+        if (fileUploadPath.startsWith("file:")) {
+            fileUploadPath =  fileUploadPath.substring("file:".length());
+        };
+
+        // 해당 sFile의 파일이 있는지 확인
+        BoardFileEntity fileEntity = fileRepository.findBySfile(sfile);
+
+        // 있다면 삭제
+        if (fileEntity != null){
+            fileRepository.deleteBySfile(fileEntity.getSfile());
         }
     }
 }

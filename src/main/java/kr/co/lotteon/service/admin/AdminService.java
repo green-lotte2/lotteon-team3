@@ -416,150 +416,6 @@ public class AdminService {
         return ResponseEntity.ok().body("ok");
     }
 
-    // 관리자 상품 등록 - DB insert
-    @Transient
-    public ProductDTO insertProduct(String optionDTOListJson,
-                                    ProductDTO productDTO,
-                                    MultipartFile thumb190,
-                                    MultipartFile thumb230,
-                                    MultipartFile thumb456,
-                                    MultipartFile detail860) {
-
-        log.info("관리자 상품 등록 service1 productDTO : " + productDTO.toString());
-        log.info("관리자 상품 등록 service2 thumb190 : " + thumb190);
-        log.info("관리자 상품 등록 service3 thumb230 : " + thumb230);
-        log.info("관리자 상품 등록 service4 thumb456 : " + thumb456);
-        log.info("관리자 상품 등록 service5 detail860 : " + detail860);
-        log.info("관리자 상품 등록 service6 json : " + optionDTOListJson);
-
-        // 상품 코드 생성
-        String cate1 = String.valueOf(productDTO.getCate1());
-        String cate2 = String.valueOf(productDTO.getCate2());
-        Random random = new Random();
-
-        int randomNumber = random.nextInt(99999 - 10000 + 1) + 10000;
-        String ranNum = String.valueOf(randomNumber);
-
-        String code = cate1 + cate2 + ranNum;
-        int prodCode = Integer.parseInt(code);
-
-        productDTO.setProdCode(prodCode);
-
-        // 이미지 파일 등록 : 해당 디렉토리 없을 경우 자동 생성
-        File file = new File(imgUploadPath);
-        if (!file.exists()) {
-            file.mkdir();
-        }
-        String path = file.getAbsolutePath();
-
-        // 원본 파일 폴더 자동 생성
-        String orgPath = path + "/orgImage";
-        File orgFile = new File(orgPath);
-        if (!orgFile.exists()) {
-            orgFile.mkdir();
-        }
-        // 저장
-        Product saveProduct = new Product();
-
-        // 이미지 리사이징
-        if (!thumb190.isEmpty() && !thumb230.isEmpty() && !thumb456.isEmpty() && !detail860.isEmpty()) {
-            // oName, sName 구하기
-            String oName190 = thumb190.getOriginalFilename();
-            String oName230 = thumb230.getOriginalFilename();
-            String oName456 = thumb456.getOriginalFilename();
-            String oName860 = detail860.getOriginalFilename();
-
-            String ext190 = oName190.substring(oName190.lastIndexOf("."));
-            String ext230 = oName230.substring(oName230.lastIndexOf("."));
-            String ext456 = oName456.substring(oName456.lastIndexOf("."));
-            String ext860 = oName860.substring(oName860.lastIndexOf("."));
-
-            String sName190 = UUID.randomUUID().toString() + ext190;
-            String sName230 = UUID.randomUUID().toString() + ext230;
-            String sName456 = UUID.randomUUID().toString() + ext456;
-            String sName860 = UUID.randomUUID().toString() + ext860;
-
-            log.info("관리자 상품 등록 service6 oName190 : " + oName190);
-            log.info("관리자 상품 등록 service7 sName190 : " + sName190);
-
-            try {
-                // 원본 파일 저장
-                thumb190.transferTo(new File(orgFile, sName190));
-                thumb230.transferTo(new File(orgFile, sName230));
-                thumb456.transferTo(new File(orgFile, sName456));
-                detail860.transferTo(new File(orgFile, sName860));
-
-                // 파일 이름 DTO에 저장
-                productDTO.setThumb1(sName190);
-                productDTO.setThumb2(sName230);
-                productDTO.setThumb3(sName456);
-                productDTO.setDetail(sName860);
-
-                // 리사이징
-                Thumbnails.of(new File(orgPath, sName190)) // 원본 파일 (경로, 이름)
-                        .size(190, 190) // 원하는 사이즈
-                        .toFile(new File(path, sName190)); // 리사이징 파일 (경로, 이름)
-                Thumbnails.of(new File(orgPath, sName230))
-                        .size(230, 230)
-                        .toFile(new File(path, sName230));
-                Thumbnails.of(new File(orgPath, sName456))
-                        .size(456, 456)
-                        .toFile(new File(path, sName456));
-                Thumbnails.of(new File(orgPath, sName860))
-                        .width(860) // 너비 860 * 높이 제한 없음
-                        .toFile(new File(path, sName860));
-                log.info("리사이징 끝");
-
-
-                // JON 문자열 파싱 -> OptionDTO 리스트로 변환
-                ObjectMapper objectMapper = new ObjectMapper();
-                List<ColorDTO> optionDTOList = null;
-                try {
-                    ColorDTO[] optionDTOArray = objectMapper.readValue(optionDTOListJson, ColorDTO[].class);
-                    optionDTOList = Arrays.asList(optionDTOArray);
-                    log.info(optionDTOList.toString());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                // option 정보 Entity에 입력 후 DB 저장
-                if (optionDTOList != null) {
-                    for (ColorDTO option : optionDTOList) {
-
-                        // DTO -> Entity : Entity의 영속성 때문에 매번 새로 생성해야함
-                        Product product = modelMapper.map(productDTO, Product.class);
-                        log.info("관리자 상품 등록 service8 product : " + product.toString());
-
-                        // 옵션 정보 Product Entity에 저장
-
-                        log.info("관리자 상품 등록 service9 " + option);
-                        product.setColor(option.getColor());
-                        product.setColorName(option.getColorName());
-                        product.setOpStock(option.getOpStock());
-                        product.setSize(option.getSize());
-                        log.info("optionDTO List : " + option);
-
-                        // 상품 정보 DB 저장
-                        saveProduct = productRepository.save(product);
-                        log.info("관리자 상품 등록 service10 savedProduct : " + saveProduct.toString());
-                    }
-                    // option 없는 경우
-                } else {
-                    // DTO -> Entity
-                    Product product = modelMapper.map(productDTO, Product.class);
-                    product.setColor("#FFFFFF");
-                    log.info("관리자 상품 등록 service8 product : " + product.toString());
-                    // 상품 정보 DB 저장
-                    saveProduct = productRepository.save(product);
-                    log.info("관리자 상품 등록 service10 savedProduct : " + saveProduct.toString());
-
-                }
-            } catch (IOException e) {
-                log.error(e.getMessage());
-            }
-        }
-        return modelMapper.map(saveProduct, ProductDTO.class);
-    }
 
     // 관리자 상품 수정 - DB insert
     @Transient
@@ -612,7 +468,7 @@ public class AdminService {
             productDTO.setDetail(sName860);
         }
         // update 마이 바티스 써야함
-        productMapper.updateProductByProdCode(productDTO);
+        productMapper.updateProductByProdNo(productDTO);
 
         // JON 문자열 파싱 -> OptionDTO 리스트로 변환
         ObjectMapper objectMapper = new ObjectMapper();
@@ -636,10 +492,6 @@ public class AdminService {
                 // 옵션 정보 Product Entity에 저장
                 log.info("관리자 상품 수정 service9 " + option);
 
-                product.setColor(option.getColor());
-                product.setColorName(option.getColorName());
-                product.setOpStock(option.getOpStock());
-                product.setSize(option.getSize());
                 product.setThumb1(productDTO.getThumb1());
                 product.setThumb2(productDTO.getThumb2());
                 product.setThumb3(productDTO.getThumb3());
@@ -655,7 +507,7 @@ public class AdminService {
         } else {
             // DTO -> Entity
             Product product = modelMapper.map(productDTO, Product.class);
-            product.setColor("#FFFFFF");
+            log.info("관리자 상품 등록 service8 product : " + product.toString());
             log.info("관리자 상품 수정 service8 product : " + product.toString());
             // 상품 정보 DB 저장
             saveProduct = productRepository.save(product);
@@ -668,37 +520,6 @@ public class AdminService {
     // 관리자 상품 관리 - 등록한 상품 출력
     public ProductDTO prodView(int prodNo) {
         return modelMapper.map(productRepository.findById(prodNo), ProductDTO.class);
-    }
-
-    // 관리자 상품 관리 - 등록한 의류 상품 옵션 추가
-    public ResponseEntity<?> colorOptionAdd(int prodCode, List<ColorDTO> colorDTOList) {
-        log.info("상품 의류 옵션 추가 Serv 1 : " + prodCode);
-        log.info("상품 의류 옵션 추가 Serv 2 : " + colorDTOList);
-
-        // 등록된 상품 조회
-        Product savedProduct = productRepository.findProductByProdCode(prodCode);
-
-        for (ColorDTO option : colorDTOList) {
-
-            ProductDTO productDTO = modelMapper.map(savedProduct, ProductDTO.class);
-            productDTO.setProdNo(0);
-
-            Product saveProduct = modelMapper.map(productDTO, Product.class);
-            // 옵션 정보 Product Entity에 저장
-            log.info("상품 의류 옵션 추가 Serv 3 " + option);
-            saveProduct.setColor(option.getColor());
-            saveProduct.setColorName(option.getColorName());
-            saveProduct.setOpStock(option.getOpStock());
-            saveProduct.setSize(option.getSize());
-
-            log.info("상품 의류 옵션 추가 Serv 4  : " + saveProduct.toString());
-
-            // 상품 정보 DB 저장
-            saveProduct = productRepository.save(saveProduct);
-            log.info("상품 의류 옵션 추가 Serv 5  : " + saveProduct.toString());
-
-        }
-        return ResponseEntity.ok().body(savedProduct);
     }
 
     // 관리자 상품 관리 - 등록한 상품 커스텀 옵션 추가

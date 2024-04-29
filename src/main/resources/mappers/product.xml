@@ -8,7 +8,7 @@
     <update id="updateProductHit">
         UPDATE product SET hit = hit+1 WHERE prodNo =#{value};
     </update>
-    <update id="updateProductByProdCode" parameterType="map">
+    <update id="updateProductByProdNo" parameterType="map">
         UPDATE product
         SET cate1 = #{cate1},
         cate2 = #{cate2},
@@ -31,6 +31,6 @@
         thumb1 = #{thumb1},
         thumb2 = #{thumb2},
         thumb3 = #{thumb3}
-        WHERE prodCode = #{prodCode}
+        WHERE prodNo = #{prodNo}
     </update>
 </mapper>

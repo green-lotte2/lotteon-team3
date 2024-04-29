@@ -12,6 +12,4 @@ import java.util.List;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Integer> ,ProductRepositoryCustom {
 
-    public List<Product> findByProdCode(int prodCode);
-
 }

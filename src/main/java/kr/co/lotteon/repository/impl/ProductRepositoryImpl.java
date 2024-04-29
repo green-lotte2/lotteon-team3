@@ -68,10 +68,10 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
             expression = qProduct.prodName.contains(keyword);
             log.info("prodName 검색 : " + expression);
 
-        }else if(type.equals("prodCode")){
+        }else if(type.equals("prodNo")){
             // 입력된 키워드를 정수형으로 변환
-            int prodCode = Integer.parseInt(keyword);
-            expression = qProduct.prodCode.eq(prodCode);
+            int prodNo = Integer.parseInt(keyword);
+            expression = qProduct.prodNo.eq(prodNo);
             log.info("prodCode 검색 : " + expression);
 
         }else if(type.equals("cate1")){
@@ -106,7 +106,73 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
         return new PageImpl<>(productList, pageable, total);
     }
 
+    // 판매자  - 상품 목록 기본 조회
+    public Page<Product> sellerSelectProducts(AdminProductPageRequestDTO adminProductPageRequestDTO, Pageable pageable, String sellerId){
 
+        log.info("상품 목록 기본 조회 Impl 1 : " + adminProductPageRequestDTO);
+        QueryResults<Product> results = jpaQueryFactory
+                .select(qProduct)
+                .from(qProduct)
+                .where(qProduct.seller.eq(sellerId))
+                .orderBy(qProduct.prodNo.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetchResults();
+
+        long total = results.getTotal();
+        log.info("상품 목록 기본 조회 Impl 2 : " + total);
+        List<Product> productList = results.getResults();
+        log.info("상품 목록 기본 조회 Impl 3 : " + productList);
+        return new PageImpl<>(productList, pageable, total);
+    }
+    // 판매자  - 상품 목록 검색 조회
+    public Page<Product> sellerSearchProducts(AdminProductPageRequestDTO adminProductPageRequestDTO, Pageable pageable, String sellerId){
+        log.info("상품 목록 키워드 검색 impl 1 : " + adminProductPageRequestDTO.getKeyword());
+        String type = adminProductPageRequestDTO.getType();
+        String keyword = adminProductPageRequestDTO.getKeyword();
+
+        BooleanExpression expression = null;
+
+        // 검색 종류에 따른 where절 표현식 생성
+        if(type.equals("prodName")){
+            expression = qProduct.prodName.contains(keyword).and(qProduct.seller.eq(sellerId));
+            log.info("prodName 검색 : " + expression);
+
+        }else if(type.equals("prodNo")){
+            // 입력된 키워드를 정수형으로 변환
+            int prodNo = Integer.parseInt(keyword);
+            expression = qProduct.prodNo.eq(prodNo).and(qProduct.seller.eq(sellerId));
+            log.info("prodNo 검색 : " + expression);
+
+        }else if(type.equals("cate1")){
+            int cate1 = Integer.parseInt(keyword);
+            expression = qProduct.cate1.eq(cate1).and(qProduct.seller.eq(sellerId));
+            log.info("cate1 검색 : " + expression);
+
+        }else if(type.equals("company")){
+            expression = qProduct.company.contains(keyword).and(qProduct.seller.eq(sellerId));
+            log.info("company 검색 : " + expression);
+
+        }
+
+        // DB 조회
+        QueryResults<Product> results = jpaQueryFactory
+                .select(qProduct)
+                .from(qProduct)
+                .where(expression)
+                .orderBy(qProduct.prodNo.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetchResults();
+
+        long total = results.getTotal();
+        log.info("상품 목록 검색 조회 Impl 2 : " + total);
+
+        // QueryResults<> -> List<>
+        List<Product> productList = results.getResults();
+        log.info("상품 목록 검색 조회 Impl 3 : " + productList);
+        return new PageImpl<>(productList, pageable, total);
+    }
     // 기본 상품 리스트
     @Override
     public Page<Product> productList(PageRequestDTO pageRequestDTO, Pageable pageable) {
@@ -133,17 +199,18 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
         return new PageImpl<>(results.getResults(), pageable, results.getTotal());
     }
 
+    // 판매자 - 상품 목록 All
+    public List<Integer> selectProdNoForQna(String sellerId){
+        // SELECT ProdNo FROM product WHERE seller = ?;
 
-    // 관리자 - 의류 옵션 추가 상품 코드 조회
-    public Product findProductByProdCode(int prodCode){
-        log.info("의류 옵션 추가 Impl 1 : " + prodCode);
-        Product product = jpaQueryFactory
-                .selectFrom(qProduct)
-                .where(qProduct.prodCode.eq(prodCode))
-                .limit(1)
-                .fetchOne();
-        log.info("의류 옵션 추가 Impl 2 : " + product);
-        return product;
+        List<Integer> prodNos = jpaQueryFactory
+                .select(qProduct.prodNo)
+                .from(qProduct)
+                .where(qProduct.seller.eq(sellerId))
+                .fetch();
+
+        log.info("판매자 상품 번호 All 조회 Impl");;
+        return prodNos;
     }
 
     // ==== 메인 페이지 ====

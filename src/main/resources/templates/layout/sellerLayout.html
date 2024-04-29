@@ -13,7 +13,9 @@
     <script th:src="@{/admin/js/util.js}"></script>
     <link rel="stylesheet" th:href="@{https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css}">
     <link rel="stylesheet" th:href="@{https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css}"/>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/admin.css}">
+
 </head>
 <body>
 <div id="admin-wrapper">
@@ -35,9 +37,8 @@
                 <li>
                     <a href="#"><i class="fas fa-store" aria-hidden="true"></i>상점관리</a>
                     <ol>
-                        <li><a th:href="@{/admin/product/list}">상품현황</a></li>
-                        <li><a th:href="@{/admin/product/register}">상품등록</a></li>
-                        <li><a th:href="@{/admin/product/list}">재고관리</a></li>
+                        <li><a th:href="@{/seller/product/list}">상품현황</a></li>
+                        <li><a th:href="@{/seller/product/register}">상품등록</a></li>
                     </ol>
                 </li>
                 <li>
@@ -46,7 +47,12 @@
                         <li><a href="#">주문현황</a></li>
                         <li><a href="#">매출현황</a></li>
                         <li><a href="#">결제관리</a></li>
-                        <li><a href="#">배송관리</a></li>
+                    </ol>
+                </li>
+                <li>
+                    <a href="#"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>상품문의</a>
+                    <ol>
+                        <li><a th:href="@{/seller/cs/list(group='qna', cate=null)}">고객문의</a></li>
                     </ol>
                 </li>
             </ul>

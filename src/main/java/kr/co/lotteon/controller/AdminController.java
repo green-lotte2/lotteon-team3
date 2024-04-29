@@ -13,6 +13,7 @@ import kr.co.lotteon.entity.member.Terms;
 import kr.co.lotteon.security.MyUserDetails;
 import kr.co.lotteon.service.admin.AdminService;
 import kr.co.lotteon.service.admin.CommentService;
+import kr.co.lotteon.service.admin.SellerService;
 import kr.co.lotteon.service.product.ProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,10 +37,12 @@ public class AdminController {
     private final AdminService adminService;
     private final CommentService commentService;
     private final ProductService productService;
+    private final SellerService sellerService;
 
     private final ObjectMapper objectMapper;
 
 
+    ////////////////  index  ///////////////////////////////////////////////////
     // admin index 페이지 매핑 + seller index 페이지 매핑 (return에 if하면 새로고침...?)
     @GetMapping(value = {"/admin","/admin/index"})
     public String admin(Model model){
@@ -82,7 +85,7 @@ public class AdminController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("JSON 변환 오류");
         }
     }
-
+    ////////////////  banner  ///////////////////////////////////////////////////
     // config banner (관리자 배너 관리) 페이지 매핑
     @GetMapping("/admin/config/banner")
     public String banner(Model model){
@@ -122,6 +125,7 @@ public class AdminController {
     public ResponseEntity<?> bannerActChange(@PathVariable("bno") int bno){
         return adminService.bannerActChange(bno);
     }
+
     // config info (관리자 기본 환경 정보) 페이지 매핑
     @GetMapping("/admin/config/info")
     public String info(Model model){
@@ -130,6 +134,7 @@ public class AdminController {
         model.addAttribute("terms", terms);
         return "/admin/config/info";
     }
+    ////////////////  product  ///////////////////////////////////////////////////
     // product list (관리자 상품 목록) 페이지 매핑
     @GetMapping("/admin/product/list")
     public String prodList(Model model, AdminProductPageRequestDTO adminProductPageRequestDTO){
@@ -148,40 +153,6 @@ public class AdminController {
         model.addAttribute("adminPageResponseDTO", adminPageResponseDTO);
         return "/admin/product/list";
     }
-    // product register (관리자 상품 등록) 페이지 매핑
-    @GetMapping("/admin/product/register")
-    public String register(Model model){
-        // Cate1 전체 조회
-        List<Cate1DTO> cate1List = adminService.findAllCate1();
-        log.info("관리자 상품 등록 Cont : "+cate1List);
-        model.addAttribute("cate1List", cate1List);
-        return "/admin/product/register";
-    }
-    // product modify (관리자 상품 수정) 페이지 매핑 : 상품 코드로 조회
-    @GetMapping("/admin/product/modify")
-    public String modify(Model model, int prodCode){
-
-        // 상품 상세 조회
-        List<ProductDTO> products = productService.selectByprodCode(prodCode);
-        log.info("관리자 상품 수정 Cont 1 : "+products);
-
-        // Cate1 전체 조회
-        List<Cate1DTO> cate1List = adminService.findAllCate1();
-        log.info("관리자 상품 수정 Cont 2 : "+cate1List);
-
-        // Cate2 조회
-        List<Cate2DTO> cate2List = (List<Cate2DTO>) adminService.findAllCate2ByCate1(products.get(0).getCate1()).getBody();
-        log.info("관리자 상품 수정 Cont 3 : "+cate2List);
-        // Cate3 조회
-        List<Cate3DTO> cate3List = (List<Cate3DTO>) adminService.findAllCate3ByCate2(products.get(0).getCate2()).getBody();
-        log.info("관리자 상품 수정 Cont 4 : "+cate3List);
-
-        model.addAttribute("products", products);
-        model.addAttribute("cate1List", cate1List);
-        model.addAttribute("cate2List", cate2List);
-        model.addAttribute("cate3List", cate3List);
-        return "/admin/product/modify";
-    }
 
     // 관리자 상품 목록 검색 - cate1을 type으로 선택 시 cate1 조회
     @GetMapping("/admin/findCate1")
@@ -189,96 +160,39 @@ public class AdminController {
     public ResponseEntity<?> findCate1s(){
         return adminService.findCate1s();
     }
-
-    // 관리자 상품 등록 - cate1 선택 시 cate2 조회
-    @GetMapping("/admin/product/register/{cate1}")
-    @ResponseBody
-    public ResponseEntity<?> registerCate2(@PathVariable int cate1){
-        return adminService.findAllCate2ByCate1(cate1);
-    }
-    // 관리자 상품 등록 - cate2 선택 시 cate3 조회
-    @GetMapping("/admin/product/cate3/{cate2}")
-    @ResponseBody
-    public ResponseEntity<?> registerCate3(@PathVariable int cate2){
-        return adminService.findAllCate3ByCate2(cate2);
-    }
-    // 관리자 상품 등록 - DB insert
-    @RequestMapping(value = "/admin/product/register", produces = "application/json;charset=UTF-8", method = RequestMethod.POST)
-    public String registerProduct(HttpServletRequest httpServletRequest,
-                                  ProductDTO productDTO,
-                                  @RequestParam("optionDTOList") String optionDTOListJson,
-                                  @RequestParam("thumb190") MultipartFile thumb190,
-                                  @RequestParam("thumb230") MultipartFile thumb230,
-                                  @RequestParam("thumb456") MultipartFile thumb456,
-                                  @RequestParam("detail860") MultipartFile detail860){
-        productDTO.setIp(httpServletRequest.getRemoteAddr());
-        log.info("관리자 상품 등록 Cont 1 " + optionDTOListJson);
-
-
-        // 현재 로그인 중인 사용자 정보 불러오기
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        // 로그인 중일 때 해당 사용자 id를 seller에 입력
-            MyUserDetails userDetails = (MyUserDetails) authentication.getPrincipal();
-            String sellerId = userDetails.getMember().getName();
-            productDTO.setSeller(sellerId);
-            log.info("관리자 상품 등록 Cont 1 sellerId : " + sellerId);
-
-        log.info("관리자 상품 등록 Cont " + productDTO);
-
-        ProductDTO saveProd = adminService.insertProduct(optionDTOListJson, productDTO, thumb190, thumb230, thumb456, detail860);
-        int prodNo = saveProd.getProdNo();
-
-        return "redirect:/admin/product/view?prodNo="+prodNo;
-    }
-    // 관리자 상품 수정 - DB insert
-    @RequestMapping(value = "/admin/product/modify", produces = "application/json;charset=UTF-8", method = RequestMethod.POST)
-    public String modifyProduct(ProductDTO productDTO,
-                                  @RequestParam("prodNoList") String prodNoList,
-                                  @RequestParam("optionDTOList") String optionDTOListJson,
-                                  @RequestParam("thumb190") MultipartFile thumb190,
-                                  @RequestParam("thumb230") MultipartFile thumb230,
-                                  @RequestParam("thumb456") MultipartFile thumb456,
-                                  @RequestParam("detail860") MultipartFile detail860){
-        log.info("관리자 상품 수정 Cont 1 " + optionDTOListJson);
-
-        log.info("관리자 상품 수정 Cont prodNoList " + prodNoList);
-        log.info("관리자 상품 수정 Cont " + productDTO);
-
-        // 수정 정보 저장
-        ProductDTO saveProd = adminService.modifyProduct(optionDTOListJson, productDTO, thumb190, thumb230, thumb456, detail860);
-        int prodNo = saveProd.getProdNo();
-
-        // 삭제한 옵션에 해당하는 상품 삭제
-        adminService.prodArrDelete(prodNoList);
-
-        return "redirect:/admin/product/list";
-    }
-
-    // 관리자 상품 삭제
     // 등록된 상품 보기
     @GetMapping("/admin/product/view")
-    public String prodView(Model model, @RequestParam("prodNo") int prodNo){
-        ProductDTO productDTO = adminService.prodView(prodNo);
-        model.addAttribute("productDTO", productDTO);
+    public String prodView(Model model, int prodNo){
+
+        // 상품 상세 조회
+        ProductDTO product = productService.selectByprodNo(prodNo);
+        log.info("판매자 상품 수정 Cont 1 : "+product);
+
+        // Cate1 전체 조회
+        List<Cate1DTO> cate1List = sellerService.findAllCate1();
+        log.info("판매자 상품 수정 Cont 2 : "+cate1List);
+
+        // Cate2 조회
+        List<Cate2DTO> cate2List = (List<Cate2DTO>) sellerService.findAllCate2ByCate1(product.getCate1()).getBody();
+        log.info("판매자 상품 수정 Cont 3 : "+cate2List);
+
+        // Cate3 조회
+        List<Cate3DTO> cate3List = (List<Cate3DTO>) sellerService.findAllCate3ByCate2(product.getCate2()).getBody();
+        log.info("판매자 상품 수정 Cont 4 : "+cate3List);
+
+        // optionList 조회
+        Map<String, List<Map<String, String>>> optionMap = sellerService.selectProdOption(prodNo);
+        log.info("optionList Map : "+optionMap);
+
+        model.addAttribute("product", product);
+        model.addAttribute("cate1List", cate1List);
+        model.addAttribute("cate2List", cate2List);
+        model.addAttribute("cate3List", cate3List);
+        model.addAttribute("optionMap", optionMap);
         return "/admin/product/view";
     }
 
-    // 등록된 상품 의류 옵션 추가
-    @RequestMapping(value = "/admin/option/color/{prodCode}", produces = "application/json;charset=UTF-8", method = RequestMethod.POST)
-    public ResponseEntity<?> colorOptionAdd(@PathVariable("prodCode") int prodCode, @RequestBody List<ColorDTO> colorDTOList) {
-        log.info("상품 의류 옵션 추가 Cont 1 : " + prodCode);
-        log.info("상품 의류 옵션 추가 Cont 2 : " + colorDTOList);
-        return adminService.colorOptionAdd(prodCode, colorDTOList);
-    }
-    // 등록된 상품 커스텀 옵션 추가
-    @RequestMapping(value = "/admin/option", produces = "application/json;charset=UTF-8", method = RequestMethod.POST)
-    public ResponseEntity<?> optionAdd(@RequestBody List<OptionDTO> optionDTOS) {
-        log.info("상품 커스텀 옵션 추가 Cont 1 : " + optionDTOS);
-        return adminService.optionAdd(optionDTOS);
-    }
-
-    // 상품 삭제
+    // 관리자 상품 삭제
     @ResponseBody
     @PostMapping("/admin/product/delete")
     public ResponseEntity prodDelete(@RequestBody Map<String, int[]> requestData){
@@ -286,6 +200,7 @@ public class AdminController {
         log.info("상품 삭제 Cont 1 : " + requestData);
         return adminService.prodDelete(prodNoArray);
     }
+    ////////////////  cs  ///////////////////////////////////////////////////
     // 관리자 게시판 목록 페이지 매핑
     @GetMapping("/admin/cs/list")
     public String boardList(Model model, String cate, AdminBoardPageRequestDTO adminBoardPageRequestDTO) {
@@ -388,6 +303,7 @@ public class AdminController {
         model.addAttribute("adminBoardPageResponseDTO", adminBoardPageResponseDTO);
         return "/admin/cs/modify";
     }
+    ////////////////  comment  ///////////////////////////////////////////////////
     // 관리자 글 보기 답변 등록
     @PostMapping("/comment")
     public ResponseEntity<Comment> commentWrite(@RequestBody CommentDTO commentDTO) {
@@ -410,6 +326,7 @@ public class AdminController {
         log.info("modifyComment : " +commentDTO.toString());
         return commentService.updateComment(commentDTO);
     }
+    ////////////////  member  ///////////////////////////////////////////////////
     // 관리자 회원 현황 매핑
     @GetMapping("/admin/member/list")
     public String memberList(Model model, AdminMemberPageRequestDTO adminMemberPageRequestDTO){

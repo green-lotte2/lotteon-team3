@@ -14,4 +14,8 @@ public interface BoardFileRepository extends JpaRepository<BoardFileEntity, Inte
 
     public List<BoardFileEntity> findFilesByBno(int bno);
 
+    public BoardFileEntity findBySfile (String sfile);
+
+    public void deleteBySfile (String sfile);
+
 }

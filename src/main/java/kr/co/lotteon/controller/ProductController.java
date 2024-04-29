@@ -4,6 +4,7 @@ import kr.co.lotteon.dto.admin.BannerDTO;
 import kr.co.lotteon.dto.product.*;
 import kr.co.lotteon.repository.product.Cate1Repository;
 import kr.co.lotteon.service.admin.BannerService;
+import kr.co.lotteon.service.product.CartService;
 import kr.co.lotteon.service.product.CateService;
 import kr.co.lotteon.service.product.OptionService;
 import kr.co.lotteon.service.product.ProductService;
@@ -11,10 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -26,13 +24,17 @@ public class ProductController {
 
     private final ProductService productService;
     private final BannerService bannerService;
+    private final CartService cartService;
     // 상품 카테고리를 불러오기 위한 cateService
     private final CateService cateService;
     private final OptionService optionService;
 
     // cart 페이지 매핑
     @GetMapping("/product/cart")
-    public String cart(){
+    public String cart(@RequestParam("uid") String uid, Model model){
+        List<String> companies = cartService.selectCartCompany(uid);
+        model.addAttribute("companies", companies);
+        log.info("companies: {}", companies);
         return "/product/cart";
     }
 

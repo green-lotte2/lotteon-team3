@@ -29,10 +29,6 @@ public class QProduct extends EntityPathBase<Product> {
 
     public final NumberPath<Integer> cate3 = createNumber("cate3", Integer.class);
 
-    public final StringPath color = createString("color");
-
-    public final StringPath colorName = createString("colorName");
-
     public final StringPath company = createString("company");
 
     public final StringPath deleteYn = createString("deleteYn");
@@ -51,15 +47,11 @@ public class QProduct extends EntityPathBase<Product> {
 
     public final StringPath ip = createString("ip");
 
-    public final NumberPath<Integer> opStock = createNumber("opStock", Integer.class);
-
     public final StringPath origin = createString("origin");
 
     public final NumberPath<Integer> point = createNumber("point", Integer.class);
 
     public final NumberPath<Integer> price = createNumber("price", Integer.class);
-
-    public final NumberPath<Integer> prodCode = createNumber("prodCode", Integer.class);
 
     public final StringPath prodName = createString("prodName");
 
@@ -74,8 +66,6 @@ public class QProduct extends EntityPathBase<Product> {
     public final NumberPath<Integer> score = createNumber("score", Integer.class);
 
     public final StringPath seller = createString("seller");
-
-    public final StringPath size = createString("size");
 
     public final NumberPath<Integer> sold = createNumber("sold", Integer.class);
 
