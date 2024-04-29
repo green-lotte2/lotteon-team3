@@ -25,21 +25,25 @@
     <header>
         <div class="top">
             <div>
-                <th:block sec:authorize="isAnonymous()">
-                    <a th:href="@{/member/login}">로그인</a>
-                    <a th:href="@{/member/join}">회원가입</a>
-                </th:block>
-                <th:block sec:authorize="isAuthenticated()">
-                    <span>[[${#authentication.principal.member.name}]]님 </span>
-                    <a sec:authorize="hasRole('ROLE_6')" th:href="@{/admin}">관리자</a>
-                    <a sec:authorize="hasRole('ROLE_7')" th:href="@{/admin}">관리자</a>
-                    <a sec:authorize="hasRole('ROLE_5')" th:href="@{/seller}">판매자</a>
-                    <a th:href="@{/member/logout}">로그아웃</a>
-                    <a th:href="@{/my/home}">마이페이지</a>
-                    <a th:href="@{/product/cart}">
-                        <i class="fa fa-shopping-cart" aria-hidden="true"></i>&nbsp;장바구니
-                    </a>
-                </th:block>
+                <p>
+                    <th:block sec:authorize="isAnonymous()">
+                        <a th:href="@{/index}">홈 </a>
+                        <a th:href="@{/member/login}">로그인</a>
+                        <a th:href="@{/member/join}">회원가입</a>
+                    </th:block>
+                    <th:block sec:authorize="isAuthenticated()">
+                        <a th:href="@{/index}">홈 </a>
+                        <span>[[${#authentication.principal.member.name}]]님 </span>
+                        <a sec:authorize="hasRole('ROLE_6')" th:href="@{/admin}">관리자</a>
+                        <a sec:authorize="hasRole('ROLE_7')" th:href="@{/admin}">관리자</a>
+                        <a sec:authorize="hasRole('ROLE_5')" th:href="@{/seller}">판매자</a>
+                        <a th:href="@{/member/logout}">로그아웃</a>
+                        <a th:href="@{/my/home}">마이페이지</a>
+                        <a th:href="@{/product/cart}">
+                            <i class="fa fa-shopping-cart" aria-hidden="true"></i>&nbsp;장바구니
+                        </a>
+                    </th:block>
+                </p>
             </div>
         </div>
         <div class="logo">
