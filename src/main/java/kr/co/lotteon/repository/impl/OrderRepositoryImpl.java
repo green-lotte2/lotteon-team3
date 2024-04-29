@@ -3,6 +3,7 @@ package kr.co.lotteon.repository.impl;
 import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.co.lotteon.entity.product.QOrder;
+import kr.co.lotteon.entity.product.QProduct;
 import kr.co.lotteon.repository.custom.OrderRepositoryCustom;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +20,7 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
 
     private final JPAQueryFactory jpaQueryFactory;
     private final QOrder qOrder = QOrder.order;
+    private final QProduct qProduct = QProduct.product;
 
     // 월별 주문 count 조회 - 오늘 기준 12개월 전 까지
     @Override
@@ -33,11 +35,5 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
                 .groupBy(qOrder.ordDate.year(), qOrder.ordDate.month())
                 .orderBy(qOrder.ordDate.year().asc(), qOrder.ordDate.month().asc())
                 .fetch();
-    }
-    // 판매자 인덱스 - 주문 내역, 매출 금액 조회
-    @Override
-    public Map<Integer, Long> selectCountAndSum(){
-
-        return null;
     }
 }

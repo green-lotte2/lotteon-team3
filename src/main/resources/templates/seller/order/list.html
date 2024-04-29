@@ -1,0 +1,84 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/sellerLayout}">
+            <section id="admin-index" layout:fragment="content">
+                <script>
+                    window.onload = async function (){
+                        // 주문 차트
+                        let ordCt = document.getElementById('orderChart');
+
+                        // 주문 데이터 가져오기
+                        const response = await fetch('/lotteon/seller/orderChart');
+                        const dataText = await response.text(); // JSON 형식의 문자열을 가져옴
+
+                        let total = 0;
+                        let data = [];
+
+                        // json 파싱
+                        try {
+                            // JSON 형식의 문자열을 JavaScript 객체로 변환
+                            data = JSON.parse(dataText);
+                            console.log("주문 데이터 : ", data);
+
+                            // total 값 추출
+                            total = data.pop().total;
+                            console.log("Total Orders:", total);
+                        } catch (error) {
+                            console.error('주문 데이터 변환 오류:', error);
+                        }
+                        // 차트 상단에 출력
+                        const ordTotal = document.getElementById('ordTotal');
+                        ordTotal.innerText = total;
+
+                        let orderChart = new Chart(ordCt,     {
+                            type: 'bar',
+                            data: {
+                                labels: data.map(row => row.month),
+                                datasets: [{
+                                        label: '월별 주문 건수',
+                                        data: data.map(row => row.count),
+                                        backgroundColor: '#848a8e',}]},
+                            options: {
+                                // 크기 조절을 위해 false
+                                responsive: false,
+                                title: {
+                                    display: true,
+                                },
+                                scales: {
+                                    yAxes: [{
+                                        ticks: {
+                                            beginAtZero: true,
+                                            stepSize: 1
+                                        }
+                                    }]
+                                }
+                            }
+                        });
+
+                    }
+                </script>
+                <nav>
+                    <h3>관리자 메인</h3>
+                    <p>
+                        HOME > <strong>메인</strong>
+                    </p>
+                </nav>
+
+                <h4>쇼핑몰 운영현황</h4>
+                <article>
+                    <table>
+                        <tr>
+                            <td>
+                                <strong>최근 12개월 주문건수(건)</strong>
+                                <span id="ordTotal"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <canvas id="orderChart" width="800" height="300" style="margin-left: 140px"></canvas>
+                            </td>
+                        </tr>
+                    </table>
+                </article>
+
+            </section>
