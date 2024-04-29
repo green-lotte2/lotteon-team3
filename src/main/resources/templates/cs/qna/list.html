@@ -79,7 +79,10 @@
                         <span th:text="${#strings.substring(article.uid, 0, 3)} + '***'"></span>
                     </td>
                     <td th:text="${#temporals.format(article.rdate, 'yyyy.MM.dd')}"></td>
-                    <td style="color: #217fd7; font-weight: bold;">[[${article.status}]]</td>
+                    <td th:if="${article.status == '검토중'}" style="color: #df3f39; font-weight: bold;">[[${article.status}]]</td>
+                    <!-- 답변완료인 경우 -->
+                    <td th:if="${article.status == '답변완료'}" style="color: #217fd7; font-weight: bold;">[[${article.status}]]</td>
+
 
                     <td>
                         조회: [[${article.hit}]]

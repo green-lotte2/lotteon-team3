@@ -282,7 +282,7 @@
           <br><h3>댓글목록</h3>
           <th:block th:each="comment : ${comments}">
             <article>
-              <span class="uid" th:text="${comment.uid}"></span>
+              <span class="uid" th:text="${#authentication.principal.member.level == 7 ? '관리자' : (#strings.length(boardDTO.uid) >= 3 ? #strings.substring(boardDTO.uid, 0, 3) + '***' : #strings.substring(boardDTO.uid, 0, 1)+'*')}"></span>
               <span class="date" th:text="${#strings.substring(comment.rdate, 2, 10)}"></span>
               <p class="content" th:text="${comment.content}"></p>
               <div>
@@ -290,14 +290,14 @@
                   <a th:if="${#authentication.principal.member.uid == comment.uid}" href="#" class="remove" th:data-no="${comment.bno}" th:data-parent="${comment.cno}">삭제</a>
                   <a th:if="${#authentication.principal.member.uid == comment.uid}" href="#" class="modify">수정</a>
                 </th:block>
-              </div>
+              </div><br><br>
 
               <form class="editForm" style="display: none;">
                 <input type="hidden" name="no" th:value="${comment.bno}" />
                 <input type="hidden" name="writer" th:value="${comment.uid}" />
                 <textarea name="content" th:text="${comment.content}"></textarea>
                 <div class="button-group">
-                  <input type="submit" value="댓글수정" class="submitEdit" >
+                  <input type="submit" value="댓글수정" class="submitEdit">
                   <button type="button" class="cancelEdit">취소</button>
                 </div>
               </form>
