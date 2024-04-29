@@ -6,6 +6,7 @@ import kr.co.lotteon.dto.cs.*;
 import kr.co.lotteon.entity.cs.BoardCateEntity;
 import kr.co.lotteon.entity.cs.BoardFileEntity;
 import kr.co.lotteon.entity.cs.BoardTypeEntity;
+import kr.co.lotteon.entity.cs.Comment;
 import kr.co.lotteon.repository.cs.BoardRepository;
 import kr.co.lotteon.service.admin.CommentService;
 import kr.co.lotteon.service.cs.CsCateService;
@@ -51,6 +52,7 @@ public class CsController {
         return "/cs/index";
     }
 
+    /* 문의하기 -------------------------------------------------------------------------------------------------------*/
     // QnA list
     @GetMapping(value = "/cs/qna/list")
     public String qnaList(Model model, CsPageRequestDTO csPageRequestDTO, String group) {
@@ -142,7 +144,7 @@ public class CsController {
         return "redirect:/cs/qna/list?cate=" + cate + "&group=" + group;
     }
 
-
+    /* 공지사항 -------------------------------------------------------------------------------------------------------*/
     // 공지사항 list
     @GetMapping("/cs/notice/list")
     public String noticeList(Model model, CsPageRequestDTO csPageRequestDTO, String group) {
@@ -173,6 +175,7 @@ public class CsController {
         return "/cs/notice/view";
     }
 
+    /* 자주묻는 질문 ---------------------------------------------------------------------------------------------------*/
     // FAQ list
     @GetMapping("/cs/faq/list")
     public String faqList(Model model, String cate, String group) {
@@ -210,4 +213,19 @@ public class CsController {
         model.addAttribute("group", group);
         return "/cs/faq/view";
     }
+
+    /* qna 댓글 구현중 ------------------------------------------------------------------------------------------------*/
+    // 댓글작성(기능) - 동적
+    /*@PostMapping("/comment")
+    public ResponseEntity<Comment> commentWrite(@RequestBody CommentDTO commentDTO) {
+        log.info("commentWrite : " + commentDTO);
+
+        ResponseEntity<Comment> commentResponseEntity = commentService.insertComment(commentDTO);
+        log.info("commentWrite ...2 : ");
+        log.info(commentResponseEntity.getBody().toString());
+        return commentResponseEntity;
+    }*/
+
+
+
 }

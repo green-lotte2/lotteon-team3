@@ -81,9 +81,9 @@
           </div>
         </div>
 
-<!--
+        <!-- 댓글목록 -->
         <section class="commentList">
-          <h3>댓글목록</h3>
+          <br><h3>댓글목록</h3>
           <th:block th:each="comment : ${comments}">
             <article>
               <span class="uid" th:text="${comment.uid}"></span>
@@ -111,7 +111,7 @@
           </th:block>
 
           <th:block th:if="${#lists.isEmpty(comments)}">
-            <p class="empty">등록된 댓글이 없습니다.</p>
+            <p style="font: normal 14px 'Noto Sans CJK KR'; color: #777;" class="empty">등록된 댓글이 없습니다.</p>
           </th:block>
         </section>
 
@@ -123,16 +123,13 @@
               <input type="hidden" name="writer" th:value="${#authentication.principal.member.uid}">
               <textarea name="content" placeholder="댓글 입력"></textarea>
               <div>
-                <a th:href="@{#}" class="btn btnCancel">취소</a>
+                <a th:href="@{#}" class="btn btnCancel1">취소</a>
                 <input type="submit" name="submit" value="작성완료" id="btnSubmit" class="btn btnComplete"/>
               </div>
             </form>
           </section>
         </th:block>
-      </article>
-    </section>
-  </div>
--->
+
         <a th:href="@{/cs/qna/list(group='qna', cate=${cate})}" class="btnList">목록보기</a>
         <!-- 로그인한 사용자일 때만 삭제 버튼과 수정 버튼을 표시 -->
         <th:block th:if="${#authentication.principal != 'anonymousUser'}">
