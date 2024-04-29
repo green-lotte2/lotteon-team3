@@ -62,14 +62,18 @@ public class CartService {
         }
     }
 
-
+/*
     // 장바구니 조회하기
     public List<CartInfoDTO> findCartUid(String uid){
         List<Cart> carts = cartRepository.findCartByUid(uid);
         log.info("cartService..1" + carts);
 
-
         return null;
+    }
+*/
+    // 장바구니에 담긴 회사 조회
+    public List<String> selectCartCompany (String uid){
+        return cartRepository.selectCartCompany(uid);
     }
 
 }
