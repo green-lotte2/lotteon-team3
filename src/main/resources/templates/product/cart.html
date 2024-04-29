@@ -12,6 +12,33 @@
             <section class="cart" layout:fragment="content">
               <script>
 
+                document.addEventListener('DOMContentLoaded', function() {
+                  // 모든 아코디언 버튼 요소 가져오기
+                  var accordionButtons = document.querySelectorAll('.accordion-button');
+
+                  // 각 아코디언 버튼에 대해 이벤트 리스너 추가
+                  accordionButtons.forEach(function(button) {
+                    button.addEventListener('click', function() {
+                      // 해당 버튼의 data-bs-target 값을 사용하여 아코디언 컨텐츠 요소 가져오기
+                      var targetId = button.getAttribute('data-bs-target');
+                      var targetContent = document.getElementById(targetId);
+
+                      // 현재 아코디언 상태 확인
+                      var isExpanded = button.getAttribute('aria-expanded') === 'true';
+
+                      // 아코디언 상태 변경
+                      if (isExpanded) {
+                        // 아코디언 닫기
+                        button.setAttribute('aria-expanded', 'false');
+                        targetContent.classList.remove('show');
+                      } else {
+                        // 아코디언 열기
+                        button.setAttribute('aria-expanded', 'true');
+                        targetContent.classList.add('show');
+                      }
+                    });
+                  });
+                });
               </script>
               <!-- 제목, 페이지 네비게이션 -->
               <nav>
@@ -33,15 +60,16 @@
                     </button>
                   </div>
                 </div>
-                <div class="accordion" id="accordionPanelsStayOpenExample">
+                <div th:each="company, iterStat : ${companies}" class="accordion" id="accordionPanelsStayOpenExample">
                   <div class="accordion-item">
                     <h2 class="accordion-header">
-                      <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
+                      <button th:id="'accordionButton'+${iterStat.index}" class="accordion-button" type="button" data-bs-toggle="collapse" th:data-bs-target="'panelsStayOpen-collapse'+${iterStat.index}" aria-expanded="true" th:aria-controls="'panelsStayOpen-collapse'+${iterStat.index}">
                         <input type="checkbox" class="checkbox" value="0">
-                        주식회사박컴퍼니
+                        [[${company}]]
                       </button>
                     </h2>
-                    <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show">
+                    <!-- 내용 -->
+                    <div th:id="'panelsStayOpen-collapse'+${iterStat.index}" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingOne">
                       <div class="accordion-body">
                         <div>
                           <label>
