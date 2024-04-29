@@ -17,9 +17,9 @@
                                 <div class="card bg-c-blue order-card">
                                     <div class="card-block">
                                         <h6 class="m-b-20"><i class="fa fa-cart-plus f-left"></i> 주문 현황</h6>
-                                        <p class="m-b-0">최근 12개월 <span class="f-right">351</span></p>
-                                        <p class="m-b-0">최근 1개월 <span class="f-right">351</span></p>
-                                        <p class="m-b-0">최근 1주 <span class="f-right">351</span></p>
+                                        <p class="m-b-0">최근 12개월 <span class="f-right">[[${year.orderCount}]]</span></p>
+                                        <p class="m-b-0">최근 1개월 <span class="f-right">[[${month.orderCount}]]</span></p>
+                                        <p class="m-b-0">최근 1주 <span class="f-right">[[${week.orderCount}]]</span></p>
                                     </div>
                                 </div>
                             </div>
@@ -28,9 +28,9 @@
                                 <div class="card bg-c-green order-card">
                                     <div class="card-block">
                                         <h6 class="m-b-20"><i class="fa fa-rocket f-left"></i>배송 현황</h6>
-                                        <p class="m-b-0">배송 준비중<span class="f-right">351</span></p>
-                                        <p class="m-b-0">배송중<span class="f-right">351</span></p>
-                                        <p class="m-b-0">배송 완료<span class="f-right">351</span></p>
+                                        <p class="m-b-0">배송 준비중<span class="f-right" th:text="${deli['배송 준비중']}"></span></p>
+                                        <p class="m-b-0">배송중<span class="f-right" th:text="${deli['배송중']}"></span></p>
+                                        <p class="m-b-0">배송 완료<span class="f-right" th:text="${deli['배송 완료']}"></span></p>
                                     </div>
                                 </div>
                             </div>
@@ -50,9 +50,9 @@
                                 <div class="card bg-c-pink order-card">
                                     <div class="card-block">
                                         <h6 class="m-b-20"><i class="fa fa-credit-card f-left"></i>매출 내역</h6>
-                                        <p class="m-b-0">최근 12개월 <span class="f-right">351</span></p>
-                                        <p class="m-b-0">최근 1개월 <span class="f-right">351</span></p>
-                                        <p class="m-b-0">최근 1주 <span class="f-right">351</span></p>
+                                        <p class="m-b-0">최근 12개월 <span class="f-right">[[${year.orderSum}]]</span></p>
+                                        <p class="m-b-0">최근 1개월 <span class="f-right">[[${month.orderSum}]]</span></p>
+                                        <p class="m-b-0">최근 1주 <span class="f-right">[[${week.orderSum}]]</span></p>
                                     </div>
                                 </div>
                             </div>

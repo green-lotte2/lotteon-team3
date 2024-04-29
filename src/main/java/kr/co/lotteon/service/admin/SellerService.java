@@ -45,6 +45,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.beans.Transient;
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
@@ -67,6 +68,7 @@ public class SellerService {
     private final BoardTypeRepository typeRepository;
     private final BannerRepository bannerRepository;
     private final BoardFileRepository fileRepository;
+    private final OrderItemRepository orderItemRepository;
 
     private final ModelMapper modelMapper;
     private final ProductMapper productMapper;
@@ -142,6 +144,78 @@ public class SellerService {
         return dtoList;
     }
 
+    // 판매자 인덱스 주문 내역 카드 조회
+    public OrderCardDTO selectCountSumByPeriod(LocalDateTime period){
+
+        // 현재 로그인 중인 사용자 정보 불러오기
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        // 로그인 중일 때 해당 사용자 id를 seller에 입력
+        MyUserDetails userDetails = (MyUserDetails) authentication.getPrincipal();
+        String sellerId = userDetails.getMember().getName();
+
+        // 해당 판매자의 상품번호 전부 조회
+        List<Integer> prodNos = productRepository.selectProdNoForQna(sellerId);
+        log.info("상품번호 전부 조회 "+ prodNos.toString());
+
+        Tuple result = orderItemRepository.selectCountSumByPeriod(period, prodNos);
+        OrderCardDTO orderCardDTO = new OrderCardDTO();
+        orderCardDTO.setOrderCount(result.get(0, Long.class));
+        orderCardDTO.setOrderSum(result.get(1, Integer.class));
+
+        return orderCardDTO;
+
+    }
+    // 판매자 인덱스 배송현황 카드 조회
+    public Map<String, Long> findOrdStatus(){
+        String sellerId = whoAmI();
+
+        // 해당 판매자의 상품번호 전부 조회
+        List<Integer> prodNos = productRepository.selectProdNoForQna(sellerId);
+
+        List<Tuple> results = orderItemRepository.selectOrdStatusCount(prodNos);
+        Map<String, Long> ordStatus = results.stream()
+                .collect(Collectors.toMap(
+                        tuple -> tuple.get(0, String.class), // 주문 상태
+                        tuple -> tuple.get(1, Long.class)   // 주문 수
+                ));
+        return ordStatus;
+    }
+    // 판매자 주문 현황 차트 조회
+    public List<Map<String, Object>> findOrderForChart(){
+
+        String sellerId = whoAmI();
+
+        List<Integer> prodNos = productRepository.selectProdNoForQna(sellerId);
+
+         List<Tuple> tuples = orderItemRepository.selectSumByPeriod(prodNos);
+
+        // 총 주문 수를 저장할 변수
+        AtomicLong totalOrders = new AtomicLong(0);
+
+        List<Map<String, Object>> jsonResult = tuples.stream()
+                .map(tuple -> {
+                    String period = tuple.get(0, String.class);
+                    long count = tuple.get(1, long.class);
+
+                    // 총 주문 수에 현재 월의 주문 수를 더함
+                    totalOrders.addAndGet(count);
+
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("month", period + "월");
+                    map.put("count", count);
+                    return map;
+                })
+                .collect(Collectors.toList());
+
+        // 총 주문 수를 결과에 추가
+        Map<String, Object> totalMap = new HashMap<>();
+        totalMap.put("total", totalOrders.get());
+        jsonResult.add(totalMap);
+
+        log.info("월별 주문 count 조회 Serv 3: " + jsonResult);
+        return jsonResult;
+    }
     // 판매자 상품 등록 cate1 조회
     public List<Cate1DTO> findAllCate1() {
         List<Cate1> cate1s = cate1Repository.findAll();
@@ -174,13 +248,7 @@ public class SellerService {
     // 판매자 상품 기본 목록 조회
     public AdminProductPageResponseDTO sellerSelectProducts(AdminProductPageRequestDTO adminProductPageRequestDTO) {
         log.info("판매자 상품 목록 조회 Serv 1 : " + adminProductPageRequestDTO);
-
-        // 현재 로그인 중인 사용자 정보 불러오기
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        // 로그인 중일 때 해당 사용자 id를 seller에 입력
-        MyUserDetails userDetails = (MyUserDetails) authentication.getPrincipal();
-        String sellerId = userDetails.getMember().getName();
+        String sellerId = whoAmI();
 
         Pageable pageable = adminProductPageRequestDTO.getPageable("no");
 
@@ -217,12 +285,7 @@ public class SellerService {
         log.info("판매자 상품 목록 검색 조회 Serv 1 : " + adminProductPageRequestDTO);
         Pageable pageable = adminProductPageRequestDTO.getPageable("no");
 
-        // 현재 로그인 중인 사용자 정보 불러오기
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        // 로그인 중일 때 해당 사용자 id를 seller에 입력
-        MyUserDetails userDetails = (MyUserDetails) authentication.getPrincipal();
-        String sellerId = userDetails.getMember().getName();
+        String sellerId = whoAmI();
 
         // DB 조회
         Page<Product> pageProducts = productRepository.sellerSearchProducts(adminProductPageRequestDTO, pageable, sellerId);
@@ -423,11 +486,7 @@ public class SellerService {
         Page<Tuple> boardEntities = null;
 
         // 현재 로그인 중인 사용자 정보 불러오기
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        // 로그인 중일 때 해당 사용자 id를 seller에 입력
-        MyUserDetails userDetails = (MyUserDetails) authentication.getPrincipal();
-        String sellerId = userDetails.getMember().getName();
+        String sellerId = whoAmI();
 
         // 해당 판매자의 상품번호 전부 조회
         List<Integer> prodNos = productRepository.selectProdNoForQna(sellerId);
@@ -580,6 +639,18 @@ public class SellerService {
             log.error("이미지 리사이징 실패: " + e.getMessage());
             return null;
         }
+    }
+
+    // 사용자 정보 함수
+    public String whoAmI(){
+        // 현재 로그인 중인 사용자 정보 불러오기
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        // 로그인 중일 때 해당 사용자 id를 seller에 입력
+        MyUserDetails userDetails = (MyUserDetails) authentication.getPrincipal();
+        String sellerId = userDetails.getMember().getName();
+
+        return sellerId;
     }
 
 }
