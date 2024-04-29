@@ -32,7 +32,9 @@ public class ProductController {
     // cart 페이지 매핑
     @GetMapping("/product/cart")
     public String cart(@RequestParam("uid") String uid, Model model){
-        List<CartInfoDTO> carts = cartService.findCartUid(uid);
+        List<String> companies = cartService.selectCartCompany(uid);
+        model.addAttribute("companies", companies);
+        log.info("companies: {}", companies);
         return "/product/cart";
     }
 

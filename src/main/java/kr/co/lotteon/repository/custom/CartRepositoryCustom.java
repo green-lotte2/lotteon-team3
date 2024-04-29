@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface CartRepositoryCustom {
-    public Map<String, List<CartInfoDTO>> productCartList(String uid);
+
+    public List<String> selectCartCompany(String uid);
 
 }
