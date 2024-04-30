@@ -4,7 +4,6 @@
 <main id="myLayout" layout:fragment="content">
     <script th:src="@{/js/myInfo.js}"></script>
         <div id="my">
-
             <div class="coupon">
                 <ul>
                     <span class="menu_else"></span>
@@ -26,7 +25,7 @@
                             <dl>
                                 <dt>· 나의 보유쿠폰</dt>
                                 <dd>
-                                    <strong>[[${coupons.size}]]</strong>
+                                    <strong>[[${count}]]</strong>
                                     <span>장</span>
                                 </dd>
                             </dl>
@@ -41,11 +40,13 @@
                                 <th>상태</th>
                             </tr>
                             <tr th:each="coupon : ${coupons}">
-                                <td class="tit" th:text="${coupon.couponName}"></td>
-                                <td class="discount" th:text="${coupon.discountMoney}"><span></span>원</td>
-                                <td class="condition" th:text="${coupon.discountType}"><span></span>원 이상 구매시</td>
-                                <td class="expire" th:text="${#temporals.format(coupon.expireDate, 'yyyy-MM-dd')}"></td>
-                                <td class="status" th:text="${coupon.useYnString}">사용가능</td>
+                                <td class="tit">[[${coupon.couponName}]]</td>
+                                <td class="discount"><span>[[${coupon.discountMoney}]]</span>원</td>
+                                <td class="condition"><span>[[${coupon.discountType}]]</span>원 이상 구매시</td>
+                                <td class="expire">[[${#temporals.format(coupon.expireDate, 'yyyy-MM-dd')}]]</td>
+                                <td class="status" th:style="${coupon.useYnString == '사용가능'} ? 'font-weight: bold;' : ''">
+                                    [[${coupon.useYnString}]]
+                                </td>
                             </tr>
                         </table>
                         

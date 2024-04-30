@@ -3,6 +3,7 @@ package kr.co.lotteon.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import kr.co.lotteon.dto.admin.BannerDTO;
+import kr.co.lotteon.dto.cs.BoardDTO;
 import kr.co.lotteon.dto.member.CouponDTO;
 import kr.co.lotteon.dto.member.MemberDTO;
 import kr.co.lotteon.dto.member.MyInfoDTO;
@@ -88,8 +89,13 @@ public class MyController {
 
         List<CouponDTO> coupons = myService.findCouponsByUid(uid);
 
+        int count = myService.findCouponCountByUidAndUseYn(uid);
+
         model.addAttribute("coupons",coupons);
+        model.addAttribute("count : ",count);
+
         log.info("내 쿠폰"+coupons);
+        log.info("count"+count);
 
 
         return "/my/coupon";
@@ -118,7 +124,17 @@ public class MyController {
 
     // my - qna (마이페이지 문의하기) 페이지 매핑
     @GetMapping("/my/qna")
-    public String qna(){
+    public String qna(Model model,@RequestParam String uid){
+
+        List<BoardDTO> boards = myService.findByBoardAndUid(uid);
+        int count = myService.countByUid(uid);
+
+        model.addAttribute("boards",boards);
+        model.addAttribute("count",count);
+
+        log.info("내 문의 : "+boards);
+        log.info("내 문의 수 : "+count);
+
         return "/my/qna";
     }
     // my - review (나의 리뷰내역) 페이지 매핑

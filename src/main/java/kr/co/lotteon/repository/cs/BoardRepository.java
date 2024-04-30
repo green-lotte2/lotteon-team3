@@ -40,5 +40,12 @@ public interface BoardRepository extends JpaRepository<BoardEntity, Integer>, Bo
 
     public int countByUidAndStatusNot(String uid, String status);
 
+    @Query("SELECT b FROM BoardEntity b WHERE b.uid = :uid")
+    public List<BoardEntity> findByUid(@Param("uid") String uid);
+
+    @Query("SELECT COUNT(b) FROM BoardEntity b WHERE b.uid = :uid")
+    public int countByUid(@Param("uid") String uid);
+
+
 
 }
