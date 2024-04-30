@@ -1,11 +1,13 @@
 package kr.co.lotteon.repository.impl;
 
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import kr.co.lotteon.dto.product.CartInfoDTO;
 import kr.co.lotteon.dto.product.ProductDTO;
+import kr.co.lotteon.entity.product.Product;
 import kr.co.lotteon.entity.product.QCart;
 import kr.co.lotteon.entity.product.QOption;
 import kr.co.lotteon.entity.product.QProduct;
@@ -15,6 +17,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -50,16 +54,28 @@ public class CartRepositoryImpl implements CartRepositoryCustom {
     @Override
     public List<CartInfoDTO> selectCartProduct(String uid) {
 
+
         List<Tuple> result = jpaQueryFactory.select(qCart.count, qCart.opNo, qProduct)
-                        .from(qCart)
-                        .join(qProduct).on(qCart.prodNo.eq(qProduct.prodNo))
-                        .where(qCart.uid.eq(uid))
-                        .fetch();
-        log.info("CartImpl {}",result);
+                .from(qCart)
+                .join(qProduct).on(qCart.prodNo.eq(qProduct.prodNo))
+                .where(qCart.uid.eq(uid))
+                .fetch();
+
+        log.info("CartImpl {}", result);
 
         List<CartInfoDTO> resultValue = result.stream()
-                                                .map(cart -> modelMapper.map(cart.toArray(), CartInfoDTO.class))
-                                                .collect(Collectors.toList());
+                .map(tuple -> {
+                    Product product = tuple.get(2, Product.class);
+
+                    CartInfoDTO cartInfoDTO = modelMapper.map(product, CartInfoDTO.class);
+                    cartInfoDTO.setCount(tuple.get(0, Integer.class));
+                    cartInfoDTO.setOpNo(tuple.get(1, String.class));
+                    log.info(" pppppppp : "+product);
+                    log.info(" gggggggg : "+cartInfoDTO);
+                    return cartInfoDTO;
+                })
+                .toList();
+
         log.info("CartImpl2 {}", resultValue);
 
         return resultValue;

@@ -3,6 +3,7 @@ package kr.co.lotteon.dto.product;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -11,6 +12,9 @@ import java.time.LocalDateTime;
 @ToString
 @Builder
 public class CartInfoDTO {
+
+
+    private ProductDTO productDTO;
 
     // product
     private int prodNo;
