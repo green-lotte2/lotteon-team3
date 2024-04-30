@@ -1331,45 +1331,51 @@ footer p > strong {
 
 /* 댓글 목록에 대한 CSS */
 #cs .qna .view .commentList {
-  overflow: hidden;
 }
 
 /* 댓글에 대한 CSS */
-#cs .qna .view .commentList article {
+#cs .qna .view .commentList > article {
   overflow: hidden;
 }
-
-/* 작성자 이름에 대한 CSS */
-#cs .qna .view .commentList article .uid {
-  /* 작성자 이름에 대한 CSS를 복사하여 붙여넣으세요 */
-}
-
-/* 작성 날짜에 대한 CSS */
-#cs .qna .view .commentList article .date {
-  /* 작성 날짜에 대한 CSS를 복사하여 붙여넣으세요 */
-}
+#cs .qna .view .commentList .nick {}
+#cs .qna .view .commentList .date {}
 
 /* 댓글 내용에 대한 CSS */
-#cs .qna .view .commentList article .content {
-  padding: 10px;
+#cs .qna .view .commentList .content {padding: 10px;}
+
+#cs .qna .view .commentList > article > div {float: right;}
+
+#cs .qna .view .commentList > article .remove {}
+#cs .qna .view .commentList > article .modify {}
+#cs .qna .view .commentList > article .empty {
+  margin: 20px;
+  text-align: center;
 }
 
-/* 삭제 버튼에 대한 CSS */
-#cs .qna .view .commentList article .remove {
-  /* 삭제 버튼에 대한 CSS를 복사하여 붙여넣으세요 */
-}
-
-/* 수정 버튼에 대한 CSS */
-#cs .qna .view .commentList article .modify {
-  /* 수정 버튼에 대한 CSS를 복사하여 붙여넣으세요 */
-}
-
-/* 댓글 수정 폼에 대한 CSS */
-#cs .qna .view .commentList article .editForm {
+#cs .qna .view .commentForm {
   overflow: hidden;
 }
 
-#cs .qna .view .commentList article .editForm textarea {
+#cs .qna .view .commentList .commentForm textarea {
+  width: 100%;
+  height: 60px;
+  border: 1px solid #e4eaec;
+  padding: 6px;
+  box-sizing: border-box;
+  resize: none;
+}
+#cs .qna .view .commentForm div {
+  float: right;
+  margin-top: 10px;
+}
+
+
+/* 댓글 수정 폼에 대한 CSS */
+#cs .qna .view .commentList > article > .editForm {
+  overflow: hidden;
+}
+
+#cs .qna .view .commentList > article > .editForm > textarea {
   width: 100%;
   height: 60px;
   border: 1px solid #e4eaec;
@@ -1378,7 +1384,7 @@ footer p > strong {
   resize: none;
 }
 
-#cs .qna .view .commentList article .editForm div {
+#cs .qna .view .commentList > article > .editForm > div {
   float: right;
   margin-top: 10px;
 }
@@ -1422,4 +1428,10 @@ footer p > strong {
   line-height: 58px;
   text-align: center;
   box-sizing: border-box;
+}
+
+.btnComplete {
+  border: 1px solid #3b3c3f;
+  background: #4b545e;
+  color: #fff;
 }

@@ -1,11 +1,9 @@
 package kr.co.lotteon.service.cs;
 
 
+import com.querydsl.core.Tuple;
 import jakarta.transaction.Transactional;
-import kr.co.lotteon.dto.cs.BoardDTO;
-import kr.co.lotteon.dto.cs.BoardFileDTO;
-import kr.co.lotteon.dto.cs.CsPageRequestDTO;
-import kr.co.lotteon.dto.cs.CsPageResponseDTO;
+import kr.co.lotteon.dto.cs.*;
 import kr.co.lotteon.entity.cs.*;
 import kr.co.lotteon.repository.cs.*;
 import lombok.RequiredArgsConstructor;
@@ -296,4 +294,49 @@ public class CsService {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("not found");
         }
     }
+
+
+    // 댓글 작성
+    @Transactional
+    public ResponseEntity<Comment> insertComment(CommentDTO commentDTO){
+        // DTO -> Entity
+        Comment comment = modelMapper.map(commentDTO, Comment.class);
+
+        // DB insert 후 저장한 객체 반환 //////////
+        // DB insert 시 저장한 객체 Pk 반환
+        int cno = commentRepository.save(comment).getCno();
+
+        // user join 해서 nick 가져오기
+        Tuple saveTuple =  commentRepository.selectCommentAndNick(cno);
+        log.info("insertComment saveTuple : " + saveTuple.get(0, Comment.class));
+        log.info("insertComment saveTuple : " + saveTuple.get(1, String.class));
+
+        // tuple -> Entity
+        Comment saveComment = saveTuple.get(0, Comment.class);
+        String nick = saveTuple.get(1, String.class);
+        saveComment.setNick(nick);
+
+        log.info("insertComment saveComment : " + saveComment.toString());
+        return ResponseEntity.ok().body(saveComment);
+    }
+
+    // 댓글 수정
+    @Transactional
+    public ResponseEntity<?> updateComment(CommentDTO commentDTO){
+        Optional<Comment> optComment = commentRepository.findById(commentDTO.getCno());
+
+        if(optComment.isPresent()){
+            // 댓글 수정
+            Comment comment = optComment.get();
+            comment.setContent(commentDTO.getContent());
+
+            Comment modifiedComment = commentRepository.save(comment);
+            log.info("updateComment ...4 : "+ modifiedComment);
+            // 수정 후 데이터 반환
+            return ResponseEntity.ok().body(Collections.singletonMap("data", modifiedComment));
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("not found");
+        }
+    }
+
 }
