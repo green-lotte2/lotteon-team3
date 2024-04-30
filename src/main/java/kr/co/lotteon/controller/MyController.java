@@ -3,6 +3,7 @@ package kr.co.lotteon.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import kr.co.lotteon.dto.admin.BannerDTO;
+import kr.co.lotteon.dto.member.CouponDTO;
 import kr.co.lotteon.dto.member.MemberDTO;
 import kr.co.lotteon.entity.member.Member;
 import kr.co.lotteon.service.admin.BannerService;
@@ -47,7 +48,7 @@ public class MyController {
         return "/my/info";
     }
     @PostMapping("/my/info")
-    public String info(MemberDTO changeMemberDTO, HttpServletRequest request,@RequestParam String uid){
+    public String info(MemberDTO changeMemberDTO,@RequestParam String uid){
         log.info("PASSWORD "+changeMemberDTO.getPass());
 
         log.info("changeMemberDTO"+changeMemberDTO);
@@ -78,9 +79,19 @@ public class MyController {
     }
     // my - coupon 페이지 매핑
     @GetMapping("/my/coupon")
-    public String coupon(){
+    public String coupon(Model model,@RequestParam String uid){
+
+        List<CouponDTO> coupons = memberService.findCouponsByUid(uid);
+
+        model.addAttribute("coupons",coupons);
+        log.info("내 쿠폰"+coupons);
+
+
         return "/my/coupon";
     }
+
+
+
     // my - qna (마이페이지 문의하기) 페이지 매핑
     @GetMapping("/my/qna")
     public String qna(){
