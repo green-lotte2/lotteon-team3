@@ -2,6 +2,7 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{/layout/myLayout}">
 <main id="myLayout" layout:fragment="content">
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
     <script th:src="@{/js/changeInfo.js}"></script>
         <div id="my">
             <nav>
@@ -34,43 +35,61 @@
 
                     <article>
                         <h3>회원정보 설정</h3>
-
+                        <form method="POST" name="changeForm" class="changeForm">
                         <table border="0">
                             <tr>
                                 <td>사용자 ID</td>
                                 <!-- 아이디 뒤 네자리 마스킹 처리 -->
-                                <td th:text="${#strings.substring(#authentication.principal.member.uid, 0, #authentication.principal.member.uid.length() - 4)} + '****'"></td>
+                                <td th:text="${memberDTO.uid}"></td>
                             </tr>
                             <tr>
-                                <td>비밀번호</td>
+                                <td>새로운 비밀번호</td>
                                 <td>
-                                    <button id="btnChangePass">비밀번호 수정</button>
+                                    <input type="password" name="pass"/>
+                                    <span class="msgPass">영문, 숫자, 특수문자를 조합하여 8~12자까지 설정해 주세요.</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>비밀번호 확인</td>
+                                <td>
+                                    <input type="password" name="pass2"/>
+                                    <span class="msgPass">비밀번호 재입력</span>
+                                    <div id="result_pass"></div>
                                 </td>
                             </tr>
                             <tr>
                                 <td>이름</td>
-                                <td th:text="${#strings.substring(#authentication.principal.member.name, 0, 1)} + '*' + ${#strings.substring(#authentication.principal.member.name, 2)}"></td>
+                                <td th:text="${memberDTO.name}"></td>
 
                             </tr>
                             <!-- 추가 -->
                             <tr>
                                 <td>닉네임</td>
                                 <td id="newNick">
-                                    <span id="nick">[[${#authentication.principal.member.nick}]]</span>
-                                    <button id="btnChangeNick">수정하기</button>
+                                    <input type="text" name="nick" id="nick" data-type="nick" th:value="${memberDTO.nick}">
+                                    <span id="result_nick"></span>
                                 </td>
                             </tr>
                             <tr>
                                 <td>가입날짜</td>
-                                <td th:text="${#temporals.format(#authentication.principal.member.rdate, 'yyyy-MM-dd')}"></td>
+                                <td th:text="${#temporals.format(memberDTO.rdate, 'yyyy-MM-dd')}"></td>
                             </tr>
                             <tr>
                                 <td>E-mail</td>
                                 <td id="newEmail">
-                                    <span id="email">[[${#authentication.principal.member.email}]]</span>
-                                    <button id="btnChangeEmail">수정하기</button>
-                                    <div id="resultEmail">
+                                    <input id="inputEmail" type="email" name="email" th:value="${memberDTO.email}"/>
+                                    <button class="btnSubmit" type="button" id="btn_email" data-type="email">이메일 인증</button>
+                                    <span id="result_email"></span>
 
+                                    <div id="divEmailCode">
+                                        <input class="form-control" id="inputEmailCode" name="code" type="text"
+                                               placeholder="이메일 인증코드 입력" disabled/>
+
+                                        <button type="button" class="btnSubmit" id="btnCheckEmailCode"
+                                                data-type="email">
+                                            <span class="" role="status">인증코드 확인</span>
+                                        </button>
+                                        <div id="resultEmailCode" class="d-block"></div>
                                     </div>
                                 </td>
                             </tr>
@@ -78,21 +97,20 @@
                                 <td>휴대폰</td>
                                 <td>
                                     <p class="hp">
-                                        <input type="text" name="hp1" th:value="${#strings.substring(#authentication.principal.member.hp, 0, 3)}"/>-
-                                        <input type="text" name="hp2" th:value="${#strings.substring(#authentication.principal.member.hp, 4, 8)}"/>-
-                                        <input type="text" name="hp3" th:value="${#strings.substring(#authentication.principal.member.hp, 9)}"/>
-                                        <button id="btnChangeHp">수정하기</button>
+                                        <input type="text" name="hp" maxlength="13" minlength="13" data-type="hp" th:value="${memberDTO.hp}"/>
+                                        <span class="msgHp"> - 포함 13자리를 입력하세요.</span>
+                                    <div id="result_hp"></div>
                                     </p>
                                 </td>
                             </tr>
                             <tr>
                                 <td>주소</td>
                                 <td>
-                                    <input type="text" name="zip" th:value="${#authentication.principal.member.zip}"/>
-                                    <button id="btnFindZip">주소검색</button>
+                                    <input type="text" name="zip" id="inputZip" th:value="${memberDTO.zip}"/>
+                                    <button type="button" id="findZip">주소검색</button>
                                     <p class="address">
-                                        <input type="text" name="addr1" th:value="${#authentication.principal.member.addr1}"/>
-                                        <input type="text" name="addr2" th:value="${#authentication.principal.member.addr2}"/>
+                                        <input type="text" name="addr1" id="inputAddr1" size="50" th:value="${memberDTO.addr1}"/>
+                                        <input type="text" name="addr2" id="inputAddr2" size="50" th:value="${memberDTO.addr2}"/>
                                     </p>
                                 </td>
                             </tr>
@@ -103,10 +121,10 @@
                                 </td>
                             </tr>
                         </table>
-                        <button id="btnInfoChange">수정하기</button>
+                            <input type="submit" class="btnInfoChange" value="수정하기"/>
+                        </form>
                     </article>
                 </section>
-
             </div>
         </div>
 </main>
