@@ -285,10 +285,10 @@
 
         <!-- 댓글목록 -->
         <section class="commentList">
-          <br><h3>댓글목록</h3>
+          <h3>댓글목록</h3>
           <th:block th:each="comment : ${comments}">
             <article>
-              <span class="uid" th:text="${#authentication.principal.member.level == 7 ? '관리자' : (#strings.length(boardDTO.uid) >= 3 ? #strings.substring(boardDTO.uid, 0, 3) + '***' : #strings.substring(boardDTO.uid, 0, 1)+'*')}"></span>
+              <span class="uid" th:text="${#strings.substring(boardDTO.uid, 0, 3) + '***'}"></span>
               <span class="date" th:text="${#strings.substring(comment.rdate, 2, 10)}"></span>
               <p class="content" th:text="${comment.content}"></p>
               <div>
@@ -315,7 +315,7 @@
           </th:block>
 
           <th:block th:if="${#lists.isEmpty(comments)}">
-            <p style="font: normal 14px 'Noto Sans CJK KR'; color: #777;" class="empty">등록된 댓글이 없습니다.</p>
+            <p class="empty">등록된 댓글이 없습니다.</p>
           </th:block>
         </section>
 
