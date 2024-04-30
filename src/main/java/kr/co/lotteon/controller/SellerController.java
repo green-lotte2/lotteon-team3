@@ -219,10 +219,19 @@ public class SellerController {
         return sellerService.prodDelete(prodNoArray);
     }
     ////////////////  order  /////////////////////////////////////////////////
-    // 상품 현황 페이지 매핑
+    // 주문 현황 페이지 매핑
     @GetMapping("/seller/order/list")
-    public String orderList(Model model){
-
+    public String orderList(Model model, AdminPageRequestDTO adminPageRequestDTO){
+        SellerOrderPageResponseDTO sellerOrderPageResponseDTO = null;
+        if(adminPageRequestDTO.getKeyword() == null) {
+            // 일반 주문 목록 조회
+            sellerOrderPageResponseDTO = sellerService.selectOrderList(adminPageRequestDTO);
+        }else {
+            // 검색 주문 목록 조회 //////
+            log.info("키워드 검색 Cont" + adminPageRequestDTO.getKeyword());
+            sellerOrderPageResponseDTO = sellerService.selectOrderList(adminPageRequestDTO);
+        }
+        model.addAttribute("pageResponseDTO", sellerOrderPageResponseDTO);
         return "/seller/order/list";
     }
     //주문수 그래프 조회

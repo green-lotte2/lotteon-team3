@@ -1,6 +1,8 @@
 package kr.co.lotteon.dto.admin;
 
-import kr.co.lotteon.dto.member.MemberDTO;
+import kr.co.lotteon.dto.cs.BoardDTO;
+import kr.co.lotteon.dto.product.OrderItemDTO;
+import kr.co.lotteon.entity.product.OrderItem;
 import lombok.*;
 
 import java.util.List;
@@ -10,12 +12,13 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class AdminMemberPageResponseDTO {
-    private List<MemberDTO> dtoList;
+public class SellerOrderPageResponseDTO {
+    private List<OrderListDTO> dtoList;
     private int pg;
     private int size;
     private int total;
     private int startNo;
+    private String group;
     private String type;
     private String keyword;
 
@@ -23,7 +26,7 @@ public class AdminMemberPageResponseDTO {
     private boolean prev, next;
 
     @Builder
-    public AdminMemberPageResponseDTO(AdminPageRequestDTO adminPageRequestDTO, List<MemberDTO> dtoList, int total){
+    public SellerOrderPageResponseDTO(AdminPageRequestDTO adminPageRequestDTO, List<OrderListDTO> dtoList, int total){
 
         this.pg = adminPageRequestDTO.getPg();
         this.size = adminPageRequestDTO.getSize();

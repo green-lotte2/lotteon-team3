@@ -1,7 +1,6 @@
 package kr.co.lotteon.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.http.HttpServletRequest;
 import kr.co.lotteon.dto.admin.*;
 import kr.co.lotteon.dto.cs.BoardCateDTO;
 import kr.co.lotteon.dto.cs.BoardDTO;
@@ -10,7 +9,6 @@ import kr.co.lotteon.dto.cs.CommentDTO;
 import kr.co.lotteon.dto.product.*;
 import kr.co.lotteon.entity.cs.Comment;
 import kr.co.lotteon.entity.member.Terms;
-import kr.co.lotteon.security.MyUserDetails;
 import kr.co.lotteon.service.admin.AdminService;
 import kr.co.lotteon.service.admin.CommentService;
 import kr.co.lotteon.service.admin.SellerService;
@@ -19,8 +17,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -338,8 +334,8 @@ public class AdminController {
     ////////////////  member  ///////////////////////////////////////////////////
     // 관리자 회원 현황 매핑
     @GetMapping("/admin/member/list")
-    public String memberList(Model model, AdminMemberPageRequestDTO adminMemberPageRequestDTO){
-        AdminMemberPageResponseDTO adminMemberPageResponseDTO = adminService.selectMembers(adminMemberPageRequestDTO);
+    public String memberList(Model model, AdminPageRequestDTO adminPageRequestDTO){
+        AdminMemberPageResponseDTO adminMemberPageResponseDTO = adminService.selectMembers(adminPageRequestDTO);
         model.addAttribute("pageResponseDTO", adminMemberPageResponseDTO);
         return "/admin/member/list";
     }

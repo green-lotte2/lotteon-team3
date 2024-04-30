@@ -15,9 +15,7 @@ import kr.co.lotteon.entity.cs.BoardEntity;
 import kr.co.lotteon.entity.cs.BoardTypeEntity;
 import kr.co.lotteon.entity.member.Member;
 import kr.co.lotteon.entity.member.Terms;
-import kr.co.lotteon.entity.product.Cate1;
-import kr.co.lotteon.entity.product.Option;
-import kr.co.lotteon.entity.product.Product;
+import kr.co.lotteon.entity.product.*;
 import kr.co.lotteon.mapper.ProductMapper;
 import kr.co.lotteon.repository.BannerRepository;
 import kr.co.lotteon.repository.cs.BoardCateRepository;
@@ -40,6 +38,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.beans.Transient;
@@ -565,20 +564,85 @@ public class SellerService {
 
         List<Map<String, Object>> jsonResult = tuples.stream()
                 .map(tuple -> {
-                    String date = tuple.get(0, String.class);
-                    long count = tuple.get(1, Long.class);
+                    Integer year = tuple.get(0, Integer.class);
+                    Integer month = tuple.get(1, Integer.class);
+                    long count = tuple.get(2, Long.class);
 
                     // 총 주문 수에 현재 월의 주문 수를 더함
                     totalOrders.addAndGet(count);
 
                     Map<String, Object> map = new HashMap<>();
-                    map.put("month", date + "월");
+                    map.put("month", year + "년" + month + "월");
                     map.put("count", count);
                     return map;
                 })
                 .collect(Collectors.toList());
+        // 총 주문 수를 결과에 추가
+        Map<String, Object> totalMap = new HashMap<>();
+        totalMap.put("total", totalOrders.get());
+        jsonResult.add(totalMap);
 
+        log.info("월별 주문 count 조회 Serv 3: " + jsonResult);
         return jsonResult;
+    }
+    // 판매자 주문 현황
+    @Transactional
+    public SellerOrderPageResponseDTO selectOrderList(AdminPageRequestDTO adminPageRequestDTO){
+        log.info("판매자 주문 현황 Serv 1  ");
+        Pageable pageable = adminPageRequestDTO.getPageable("no");
+        // 현재 로그인 중인 사용자 정보 불러오기
+        String sellerId = whoAmI();
+
+        // 해당 판매자의 상품번호 전부 조회
+        List<Integer> prodNos = productRepository.selectProdNoForQna(sellerId);
+        log.info("판매자 주문 현황 Serv 2 : "+prodNos);
+        // order, orderItem, product, option 정보 DB 조회
+        Page<Tuple> results = orderItemRepository.selectOrderList(adminPageRequestDTO, pageable, prodNos);
+        log.info("판매자 주문 현황 Serv 3 : " + results.getContent().size());
+        List<OrderListDTO> dtoList = results.getContent().stream()
+                .map(tuple -> {
+
+                    OrderListDTO orderListDTO = new OrderListDTO();
+
+                    // Tuple -> Entity
+                    OrderItem orderItem = tuple.get(0, OrderItem.class);
+                    Order order         = tuple.get(1, Order.class);
+                    Product product     = tuple.get(2, Product.class);
+                    Option option       = tuple.get(3, Option.class);
+
+                    // Entity -> DTO
+                    OrderItemDTO orderItemDTO   = modelMapper.map(orderItem, OrderItemDTO.class);
+                    OrderDTO orderDTO           = modelMapper.map(order, OrderDTO.class);
+                    ProductDTO productDTO       = modelMapper.map(product, ProductDTO.class);
+                    if (option != null) {
+                        OptionDTO optionDTO = modelMapper.map(option, OptionDTO.class);
+                        orderListDTO.setOptionDTO(optionDTO);
+                    } else {
+                        // Option이 null인 경우 처리
+                        // 예: optionDTO를 null로 설정하거나 기본값으로 설정
+                        orderListDTO.setOptionDTO(null);
+                    }
+                    // DTO들을 OrderListDTO에 포함
+                    orderListDTO.setOrderItemDTO(orderItemDTO);
+                    orderListDTO.setOrderDTO(orderDTO);
+                    orderListDTO.setProductDTO(productDTO);
+                    log.info("stream 내부 orderListDTO : " + orderListDTO);
+                    return orderListDTO;
+
+                })
+                .toList();
+
+        log.info("판매자 주문 현황 Serv 4 : " + dtoList);
+
+        // total 값
+        int total = (int) results.getTotalElements();
+
+        // List<OrderListDTO>와 page 정보 리턴
+        return SellerOrderPageResponseDTO.builder()
+                .adminPageRequestDTO(adminPageRequestDTO)
+                .dtoList(dtoList)
+                .total(total)
+                .build();
     }
     // 판매자 게시판 관리 - 게시글 검색 카테고리 조회
     public List<BoardCateDTO> findBoardCate() {
