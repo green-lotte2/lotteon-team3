@@ -215,16 +215,12 @@ public class CsController {
     }
 
     /* qna 댓글 구현중 ------------------------------------------------------------------------------------------------*/
-    /*
-    @PostMapping("/comment")
-    public ResponseEntity<Comment> commentWrite(@RequestBody CommentDTO commentDTO) {
-        log.info("commentWrite : " + commentDTO);
 
-        ResponseEntity<Comment> commentResponseEntity = commentService.insertComment(commentDTO);
-        log.info("commentWrite ...2 : ");
-        log.info(commentResponseEntity.getBody().toString());
-        return commentResponseEntity;
+    // 댓글삭제(기능) - 동적
+    @ResponseBody
+    @DeleteMapping("/cs/qna/deleteComment/{cno}") // 기본키인 cno를 매개변수로 받도록 수정
+    public ResponseEntity<?> qnaDeleteComment(@PathVariable("cno") int cno) {
+        log.info("컨트롤러 cno : " + cno);
+        return csService.deleteComment(cno);
     }
-*/
-
 }

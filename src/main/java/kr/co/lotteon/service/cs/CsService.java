@@ -6,10 +6,7 @@ import kr.co.lotteon.dto.cs.BoardDTO;
 import kr.co.lotteon.dto.cs.BoardFileDTO;
 import kr.co.lotteon.dto.cs.CsPageRequestDTO;
 import kr.co.lotteon.dto.cs.CsPageResponseDTO;
-import kr.co.lotteon.entity.cs.BoardCateEntity;
-import kr.co.lotteon.entity.cs.BoardEntity;
-import kr.co.lotteon.entity.cs.BoardFileEntity;
-import kr.co.lotteon.entity.cs.BoardTypeEntity;
+import kr.co.lotteon.entity.cs.*;
 import kr.co.lotteon.repository.cs.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -220,13 +217,13 @@ public class CsService {
     public void save(BoardDTO dto) {
         dto.setFile(dto.getFiles().size());
 
-        for(MultipartFile mf : dto.getFiles()){
-            if(mf.getOriginalFilename() ==null || mf.getOriginalFilename() == ""){
+        for (MultipartFile mf : dto.getFiles()) {
+            if (mf.getOriginalFilename() == null || mf.getOriginalFilename() == "") {
                 dto.setFile(0);
             }
         }
         BoardEntity boardEntity = modelMapper.map(dto, BoardEntity.class);
-        BoardEntity savedArticle= boardRepository.save(boardEntity);
+        BoardEntity savedArticle = boardRepository.save(boardEntity);
         int bno = savedArticle.getBno();
         dto.setBno(bno);
 
@@ -234,7 +231,7 @@ public class CsService {
     }
 
     // 글 수정
-    public void modifyBoard(BoardDTO boardDTO){
+    public void modifyBoard(BoardDTO boardDTO) {
         BoardEntity oBoardEntity = boardRepository.findById(boardDTO.getBno()).get();
         BoardDTO oBoardDTO = modelMapper.map(oBoardEntity, BoardDTO.class);
 
@@ -244,7 +241,7 @@ public class CsService {
 
         int count = fileService.fileUpload(oBoardDTO);
 
-        oBoardDTO.setFile(oBoardDTO.getFile()+count);
+        oBoardDTO.setFile(oBoardDTO.getFile() + count);
 
         BoardEntity boardEntity = modelMapper.map(oBoardDTO, BoardEntity.class);
         boardRepository.save(boardEntity);
@@ -255,7 +252,11 @@ public class CsService {
     @Transactional
     public void deleteBoard(int bno) {
         commentRepository.deleteCommentByBno(bno); // 댓글 먼저 삭제
-        boardRepository.deleteById(bno);
+
+        Optional<BoardEntity> boardDTO = boardRepository.findById(bno);
+        if (boardDTO.isPresent()) {
+            boardRepository.deleteByBno(bno);
+        }
     }
 
     // hit 증가
@@ -272,18 +273,27 @@ public class CsService {
         // 엔터티를 DTO로 매핑하여 반환합니다.
         return modelMapper.map(boardEntity, BoardDTO.class);
     }
-/*
-    //comment
-    public ResponseEntity insertComment(BoardDTO boardDTO){
-        BoardEntity savedBoard = boardRepository.save(modelMapper.map(boardDTO, BoardEntity.class));
 
-        BoardDTO savedBoardDTO = modelMapper.map(savedBoard, BoardDTO.class);
 
-        Map<String, Object> response = new HashMap<>();
-        response.put("success", true);
-        response.put("comment", savedBoardDTO);
+    // 댓글 삭제
+    @Transactional
+    public ResponseEntity<?> deleteComment(int cno) {
 
-        return ResponseEntity.ok().body(response);
+        log.info("서비스 cno :" + cno);
+
+        Optional<Comment> optComment = commentRepository.findById(cno);
+
+        log.info("서비스 optArticle :" + optComment);
+
+        // 댓글이 아직 있으면
+        if (optComment.isPresent()) {
+            // 댓글 삭제
+            commentRepository.deleteById(cno);
+            log.info("서비스 if문 안 cno :" + cno);
+            return ResponseEntity.ok().body(optComment.get());
+        } else {
+            log.info("서비스 if문 밖 cno :" + cno);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("not found");
+        }
     }
-*/
 }

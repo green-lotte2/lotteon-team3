@@ -26,7 +26,7 @@ public interface BoardRepository extends JpaRepository<BoardEntity, Integer>, Bo
     public List<BoardEntity> findByGroupOrderByRdateDescBnoDesc(String group, Pageable pageable);
 
     // 글 삭제
-    void deleteById(int bno);
+    public void deleteByBno(int bno);
 
     // 댓글 개수 ++
     @Modifying
