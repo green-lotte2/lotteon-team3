@@ -1183,52 +1183,52 @@ footer p > strong {
 }
 
 /* my - info(나의설정) */
-#my > .info > section > article > table {
+#my > .info > section > article >.changeForm > table {
     width: 100%;
     height: auto;
     border-top: 2px solid #444;
     margin-top: 6px;
     border-collapse: collapse;            
 }
-#my > .info > section > article > table * {
+#my > .info > section > article > .changeForm > table * {
     font-family: '돋움';
 }
 
-#my > .info > section > article > table th {
+#my > .info > section > article > .changeForm > table th {
     padding: 6px;
     background-color: #a5a7a5;
     box-sizing: border-box;
     color: #fff;
 }
-#my > .info > section > article > table td {
+#my > .info > section > article > .changeForm > table td {
     padding: 10px;            
     border-left: 1px solid #f1f1f1;
     border-bottom: 1px solid #f1f1f1;
     box-sizing: border-box;
     overflow: hidden;
 }
-#my > .info > section > article > table td:first-child {
+#my > .info > section > article > .changeForm > table td:first-child {
     width: 120px;
     border-left: none;
     background-color: #f7f7f7;
 }
-#my > .info > section > article > table input {
+#my > .info > section > article > .changeForm > table input {
     padding: 2px;
     box-sizing: border-box;
     border: 1px solid #999;
 }
 
-#my > .info > section > article > table .address > input {
+#my > .info > section > article > .changeForm > table .address > input {
     display: block;
     width: 300px;
     margin-top: 2px;
 }
 
-#my > .info > section > article > table .hp > input {
+#my > .info > section > article > .changeForm > table .hp > input {
     width: 60px;
 }
 
-#my > .info > section > article > table select {
+#my > .info > section > article > .changeForm > table select {
     padding: 2px;
 }
 
@@ -1249,7 +1249,7 @@ footer p > strong {
     cursor: pointer;
 }
 
-#my #btnInfoChange {
+#my .btnInfoChange {
     display: block;
     width: 160px;
     height: 30px;

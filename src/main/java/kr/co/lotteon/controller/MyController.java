@@ -1,14 +1,22 @@
 package kr.co.lotteon.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import kr.co.lotteon.dto.admin.BannerDTO;
+import kr.co.lotteon.dto.member.MemberDTO;
+import kr.co.lotteon.entity.member.Member;
 import kr.co.lotteon.service.admin.BannerService;
+import kr.co.lotteon.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -16,10 +24,12 @@ import java.util.List;
 public class MyController {
 
     private final BannerService bannerService;
+    private final MemberService memberService;
 
     // my - home (마이페이지 메인) 페이지 매핑
     @GetMapping("/my/home")
-    public String home(Model model){
+    public String home(Model model, @RequestParam String uid){
+        log.info("uid : "+uid);
 
         // 마이페이지 배너
         List<BannerDTO> myPageBanners = bannerService.selectBanners("myPage");
@@ -29,9 +39,33 @@ public class MyController {
     }
     // my - info (나의 설정) 페이지 매핑
     @GetMapping("/my/info")
-    public String info(){
+    public String info(Model model,@RequestParam String uid){
+
+        MemberDTO memberDTO =memberService.findByUid(uid);
+        model.addAttribute("memberDTO",memberDTO);
+
         return "/my/info";
     }
+    @PostMapping("/my/info")
+    public String info(MemberDTO changeMemberDTO, HttpServletRequest request,@RequestParam String uid){
+        log.info("PASSWORD "+changeMemberDTO.getPass());
+
+        log.info("changeMemberDTO"+changeMemberDTO);
+        MemberDTO memberDTO = memberService.findByUid(uid);
+        memberDTO.setPass(changeMemberDTO.getPass());
+        memberDTO.setNick(changeMemberDTO.getNick());
+        memberDTO.setEmail(changeMemberDTO.getEmail());
+        memberDTO.setHp(changeMemberDTO.getHp());
+        memberDTO.setZip(changeMemberDTO.getZip());
+        memberDTO.setAddr1(changeMemberDTO.getAddr1());
+        memberDTO.setAddr2(changeMemberDTO.getAddr2());
+
+        memberService.save(memberDTO);
+
+        return "redirect:/index?success=200";
+    }
+
+
     // my - order (나의 전체 주문내역) 페이지 매핑
     @GetMapping("/my/order")
     public String order(){

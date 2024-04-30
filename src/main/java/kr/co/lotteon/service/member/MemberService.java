@@ -8,7 +8,6 @@ import jakarta.servlet.http.HttpSession;
 import kr.co.lotteon.dto.member.MemberDTO;
 import kr.co.lotteon.entity.member.Member;
 import kr.co.lotteon.mapper.MemberMapper;
-import kr.co.lotteon.repository.custom.MemberRepositoryCustom;
 import kr.co.lotteon.repository.member.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +17,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Service
@@ -60,6 +60,12 @@ public class MemberService {
         member.setPass(pass);
         log.info("비밀번호 변경되었니");
         memberRepository.save(member);
+    }
+
+    public MemberDTO findByUid(String uid){
+
+        Optional<Member> member=memberRepository.findById(uid);
+        return modelMapper.map(member, MemberDTO.class);
     }
 
 

@@ -3,6 +3,18 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       layout:decorate="~{/layout/indexLayout}">
+  <script th:inline="javascript">
+
+    window.onload = function () {
+
+      const success = [[${success}]];
+
+      if (success == 200) {
+        alert('회원정보가 성공적으로 변경되었습니다.😃');
+      }
+
+    }
+  </script>
 
         <section layout:fragment="content">
           <!-- 슬라이더 영역 -->
