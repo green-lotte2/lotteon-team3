@@ -1,6 +1,8 @@
 package kr.co.lotteon.service.my;
 
+import kr.co.lotteon.dto.cs.BoardDTO;
 import kr.co.lotteon.dto.member.CouponDTO;
+import kr.co.lotteon.entity.cs.BoardEntity;
 import kr.co.lotteon.entity.member.Coupon;
 import kr.co.lotteon.repository.cs.BoardRepository;
 import kr.co.lotteon.repository.my.CouponRepository;
@@ -46,6 +48,18 @@ public class MyService {
         return boardRepository.countByUidAndStatusNot(uid, "답변완료");
     }
 
+    public List<BoardDTO> findByBoardAndUid(String uid) {
 
+        log.info("내 문의들"+couponRepository.findCouponsByUid(uid));
+        List<BoardEntity> result = boardRepository.findByUid(uid);
+
+        return result.stream().map(boards->modelMapper.map(boards,BoardDTO.class))
+                .collect(Collectors.toList());
+    }
+
+    public int countByUid(String uid){
+
+        return boardRepository.countByUid(uid);
+    }
 
 }
