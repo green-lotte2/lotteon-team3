@@ -2,20 +2,9 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{/layout/myLayout}">
 <main id="myLayout" layout:fragment="content">
+    <script th:src="@{/js/myInfo.js}"></script>
         <div id="my">
-            <nav>
-                <div>
-                    <a th:href="@{/my/home}"><img th:src="@{/my/images/my_logo.jpg}" alt="나의쇼핑정보"></a>
 
-                    <ol>
-                        <li><a th:href="@{/my/order(uid=${#authentication.principal.member.uid})}">주문·배송<span class="delivery">1</span></a></li>
-                        <li><a th:href="@{/my/coupon(uid=${#authentication.principal.member.uid})}">할인쿠폰<span class="coupon">1</span></a></li>
-                        <li><a th:href="@{/my/point(uid=${#authentication.principal.member.uid})}">포인트<span class="point">1,000</span></a></li>
-                        <li><a th:href="@{/my/qna(uid=${#authentication.principal.member.uid})}">문의내역<span class="qna">1</span></a></li>
-                    </ol>
-
-                </div>
-            </nav>
 
             <div class="point">
                 <ul>

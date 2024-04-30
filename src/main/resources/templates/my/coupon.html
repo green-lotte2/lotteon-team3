@@ -4,18 +4,6 @@
 <main id="myLayout" layout:fragment="content">
     <script th:src="@{/js/myInfo.js}"></script>
         <div id="my">
-            <nav>
-                <div>
-                    <a th:href="@{/my/home}"><img th:src="@{/my/images/my_logo.jpg}" alt="나의쇼핑정보"></a>
-
-                    <ol>
-                        <li><a th:href="@{/my/order(uid=${#authentication.principal.member.uid})}">주문·배송<span class="delivery" id="orderCount"></span></a></li>
-                        <li><a th:href="@{/my/coupon(uid=${#authentication.principal.member.uid})}">할인쿠폰<span class="coupon" id="couponCount"></span></a></li>
-                        <li><a th:href="@{/my/point(uid=${#authentication.principal.member.uid})}">포인트<span class="point" id="myPoint"></span></a></li>
-                        <li><a th:href="@{/my/qna(uid=${#authentication.principal.member.uid})}">문의내역<span class="qna" id="qnaCount"></span></a></li>
-                    </ol>
-                </div>
-            </nav>
 
             <div class="coupon">
                 <ul>

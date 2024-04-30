@@ -203,13 +203,13 @@ footer p > strong {
 
 /* my 공통 */
 #my {}
-#my > nav {
+.nav {
     width: 100%;
     height: auto;
     background-color: #e8e8e8;
     border-bottom: 1px solid #c9c9c9;
 }
-#my > nav > div {
+.nav > div {
     width: 980px;
     /*height: 100%;*/
     padding: 16px 0;
@@ -218,14 +218,14 @@ footer p > strong {
     overflow: hidden;
 }
 
-#my > nav img {margin-top: 22px;}
-#my > nav > div > ol {
+.nav  img {margin-top: 22px;}
+.nav  > div > ol {
     float: right;
     width: 400px;
     height: 86px;
     overflow: hidden;
 }
-#my > nav > div > ol > li {            
+.nav  > div > ol > li {
     float: left;
     width: 25%;
     height: 100%;
@@ -237,20 +237,20 @@ footer p > strong {
     background-position: center 30px;
 }
 
-#my > nav > div > ol > li:first-child {border-left: none;}
-#my > nav > div > ol > li:last-child {border-right: none;}
-#my > nav > div > ol > li:nth-child(1) {background-image: url('../my/images/ico_delivery.png');}
-#my > nav > div > ol > li:nth-child(2) {background-image: url('../my/images/ico_point.jpg');}
-#my > nav > div > ol > li:nth-child(3) {background-image: url('../my/images/ico_coupon.jpg');}
-#my > nav > div > ol > li:nth-child(4) {background-image: url('../my/images/ico_qna.png');}
-#my > nav > div > ol > li > a {
+.nav  > div > ol > li:first-child {border-left: none;}
+.nav  > div > ol > li:last-child {border-right: none;}
+.nav  > div > ol > li:nth-child(1) {background-image: url('../my/images/ico_delivery.png');}
+.nav  > div > ol > li:nth-child(2) {background-image: url('../my/images/ico_point.jpg');}
+.nav  > div > ol > li:nth-child(3) {background-image: url('../my/images/ico_coupon.jpg');}
+.nav  > div > ol > li:nth-child(4) {background-image: url('../my/images/ico_qna.png');}
+.nav  > div > ol > li > a {
     display: block;
     width: 100%;
     height: 100%;            
     color: #888;
     box-sizing: border-box;
 }
-#my > nav > div > ol > li > a > span {
+.nav  > div > ol > li > a > span {
     position: relative;
     top: 46px;
     display: block;
