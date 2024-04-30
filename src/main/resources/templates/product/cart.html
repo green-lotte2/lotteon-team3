@@ -61,14 +61,20 @@
                       const input = button.closest('.count').querySelector('.number');
                       // 현재 값
                       let value = parseInt(input.value);
+                      console.log(value);
                       input.value = value+1;
                     });
                   });
 
+                  document.querySelectorAll('.currentPrice strong').forEach(currentPrice =>{
+                    let priceValue = parseInt(currentPrice.innerText);
+                    const input = currentPrice.closest('.count').querySelector('.number');
+                    let count = parseInt(input.value);
+                    console.log(count);
+
+                  });
 
                 }
-
-
               </script>
               <!-- 제목, 페이지 네비게이션 -->
               <nav>
