@@ -61,19 +61,71 @@
                       const input = button.closest('.count').querySelector('.number');
                       // 현재 값
                       let value = parseInt(input.value);
-                      console.log(value);
+
                       input.value = value+1;
+
                     });
                   });
 
-                  document.querySelectorAll('.currentPrice strong').forEach(currentPrice =>{
-                    let priceValue = parseInt(currentPrice.innerText);
-                    const input = currentPrice.closest('.count').querySelector('.number');
-                    let count = parseInt(input.value);
-                    console.log(count);
+                  // 숫자를 3자리마다 콤마를 추가하여 문자열로 반환하는 함수
+                  function numberWithCommas(x) {
+                    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                  }
 
+                  // 가격 업데이트
+                  document.querySelectorAll('.cartProduct').forEach(input =>{
+
+                    const product = input.closest('.cartProduct');
+                    const inputs = product.querySelector('.count .number' );
+                    let value = inputs.value;
+
+                    const priceElement = product.querySelector('.currentPrice strong');
+
+                    // 가격을 숫자로 파싱
+                    const price = parseFloat(priceElement.innerText.replace('원', '').replace(',', ''));
+                    // 수량을 숫자로 파싱
+                    let intValue = parseInt(value);
+
+
+                    // 총 가격 계산
+                    const totalPrice = price * intValue;
+
+                    // 총 가격을 화면에 업데이트
+                    priceElement.innerText = numberWithCommas(totalPrice);
                   });
 
+
+                  // 전체 선택
+                  const selectAll = document.getElementsByClassName('selectAll')[0];
+                  const checkboxes = document.querySelectorAll('.checkbox');
+                  const checkCom = document.querySelectorAll('.checkCom');
+
+                  selectAll.addEventListener('click', function () {
+                      for(let i = 0; i<checkboxes.length; i++){
+                        checkboxes[i].checked = selectAll.checked;
+                      }
+
+                      for(let j = 0; j<checkCom.length; j++){
+                        checkCom[j].checked = selectAll.checked;
+                      }
+                  });
+
+                  checkCom.forEach(function (e) {
+                    e.addEventListener('click', function (check) {
+                      check.stopPropagation();
+                    });
+                  });
+
+                  const total = document.getElementsByClassName('total')[0];
+
+                  document.addEventListener('scroll', function(event) {
+                    let scrollY = window.scrollY;
+                    if (scrollY <= 320) {
+                      scrollY = 320;
+                    }
+
+                    total.style.top = scrollY + 'px';
+                  });
                 }
               </script>
               <!-- 제목, 페이지 네비게이션 -->
@@ -87,7 +139,7 @@
               <form action="#">
                 <div class="itemController">
                   <div class="checkboxController">
-                    <input id="checkboxController" type="checkbox" class="cur_hand">
+                    <input id="checkboxController" type="checkbox" class="selectAll">
                     <label for="checkboxController" class="cur_hand">전체선택</label>
                   </div>
                   <div class="deleteBtnGroup">
@@ -96,19 +148,20 @@
                     </button>
                   </div>
                 </div>
+
                 <div th:each="company, iterStat : ${companies}" class="accordion" id="accordionPanelsStayOpenExample">
                   <div class="accordion-item">
                     <h2 class="accordion-header">
                       <button th:id="'accordionButton'+${iterStat.index}" class="accordion-button" type="button" data-bs-toggle="collapse" th:data-bs-target="'panelsStayOpen-collapse'+${iterStat.index}" aria-expanded="true" th:aria-controls="'panelsStayOpen-collapse'+${iterStat.index}">
-                        <input type="checkbox" class="checkbox" value="0">
+                        <input type="checkbox" class="checkCom" value="0">
                         [[${company}]]
                       </button>
                     </h2>
                     <!-- 내용 -->
                     <div th:id="'panelsStayOpen-collapse'+${iterStat.index}" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingOne">
                       <th:block th:each="cartProduct:${cartProducts}" >
-                      <div  th:if="${company == cartProduct.company}" class="accordion-body">
-                        <div>
+                      <div th:if="${company == cartProduct.company}" class="accordion-body">
+                        <div class="cartProduct">
                           <label>
                             <input type="checkbox" class="checkbox" value="0">
                           </label>
@@ -132,6 +185,7 @@
 
                           <div class="cartPrice order-3">
                             <p class="originalPrice"><span data-v-15ea7d62="">[[${cartProduct.price}]]원</span></p>
+                            <span class="discount">[[${cartProduct.discount}]]%</span>
                             <p class="currentPrice" style="">
                               <strong>[[${((100-cartProduct.discount)/100.0)*cartProduct.price}]]</strong><span>원</span>
                             </p>
