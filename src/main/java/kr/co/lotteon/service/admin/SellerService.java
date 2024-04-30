@@ -548,6 +548,38 @@ public class SellerService {
                 .total(total)
                 .build();
     }
+    // 판매자 주문 관리
+    public List<Map<String, Object>> selectOrderForSeller() {
+        log.info("월별 주문 count 조회 Serv 1");
+        // 현재 로그인 중인 사용자 정보 불러오기
+        String sellerId = whoAmI();
+
+        // 해당 판매자의 상품번호 전부 조회
+        List<Integer> prodNos = productRepository.selectProdNoForQna(sellerId);
+        List<Tuple> tuples = orderItemRepository.selectOrderForSeller(prodNos);
+
+        log.info("월별 주문 count 조회 Serv 2: " + tuples);
+
+        // 총 주문 수를 저장할 변수
+        AtomicLong totalOrders = new AtomicLong(0);
+
+        List<Map<String, Object>> jsonResult = tuples.stream()
+                .map(tuple -> {
+                    String date = tuple.get(0, String.class);
+                    long count = tuple.get(1, Long.class);
+
+                    // 총 주문 수에 현재 월의 주문 수를 더함
+                    totalOrders.addAndGet(count);
+
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("month", date + "월");
+                    map.put("count", count);
+                    return map;
+                })
+                .collect(Collectors.toList());
+
+        return jsonResult;
+    }
     // 판매자 게시판 관리 - 게시글 검색 카테고리 조회
     public List<BoardCateDTO> findBoardCate() {
 

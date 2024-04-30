@@ -86,4 +86,19 @@ public class OrderItemRepositoryImpl implements OrderItemRepositoryCustom {
                 .fetch();
     }
 
+    // 판매자 주문 현황 월별 주문 count 조회 - 오늘 기준 12개월 전 까지
+    @Override
+    public List<Tuple> selectOrderForSeller(List<Integer> prodNos){
+
+        LocalDateTime twelveMonthsAgo = LocalDateTime.now().minusMonths(12);
+        log.info("월별 주문 count 조회 Impl 1 : " + twelveMonthsAgo);
+
+        return jpaQueryFactory.select(Expressions.stringTemplate("GROUP_CONCAT(CONCAT({0}, '년 ', {1}))", qOrderItem.ordDate.year(), qOrderItem.ordDate.month()).as("day"), qOrderItem.count())
+                .from(qOrderItem)
+                .where(qOrderItem.ordDate.after(twelveMonthsAgo).and(qOrderItem.prodNo.in(prodNos)))
+                .groupBy(Expressions.stringTemplate("GROUP_CONCAT(CONCAT({0}, '년 ', {1}))", qOrderItem.ordDate.year(), qOrderItem.ordDate.month()))
+                .orderBy(qOrderItem.ordItemno.asc(), qOrderItem.ordDate.month().asc())
+                .fetch();
+    }
+
 }

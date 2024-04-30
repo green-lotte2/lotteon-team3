@@ -11,7 +11,9 @@ import java.util.Map;
 
 public interface OrderRepositoryCustom {
 
+    // 관리자 차트
     public List<Tuple> selectOrderForChart();
+
 
 
 }

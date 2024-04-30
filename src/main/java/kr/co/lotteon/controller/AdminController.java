@@ -245,10 +245,11 @@ public class AdminController {
         return "redirect:/admin/cs/list?group="+boardDTO.getGroup();
     }
     // 관리자 게시글 삭제
-    @DeleteMapping("/admin/cs/delete/{bno}")
-    public ResponseEntity<?> boardDelete(@PathVariable("bno") int bno){
+    @GetMapping("/admin/cs/delete")
+    public String boardDelete(int bno, AdminBoardPageRequestDTO adminBoardPageRequestDTO){
         log.info("관리자 게시글 삭제 Cont 1 : " + bno);
-        return adminService.boardDelete(bno);
+        adminService.boardDelete(bno);
+        return "redirect:/admin/cs/list?group=" + adminBoardPageRequestDTO.getGroup() + "&pg=" + adminBoardPageRequestDTO.getPg();
     }
     // 관리자 게시판 보기 페이지 매핑
     @GetMapping("/admin/cs/view")
@@ -302,6 +303,14 @@ public class AdminController {
         model.addAttribute("typeList",typeList );
         model.addAttribute("adminBoardPageResponseDTO", adminBoardPageResponseDTO);
         return "/admin/cs/modify";
+    }
+    // 관리자 게시판 글 수정 전송
+    @PostMapping("/admin/cs/modify")
+    public String adminBoardModify(BoardDTO boardDTO){
+        log.info("관리자 게시글 수정 Cont 1 : " +boardDTO);
+
+        adminService.adminBoardModify(boardDTO);
+        return "redirect:/admin/cs/list?group="+boardDTO.getGroup();
     }
     ////////////////  comment  ///////////////////////////////////////////////////
     // 관리자 글 보기 답변 등록
