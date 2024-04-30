@@ -371,6 +371,7 @@ main > aside > .best > ol > li > a .org_price > del {
 main > aside > .best > ol > li > a .org_price > span {
   color: #eb000a;
   font-size: 10px;
+
 }
 main > aside > .best > ol > li > a .org_price > span::after {
   content: "↓";
