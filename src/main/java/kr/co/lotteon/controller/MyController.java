@@ -5,12 +5,16 @@ import jakarta.servlet.http.HttpSession;
 import kr.co.lotteon.dto.admin.BannerDTO;
 import kr.co.lotteon.dto.member.CouponDTO;
 import kr.co.lotteon.dto.member.MemberDTO;
+import kr.co.lotteon.dto.member.MyInfoDTO;
 import kr.co.lotteon.entity.member.Member;
+import kr.co.lotteon.security.MyUserDetails;
 import kr.co.lotteon.service.admin.BannerService;
 import kr.co.lotteon.service.member.MemberService;
+import kr.co.lotteon.service.my.MyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +30,7 @@ public class MyController {
 
     private final BannerService bannerService;
     private final MemberService memberService;
+    private final MyService myService;
 
     // my - home (마이페이지 메인) 페이지 매핑
     @GetMapping("/my/home")
@@ -81,13 +86,32 @@ public class MyController {
     @GetMapping("/my/coupon")
     public String coupon(Model model,@RequestParam String uid){
 
-        List<CouponDTO> coupons = memberService.findCouponsByUid(uid);
+        List<CouponDTO> coupons = myService.findCouponsByUid(uid);
 
         model.addAttribute("coupons",coupons);
         log.info("내 쿠폰"+coupons);
 
 
         return "/my/coupon";
+    }
+
+    @GetMapping("/my/myInfo")
+    @ResponseBody
+    public MyInfoDTO myInfo(@AuthenticationPrincipal Object principal) {
+        Member memberEntity = ((MyUserDetails) principal).getMember();
+        String uid = memberEntity.getUid();
+        int couponCount = myService.findCouponCountByUidAndUseYn(uid);
+        log.info("쿠폰의 수"+couponCount);
+        int orderCount = myService.findOrderByUidAndOrdStatus(uid);
+        log.info("주문의 수"+orderCount);
+        int qnaCount = myService.findQnaByUidAndStatus(uid);
+        log.info("문의의 수"+qnaCount);
+        return MyInfoDTO.builder()
+                .myPoint(memberEntity.getPoint())
+                .couponCount(couponCount)
+                .orderCount(orderCount)
+                .qnaCount(qnaCount)
+                .build();
     }
 
 

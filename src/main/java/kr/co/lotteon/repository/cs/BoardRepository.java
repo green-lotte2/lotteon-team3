@@ -37,4 +37,8 @@ public interface BoardRepository extends JpaRepository<BoardEntity, Integer>, Bo
     @Modifying
     @Query("UPDATE BoardEntity a set a.status = '답변완료' where a.bno = :bno")
     void modifyStatusByBno(@Param("bno") int bno);
+
+    public int countByUidAndStatusNot(String uid, String status);
+
+
 }
