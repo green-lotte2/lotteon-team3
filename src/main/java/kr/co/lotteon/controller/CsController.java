@@ -215,19 +215,30 @@ public class CsController {
     }
 
     /* qna 댓글 구현중 ------------------------------------------------------------------------------------------------*/
-    /*
-    // 댓글작성(기능) - 동적
-    @PostMapping("/lotte/cs/qna/insertComment")
-    public ResponseEntity<Comment> commentInsert(@RequestBody BoardDTO boardDTO) {
-        log.info("commentInsert ...1 : " + boardDTO);
 
-        ResponseEntity responseEntity = csService.insertComment(boardDTO);
-        log.info("commentInsert ...2 : ");
-        return ResponseEntity.<Comment>ok(responseEntity.getBody(), responseEntity.getStatusCode());
-
-
+    // 댓글삭제(기능) - 동적
+    @ResponseBody
+    @DeleteMapping("/cs/qna/deleteComment/{cno}") // 기본키인 cno를 매개변수로 받도록 수정
+    public ResponseEntity<?> qnaDeleteComment(@PathVariable("cno") int cno) {
+        log.info("컨트롤러 cno : " + cno);
+        return csService.deleteComment(cno);
     }
-*/
 
+
+    // 댓글등록
+    @PostMapping("/cs/qna/insertComment")
+    public ResponseEntity<Comment> qnaCommentWrite(@RequestBody CommentDTO commentDTO) {
+
+        ResponseEntity<Comment> commentResponseEntity = csService.insertComment(commentDTO);
+        log.info(commentResponseEntity.getBody().toString());
+        return commentResponseEntity;
+    }
+
+    // 댓글 수정
+    @PutMapping("/cs/qna/modifyComment")
+    public ResponseEntity<?> modifyComment(@RequestBody CommentDTO commentDTO){
+        log.info("modifyComment : " +commentDTO.toString());
+        return csService.updateComment(commentDTO);
+    }
 
 }

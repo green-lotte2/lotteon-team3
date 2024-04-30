@@ -25,6 +25,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -39,7 +40,7 @@ public class SellerController {
 
     private final ObjectMapper objectMapper;
 
-
+    ////////////////  index  ///////////////////////////////////////////////////
     // admin index 페이지 매핑 + seller index 페이지 매핑 (return에 if하면 새로고침...?)
     @GetMapping(value = {"/seller","/seller/index"})
     public String admin(Model model){
@@ -47,25 +48,27 @@ public class SellerController {
         List<BoardDTO> noticeList = sellerService.adminSelectNotices();
         // 고객문의 조회
         List<BoardDTO> qnaList = sellerService.adminSelectQnas();
+
+
+        LocalDateTime period1 = LocalDateTime.now().minusMonths(12);
+        LocalDateTime period2 = LocalDateTime.now().minusMonths(1);
+        LocalDateTime period3 = LocalDateTime.now().minusWeeks(1);
+        OrderCardDTO dto1 = sellerService.selectCountSumByPeriod(period1);
+        OrderCardDTO dto2 = sellerService.selectCountSumByPeriod(period2);
+        OrderCardDTO dto3 = sellerService.selectCountSumByPeriod(period3);
+        Map<String, Long> ordStatus = sellerService.findOrdStatus();
+        log.info("ordStatus : " + ordStatus);
+        model.addAttribute("deli", ordStatus);
+        model.addAttribute("year", dto1);
+        model.addAttribute("month", dto2);
+        model.addAttribute("week", dto3);
+
         model.addAttribute("noticeList", noticeList);
         model.addAttribute("qnaList", qnaList);
         return "/seller/index";
     }
-    // seller index 페이지 주문수 그래프 조회
-    @GetMapping("/seller/orderChart")
-    public ResponseEntity<?> orderChart() {
-        List<Map<String, Object>> jsonResult = sellerService.selectOrderForChart();
-        log.info("페이지 그래프 조회 Cont 1: " + jsonResult);
-        try {
-            // 객체를 JSON으로 변환
-            String json = objectMapper.writeValueAsString(jsonResult);
-            // JSON 문자열을 ResponseEntity로 반환
-            return ResponseEntity.ok().body(json);
-        } catch (Exception e) {
-            // JSON 변환에 실패한 경우
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("JSON 변환 오류");
-        }
-    }
+
+    ////////////////  product  ///////////////////////////////////////////////////
     // product list (판매자 상품 목록) 페이지 매핑
     @GetMapping("/seller/product/list")
     public String prodList(Model model, AdminProductPageRequestDTO adminProductPageRequestDTO){
@@ -215,6 +218,39 @@ public class SellerController {
         log.info("상품 삭제 Cont 1 : " + requestData);
         return sellerService.prodDelete(prodNoArray);
     }
+    ////////////////  order  /////////////////////////////////////////////////
+    // 주문 현황 페이지 매핑
+    @GetMapping("/seller/order/list")
+    public String orderList(Model model, AdminPageRequestDTO adminPageRequestDTO){
+        SellerOrderPageResponseDTO sellerOrderPageResponseDTO = null;
+        if(adminPageRequestDTO.getKeyword() == null) {
+            // 일반 주문 목록 조회
+            sellerOrderPageResponseDTO = sellerService.selectOrderList(adminPageRequestDTO);
+        }else {
+            // 검색 주문 목록 조회 //////
+            log.info("키워드 검색 Cont" + adminPageRequestDTO.getKeyword());
+            sellerOrderPageResponseDTO = sellerService.selectOrderList(adminPageRequestDTO);
+        }
+        model.addAttribute("pageResponseDTO", sellerOrderPageResponseDTO);
+        return "/seller/order/list";
+    }
+    //주문수 그래프 조회
+    @GetMapping("/seller/orderChart")
+    public ResponseEntity<?> orderChart() {
+        List<Map<String, Object>> jsonResult = sellerService.selectOrderForSeller();
+        log.info("페이지 그래프 조회 Cont 1: " + jsonResult);
+        try {
+            // 객체를 JSON으로 변환
+            String json = objectMapper.writeValueAsString(jsonResult);
+            // JSON 문자열을 ResponseEntity로 반환
+            return ResponseEntity.ok().body(json);
+        } catch (Exception e) {
+            // JSON 변환에 실패한 경우
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("JSON 변환 오류");
+        }
+    }
+
+    ////////////////  cs  ///////////////////////////////////////////////////
     // 판매자 게시판 목록 페이지 매핑
     @GetMapping("/seller/cs/list")
     public String boardList(Model model, String cate, AdminBoardPageRequestDTO adminBoardPageRequestDTO) {

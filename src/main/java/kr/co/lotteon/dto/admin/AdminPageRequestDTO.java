@@ -11,7 +11,7 @@ import org.springframework.data.domain.Sort;
 @NoArgsConstructor
 @ToString
 @Builder
-public class AdminMemberPageRequestDTO {
+public class AdminPageRequestDTO {
     @Builder.Default
     private int no = 1;
     @Builder.Default

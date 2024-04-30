@@ -32,9 +32,19 @@ public class ProductController {
     // cart 페이지 매핑
     @GetMapping("/product/cart")
     public String cart(@RequestParam("uid") String uid, Model model){
+        
+        // 회사별 출력을 위한 회사만 가져오기
         List<String> companies = cartService.selectCartCompany(uid);
+        // 장바구니에 담긴 상품 정보 가져오기
+        List<CartInfoDTO> cartProducts = cartService.selectCartProduct(uid);
+
+        // 참조
         model.addAttribute("companies", companies);
+        model.addAttribute("cartProducts", cartProducts);
+
         log.info("companies: {}", companies);
+        log.info("cartProducts: {} ", cartProducts );
+
         return "/product/cart";
     }
 

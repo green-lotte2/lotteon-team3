@@ -31,8 +31,6 @@ public class QBoardEntity extends EntityPathBase<BoardEntity> {
 
     public final NumberPath<Integer> hit = createNumber("hit", Integer.class);
 
-    public final NumberPath<Integer> parent = createNumber("parent", Integer.class);
-
     public final NumberPath<Integer> prodNo = createNumber("prodNo", Integer.class);
 
     public final DateTimePath<java.time.LocalDateTime> rdate = createDateTime("rdate", java.time.LocalDateTime.class);

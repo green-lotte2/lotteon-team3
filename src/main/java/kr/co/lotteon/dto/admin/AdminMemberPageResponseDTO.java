@@ -1,7 +1,6 @@
 package kr.co.lotteon.dto.admin;
 
 import kr.co.lotteon.dto.member.MemberDTO;
-import kr.co.lotteon.dto.product.ProductDTO;
 import lombok.*;
 
 import java.util.List;
@@ -24,14 +23,14 @@ public class AdminMemberPageResponseDTO {
     private boolean prev, next;
 
     @Builder
-    public AdminMemberPageResponseDTO(AdminMemberPageRequestDTO adminMemberPageRequestDTO, List<MemberDTO> dtoList, int total){
+    public AdminMemberPageResponseDTO(AdminPageRequestDTO adminPageRequestDTO, List<MemberDTO> dtoList, int total){
 
-        this.pg = adminMemberPageRequestDTO.getPg();
-        this.size = adminMemberPageRequestDTO.getSize();
+        this.pg = adminPageRequestDTO.getPg();
+        this.size = adminPageRequestDTO.getSize();
         this.total = total;
         this.dtoList = dtoList;
-        this.type = adminMemberPageRequestDTO.getType();
-        this.keyword = adminMemberPageRequestDTO.getKeyword();
+        this.type = adminPageRequestDTO.getType();
+        this.keyword = adminPageRequestDTO.getKeyword();
 
         this.startNo = total - ((pg - 1) * size);
         this.end = (int) (Math.ceil(this.pg/10.0))*10;

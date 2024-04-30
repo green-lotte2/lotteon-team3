@@ -21,9 +21,14 @@
             textarea.style.height = textarea.scrollHeight + 'px';
         }
 
-        function confirmDelete() {
-            return confirm("게시글을 삭제하시겠습니까?");
+        async function confirmDelete() {
+            if (confirm("게시글을 삭제하시겠습니까?")) {
+                const bno = [[${board.bno}]];
+                return true;
+            }
+            return false;
         }
+
 
         // cate 선택 시 type 조회
         async function findType(cate) {

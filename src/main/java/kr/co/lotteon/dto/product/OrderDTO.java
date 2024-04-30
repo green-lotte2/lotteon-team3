@@ -15,7 +15,7 @@ public class OrderDTO {
     private int ordNo;
 
     private String ordUid;
-    private int couponSeq;
+    private Integer couponSeq;
     private int disCouponPrice;
     private int ordComplete;
     private int ordCount;

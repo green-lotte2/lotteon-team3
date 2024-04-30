@@ -21,6 +21,11 @@
                 typeSelect.insertAdjacentHTML('beforeend', typeOption);
             }
         }
+        function formSubmit(e) {
+            e.preventDefault();
+            const adminWriteForm = document.getElementById('adminWriteForm');
+            adminWriteForm.submit();
+        }
     </script>
         <nav>
         <span th:switch="${group}">
@@ -31,20 +36,20 @@
         </nav>
         <!-- 내용 시작 -->
             <article class="writeArt">
-                <form th:action="@{/admin/cs/write}" id="adminWriteForm" method="POST" enctype="multipart/form-data">
+                <form th:action="@{/admin/cs/modify}" id="adminWriteForm" method="POST" enctype="multipart/form-data">
                     <input type="hidden" name="group" readonly th:value="${group}" />
-                    <!--<input type="hidden" name="uid" th:value="${#authentication.principal.member.uid}" /> 나중에 추가하기-->
+                    <input type="hidden" name="bno" th:value="${board.bno}" />
                     <table>
                         <tr>
                             <td>유형</td>
                             <td>
-                                <select name="cate1" onchange="findType(this.value)">
+                                <select name="cate" onchange="findType(this.value)">
                                     <option value="0">1차유형</option>
                                     <option th:each="cate : ${cates}" th:selected="${cate.cate == board.cate}" th:value="${cate.cate}">
                                         [[${cate.cateName}]]
                                     </option>
                                 </select>
-                                <select name="type" id="typeSelect">
+                                <select name="typeNo" id="typeSelect">
                                     <option th:value="${board.typeNo}">말머리</option>
                                     <option th:each="type : ${typeList}" th:selected="${type.typeNo == board.typeNo}" th:value="${type.typeNo}">
                                         [[${type.typeName}]]
@@ -79,12 +84,8 @@
                 <!-- 수정 / 삭제 / 목록 버튼 -->
                 <div class="articleBtnBox">
                     <!-- 수정 버튼 -->
-                    <a th:if="${adminBoardPageResponseDTO.keyword == null}"
-                       th:href="@{/admin/cs/modify(group=${adminBoardPageResponseDTO.group}, bno=${board.bno}, pg=${adminBoardPageResponseDTO.pg})}"
-                       class="btn btn-secondary btn-sm" data-art="artModify">수정</a>
-                    <a th:if="${adminBoardPageResponseDTO.keyword != null}"
-                       th:href="@{/admin/cs/modify(group=${adminBoardPageResponseDTO.group}, bno=${board.bno}, type=${adminBoardPageResponseDTO.type},keyword=${adminBoardPageResponseDTO.keyword}, pg=${adminBoardPageResponseDTO.pg})}"
-                       class="btn btn-secondary btn-sm" data-art="artModify">수정</a>
+                    <a th:href="@{#}"
+                       class="btn btn-secondary btn-sm" data-art="artModify" onclick="formSubmit(event)">수정</a>
                     <!-- 삭제 버튼 -->
                     <a th:if="${adminBoardPageResponseDTO.keyword == null}"
                        th:href="@{/admin/cs/delete(group=${adminBoardPageResponseDTO.group}, bno=${board.bno}, pg=${adminBoardPageResponseDTO.pg})}"

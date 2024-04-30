@@ -4,12 +4,9 @@ import com.querydsl.core.QueryResults;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import kr.co.lotteon.dto.admin.AdminMemberPageRequestDTO;
-import kr.co.lotteon.dto.admin.AdminProductPageRequestDTO;
+import kr.co.lotteon.dto.admin.AdminPageRequestDTO;
 import kr.co.lotteon.entity.member.Member;
 import kr.co.lotteon.entity.member.QMember;
-import kr.co.lotteon.entity.product.Product;
-import kr.co.lotteon.entity.product.QOrder;
 import kr.co.lotteon.repository.custom.MemberRepositoryCustom;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -46,8 +43,8 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
     }
     // 회원 목록 (현황) 기본 조회
     @Override
-    public Page<Member> selectMemberList(AdminMemberPageRequestDTO adminMemberPageRequestDTO, Pageable pageable){
-        log.info("회원 목록 (현황) 기본 조회 Impl 1 : " + adminMemberPageRequestDTO);
+    public Page<Member> selectMemberList(AdminPageRequestDTO adminPageRequestDTO, Pageable pageable){
+        log.info("회원 목록 (현황) 기본 조회 Impl 1 : " + adminPageRequestDTO);
         QueryResults<Member> results = jpaQueryFactory
                 .select(qMember)
                 .from(qMember)
@@ -63,10 +60,10 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
         return new PageImpl<>(memberList, pageable, total);
     }
     // 회원 목록 (현황) 검색 조회
-    public Page<Member> searchMemberList(AdminMemberPageRequestDTO adminMemberPageRequestDTO, Pageable pageable){
-        log.info("회원 목록 (현황) 검색 조회 Impl 1 : " + adminMemberPageRequestDTO);
-        String type = adminMemberPageRequestDTO.getType();
-        String keyword = adminMemberPageRequestDTO.getKeyword();
+    public Page<Member> searchMemberList(AdminPageRequestDTO adminPageRequestDTO, Pageable pageable){
+        log.info("회원 목록 (현황) 검색 조회 Impl 1 : " + adminPageRequestDTO);
+        String type = adminPageRequestDTO.getType();
+        String keyword = adminPageRequestDTO.getKeyword();
         log.info("회원 목록 (현황) 검색 조회 Impl 2 : " + type);
         log.info("회원 목록 (현황) 검색 조회 Impl 3 : " + keyword);
 

@@ -17,10 +17,7 @@ import kr.co.lotteon.entity.product.Option;
 import kr.co.lotteon.entity.product.Product;
 import kr.co.lotteon.mapper.ProductMapper;
 import kr.co.lotteon.repository.BannerRepository;
-import kr.co.lotteon.repository.cs.BoardCateRepository;
-import kr.co.lotteon.repository.cs.BoardFileRepository;
-import kr.co.lotteon.repository.cs.BoardRepository;
-import kr.co.lotteon.repository.cs.BoardTypeRepository;
+import kr.co.lotteon.repository.cs.*;
 import kr.co.lotteon.repository.member.MemberRepository;
 import kr.co.lotteon.repository.member.TermsRepository;
 import kr.co.lotteon.repository.product.*;
@@ -34,6 +31,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.beans.Transient;
@@ -61,6 +59,7 @@ public class AdminService {
     private final BoardTypeRepository typeRepository;
     private final BannerRepository bannerRepository;
     private final BoardFileRepository fileRepository;
+    private final CommentRepository commentRepository;
 
     private final ProductMapper productMapper;
 
@@ -546,7 +545,7 @@ public class AdminService {
         Page<Tuple> boardEntities = null;
 
         // 전체 조회
-        if ((keyword == null || "".equals(keyword)) && ("".equals(cate) || "all".equals(cate))) {
+        if ((keyword == null || "".equals(keyword)) && ("".equals(cate) || "all".equals(cate) || cate == null)) {
             // DB 조회
             boardEntities = boardRepository.selectBoardsByGroup(adminBoardPageRequestDTO, pageable, group);
             log.info("게시판관리 - 목록 Serv 3 전체 조회 : " + boardEntities);
@@ -625,8 +624,24 @@ public class AdminService {
 
     // 관리자 게시판 관리 - 게시글 등록
     public void adminBoardWrite(BoardDTO boardDTO) {
-        log.info("게시글 등록 Cont 1 : " + boardDTO);
+        log.info("게시글 등록 Serv 1 : " + boardDTO);
         BoardEntity boardEntity = modelMapper.map(boardDTO, BoardEntity.class);
+        boardRepository.save(boardEntity);
+
+        // file 등록 구현되면 할 것
+
+    }
+    // 관리자 게시판 관리 - 게시글 수정
+    public void adminBoardModify(BoardDTO boardDTO) {
+        log.info("게시글 수정 Serv 1 : " + boardDTO);
+
+        BoardEntity boardEntity = boardRepository.findById(boardDTO.getBno()).get();
+
+        boardEntity.setCate(boardDTO.getCate());
+        boardEntity.setTypeNo(boardDTO.getTypeNo());
+        boardEntity.setTitle(boardDTO.getTitle());
+        boardEntity.setContent(boardDTO.getContent());
+
         boardRepository.save(boardEntity);
 
         // file 등록 구현되면 할 것
@@ -634,6 +649,7 @@ public class AdminService {
     }
 
     // 관리자 게시판 관리 - 게시글 삭제
+    @Transactional
     public ResponseEntity<?> boardDelete(int bno) {
         log.info("관리자 게시글 삭제 Serv 1 : " + bno);
 
@@ -641,8 +657,13 @@ public class AdminService {
         log.info("관리자 게시글 삭제 Serv 2 : " + bno);
         // 게시글 아직 있으면
         if (boardEntity.isPresent()) {
+
+            log.info("관리자 게시글 삭제 Serv 3 : " + bno);
+            // 댓글 삭제
+            commentRepository.deleteAllByBno(bno);
             // 게시글 삭제
             boardRepository.deleteById(bno);
+
             return ResponseEntity.ok().body(boardEntity);
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("not found");
@@ -672,21 +693,21 @@ public class AdminService {
     }
 
     // 관리자 회원 목록 (현황) 조회
-    public AdminMemberPageResponseDTO selectMembers(AdminMemberPageRequestDTO adminMemberPageRequestDTO) {
+    public AdminMemberPageResponseDTO selectMembers(AdminPageRequestDTO adminPageRequestDTO) {
         log.info("관리자 회원 목록 Serv 1  ");
-        Pageable pageable = adminMemberPageRequestDTO.getPageable("no");
+        Pageable pageable = adminPageRequestDTO.getPageable("no");
 
         Page<Member> members = null;
         // 회원 기본 조회
-        if (adminMemberPageRequestDTO.getKeyword() == null) {
+        if (adminPageRequestDTO.getKeyword() == null) {
             // DB 조회
-            members = memberRepository.selectMemberList(adminMemberPageRequestDTO, pageable);
+            members = memberRepository.selectMemberList(adminPageRequestDTO, pageable);
             log.info("관리자 회원 기본 목록 Serv 2 : " + members);
 
             // 회원 검색 조회
         } else {
             // DB 조회
-            members = memberRepository.searchMemberList(adminMemberPageRequestDTO, pageable);
+            members = memberRepository.searchMemberList(adminPageRequestDTO, pageable);
             log.info("관리자 회원 검색 목록 Serv 2 : " + members);
         }
         // Page<Entity>을 List<DTO>로 변환
@@ -701,7 +722,7 @@ public class AdminService {
 
         // List<ProductDTO>와 page 정보 리턴
         return AdminMemberPageResponseDTO.builder()
-                .adminMemberPageRequestDTO(adminMemberPageRequestDTO)
+                .adminPageRequestDTO(adminPageRequestDTO)
                 .dtoList(dtoList)
                 .total(total)
                 .build();

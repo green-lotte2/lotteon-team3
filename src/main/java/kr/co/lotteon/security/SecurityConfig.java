@@ -37,7 +37,7 @@ public class SecurityConfig {
         httpSecurity.rememberMe(config -> config.userDetailsService(securityUserService)
                 .rememberMeParameter("rememberMe")
                 .key("uniqueAndSecret")
-                .tokenValiditySeconds(86400));// 자동 로그인 유효 기간 (초)) 24시간
+                .tokenValiditySeconds(259200));// 자동 로그인 유효 기간 (초)) 3일
 
 
 

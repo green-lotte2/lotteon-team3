@@ -1,19 +1,11 @@
 package kr.co.lotteon.service.cs;
 
 
+import com.querydsl.core.Tuple;
 import jakarta.transaction.Transactional;
-import kr.co.lotteon.dto.cs.BoardDTO;
-import kr.co.lotteon.dto.cs.BoardFileDTO;
-import kr.co.lotteon.dto.cs.CsPageRequestDTO;
-import kr.co.lotteon.dto.cs.CsPageResponseDTO;
-import kr.co.lotteon.entity.cs.BoardCateEntity;
-import kr.co.lotteon.entity.cs.BoardEntity;
-import kr.co.lotteon.entity.cs.BoardFileEntity;
-import kr.co.lotteon.entity.cs.BoardTypeEntity;
-import kr.co.lotteon.repository.cs.BoardCateRepository;
-import kr.co.lotteon.repository.cs.BoardFileRepository;
-import kr.co.lotteon.repository.cs.BoardTypeRepository;
-import kr.co.lotteon.repository.cs.BoardRepository;
+import kr.co.lotteon.dto.cs.*;
+import kr.co.lotteon.entity.cs.*;
+import kr.co.lotteon.repository.cs.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -51,6 +43,7 @@ public class CsService {
     private final ModelMapper modelMapper;
     private final BoardFileRepository fileRepository;
     private final FileService fileService;
+    private final CommentRepository commentRepository;
 
     // 글목록(notice, qna)
     public CsPageResponseDTO findByCate(CsPageRequestDTO csPageRequestDTO) {
@@ -222,13 +215,13 @@ public class CsService {
     public void save(BoardDTO dto) {
         dto.setFile(dto.getFiles().size());
 
-        for(MultipartFile mf : dto.getFiles()){
-            if(mf.getOriginalFilename() ==null || mf.getOriginalFilename() == ""){
+        for (MultipartFile mf : dto.getFiles()) {
+            if (mf.getOriginalFilename() == null || mf.getOriginalFilename() == "") {
                 dto.setFile(0);
             }
         }
         BoardEntity boardEntity = modelMapper.map(dto, BoardEntity.class);
-        BoardEntity savedArticle= boardRepository.save(boardEntity);
+        BoardEntity savedArticle = boardRepository.save(boardEntity);
         int bno = savedArticle.getBno();
         dto.setBno(bno);
 
@@ -236,7 +229,7 @@ public class CsService {
     }
 
     // 글 수정
-    public void modifyBoard(BoardDTO boardDTO){
+    public void modifyBoard(BoardDTO boardDTO) {
         BoardEntity oBoardEntity = boardRepository.findById(boardDTO.getBno()).get();
         BoardDTO oBoardDTO = modelMapper.map(oBoardEntity, BoardDTO.class);
 
@@ -246,7 +239,7 @@ public class CsService {
 
         int count = fileService.fileUpload(oBoardDTO);
 
-        oBoardDTO.setFile(oBoardDTO.getFile()+count);
+        oBoardDTO.setFile(oBoardDTO.getFile() + count);
 
         BoardEntity boardEntity = modelMapper.map(oBoardDTO, BoardEntity.class);
         boardRepository.save(boardEntity);
@@ -255,9 +248,13 @@ public class CsService {
 
     // 글 삭제
     @Transactional
-    public void deleteBoard (int bno){
-        boardRepository.deleteById(bno);
-        boardRepository.deleteBoardsByParent(bno);
+    public void deleteBoard(int bno) {
+        commentRepository.deleteCommentByBno(bno); // 댓글 먼저 삭제
+
+        Optional<BoardEntity> boardDTO = boardRepository.findById(bno);
+        if (boardDTO.isPresent()) {
+            boardRepository.deleteByBno(bno);
+        }
     }
 
     // hit 증가
@@ -274,18 +271,72 @@ public class CsService {
         // 엔터티를 DTO로 매핑하여 반환합니다.
         return modelMapper.map(boardEntity, BoardDTO.class);
     }
-/*
-    //comment
-    public ResponseEntity insertComment(BoardDTO boardDTO){
-        BoardEntity savedBoard = boardRepository.save(modelMapper.map(boardDTO, BoardEntity.class));
 
-        BoardDTO savedBoardDTO = modelMapper.map(savedBoard, BoardDTO.class);
 
-        Map<String, Object> response = new HashMap<>();
-        response.put("success", true);
-        response.put("comment", savedBoardDTO);
+    // 댓글 삭제
+    @Transactional
+    public ResponseEntity<?> deleteComment(int cno) {
 
-        return ResponseEntity.ok().body(response);
+        log.info("서비스 cno :" + cno);
+
+        Optional<Comment> optComment = commentRepository.findById(cno);
+
+        log.info("서비스 optArticle :" + optComment);
+
+        // 댓글이 아직 있으면
+        if (optComment.isPresent()) {
+            // 댓글 삭제
+            commentRepository.deleteById(cno);
+            log.info("서비스 if문 안 cno :" + cno);
+            return ResponseEntity.ok().body(optComment.get());
+        } else {
+            log.info("서비스 if문 밖 cno :" + cno);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("not found");
+        }
     }
-*/
+
+
+    // 댓글 작성
+    @Transactional
+    public ResponseEntity<Comment> insertComment(CommentDTO commentDTO){
+        // DTO -> Entity
+        Comment comment = modelMapper.map(commentDTO, Comment.class);
+
+        // DB insert 후 저장한 객체 반환 //////////
+        // DB insert 시 저장한 객체 Pk 반환
+        int cno = commentRepository.save(comment).getCno();
+
+        // user join 해서 nick 가져오기
+        Tuple saveTuple =  commentRepository.selectCommentAndNick(cno);
+        log.info("insertComment saveTuple : " + saveTuple.get(0, Comment.class));
+        log.info("insertComment saveTuple : " + saveTuple.get(1, String.class));
+
+        // tuple -> Entity
+        Comment saveComment = saveTuple.get(0, Comment.class);
+        String nick = saveTuple.get(1, String.class);
+        saveComment.setNick(nick);
+
+        log.info("insertComment saveComment : " + saveComment.toString());
+        return ResponseEntity.ok().body(saveComment);
+    }
+
+    // 댓글 수정
+    @Transactional
+    public ResponseEntity<?> updateComment(CommentDTO commentDTO){
+        Optional<Comment> optComment = commentRepository.findById(commentDTO.getCno());
+
+        if(optComment.isPresent()){
+            // 댓글 수정
+            Comment comment = optComment.get();
+            comment.setContent(commentDTO.getContent());
+
+            Comment modifiedComment = commentRepository.save(comment);
+            log.info("updateComment ...4 : "+ modifiedComment);
+            // 수정 후 데이터 반환
+            return ResponseEntity.ok().body(Collections.singletonMap("data", modifiedComment));
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("not found");
+        }
+    }
+
 }
