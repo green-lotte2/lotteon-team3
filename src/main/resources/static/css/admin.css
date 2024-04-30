@@ -2066,6 +2066,70 @@ col {
     margin-bottom: 8px;
 }
 /* 주문 현황 아코디언 */
+.sellerOrderTh th {
+    padding: 10px 0;
+    background: #242238;
+    color: #F0F4F9;
+    border-left: 1px solid #F0F4F9;
+}
+.orderListTd {
+    padding: 10PX 0 !important;
+    cursor: pointer;
+}
+.accordion-button:not(.collapsed) {
+    background-color: #eceded; !important;
+}
 .accordion-button > span {
     width: 20%;
+}
+.accordion-body .details {
+    display: inline-block;
+    padding: 5px;
+    font-size: 16px;
+    width: 650px;
+}
+.accordion-body .cartPrice > p {
+    font-size: 20px;
+    font-weight: bold;
+}
+.accordion-body .details > p {
+    font-size: 20px;
+    font-weight: bold;
+}
+.accordion-body .cartPrice {
+
+}
+.list-group-item > span {
+    height: 25px;
+    font-size: 15px;
+    padding: 0 10px;
+    display: inline-block;
+    border-left: 1px solid #e4eaec;
+}
+.list-group-item > span:nth-child(1) {
+    width: 200px;
+}
+/* 주문 현황 모달 */
+#statusModal {
+    position: fixed;
+    left: 40%;
+    top: 50%;
+    display: none;
+    padding: 0px;
+    width: 550px !important;
+    height: 300px !important;
+    background-color: rgba(17, 17, 18, 0.6);
+    z-index: 1000;
+}
+#btnStatusModal {
+    width: 550px !important;
+    height: 300px;
+    float: none !important;
+    margin: 100px;
+    padding: 10px;
+}
+#statusModal .btnOrdStatus{
+    padding: 10px 15px;
+    font-size: 14px;
+    background-color: #e4eaec;
 }

@@ -1,6 +1,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{/layout/sellerLayout}">
+
             <section id="admin-index" layout:fragment="content">
                 <script>
                     window.onload = async function (){
@@ -74,6 +75,17 @@
                             targetContent.classList.add('show');
                         }
                     }
+                    // 모달 띄우기
+                    function changeStatus(){
+                        const modal = document.querySelector(".modal");
+
+                        modal.style.display = "block";
+                    }
+                    // 모달 끄기
+                    function closeModal() {
+                        const modal = document.querySelector(".modal");
+                        modal.style.display = "none";
+                    }
                 </script>
                 <nav>
                     <h3>관리자 메인</h3>
@@ -102,7 +114,7 @@
                         <img th:src="@{/admin/images/noproduct.png}" style="width: 900px; height: 460px">
                     </div>
                 </th:block>
-                <table>
+                <!--<table class="sellerOrderTh">
                     <tbody>
                     <tr th:if="${!pageResponseDTO.dtoList.isEmpty()}">
                         <th>gg</th>
@@ -112,25 +124,91 @@
                         <th>gg</th>
                     </tr>
                     </tbody>
-                </table>
-                <table>
-                    <tr th:each="OrderListDTO : ${pageResponseDTO.dtoList}">
-                        <td>
-                            <div class="accordion">
+                </table>-->
+                <table class="orderList">
+                    <tr th:each="OrderListDTO, loop : ${pageResponseDTO.dtoList}">
+                        <td class="orderListTd">
+                            <div class="accordion myAccordion">
                                 <div class="accordion-item">
                                     <h2 class="accordion-header">
-                                        <span class="accordion-button" data-bs-toggle="collapse" data-bs-target="1" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne" onclick="accordionControl(this)">
+                                        <span class="accordion-button" data-bs-toggle="collapse" th:data-bs-target="'panel'+${loop}" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne" onclick="accordionControl(this)">
                                             <span th:text="${OrderListDTO.orderItemDTO.ordItemno}"></span>
                                             <span th:text="${OrderListDTO.productDTO.prodNo}"></span>
                                             <span th:text="${OrderListDTO.productDTO.prodName}"></span>
-                                            <span th:text="${OrderListDTO.productDTO.price}"></span>
                                             <span th:text="${#temporals.format(OrderListDTO.orderItemDTO.ordDate, 'yyyy-MM-dd')}"></span>
+                                            <span th:if="${OrderListDTO.orderItemDTO.ordStatus == '배송준비'}" style="color: #d10e49" th:text="${OrderListDTO.orderItemDTO.ordStatus}" onclick="changeStatus()"></span>
+                                            <span th:if="${OrderListDTO.orderItemDTO.ordStatus == '배송중'}" style="color: #ea5514" th:text="${OrderListDTO.orderItemDTO.ordStatus}" onclick="changeStatus()"></span>
+                                            <span th:if="${OrderListDTO.orderItemDTO.ordStatus == '배송완료'}" style="color: #e8bf18" th:text="${OrderListDTO.orderItemDTO.ordStatus}" onclick="changeStatus()"></span>
+                                            <span th:if="${OrderListDTO.orderItemDTO.ordStatus == '주문취소'}" style="color: #0ca03c" th:text="${OrderListDTO.orderItemDTO.ordStatus}" onclick="changeStatus()"></span>
+                                            <span th:if="${OrderListDTO.orderItemDTO.ordStatus == '교환요청'}" style="color: #1e3fe3" th:text="${OrderListDTO.orderItemDTO.ordStatus}" onclick="changeStatus()"></span>
+                                            <span th:if="${OrderListDTO.orderItemDTO.ordStatus == '환불요청'}" style="color: #161875" th:text="${OrderListDTO.orderItemDTO.ordStatus}" onclick="changeStatus()"></span>
+                                            <span th:if="${OrderListDTO.orderItemDTO.ordStatus == '요청처리완료'}" style="color: #bd0df4" th:text="${OrderListDTO.orderItemDTO.ordStatus}" onclick="changeStatus()"></span>
                                         </span>
-                                        <span></span>
                                     </h2>
-                                    <div id="1" class="accordion-collapse collapse">
+                                    <div th:id="'panel'+${loop}" class="accordion-collapse collapse">
                                         <div class="accordion-body">
-                                            <strong>This is the first item's accordion body.</strong> It is shown by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+                                            <div>
+                                                <div class="details" th:if="${OrderListDTO.optionDTO != null}">
+                                                        <p class="productDetail">옵션</p>
+                                                    <div class="optionDiv">
+                                                        <ul class="list-group">
+                                                            <li class="list-group-item">
+                                                                <span>옵션번호</span>
+                                                                <span th:text="${OrderListDTO.optionDTO.opNo}"></span>
+                                                            </li>
+                                                            <li class="list-group-item">
+                                                                <span>옵션이름</span>
+                                                                <span th:text="${OrderListDTO.optionDTO.opName}"></span>
+                                                            </li>
+                                                            <li class="list-group-item">
+                                                                <span>옵션값</span>
+                                                                <span th:text="${OrderListDTO.optionDTO.opValue}"></span>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                                <div class="details" th:if="${OrderListDTO.optionDTO == null}">
+                                                    <p class="productDetail">옵션</p>
+                                                    <img th:src="@{/admin/images/Empty-cuate.png}" style="width: auto; height: 200px">
+                                                </div>
+                                                <div class="cartPrice order-3">
+                                                    <p class="productDetail">주문상세</p>
+                                                    <ul class="list-group">
+                                                        <li class="list-group-item">
+                                                            <span>가격</span>
+                                                            <span>[[${OrderListDTO.productDTO.price}]] 원</span>
+                                                        </li>
+                                                        <li class="list-group-item">
+                                                            <span>총 가격</span>
+                                                            <span>[[${OrderListDTO.orderItemDTO.count * OrderListDTO.productDTO.price}]] 원</span>
+                                                        </li>
+                                                        <li class="list-group-item">
+                                                            <span>배송받는 분</span>
+                                                            <span th:text="${OrderListDTO.orderDTO.recipName}"></span>
+                                                        </li>
+                                                        <li class="list-group-item">
+                                                            <span>전화번호</span>
+                                                            <span th:text="${OrderListDTO.orderDTO.recipHp}"></span>
+                                                        </li>
+                                                        <li class="list-group-item">
+                                                            <span>배송지 우편번호</span>
+                                                            <span th:text="${OrderListDTO.orderDTO.recipZip}"></span>
+                                                        </li>
+                                                        <li class="list-group-item">
+                                                            <span>배송지 주소</span>
+                                                            <span th:text="${OrderListDTO.orderDTO.recipAddr1}"></span>
+                                                        </li>
+                                                        <li class="list-group-item">
+                                                            <span>배송지 상세주소</span>
+                                                            <span th:text="${OrderListDTO.orderDTO.recipAddr2}"></span>
+                                                        </li>
+                                                        <li class="list-group-item">
+                                                            <span>주문상태</span>
+                                                            <span th:text="${OrderListDTO.orderItemDTO.ordStatus}"></span>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -158,5 +236,14 @@
                             <a th:if="${pageResponseDTO.keyword != null}" class="page-link" th:href="@{/seller/order/list(pg=${pageResponseDTO.end + 1}, type=${pageResponseDTO.type}, keyword=${pageResponseDTO.keyword})}">&#62;</a>
                         </span>
                 </div>
-
+                <div class="statusModal modal" id="statusModal">
+                    <span class="close" onclick="closeModal()">&times;</span>
+                    <div id="btnStatusModal">
+                    <span class="btnOrdStatus">배송중</span>
+                    <span class="btnOrdStatus">배송중</span>
+                    <span class="btnOrdStatus">배송중</span>
+                    <span class="btnOrdStatus">배송중</span>
+                    <span class="btnOrdStatus">배송중</span>
+                    </div>
+                </div>
             </section>
