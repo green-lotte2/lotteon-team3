@@ -12,5 +12,7 @@ public interface CommentRepository extends JpaRepository<Comment, Integer>, Comm
 
     void deleteCommentByBno(int bno);
 
+    void deleteAllByBno(int bno);
+
     List<Comment> findByBno(int bno);
 }

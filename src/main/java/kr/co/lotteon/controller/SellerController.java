@@ -228,7 +228,7 @@ public class SellerController {
     //주문수 그래프 조회
     @GetMapping("/seller/orderChart")
     public ResponseEntity<?> orderChart() {
-        List<Map<String, Object>> jsonResult = sellerService.selectOrderForChart();
+        List<Map<String, Object>> jsonResult = sellerService.selectOrderForSeller();
         log.info("페이지 그래프 조회 Cont 1: " + jsonResult);
         try {
             // 객체를 JSON으로 변환

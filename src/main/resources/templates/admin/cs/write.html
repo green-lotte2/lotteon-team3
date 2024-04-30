@@ -30,19 +30,19 @@
     <article class="writeArt">
         <form th:action="@{/admin/cs/write}" id="adminWriteForm" method="POST" enctype="multipart/form-data">
             <input type="hidden" name="group" readonly th:value="${group}" />
-            <!--<input type="hidden" name="uid" th:value="${#authentication.principal.member.uid}" /> 나중에 추가하기-->
+            <input type="hidden" name="uid" th:value="${#authentication.principal.member.uid}" />
             <table>
                 <tr>
                     <td>유형</td>
                     <td>
-                        <select name="cate1" onchange="findType(this.value)">
+                        <select name="cate" onchange="findType(this.value)">
                             <option value="0">1차유형</option>
                             <option th:each="ct1 : ${cates}" th:value="${ct1.cate}">
                                 [[${ct1.cateName}]]
                             </option>
                         </select>
 
-                        <select name="type" id="typeSelect">
+                        <select name="typeNo" id="typeSelect">
                             <option value="0">말머리</option>
                         </select>
                     </td>

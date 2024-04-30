@@ -15,4 +15,7 @@ public interface OrderItemRepositoryCustom {
 
     public List<Tuple> selectOrdStatusCount(List<Integer> prodNos);
 
+    // 판매자 차트
+    public List<Tuple> selectOrderForSeller(List<Integer> prodNos);
+
 }

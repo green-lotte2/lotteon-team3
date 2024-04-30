@@ -36,4 +36,5 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
                 .orderBy(qOrder.ordDate.year().asc(), qOrder.ordDate.month().asc())
                 .fetch();
     }
+
 }
