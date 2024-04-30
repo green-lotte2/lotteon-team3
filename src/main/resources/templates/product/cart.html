@@ -39,12 +39,42 @@
                     });
                   });
                 });
+
+                window.onload = function (){
+
+                  // 수량 감소 부분
+                  document.querySelectorAll('.decrease').forEach(button => {
+                    button.addEventListener('click', function (e){
+                      e.preventDefault();
+                      const input = button.closest('.count').querySelector('.number');
+                      // 현재 값
+                      let value = parseInt(input.value);
+                      value = Math.max(1, value -1);
+                      input.value = value;
+                    });
+                  });
+
+                  // 수량 증가
+                  document.querySelectorAll('.increase').forEach(button =>{
+                    button.addEventListener('click', function (e){
+                      e.preventDefault();
+                      const input = button.closest('.count').querySelector('.number');
+                      // 현재 값
+                      let value = parseInt(input.value);
+                      input.value = value+1;
+                    });
+                  });
+
+
+                }
+
+
               </script>
               <!-- 제목, 페이지 네비게이션 -->
               <nav>
                 <h1>장바구니</h1>
                 <p>
-                  HOME > <span>패션·의류·뷰티</span> > <strong>장바구니</strong>
+                  HOME > <strong>장바구니</strong>
                 </p>
               </nav>
                             
@@ -70,40 +100,43 @@
                     </h2>
                     <!-- 내용 -->
                     <div th:id="'panelsStayOpen-collapse'+${iterStat.index}" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingOne">
-                      <div class="accordion-body">
+                      <th:block th:each="cartProduct:${cartProducts}" >
+                      <div  th:if="${company == cartProduct.company}" class="accordion-body">
                         <div>
                           <label>
                             <input type="checkbox" class="checkbox" value="0">
                           </label>
                           <a th:href="@{#}">
-                            <img th:src="@{/product/3d1b2c82-a8c2-45af-b2a3-4bc9026c50c9.png}" style="width: 80px; height: auto;" alt="상품이미지">
+                            <img th:src="@{|/prodImg/${cartProduct.thumb3}|}" style="width: 80px; height: auto;" alt="상품이미지">
                           </a>
 
                           <div class="details">
                             <a th:href="@{#}">
-                              <p class="productDetail"> 와르 [-6cm 숏버전 추가] M194 와이드 데님</p>
+                              <p class="productDetail">[[${cartProduct.prodName}]]</p>
                             </a>
                             <div class="optionDiv">옵션 밸류</div>
                             <p class="productDeliveryInfo"> 4/30(화) 이내 도착 </p>
                           </div>
 
                           <div class="count">
-                            <button class="decrease">-</button>
-                            <input type="text" class="number" name="num" readonly/>
+                            <button th:class="'decrease'">-</button>
+                            <input type="text" class="number" name="num" th:value="${cartProduct.count}"/>
                             <button class="increase">+</button>
                           </div>
 
                           <div class="cartPrice order-3">
-                            <p class="originalPrice"><span data-v-15ea7d62="">119,000원</span></p>
+                            <p class="originalPrice"><span data-v-15ea7d62="">[[${cartProduct.price}]]원</span></p>
                             <p class="currentPrice" style="">
-                              <strong>32,670</strong><span>원</span>
+                              <strong>[[${((100-cartProduct.discount)/100.0)*cartProduct.price}]]</strong><span>원</span>
                             </p>
                           </div>
                         </div>
                       </div>
+                      </th:block>
                     </div>
                   </div>
                 </div>
+
 
                 <!-- 장바구니 전체합계 -->
                 <div class="total">
