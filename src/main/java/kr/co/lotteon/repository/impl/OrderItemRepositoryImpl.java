@@ -1,21 +1,26 @@
 package kr.co.lotteon.repository.impl;
 
+import com.querydsl.core.QueryResults;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import kr.co.lotteon.entity.product.QOrder;
-import kr.co.lotteon.entity.product.QOrderItem;
-import kr.co.lotteon.entity.product.QProduct;
+import kr.co.lotteon.dto.admin.AdminPageRequestDTO;
+import kr.co.lotteon.dto.product.PageRequestDTO;
+import kr.co.lotteon.entity.product.*;
 import kr.co.lotteon.repository.custom.OrderItemRepositoryCustom;
 import kr.co.lotteon.security.MyUserDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Repository
@@ -26,6 +31,7 @@ public class OrderItemRepositoryImpl implements OrderItemRepositoryCustom {
     private final QOrderItem qOrderItem = QOrderItem.orderItem;
     private final QOrder qOrder = QOrder.order;
     private final QProduct qProduct = QProduct.product;
+    private final QOption qOption = QOption.option;
 
     // 월별 주문 count 조회 - 오늘 기준 12개월 전 까지
     @Override
@@ -93,12 +99,31 @@ public class OrderItemRepositoryImpl implements OrderItemRepositoryCustom {
         LocalDateTime twelveMonthsAgo = LocalDateTime.now().minusMonths(12);
         log.info("월별 주문 count 조회 Impl 1 : " + twelveMonthsAgo);
 
-        return jpaQueryFactory.select(Expressions.stringTemplate("GROUP_CONCAT(CONCAT({0}, '년 ', {1}))", qOrderItem.ordDate.year(), qOrderItem.ordDate.month()).as("day"), qOrderItem.count())
+        return jpaQueryFactory.select(qOrderItem.ordDate.year(), qOrderItem.ordDate.month() , qOrderItem.count())
                 .from(qOrderItem)
                 .where(qOrderItem.ordDate.after(twelveMonthsAgo).and(qOrderItem.prodNo.in(prodNos)))
-                .groupBy(Expressions.stringTemplate("GROUP_CONCAT(CONCAT({0}, '년 ', {1}))", qOrderItem.ordDate.year(), qOrderItem.ordDate.month()))
-                .orderBy(qOrderItem.ordItemno.asc(), qOrderItem.ordDate.month().asc())
+                .groupBy(qOrderItem.ordDate.year(), qOrderItem.ordDate.month())
+                .orderBy(qOrderItem.ordDate.year().asc(), qOrderItem.ordDate.month().asc())
                 .fetch();
     }
 
+    // 판매자 주문 현황 리스트 기본 조회
+    @Override
+    public Page<Tuple> selectOrderList(AdminPageRequestDTO pageRequestDTO, Pageable pageable, List<Integer> prodNos){
+        log.info("판매자 주문 현황 조회 Impl 1 : " + pageRequestDTO);
+        log.info("판매자 주문 현황 조회 Impl 2 : " + prodNos);
+
+        QueryResults<Tuple> results =  jpaQueryFactory.select(qOrderItem, qOrder, qProduct, qOption)
+                .from(qOrderItem)
+                .join(qOrder).on(qOrderItem.ordNo.eq(qOrder.ordNo))
+                .join(qProduct).on(qOrderItem.prodNo.eq(qProduct.prodNo))
+                .leftJoin(qOption).on(qOption.opNo.eq(qOrderItem.opNo))
+                .where(qOrderItem.prodNo.in(prodNos))
+                .orderBy(qOrderItem.ordItemno.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetchResults();
+        log.info("판매자 주문 현황 조회 Impl 3 : " + results);
+        return new PageImpl<>(results.getResults(), pageable, results.getTotal());
+    }
 }

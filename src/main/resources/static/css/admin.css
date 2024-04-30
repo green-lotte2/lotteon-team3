@@ -1301,6 +1301,9 @@ col {
     font-weight: bold;
     border-radius: 3px;
 }
+.page-link {
+    display: inline-block; !important
+}
 .prev {
     font-weight: bold;
 }
@@ -2061,4 +2064,8 @@ col {
 /* 검색 searchForm */
 #searchForm {
     margin-bottom: 8px;
+}
+/* 주문 현황 아코디언 */
+.accordion-button > span {
+    width: 20%;
 }

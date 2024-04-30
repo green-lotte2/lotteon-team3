@@ -18,6 +18,7 @@ public class OrderItemDTO {
     private int prodNo;
     private String uid;
     private int count;
+    private Integer opNo;
     private LocalDateTime ordDate;
     private String ordStatus;
 }

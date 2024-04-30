@@ -693,21 +693,21 @@ public class AdminService {
     }
 
     // 관리자 회원 목록 (현황) 조회
-    public AdminMemberPageResponseDTO selectMembers(AdminMemberPageRequestDTO adminMemberPageRequestDTO) {
+    public AdminMemberPageResponseDTO selectMembers(AdminPageRequestDTO adminPageRequestDTO) {
         log.info("관리자 회원 목록 Serv 1  ");
-        Pageable pageable = adminMemberPageRequestDTO.getPageable("no");
+        Pageable pageable = adminPageRequestDTO.getPageable("no");
 
         Page<Member> members = null;
         // 회원 기본 조회
-        if (adminMemberPageRequestDTO.getKeyword() == null) {
+        if (adminPageRequestDTO.getKeyword() == null) {
             // DB 조회
-            members = memberRepository.selectMemberList(adminMemberPageRequestDTO, pageable);
+            members = memberRepository.selectMemberList(adminPageRequestDTO, pageable);
             log.info("관리자 회원 기본 목록 Serv 2 : " + members);
 
             // 회원 검색 조회
         } else {
             // DB 조회
-            members = memberRepository.searchMemberList(adminMemberPageRequestDTO, pageable);
+            members = memberRepository.searchMemberList(adminPageRequestDTO, pageable);
             log.info("관리자 회원 검색 목록 Serv 2 : " + members);
         }
         // Page<Entity>을 List<DTO>로 변환
@@ -722,7 +722,7 @@ public class AdminService {
 
         // List<ProductDTO>와 page 정보 리턴
         return AdminMemberPageResponseDTO.builder()
-                .adminMemberPageRequestDTO(adminMemberPageRequestDTO)
+                .adminPageRequestDTO(adminPageRequestDTO)
                 .dtoList(dtoList)
                 .total(total)
                 .build();
