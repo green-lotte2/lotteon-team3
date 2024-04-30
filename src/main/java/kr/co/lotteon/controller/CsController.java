@@ -223,4 +223,22 @@ public class CsController {
         log.info("컨트롤러 cno : " + cno);
         return csService.deleteComment(cno);
     }
+
+
+    // 댓글등록
+    @PostMapping("/cs/qna/insertComment")
+    public ResponseEntity<Comment> qnaCommentWrite(@RequestBody CommentDTO commentDTO) {
+
+        ResponseEntity<Comment> commentResponseEntity = csService.insertComment(commentDTO);
+        log.info(commentResponseEntity.getBody().toString());
+        return commentResponseEntity;
+    }
+
+    // 댓글 수정
+    @PutMapping("/cs/qna/modifyComment")
+    public ResponseEntity<?> modifyComment(@RequestBody CommentDTO commentDTO){
+        log.info("modifyComment : " +commentDTO.toString());
+        return csService.updateComment(commentDTO);
+    }
+
 }

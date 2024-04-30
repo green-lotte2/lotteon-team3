@@ -9,7 +9,6 @@
     window.onload = function () {
 
       const commentList = document.getElementsByClassName('commentList')[0];
-      const btnRemove = commentList.getElementsByClassName('remove');
       const btnSubmit = document.commentForm.submit;
       const form = document.commentForm;
 
@@ -19,7 +18,7 @@
           e.preventDefault();
           const cno = e.target.dataset.no; // 댓글 번호를 가져옴
 
-          // 댓글 삭제 요청
+          // 댓글삭제
           fetch(`/lotteon/cs/qna/deleteComment/${cno}`, {
             method: 'DELETE'
           })
@@ -31,28 +30,53 @@
                       return  null;
                     }
                   })
+
+                  // 댓글 삭제 요청 후 화면 업데이트
                   .then(data => {
                     if (data != null) {
                       const article = e.target.closest('article');
                       article.remove();
-                      alert('삭제 되었습니다.');
+                      alert('댓글이 삭제 되었습니다.');
+
+                      // 댓글 목록 다시 불러오기
+                      fetchComments();
+
                     } else {
                       alert('삭제에 실패하였습니다.');
                     }
                   })
-                  .catch(error => {
-                    console.error('Error:', error);
-                    alert('삭제 도중 에러가 발생하였습니다.');
-                  });
-                }
+
+                  // 댓글 수정 요청 후 화면 업데이트
+                  .then(data => {
+                    // 수정 성공 시
+                    if (data != null) {
+                      // 수정된 댓글의 내용 업데이트
+                      contentElement.innerText = data.data.content;
+                      // 수정 폼 숨기기
+                      editForm.style.display = 'none';
+                      // 댓글 내용 표시
+                      contentElement.style.display = 'block';
+                      // 수정 버튼 표시
+                      const modifyButton = modifiedComment.querySelector('.modify');
+                      modifyButton.style.display = 'inline-block';
+                      // 알림 메시지
+                      alert('댓글이 수정되었습니다.');
+                      // 댓글 목록 다시 불러오기
+                      fetchComments();
+                    }
+                  })
+
+        }
               });
-      /*
-              // 댓글 입력 이벤트 처리
-              btnSubmit.onclick = function (e) {
+
+      // 댓글입력
+      btnSubmit.onclick = function (e) {
               e.preventDefault();
-              const parent = form.parent.value;
-              const writer = form.writer.value;
+              const bno = form.bno.value;
+              const uid = form.uid.value;
               const content = form.content.value;
+              const cate = form.cate.value;
+              const group = form.group.value;
 
               // 입력된 내용이 없는 경우 처리
               if (!content.trim()) {
@@ -61,13 +85,15 @@
               }
 
               const jsonData = {
-                "parent": parent,
-                "writer": writer,
-                "content": content
+                "bno": bno,
+                "uid": uid,
+                "content": content,
+                "cate": cate,
+                "group": group
               };
 
-              // 댓글 추가 요청
-              fetch('/farmstory/croptalk/insertComment', {
+              // 댓글 추가
+              fetch('/lotteon/cs/qna/insertComment', {
                 method: 'POST',
                 headers: { "Content-type": "application/json" },
                 body: JSON.stringify(jsonData)
@@ -81,11 +107,11 @@
                           const date = today.getDate();
 
                           const commentArticle = `<article>
-                              <span class="nick">${sessUser.nick}</span>
+                              <span class="nick">${sessUser.uid}</span>
                               <span class="date">${year}-${month}-${date}</span>
                               <p class="content">${content}</p>
                               <div>
-                                  <a href="#" data-no="${data.pk}" data-parent="${data.parent}" class="remove">삭제</a>
+                                  <a href="#" data-no="${data.pk}" data-parent="${data.cno}" class="remove">삭제</a>
                                   <a href="#" class="modify">수정</a>
                               </div>
                           </article>`;
@@ -93,14 +119,14 @@
                           commentList.insertAdjacentHTML('beforeend', commentArticle);
                         }
                         alert('댓글이 추가되었습니다.');
+                        location.reload();
                       })
                       .catch((err) => {
                         console.log(err);
                       });
             }
 
-
-            // 수정 폼 숨기기
+            // 댓글 수정 폼 숨기기(수정버튼 눌렸을때 활성화)
             function hideEditForm() {
               const editForms = document.querySelectorAll('.editForm');
               editForms.forEach(form => {
@@ -110,7 +136,7 @@
 
             hideEditForm(); // 페이지 로드 시 숨김
 
-            // 댓글 수정 버튼 클릭 이벤트 처리
+      // 댓글 수정 폼
             document.addEventListener('click', function (e) {
               if (e.target.classList.contains('modify')) {
                 e.preventDefault();
@@ -129,7 +155,7 @@
               }
             });
 
-            // 취소 버튼 클릭 시 수정 폼 숨기기
+            // 댓글 수정창에서 취소누를시 수정창 비활성화
             document.addEventListener('click', function (e) {
               if (e.target.classList.contains('cancelEdit')) {
                 e.preventDefault();
@@ -140,57 +166,61 @@
                 editForm.style.display = 'none';
                 commentContent.style.display = 'block';
 
-                // 수정 버튼 표시
+                // 수정 버튼 표시여부
                 const modifyButton = editForm.parentElement.querySelector('.modify');
                 modifyButton.style.display = 'inline-block';
               }
             });
 
-            // 댓글 수정 폼 제출 이벤트 처리
-            document.addEventListener('submit', function (e) {
-              e.preventDefault();
-              if (e.target.classList.contains('editForm')) {
-                const formData = new FormData(e.target);
-                const jsonData = {};
-                formData.forEach((value, key) => jsonData[key] = value);
+      // 댓글 수정
+      document.addEventListener('submit', function (e) {
+        e.preventDefault();
+        if (e.target.classList.contains('editForm')) {
+          const textarea = document.getElementsByName('content')[0].innerText;
 
-                // 댓글 수정 요청
-                fetch('/farmstory/croptalk/modifyComment', {
-                  method: 'PUT',
-                  headers: { "Content-type": "application/json" },
-                  body: JSON.stringify(jsonData)
-                })
-                        .then(response => {
-                          if (response.ok) {
-                            return response.json();
-                          } else {
-                            throw new Error('Network response was not ok.');
-                          }
-                        })
-                        .then(data => {
-                          // 수정 성공 시 댓글 내용 업데이트
-                          const modifiedComment = e.target.closest('article');
-                          const contentElement = modifiedComment.querySelector('.content');
-                          contentElement.innerText = data.article.content;
+          const formData = new FormData(e.target);
+          const jsonData = {};
+          formData.forEach((value, key) => jsonData[key] = value);
 
-                          // 수정 폼 숨김 및 댓글 내용 표시
-                          const editForm = modifiedComment.querySelector('.editForm');
-                          editForm.style.display = 'none';
-                          contentElement.style.display = 'block';
+          // 댓글 수정 요청
+          fetch('/lotteon/cs/qna/modifyComment', {
+            method: 'PUT',
+            headers: { "Content-type": "application/json" },
+            body: JSON.stringify(jsonData)
+          })
+                  .then(response => {
+                    if (response.ok) {
+                      return response.json();
+                    } else {
+                      throw new Error('Network response was not ok.');
+                    }
+                  })
+                  .then(data => {
+                    // 수정 성공 시 댓글 내용 업데이트
+                    const modifiedComment = e.target.closest('article');
+                    const contentElement = modifiedComment.querySelector('.content');
+                    contentElement.innerText = data.data.content;
 
-                          // 수정 버튼 표시
-                          const modifyButton = modifiedComment.querySelector('.modify');
-                          modifyButton.style.display = 'inline-block';
-                        })
-                        .catch(error => {
-                          console.error('Error:', error);
-                          alert('댓글 수정 도중 에러가 발생하였습니다.');
-                        });
-              }
-            });
-            */
+                    // 수정 폼 숨김 및 댓글 내용 표시
+                    const editForm = modifiedComment.querySelector('.editForm');
+                    editForm.style.display = 'none';
+                    contentElement.style.display = 'block';
 
-      // 댓글쓰기 취소 버튼 클릭 이벤트 처리(textarea 내용 삭제)
+                    // 수정 버튼 표시
+                    const modifyButton = modifiedComment.querySelector('.modify');
+                    modifyButton.style.display = 'inline-block';
+
+                    alert('댓글이 수정되었습니다.');
+                  })
+                  .catch(error => {
+                    console.error('Error:', error);
+                    alert('댓글 수정 도중 에러가 발생하였습니다.');
+                  });
+        }
+      });
+
+
+      // 댓글쓰기에서 취소를 누를시 textarea 초기화
       document.addEventListener('click', function (e) {
         if (e.target.classList.contains('btnCancel1')) {
           e.preventDefault();
@@ -270,7 +300,9 @@
 
               <form class="editForm" style="display: none;">
                 <input type="hidden" name="bno" th:value="${comment.bno}" />
+                <input type="hidden" name="cno" th:value="${comment.cno}" />
                 <input type="hidden" name="uid" th:value="${comment.uid}" />
+                <input type="hidden" name="nick" th:value="${#authentication.principal.member.nick}" />
                 <textarea name="content" th:text="${comment.content}"></textarea>
                 <div class="button-group">
                   <input type="submit" value="댓글수정" class="submitEdit">
@@ -291,8 +323,10 @@
           <section class="commentForm">
             <h3>댓글쓰기</h3>
             <form name="commentForm" th:action="@{/comment}" method="post"  id="commentForm">
-              <input type="hidden" name="parent" th:value="${boardDTO.bno}">
-              <input type="hidden" name="writer" th:value="${#authentication.principal.member.uid}">
+              <input type="hidden" name="bno" th:value="${boardDTO.bno}">
+              <input type="hidden" name="uid" th:value="${#authentication.principal.member.uid}">
+              <input type="hidden" name="cate" th:value="${boardDTO.cate}">
+              <input type="hidden" name="group" th:value="${boardDTO.group}">
               <textarea name="content" placeholder="댓글 입력"></textarea>
               <div>
                 <a th:href="@{#}" class="btn btnCancel1">취소</a>
