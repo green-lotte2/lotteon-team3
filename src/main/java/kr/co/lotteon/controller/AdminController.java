@@ -347,11 +347,11 @@ public class AdminController {
         SellerOrderPageResponseDTO sellerOrderPageResponseDTO = null;
         if(adminPageRequestDTO.getKeyword() == null) {
             // 일반 주문 목록 조회
-            sellerOrderPageResponseDTO = sellerService.selectOrderList(adminPageRequestDTO);
+            sellerOrderPageResponseDTO = adminService.selectOrderList(adminPageRequestDTO);
         }else {
             // 검색 주문 목록 조회 //////
             log.info("키워드 검색 Cont" + adminPageRequestDTO.getKeyword());
-            sellerOrderPageResponseDTO = sellerService.selectOrderList(adminPageRequestDTO);
+            sellerOrderPageResponseDTO = adminService.searchOrderList(adminPageRequestDTO);
         }
         model.addAttribute("pageResponseDTO", sellerOrderPageResponseDTO);
         return "/admin/order/list";

@@ -124,7 +124,7 @@ public class OrderItemRepositoryImpl implements OrderItemRepositoryCustom {
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetchResults();
-        log.info("판매자 주문 현황 조회 Impl 3 : " + results);
+        log.info("판매자 주문 현황 리스트 검색 조회 Impl 3 : " + results);
         return new PageImpl<>(results.getResults(), pageable, results.getTotal());
     }
     // 판매자 주문 현황 리스트 검색 조회
@@ -156,6 +156,9 @@ public class OrderItemRepositoryImpl implements OrderItemRepositoryCustom {
         }else if(type.equals("company")){
             expression = qProduct.company.contains(keyword).and(qOrderItem.prodNo.in(prodNos));
             log.info("company 검색 : " + expression);
+        }else if(type.equals("ordStatus")){
+            expression = qOrderItem.ordStatus.contains(keyword).and(qOrderItem.prodNo.in(prodNos));
+            log.info("ordStatus 검색 : " + expression);
         }
 
         QueryResults<Tuple> results =  jpaQueryFactory.select(qOrderItem, qOrder, qProduct, qOption)
@@ -163,13 +166,14 @@ public class OrderItemRepositoryImpl implements OrderItemRepositoryCustom {
                 .join(qOrder).on(qOrderItem.ordNo.eq(qOrder.ordNo))
                 .join(qProduct).on(qOrderItem.prodNo.eq(qProduct.prodNo))
                 .leftJoin(qOption).on(qOption.opNo.eq(qOrderItem.opNo))
-                .where()
+                .where(expression)
                 .orderBy(qOrderItem.ordItemno.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetchResults();
 
-        return null;
+        log.info("판매자 주문 현황 조회 Impl 3 : " + results);
+        return new PageImpl<>(results.getResults(), pageable, results.getTotal());
     }
     // 관리자 주문 현황
     @Override
@@ -187,6 +191,58 @@ public class OrderItemRepositoryImpl implements OrderItemRepositoryCustom {
                 .fetchResults();
 
         log.info("관리자 주문 현황 조회 Impl 2 : " + results);
+        return new PageImpl<>(results.getResults(), pageable, results.getTotal());
+    }
+    // 관리자 주문 현황 리스트 검색 조회
+    @Override
+    public Page<Tuple> searchOrderListAll(AdminPageRequestDTO pageRequestDTO, Pageable pageable){
+        log.info("관리자 주문 현황 검색 Impl 1 : " + pageRequestDTO);
+        log.info("관리자 주문 현황 검색 Impl 2 : " + pageRequestDTO.getType());
+        log.info("상품 목록 키워드 검색 impl 3 : " + pageRequestDTO.getKeyword());
+        String keyword = pageRequestDTO.getKeyword();
+        String type = pageRequestDTO.getType();
+
+        BooleanExpression expression = null;
+
+        // 검색 종류에 따른 where절 표현식 생성
+        if(type.equals("prodName")){
+            expression = qProduct.prodName.contains(keyword);
+            log.info("prodName 검색 : " + expression);
+
+        }else if(type.equals("prodNo")){
+            // 입력된 키워드를 정수형으로 변환
+            int prodNo = Integer.parseInt(keyword);
+            expression = qProduct.prodNo.eq(prodNo);
+            log.info("prodNo 검색 : " + expression);
+
+        }else if(type.equals("cate1")){
+            int cate1 = Integer.parseInt(keyword);
+            expression = qProduct.cate1.eq(cate1);
+            log.info("cate1 검색 : " + expression);
+
+        }else if(type.equals("company")){
+            expression = qProduct.company.contains(keyword);
+            log.info("company 검색 : " + expression);
+        }else if(type.equals("seller")){
+            expression = qProduct.seller.contains(keyword);
+            log.info("seller 검색 : " + expression);
+        }else if(type.equals("ordStatus")){
+            expression = qOrderItem.ordStatus.contains(keyword);
+            log.info("ordStatus 검색 : " + expression);
+        }
+
+        QueryResults<Tuple> results =  jpaQueryFactory.select(qOrderItem, qOrder, qProduct, qOption)
+                .from(qOrderItem)
+                .join(qOrder).on(qOrderItem.ordNo.eq(qOrder.ordNo))
+                .join(qProduct).on(qOrderItem.prodNo.eq(qProduct.prodNo))
+                .leftJoin(qOption).on(qOption.opNo.eq(qOrderItem.opNo))
+                .where(expression)
+                .orderBy(qOrderItem.ordItemno.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetchResults();
+
+        log.info("관리자 주문 현황 리스트 검색 조회 Impl 3 : " + results);
         return new PageImpl<>(results.getResults(), pageable, results.getTotal());
     }
 }

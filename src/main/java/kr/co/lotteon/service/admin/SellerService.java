@@ -149,11 +149,7 @@ public class SellerService {
     public OrderCardDTO selectCountSumByPeriod(LocalDateTime period){
 
         // 현재 로그인 중인 사용자 정보 불러오기
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        // 로그인 중일 때 해당 사용자 id를 seller에 입력
-        MyUserDetails userDetails = (MyUserDetails) authentication.getPrincipal();
-        String sellerId = userDetails.getMember().getName();
+        String sellerId = whoAmI();
 
         // 해당 판매자의 상품번호 전부 조회
         List<Integer> prodNos = productRepository.selectProdNoForQna(sellerId);
@@ -646,6 +642,90 @@ public class SellerService {
                 .total(total)
                 .build();
     }
+    // 판매자 주문 검색 현황
+    @Transactional
+    public SellerOrderPageResponseDTO searchOrderList(AdminPageRequestDTO adminPageRequestDTO){
+        log.info("판매자 주문 검색 검색 Serv 1  ");
+        Pageable pageable = adminPageRequestDTO.getPageable("no");
+
+        if(adminPageRequestDTO.getType().equals("ordStatus")) {
+            switch (adminPageRequestDTO.getKeyword()) {
+                case "prepare":
+                    adminPageRequestDTO.setKeyword("배송준비");
+                    break;
+                case "going":
+                    adminPageRequestDTO.setKeyword("배송중");
+                    break;
+                case "delivered":
+                    adminPageRequestDTO.setKeyword("배송완료");
+                    break;
+                case "cancel":
+                    adminPageRequestDTO.setKeyword("주문취소");
+                    break;
+                case "exchange":
+                    adminPageRequestDTO.setKeyword("교환요청");
+                    break;
+                case "refund":
+                    adminPageRequestDTO.setKeyword("환불요청");
+                    break;
+                case "complete":
+                    adminPageRequestDTO.setKeyword("처리완료");
+                    break;
+            }
+        }
+        // 현재 로그인 중인 사용자 정보 불러오기
+        String sellerId = whoAmI();
+
+        // 해당 판매자의 상품번호 전부 조회
+        List<Integer> prodNos = productRepository.selectProdNoForQna(sellerId);
+
+        // order, orderItem, product, option 정보 DB 조회
+        Page<Tuple> results = orderItemRepository.searchOrderList(adminPageRequestDTO, pageable, prodNos);
+        log.info("판매자 주문 검색 Serv 3 : " + results.getContent().size());
+        List<OrderListDTO> dtoList = results.getContent().stream()
+                .map(tuple -> {
+
+                    OrderListDTO orderListDTO = new OrderListDTO();
+
+                    // Tuple -> Entity
+                    OrderItem orderItem = tuple.get(0, OrderItem.class);
+                    Order order         = tuple.get(1, Order.class);
+                    Product product     = tuple.get(2, Product.class);
+                    Option option       = tuple.get(3, Option.class);
+
+                    // Entity -> DTO
+                    OrderItemDTO orderItemDTO   = modelMapper.map(orderItem, OrderItemDTO.class);
+                    OrderDTO orderDTO           = modelMapper.map(order, OrderDTO.class);
+                    ProductDTO productDTO       = modelMapper.map(product, ProductDTO.class);
+                    if (option != null) {
+                        OptionDTO optionDTO = modelMapper.map(option, OptionDTO.class);
+                        orderListDTO.setOptionDTO(optionDTO);
+                    } else {
+                        // Option이 null인 경우 처리
+                        orderListDTO.setOptionDTO(null);
+                    }
+                    // DTO들을 OrderListDTO에 포함
+                    orderListDTO.setOrderItemDTO(orderItemDTO);
+                    orderListDTO.setOrderDTO(orderDTO);
+                    orderListDTO.setProductDTO(productDTO);
+                    return orderListDTO;
+
+                })
+                .toList();
+
+        log.info("판매자 주문 검색 Serv 4 : " + dtoList);
+
+        // total 값
+        int total = (int) results.getTotalElements();
+
+        // List<OrderListDTO>와 page 정보 리턴
+        return SellerOrderPageResponseDTO.builder()
+                .adminPageRequestDTO(adminPageRequestDTO)
+                .dtoList(dtoList)
+                .total(total)
+                .build();
+    }
+
     // 판매자 주문 상태 변경
     public ResponseEntity<?> modifyOrdStatus(int ordItemno, String ordStatus){
         log.info("주문 상태 변경 Serv 1: " + ordItemno);
@@ -661,7 +741,7 @@ public class SellerService {
             case "delivered" :
                 ordStatus = "배송완료";
                 break;
-            case "ready" :
+            case "cancel" :
                 ordStatus = "주문취소";
                 break;
             case "exchange" :

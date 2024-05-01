@@ -27,4 +27,6 @@ public interface OrderItemRepositoryCustom {
     // 관리자 주문 현황
     public Page<Tuple> selectOrderListAll(AdminPageRequestDTO pageRequestDTO, Pageable pageable);
 
+    public Page<Tuple> searchOrderListAll(AdminPageRequestDTO pageRequestDTO, Pageable pageable);
+
 }

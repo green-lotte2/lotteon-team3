@@ -56,8 +56,22 @@
                             }
                         });
                     }
+                    // 검색일 때 스크롤 이동
+                    document.addEventListener("DOMContentLoaded", function() {
+                        const orderList = document.getElementsByClassName('orderList')[0];
+                        const url = location.href;
+                        const keyword = url.split('&keyword=')[1];
+
+                        if(keyword != null) {
+                            // 모든 요소가 로드된 이후에 실행되어야 하기 때문에 timeout 걸어줌
+                            setTimeout(() => {
+                                orderList.scrollIntoView();
+                            }, 10);
+                        }
+                    });
                     // type 상품 분류 선택 시 cate1 조회후 select 태그 추가
-                    async function findCate(type){
+                    async function findCate(typeSelect){
+                        const type = typeSelect.value;
                         console.log(type);
                         const searchForm = document.getElementById('searchForm');
                         const keywordInput = document.getElementById('keywordInput');
@@ -69,7 +83,8 @@
                             keywordInput.remove();
 
                             // cate1용 <select> 태그 생성
-                            let cate2Option = `<select name="keyword" id="keywordInput" onchange="formSubmit()">`;
+                            let cate2Option = `<select name="keyword" id="keywordInput" onchange="formSubmit(this.value)">
+                                               <option value="noselect">선택</option>`;
 
                             // cate1 갯수만큼  <option> 태그 추가
                             for (const cate1 of cate1s) {
@@ -78,7 +93,7 @@
                             cate2Option += `</select>`;
                             console.log("cate2Option : " + cate2Option);
                             // 태그 문자열 삽입
-                            searchForm.insertAdjacentHTML('beforeend', cate2Option);
+                            typeSelect.insertAdjacentHTML('afterend', cate2Option);
 
                             // 전체 조회면
                         }else if(type == 'all'){
@@ -92,8 +107,23 @@
                             const noInputTag = `<input class="form-control me-2" type="search" name="keyword" id="keywordInput" placeholder="Search" aria-label="Search">`;
                             console.log("noInputTag : " + noInputTag);
                             // 태그 문자열 삽입
-                            searchForm.insertAdjacentHTML('beforeend', noInputTag);
+                            typeSelect.insertAdjacentHTML('afterend', noInputTag);
+                        }else if(type == 'ordStatus'){
+                            keywordInput.remove();
 
+                            const noInputTag = `<select name="keyword" class="form-select form-select" onchange="formSubmit(this.value)">
+                                                <option value="noselect">선택</option>
+                                                <option value="prepare">배송준비</option>
+                                                <option value="going">배송중</option>
+                                                <option value="delivered">배송완료</option>
+                                                <option value="cancel">주문취소</option>
+                                                <option value="exchange" >교환요청</option>
+                                                <option value="refund">환불요청</option>
+                                                <option value="complete">처리완료</option>
+                                                </select>`;
+                            console.log("noInputTag : " + noInputTag);
+                            // 태그 문자열 삽입
+                            typeSelect.insertAdjacentHTML('afterend', noInputTag);
                         }else{
                             console.log(type);
 
@@ -103,7 +133,14 @@
                             const keywordInputTag = `<input class="form-control me-2" type="search" name="keyword" id="keywordInput" placeholder="Search" aria-label="Search">`;
                             console.log("keywordInputTag : " + keywordInputTag);
                             // 태그 문자열 삽입
-                            searchForm.insertAdjacentHTML('beforeend', keywordInputTag);
+                            typeSelect.insertAdjacentHTML('afterend', keywordInputTag);
+                        }
+                    }
+                    // 폼 전송
+                    function formSubmit(keyword){
+                        const searchForm = document.getElementById('searchForm');
+                        if(keyword != 'noselect') {
+                            searchForm.submit();
                         }
                     }
                     // 아코디언 상태 변경
@@ -196,7 +233,7 @@
                     }
                 </script>
                 <nav>
-                    <h3>판매자 주문관리</h3>
+                    <h3>관리자 주문관리</h3>
                     <p>
                         HOME > <strong>주문현황</strong>
                     </p>
@@ -217,11 +254,12 @@
                     </table>
                 </article>
                 <h4>쇼핑몰 주문현황</h4>
+                <!-- 검색 nav -->
                 <nav class="navbar navbar-expand-lg navbar-light bg-light">
                     <div class="container-fluid">
                         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                            <form class="d-flex" id="searchForm">
-                                <select class="form-select form-select" aria-label=".form-select-sm example" onchange="findCate(this.value)">
+                            <form th:action="@{/admin/order/list}" method="get" class="d-flex" id="searchForm">
+                                <select class="form-select form-select" name="type" aria-label=".form-select-sm example" onchange="findCate(this)">
                                     <option value="all">전체</option>
                                     <option value="prodName">상품명</option>
                                     <option value="prodNo">상품번호</option>

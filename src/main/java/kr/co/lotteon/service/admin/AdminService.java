@@ -779,6 +779,84 @@ public class AdminService {
                 .total(total)
                 .build();
     }
+    // 관리자 주문 검색 현황
+    @Transactional
+    public SellerOrderPageResponseDTO searchOrderList(AdminPageRequestDTO adminPageRequestDTO){
+        log.info("관리자 주문 검색 검색 Serv 1  ");
+        Pageable pageable = adminPageRequestDTO.getPageable("no");
+
+        if(adminPageRequestDTO.getType().equals("ordStatus")) {
+            switch (adminPageRequestDTO.getKeyword()) {
+                case "prepare":
+                    adminPageRequestDTO.setKeyword("배송준비");
+                    break;
+                case "going":
+                    adminPageRequestDTO.setKeyword("배송중");
+                    break;
+                case "delivered":
+                    adminPageRequestDTO.setKeyword("배송완료");
+                    break;
+                case "cancel":
+                    adminPageRequestDTO.setKeyword("주문취소");
+                    break;
+                case "exchange":
+                    adminPageRequestDTO.setKeyword("교환요청");
+                    break;
+                case "refund":
+                    adminPageRequestDTO.setKeyword("환불요청");
+                    break;
+                case "complete":
+                    adminPageRequestDTO.setKeyword("처리완료");
+                    break;
+            }
+        }
+
+        // order, orderItem, product, option 정보 DB 조회
+        Page<Tuple> results = orderItemRepository.searchOrderListAll(adminPageRequestDTO, pageable);
+        log.info("관리자 주문 검색 Serv 3 : " + results.getContent().size());
+        List<OrderListDTO> dtoList = results.getContent().stream()
+                .map(tuple -> {
+
+                    OrderListDTO orderListDTO = new OrderListDTO();
+
+                    // Tuple -> Entity
+                    OrderItem orderItem = tuple.get(0, OrderItem.class);
+                    Order order         = tuple.get(1, Order.class);
+                    Product product     = tuple.get(2, Product.class);
+                    Option option       = tuple.get(3, Option.class);
+
+                    // Entity -> DTO
+                    OrderItemDTO orderItemDTO   = modelMapper.map(orderItem, OrderItemDTO.class);
+                    OrderDTO orderDTO           = modelMapper.map(order, OrderDTO.class);
+                    ProductDTO productDTO       = modelMapper.map(product, ProductDTO.class);
+                    if (option != null) {
+                        OptionDTO optionDTO = modelMapper.map(option, OptionDTO.class);
+                        orderListDTO.setOptionDTO(optionDTO);
+                    } else {
+                        // Option이 null인 경우 처리
+                        orderListDTO.setOptionDTO(null);
+                    }
+                    // DTO들을 OrderListDTO에 포함
+                    orderListDTO.setOrderItemDTO(orderItemDTO);
+                    orderListDTO.setOrderDTO(orderDTO);
+                    orderListDTO.setProductDTO(productDTO);
+                    return orderListDTO;
+
+                })
+                .toList();
+
+        log.info("판매자 주문 검색 Serv 4 : " + dtoList);
+
+        // total 값
+        int total = (int) results.getTotalElements();
+
+        // List<OrderListDTO>와 page 정보 리턴
+        return SellerOrderPageResponseDTO.builder()
+                .adminPageRequestDTO(adminPageRequestDTO)
+                .dtoList(dtoList)
+                .total(total)
+                .build();
+    }
     // 이미지 리사이징 함수 - width, height
     public String imgResizing(MultipartFile file, String orgPath, String path, int targetWidth, int targetHeight) {
         String oName = file.getOriginalFilename();
