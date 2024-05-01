@@ -195,7 +195,7 @@ public class OrderItemRepositoryImpl implements OrderItemRepositoryCustom {
     }
     // 관리자 주문 현황 리스트 검색 조회
     @Override
-    public Page<Tuple> searchOrderListAll(AdminPageRequestDTO pageRequestDTO, Pageable pageable){
+    public Page<Tuple> searchOrderListAll(AdminPageRequestDTO pageRequestDTO, Pageable pageable) {
         log.info("관리자 주문 현황 검색 Impl 1 : " + pageRequestDTO);
         log.info("관리자 주문 현황 검색 Impl 2 : " + pageRequestDTO.getType());
         log.info("상품 목록 키워드 검색 impl 3 : " + pageRequestDTO.getKeyword());
@@ -205,33 +205,33 @@ public class OrderItemRepositoryImpl implements OrderItemRepositoryCustom {
         BooleanExpression expression = null;
 
         // 검색 종류에 따른 where절 표현식 생성
-        if(type.equals("prodName")){
+        if (type.equals("prodName")) {
             expression = qProduct.prodName.contains(keyword);
             log.info("prodName 검색 : " + expression);
 
-        }else if(type.equals("prodNo")){
+        } else if (type.equals("prodNo")) {
             // 입력된 키워드를 정수형으로 변환
             int prodNo = Integer.parseInt(keyword);
             expression = qProduct.prodNo.eq(prodNo);
             log.info("prodNo 검색 : " + expression);
 
-        }else if(type.equals("cate1")){
+        } else if (type.equals("cate1")) {
             int cate1 = Integer.parseInt(keyword);
             expression = qProduct.cate1.eq(cate1);
             log.info("cate1 검색 : " + expression);
 
-        }else if(type.equals("company")){
+        } else if (type.equals("company")) {
             expression = qProduct.company.contains(keyword);
             log.info("company 검색 : " + expression);
-        }else if(type.equals("seller")){
+        } else if (type.equals("seller")) {
             expression = qProduct.seller.contains(keyword);
             log.info("seller 검색 : " + expression);
-        }else if(type.equals("ordStatus")){
+        } else if (type.equals("ordStatus")) {
             expression = qOrderItem.ordStatus.contains(keyword);
             log.info("ordStatus 검색 : " + expression);
         }
 
-        QueryResults<Tuple> results =  jpaQueryFactory.select(qOrderItem, qOrder, qProduct, qOption)
+        QueryResults<Tuple> results = jpaQueryFactory.select(qOrderItem, qOrder, qProduct, qOption)
                 .from(qOrderItem)
                 .join(qOrder).on(qOrderItem.ordNo.eq(qOrder.ordNo))
                 .join(qProduct).on(qOrderItem.prodNo.eq(qProduct.prodNo))
@@ -244,9 +244,11 @@ public class OrderItemRepositoryImpl implements OrderItemRepositoryCustom {
 
         log.info("관리자 주문 현황 리스트 검색 조회 Impl 3 : " + results);
         return new PageImpl<>(results.getResults(), pageable, results.getTotal());
+    }
+    }
 
 
-    @Override
+  /*  @Override
     public int countByUidAndOrdStatusIn(String uid, List<String> ordStatusList) {
         return (int) jpaQueryFactory
                 .select(qOrderItem)
@@ -255,4 +257,4 @@ public class OrderItemRepositoryImpl implements OrderItemRepositoryCustom {
                         .and(qOrderItem.ordStatus.in(ordStatusList)))
                 .fetchCount();
     }
-}
+}*/

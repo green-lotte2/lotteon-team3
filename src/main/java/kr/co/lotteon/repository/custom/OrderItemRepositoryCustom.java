@@ -31,6 +31,6 @@ public interface OrderItemRepositoryCustom {
     public Page<Tuple> searchOrderListAll(AdminPageRequestDTO pageRequestDTO, Pageable pageable);
 
     // myInfo 주문 및 배송 수 출력
-    public int countByUidAndOrdStatusIn(String uid, List<String> ordStatusList);
+   public int countByUidAndOrdStatusIn(String uid, List<String> ordStatusList);
 
 }
