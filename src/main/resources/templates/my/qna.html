@@ -26,12 +26,12 @@
                         <table border="0">
                             <tr>
                                 <th>번호</th>
-                                <th>문의유형</th>                                
+                                <th>문의유형</th>
                                 <th>제목</th>
                                 <th>작성일</th>
                                 <th>상태</th>
                             </tr>
-                            <tr th:each="board , index : ${boards}">
+                            <tr th:each="board , index : ${csPageResponseDTO.dtoList}">
                                 <td class="no">[[${index.index + 1}]]</td>
                                 <td class="type">[[${board.cate}]]</td>
                                 <td class="tit"><a href="#">[[${board.title}]]</a></td>
@@ -43,13 +43,19 @@
 
                         </table>
 
-                        <p class="page">
-                            <a href="#" class="prev">이전</a>
-                            <a href="#" class="num on">1</a>
-                            <a href="#" class="num">2</a>
-                            <a href="#" class="num">3</a>
-                            <a href="#" class="next">다음</a>
-                        </p>
+                        <div class="page">
+                <span class="prev" th:if="${csPageResponseDTO.prev}">
+                  <a th:href="@{/my/qna(pg=${csPageResponseDTO.start - 1},uid=${#authentication.principal.member.uid})}"><&nbsp;이전</a>
+                </span>
+                   <span th:each="num : ${#numbers.sequence(csPageResponseDTO.start, csPageResponseDTO.end)}" class="num">
+                  <a th:href="@{/my/qna(pg=${num},uid=${#authentication.principal.member.uid})}">
+                      [[${num}]]
+                  </a>
+                </span>
+                            <span class="next" th:if="${csPageResponseDTO.next}">
+                  <a th:href="@{/my/qna(pg=${csPageResponseDTO.end + 1},uid=${#authentication.principal.member.uid})}">다음&nbsp;></a>
+                </span>
+                        </div>
                     </article>
                 </section>
 
