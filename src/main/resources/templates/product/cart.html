@@ -130,28 +130,71 @@
                     });
                   });
 
+                  // 선택삭제
                   const deleteCartItems = document.getElementsByClassName('deleteCartItems')[0];
+                  var cartNumbers = [];
                   deleteCartItems.addEventListener('click', function(e){
-                    e.preventDefault();
+
                     const checkbox = document.querySelectorAll('.checkbox:checked');
                     checkbox.forEach(e => {
-                      console.log(e.value);
-                      fetch()
-                      .then()
-                      .then()
-                      .catch((err)=>{
-                      console.log(err)});
+                      cartNumbers.push(e.value);
                     });
+                    e.preventDefault();
+
+                    console.log(cartNumbers);
+
+                    if (confirm('장바구니에서 삭제하시겠습니까?')){
+                       const jsonData = {
+                         cartNo : cartNumbers
+                       };
+
+                      fetch('/lotteon/cart/delete', {
+                        method:'POST',
+                        headers:{"Content-type":"application/json"},
+                        body: JSON.stringify(jsonData)
+                      })
+                              .then(response=> response.json())
+                              .then(data =>{
+                                console.log(data);
+                                if (data!=null){
+                                  location.reload();
+                                }
+                              })
+                              .catch((err)=>{
+                                console.log(err)}
+                              );
+                    }
+
                   });
 
                   const total = document.getElementsByClassName('total')[0];
-
+                  // 스크롤시 total 폼 따라오기
                   document.addEventListener('scroll', function(event) {
                     let scrollY = window.scrollY;
 
                     total.style.top = scrollY + 'px';
                   });
+
+                  // 가격 계산
+                  const cartOrg = document.getElementById('prodOrgPrice');
+                  // 수량
+                  const cartCount = document.getElementById('prodCount');
+                  cartCount.textContent = document.querySelectorAll('.accordion-body').length;
+
+                  const cartDis = document.getElementById('prodDisPrice');
+                  const cartDel = document.getElementById('prodDelivery');
+                  const cartPoi = document.getElementById('prodPoint');
+                  const cartTotal = document.getElementById('prodTotalPrice');
+                  let cartTotalValue = 0;
+                  document.querySelectorAll('.currentPrice strong').forEach(e => {
+                    var noComma = e.innerText.replace(/,/g, '');
+                    let int =parseInt(noComma);
+                    cartTotalValue += int
+                    console.log(cartTotalValue);
+                  });
+                  cartTotal.textContent +=numberWithCommas(cartTotalValue);
                 }
+
               </script>
               <!-- 제목, 페이지 네비게이션 -->
               <nav>
@@ -233,27 +276,27 @@
                   <table border="0">
                     <tr>
                       <td>상품수</td>
-                      <td></td>
+                      <td id="prodCount"></td>
                     </tr>
                     <tr>
                       <td>상품금액</td>
-                      <td>2</td>
+                      <td id="prodOrgPrice"></td>
                     </tr>
                     <tr>
                       <td>할인금액</td>
-                      <td></td>
+                      <td id="prodDisPrice">-</td>
                     </tr>
                     <tr>
                       <td>배송비</td>
-                      <td></td>
+                      <td id="prodDelivery"></td>
                     </tr>              
                     <tr>
-                      <td>포인트</td>
-                      <td>260</td>
+                      <td id="prodPoint">포인트</td>
+                      <td></td>
                     </tr>
                     <tr>
                       <td>전체주문금액</td>
-                      <td>26,000</td>
+                      <td id="prodTotalPrice"></td>
                     </tr>
                   </table>
                   <input type="submit" name="" value="주문하기">    

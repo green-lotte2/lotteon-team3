@@ -7,6 +7,12 @@
             <section class="view" layout:fragment="content">
                 <script>
                     window.onload= async function (){
+
+                        // 숫자를 3자리마다 콤마를 추가하여 문자열로 반환하는 함수
+                        function numberWithCommas(x) {
+                            return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                        }
+
                         const orgPrice = document.getElementsByClassName('org_price')[0];
                         // 할인률
                         const discountDel = orgPrice.getElementsByTagName('span')[0];
@@ -26,23 +32,34 @@
                         const dis_price = document.getElementsByClassName('dis_price')[0];
                         const dis_priceIns = dis_price.getElementsByTagName('ins')[0];
 
-                        dis_priceIns.innerText = discountPrice;
+                        dis_priceIns.innerText = numberWithCommas(discountPrice);
 
                         // 배송비
                         const delivery = document.getElementsByClassName('delivery')[0];
+
+                        deliveryValue = delivery.getAttribute('value');
+
                         const deliveryVal = delivery.innerText;
-                        const deliveryWon = deliveryVal.split(':')[1];
-                        let deliveryValue = deliveryWon.split('원')[0];
-                        let deliveryInt = parseInt(deliveryValue);
+
+                        console.log(deliveryVal)
+                        let deliveryInt
+                        if(deliveryVal!=='무료배송'){
+                            const deliveryWon = deliveryVal.split(':')[1];
+                            let deliveryValue = deliveryWon.split('원')[0];
+                            deliveryInt = parseInt(deliveryValue);
+                        }
 
                         // 총 가격 표시 html
                         const total = document.getElementsByClassName('total')[0];
                         const totalSpan = total.getElementsByTagName('span')[0];
 
                         if (discountPrice>=30000){
-                            totalSpan.innerText = discountPrice;
+                            totalSpan.innerText = numberWithCommas(discountPrice);
+                            console.log(discountPrice)
                         }else if(discountPrice <= 30000) {
-                            totalSpan.innerText = discountPrice+deliveryInt;
+                            let totalP = discountPrice+deliveryInt
+                            console.log('to' + totalP)
+                            totalSpan.innerText = numberWithCommas(totalP);
                         }
 
                         // 상품 번호
@@ -71,6 +88,7 @@
                                     .then(response => response.json())
                                     .then(data=> {
                                         let newOption;
+                                        if(data != null){
                                         data.forEach(function (obj){
 
                                             // 새로운 옵션
@@ -83,15 +101,17 @@
                                             // 옵션을 추가해주기
                                             selectDetail.appendChild(newOption);
                                         });
-
+                                        }
                                         // 선택한 옵션 값
                                         selectDetail.addEventListener('change', async function (){
                                             // 선택된 옵션의 value값 배열로 넣기
+                                            if(newOption != null){
+                                                selectedArray.push(this.value);
 
-                                            selectedArray.push(this.value);
+                                                let stringValue = selectedArray.join(',');
+                                                console.log(stringValue);
+                                            }
 
-                                            let stringValue = selectedArray.join(',');
-                                            console.log(stringValue);
 
                                             // 장바구니 버튼
                                             const cart = document.getElementsByClassName('cart')[0];
@@ -164,12 +184,12 @@
                                 count.value = countValue;
                                 // 30000원 이상 무료배송
                                 if (totalPrice >= 30000) {
-                                    let totalPrice = (discountPrice * count.value);
-                                    totalSpan.innerText = totalPrice;
+                                    totalSpan.innerText = (discountPrice * count.value);
                                 } else if (totalPrice <= 30000) {
                                     let totalPrice = (discountPrice * count.value) + deliveryInt;
                                     totalSpan.innerText = totalPrice;
                                 }
+
                             }else if(countValue <= 1){
                                 alert('최소 구매 수량은 1개 입니다.');
                             }
@@ -249,7 +269,7 @@
                             </div>
                         </nav>
                         <nav>
-                            <span class="delivery">[[${productDTO.delivery eq 0? '무료배송' : '배송비 :' + productDTO.delivery +'원'}]]</span>
+                            <span class="delivery" th:value="${productDTO.discount}">[[${'배송비 :' + productDTO.delivery +'원'}]]</span>
                             <span class="arrival">모레(금) [[${#temporals.format(productDTO.rdate, 'yy-MM-dd')}]] 도착예정</span>
                             <span class="desc">본 상품은 국내배송만 가능합니다.</span>
                         </nav>

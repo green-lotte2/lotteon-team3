@@ -6,6 +6,7 @@ import kr.co.lotteon.entity.product.Cart;
 import kr.co.lotteon.repository.product.CartRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -75,4 +76,14 @@ public class CartService {
         return cartRepository.selectCartCompany(uid);
     }
 
+    // 장바구니 삭제
+    public ResponseEntity<?> deleteCart(int[] cartNoArray){
+        log.info("장바구니 삭제 서비스" + Arrays.toString(cartNoArray));
+
+        for (int cartNo : cartNoArray) {
+            // 상품 삭제 반복
+            cartRepository.deleteById(cartNo);
+        }
+        return  ResponseEntity.ok().body("ok");
+    }
 }
