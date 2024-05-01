@@ -223,19 +223,22 @@ main > .cover > div {
 
 main > .cover > div > h1 {
   position: absolute;
-  left: 10px;
-  top: 280px;
-  font-size: 52px;
+  left: 0px;
+  top: 180px;
+  font-size: 40px;
   font-weight: bold;
+  margin-bottom: 10px;
   color: #fff;
 }
 main > .cover > div > p {
   position: absolute;
-  left: 10px;
-  top: 380px;
-  font-size: 22px;
+  left: 0px;
+  top: 330px;
+  font-size: 20px;
   font-weight: 500;
   color: #fff;
+  line-height: 1.9;
+
 }
 
 main > .content {
@@ -288,7 +291,7 @@ main > .content > p {
 
 /* ì „ìžê³µì‹œ */
 #notice > .cover {
-  background-image: url('../company/images/bg_company_notice.jpg');
+  background-image: url('../company/images/bg_company_recuit.png');
 }
 
 #notice img {
@@ -331,28 +334,101 @@ main > .content > p {
 }
 
 /* íˆ¬ëª…ê²½ì˜ */
-#manage > .cover {
-  background-image: url('../company/images/bg_company_manage.jpg');
+#culture > .cover {
+  background-image: url('../company/images/lotte_tower.jpg');
+}
+#culture > .cover >div > p {
+  animation-duration: 3s;
+  animation-name: slidein;
+  top: 380px;
+  color: #FFFDFD;
+  font-size: 40px;
+  font-weight: 600;
+  text-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+}
+#culture .cultureContentP {
+  margin-top: 0;
+  margin-bottom: .9rem;
+  color: #000000;
+  font-size: 25px;
+  font-weight: 400;
+  line-height: 1.4em;
+}
+#culture .elementor-widget-container {
+  transition: background .3s, border .3s, border-radius .3s, box-shadow .3s, transform var(--e-transform-transition-duration, .4s);
+  box-sizing: border-box;
+  margin-bottom: 80px;
+  color: #000000;
+  font-size: 17px;
+  font-weight: 400;
+}
+#culture .elementor-section .elementor-container {
+  display: flex;
+  margin-right: auto;
+  margin-left: auto;
+  position: relative;
+}
+#culture .elementor-714 .elementor-element.elementor-element-255535d {
+  width: 49.998%;
+}
+#culture .elementor-widget-wrap {
+  position: relative;
+  width: 100%;
+  flex-wrap: wrap;
+  align-content: flex-start;
+}
+#culture .elementor-widget-wrap>.elementor-element {
+  width: 100%;
+  text-align: left;
+  color: #090808;
+  font-size: 25px;
+  font-weight: 500;
+}
+#culture .content .elementor-container.elementor-column-gap-default {
+  display: flex;
+  margin-right: auto;
+  margin-left: auto;
+  position: relative;
+}
+#culture .elementor-714 .elementor-element.elementor-element-255535d {
+  width: 49.998%;
+}
+#culture .elementor-714 .elementor-element.elementor-element-fbc8225 img {
+  width: 100%;
+  height: 347px;
+  border-radius: 10px 0px 0px 10px;
 }
 
-#manage > .content > ul {
+/* 텍스트 애니메이션 */
+@keyframes slidein {
+  from {
+    margin-left: 100%;
+    width: 300%;
+  }
+
+  to {
+    margin-left: 0%;
+    width: 100%;
+  }
+}
+#culture > .content > ul {
   width: 100%;
   height: auto;
   overflow: hidden;
   margin-bottom: 56px;
 }
-#manage > .content > ul > li {
+#culture > .content > ul > li {
   float: left;
   width: 25%;
   height: 300px;
   text-align: center;
 }
-#manage > .content > ul > li > h4 {
+#culture > .content > ul > li > h4 {
   margin: 12px 0;
   font-size: 19px;
   font-weight: bold;
 }
-#manage > .content > ul > li > p {
+#culture > .content > ul > li > p {
   width: 200px;
   margin: 0 auto;
 }
