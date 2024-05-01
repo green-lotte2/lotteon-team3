@@ -857,6 +857,13 @@ public class AdminService {
                 .total(total)
                 .build();
     }
+    // 관리자 회원 삭제
+    public ResponseEntity<?> deleteMember(String uid){
+        if(memberRepository.findById(uid).isPresent()) {
+            memberRepository.deleteById(uid);
+        }
+        return ResponseEntity.ok().body("delete member");
+    }
     // 이미지 리사이징 함수 - width, height
     public String imgResizing(MultipartFile file, String orgPath, String path, int targetWidth, int targetHeight) {
         String oName = file.getOriginalFilename();

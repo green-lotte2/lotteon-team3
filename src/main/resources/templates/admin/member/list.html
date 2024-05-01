@@ -3,10 +3,37 @@
       layout:decorate="~{/layout/adminLayout}">
 <section id="admin-member-list" layout:fragment="content">
     <script>
-        // 회원 수정 폼 공개
-        function deleteMember() {
-            const modifyMember = document.getElementById('modifyMember');
-            modifyMember.classList.add('on');
+        // 회원 삭제
+        async function deleteMember(button) {
+            const uid = button.dataset.uid;
+            const wdateString = button.dataset.wdate;
+
+            // ISO 8601 형식의 문자열을 날짜 객체로 변환
+            const wdate = new Date(wdateString);
+
+            const sixMonthsAgo = new Date(); // 현재 날짜를 가져옴
+            sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6); // 6개월을 빼는 작업
+
+            console.log("wdate : "+wdate);
+            console.log("sixMonthsAgo : "+sixMonthsAgo);
+            console.log(wdate <= sixMonthsAgo);
+
+            if (wdate <= sixMonthsAgo) {
+                fetch(`/lotteon/admin/member/delete/${uid}`)
+                    .then(response => {
+                        // 새로고침
+                        if(response.ok == true){
+                            location.reload();
+                        }
+                    })
+                    .catch(err =>{
+                        console.log(err);
+                    });
+            } else {
+                alert('탈퇴한 지 6개월이상 된 회원만 영구삭제할 수 있습니다.');
+            }
+
+            console.log('wdate : '+ wdate);
         }
         // 검색 type 선택 시 select 태그 추가
         async function findCate(type){
@@ -167,9 +194,10 @@
                                     <td th:text="${member.hp}"></td>
                                     <td th:if="${member.wdate != null}">탈퇴</td>
                                     <td th:if="${member.wdate == null}">회원</td>
-                                    <td th:if="${member.wdate != null and #dates.add(member.wdate, -6, 'months') <= #dates.createNow()}">
-                                    <span onclick="deleteMember(this)" th:data-uid="${member.uid}">삭제</span>
+                                    <td th:if="${member.wdate != null}">
+                                    <span onclick="deleteMember(this)" th:data-uid="${member.uid}" th:data-wdate="${member.wdate}">삭제</span>
                                     </td>
+                                    <td th:if="${member.wdate == null}"></td>
                                 </tr>
                             </th:block>
                     </table>
