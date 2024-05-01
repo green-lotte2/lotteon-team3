@@ -31,6 +31,9 @@
     border: 1px solid #ddd;
     background-color: transparent;
 }
+.cartForm {
+    position:relative;
+}
 .accordion{
     display: inline-block;
     width: 665px;
@@ -1017,8 +1020,8 @@
 #product > .cart > form > table article img {width: 80px;}
 #product > .cart > form > .total {
   position:absolute;
-  top:320px;
-  right: 170px;
+  right: 0px;
+  top:0px;
   width: 280px;
   height: 380px;
   padding: 20px;
