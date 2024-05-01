@@ -24,4 +24,6 @@ public interface BoardRepositoryCustom {
     public Page<Tuple> searchBoardBySellerAndCate(AdminBoardPageRequestDTO pageRequestDTO, Pageable pageable, List<Integer> prodNos, String cate);
     public Page<Tuple> searchBoardsBySellerAndKeyword(AdminBoardPageRequestDTO pageRequestDTO, Pageable pageable, List<Integer> prodNos);
 
+    // myInfo 문의내역 수 출력
+    public int countByUidAndStatusIn (String uid, List<String> statusList);
 }
