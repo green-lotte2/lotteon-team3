@@ -229,7 +229,7 @@ public class SellerController {
         }else {
             // 검색 주문 목록 조회 //////
             log.info("키워드 검색 Cont" + adminPageRequestDTO.getKeyword());
-            sellerOrderPageResponseDTO = sellerService.selectOrderList(adminPageRequestDTO);
+            sellerOrderPageResponseDTO = sellerService.searchOrderList(adminPageRequestDTO);
         }
         model.addAttribute("pageResponseDTO", sellerOrderPageResponseDTO);
         return "/seller/order/list";

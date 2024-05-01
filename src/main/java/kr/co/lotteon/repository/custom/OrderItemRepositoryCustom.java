@@ -27,6 +27,9 @@ public interface OrderItemRepositoryCustom {
     // 관리자 주문 현황
     public Page<Tuple> selectOrderListAll(AdminPageRequestDTO pageRequestDTO, Pageable pageable);
 
+
+    public Page<Tuple> searchOrderListAll(AdminPageRequestDTO pageRequestDTO, Pageable pageable);
+
     // myInfo 주문 및 배송 수 출력
     public int countByUidAndOrdStatusIn(String uid, List<String> ordStatusList);
 
