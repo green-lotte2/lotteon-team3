@@ -3,6 +3,11 @@
       layout:decorate="~{/layout/adminLayout}">
 <section id="admin-member-list" layout:fragment="content">
     <script>
+        // 회원 수정 폼 공개
+        function deleteMember() {
+            const modifyMember = document.getElementById('modifyMember');
+            modifyMember.classList.add('on');
+        }
         // 검색 type 선택 시 select 태그 추가
         async function findCate(type){
             console.log(type);
@@ -64,23 +69,6 @@
             searchForm.submit();
         }
         let checkedTurn = 0;
-        // 전체 선택 클릭
-        function totalCheck(){
-            const uidCheckBox = document.querySelectorAll('.uidCheckBox');
-                // 체크한 경우
-                if (checkedTurn === 0) {
-                    uidCheckBox.forEach(function(checkbox) {
-                        checkbox.checked = true;
-                    });
-                    checkedTurn = 1;
-                    // 체크 해제한 경우
-                } else {
-                    uidCheckBox.forEach(function(checkbox) {
-                        checkbox.checked = false;
-                    });
-                    checkedTurn = 0;
-                }
-        }
         // 회원 삭제
         function prodDelete(){
             if(confirm('선택한 회원을 삭제하시겠습니까?')){
@@ -120,6 +108,11 @@
                 </nav>
                 <!-- 회원 목록 컨텐츠 시작 -->
                 <section>
+                    <p class="ico success">
+                        <strong>Tip!</strong>
+                        탈퇴한 지 반년이상 된 회원만 영구삭제할 수 있습니다.
+                    </p>
+                    <!-- 검색 -->
                     <form th:action="@{/admin/member/list}" method="get" id="searchForm">
                         <select name="type" onchange="findCate(this.value)">
                             <option value="uid">아이디</option>
@@ -130,6 +123,7 @@
                         </select>
                         <input type="text" name="keyword" placeholder="검색어를 입력하세요" id="keywordInput"/>
                     </form>
+
                     <!-- 회원 없을 때 -->
                     <th:block th:if="${pageResponseDTO.dtoList.isEmpty()}">
                         <div>
@@ -138,9 +132,7 @@
                     </th:block>
                     <!-- 회원 목록 -->
                     <table>
-                        <form id="formCheck" th:action="@{/admin/member/delete}" method="get">
                             <tr th:if="${!pageResponseDTO.dtoList.isEmpty()}">
-                                <th><input type="checkbox" name="all" onclick="totalCheck()"/></th>
                                 <th>아이디</th>
                                 <th>이름</th>
                                 <th>닉네임</th>
@@ -151,11 +143,11 @@
                                 <th>주소</th>
                                 <th>이메일</th>
                                 <th>전화</th>
+                                <th>상태</th>
                                 <th>관리</th>
                             </tr>
                             <th:block th:each="member : ${pageResponseDTO.dtoList}">
                                 <tr>
-                                    <td><input type="checkbox" name="uid" class="uidCheckBox"/></td>
                                     <td th:text="${member.uid}"></td>
                                     <td th:text="${member.name}"></td>
                                     <td th:text="${member.nick}"></td>
@@ -173,14 +165,14 @@
                                     </td>
                                     <td th:text="${member.email}"></td>
                                     <td th:text="${member.hp}"></td>
-                                    <td>
-                                        <a>수정</a>
+                                    <td th:if="${member.wdate != null}">탈퇴</td>
+                                    <td th:if="${member.wdate == null}">회원</td>
+                                    <td th:if="${member.wdate != null and #dates.add(member.wdate, -6, 'months') <= #dates.createNow()}">
+                                    <span onclick="deleteMember(this)" th:data-uid="${member.uid}">삭제</span>
                                     </td>
                                 </tr>
                             </th:block>
-                        </form>
                     </table>
-                    <button onclick="prodDelete()">선택삭제</button>
                     <!-- 페이지 -->
                     <div class="paging" th:if="${!pageResponseDTO.dtoList.isEmpty()}">
                     <span class="prev">
@@ -207,5 +199,5 @@
                     <strong>Tip!</strong>
                     전자상거래 등에서의 상품 등의 정보제공에 관한 고시에 따라 총 35개 상품군에 대해 상품 특성 등을 양식에 따라 입력할 수 있습니다.
                 </p>
-                <!-- 상품목록 컨텐츠 끝 -->
+                <!-- 회원 목록 컨텐츠 끝 -->
             </section>
