@@ -22,5 +22,9 @@ public interface OrderItemRepositoryCustom {
     public List<Tuple> selectOrderForSeller(List<Integer> prodNos);
 
     public Page<Tuple> selectOrderList(AdminPageRequestDTO pageRequestDTO, Pageable pageable, List<Integer> prodNos);
+    public Page<Tuple> searchOrderList(AdminPageRequestDTO pageRequestDTO, Pageable pageable, List<Integer> prodNos);
+
+    // 관리자 주문 현황
+    public Page<Tuple> selectOrderListAll(AdminPageRequestDTO pageRequestDTO, Pageable pageable);
 
 }
