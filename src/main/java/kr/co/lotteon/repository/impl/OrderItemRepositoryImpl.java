@@ -248,8 +248,9 @@ public class OrderItemRepositoryImpl implements OrderItemRepositoryCustom {
     }
 
 
-  /*  @Override
+   @Override
     public int countByUidAndOrdStatusIn(String uid, List<String> ordStatusList) {
+    return 10;
         return (int) jpaQueryFactory
                 .select(qOrderItem)
                 .from(qOrderItem)
@@ -257,4 +258,4 @@ public class OrderItemRepositoryImpl implements OrderItemRepositoryCustom {
                         .and(qOrderItem.ordStatus.in(ordStatusList)))
                 .fetchCount();
     }
-}*/
+}
