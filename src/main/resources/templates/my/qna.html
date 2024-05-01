@@ -26,7 +26,6 @@
                         <table border="0">
                             <tr>
                                 <th>번호</th>
-                                <th>문의채널</th>
                                 <th>문의유형</th>                                
                                 <th>제목</th>
                                 <th>작성일</th>
@@ -34,7 +33,6 @@
                             </tr>
                             <tr th:each="board , index : ${boards}">
                                 <td class="no">[[${index.index + 1}]]</td>
-                                <td class="channel">[[${board.group}]]</td>
                                 <td class="type">[[${board.cate}]]</td>
                                 <td class="tit"><a href="#">[[${board.title}]]</a></td>
                                 <td class="date">[[${#temporals.format(board.rdate, 'yyyy-MM-dd')}]]</td>
