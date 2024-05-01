@@ -2,20 +2,9 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{/layout/myLayout}">
 <main id="myLayout" layout:fragment="content">
+    <script th:src="@{/js/myInfo.js}"></script>
         <div id="my">
-            <nav>
-                <div>
-                    <a th:href="@{/my/home}"><img th:src="@{/my/images/my_logo.jpg}" alt="나의쇼핑정보"></a>
 
-                    <ol>
-                        <li><a th:href="@{/my/order(uid=${#authentication.principal.member.uid})}">주문·배송<span class="delivery">1</span></a></li>
-                        <li><a th:href="@{/my/coupon(uid=${#authentication.principal.member.uid})}">할인쿠폰<span class="coupon">1</span></a></li>
-                        <li><a th:href="@{/my/point(uid=${#authentication.principal.member.uid})}">포인트<span class="point">1,000</span></a></li>
-                        <li><a th:href="@{/my/qna(uid=${#authentication.principal.member.uid})}">문의내역<span class="qna">1</span></a></li>
-                    </ol>
-
-                </div>
-            </nav>
 
             <div class="qna">
                 <ul>
@@ -37,164 +26,36 @@
                         <table border="0">
                             <tr>
                                 <th>번호</th>
-                                <th>문의채널</th>
-                                <th>문의유형</th>                                
+                                <th>문의유형</th>
                                 <th>제목</th>
                                 <th>작성일</th>
                                 <th>상태</th>
                             </tr>
-                            <tr>
-                                <td class="no">5</td>
-                                <td class="channel">고객센터</td>
-                                <td class="type">주문/결제</td>                                
-                                <td class="tit"><a href="#">신용카드 결제 중 오류가 난 경우 어떻게 하나요?</a></td>
-                                <td class="date">2024-12-12</td>
-                                <td class="status"><span class="notAnswerYet">검토중</span></td>
-                            </tr>                            
-                            <tr>
-                                <td class="no">4</td>
-                                <td class="channel">고객센터</td>
-                                <td class="type">주문/결제</td>                                
-                                <td class="tit"><a href="#">신용카드 결제 중 오류가 난 경우 어떻게 하나요?</a></td>
-                                <td class="date">2024-12-12</td>
-                                <td class="status"><span class="answered">답변완료</span></td>
-                            </tr>
-                            <tr class="answerRow">
-                                <td colspan="6">
-                                    <div class="question">
-                                        <p class="tit">
-                                            신용카드 결제 중 오류가 난 경우 어떻게 하나요?
-                                            <span class="date">2022-12-16 10:08:25</span>
-                                        </p>
-                                        <p class="content">
-                                            결제하다가 오류가 나서 결제가 안됩니다.
-                                        </p>
-                                    </div>
-                                    <div class="answer">
-                                        <p class="tit">
-                                            주문/결제 문의 답변입니다.
-                                            <span class="date">2022-12-17 10:08:25</span>
-                                        </p>
-                                        <p class="content">
-                                            다른 카드로 결제 하세요. 그러면 될거에요.
-                                        </p>
-                                    </div>
+                            <tr th:each="board , index : ${csPageResponseDTO.dtoList}">
+                                <td class="no">[[${index.index + 1}]]</td>
+                                <td class="type">[[${board.cate}]]</td>
+                                <td class="tit"><a href="#">[[${board.title}]]</a></td>
+                                <td class="date">[[${#temporals.format(board.rdate, 'yyyy-MM-dd')}]]</td>
+                                <td class="status" th:style="${board.status == '답변완료'} ? 'font-weight: bold;' : 'color: #999'">
+                                    [[${board.status}]]
                                 </td>
                             </tr>
-                            <tr>
-                                <td class="no">3</td>
-                                <td class="channel">판매자게시판</td>
-                                <td class="type">배송</td>                                
-                                <td class="tit">
-                                    <ul>
-                                        <li class="prodName"><a href="#">상품명</a></li>
-                                        <li class="question"><a href="#">배송기간이 보통 얼마나 걸리나요?</a></li>
-                                    </ul>
-                                </td>
-                                <td class="date">2024-12-12</td>
-                                <td class="status"><span class="answered">답변완료</span></td>
-                            </tr>
-                            <tr class="answerRow">
-                                <td colspan="6">
-                                    <div class="question">
-                                        <p class="tit">
-                                            배송기간이 보통 얼마나 걸리나요?
-                                            <span class="date">2022-12-16 10:08:25</span>
-                                        </p>
-                                        <p class="content">
-                                            알고싶어요. 알려주세요.
-                                        </p>
-                                    </div>
-                                    <div class="answer">
-                                        <p class="tit">
-                                            배송 문의 답변입니다.
-                                            <span class="date">2022-12-17 10:08:25</span>
-                                        </p>
-                                        <p class="content">
-                                            보통 한달 걸립니다.
-                                        </p>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="no">2</td>
-                                <td class="channel">판매자게시판</td>
-                                <td class="type">상품</td>
-                                <td class="tit">
-                                    <ul>
-                                        <li class="prodName"><a href="#">상품명</a></li>
-                                        <li class="question"><a href="#">흰색 상품은 없나요?</a></li>
-                                    </ul>
-                                </td>
-                                <td class="date">2024-12-12</td>
-                                <td class="status"><span class="answered">답변완료</span></td>
-                            </tr>
-                            <tr class="answerRow">
-                                <td colspan="6">
-                                    <div class="question">
-                                        <p class="tit">
-                                            흰색 상품은 없나요?
-                                            <span class="date">2022-12-16 10:08:25</span>
-                                        </p>
-                                        <p class="content">
-                                            흰색 살래요~
-                                        </p>
-                                    </div>
-                                    <div class="answer">
-                                        <p class="tit">
-                                            상품 문의 답변입니다.
-                                            <span class="date">2022-12-17 10:08:25</span>
-                                        </p>
-                                        <p class="content">
-                                            네 없어요.
-                                        </p>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="no">1</td>
-                                <td class="channel">판매자게시판</td>
-                                <td class="type">반품</td>
-                                <td class="tit">
-                                    <ul>
-                                        <li class="prodName"><a href="#">상품명</a></li>
-                                        <li class="question"><a href="#">사이즈가 너무 작아요. 반품 요청합니다.</a></li>
-                                    </ul>
-                                </td>
-                                <td class="date">2024-12-12</td>
-                                <td class="status"><span class="answered">답변완료</span></td>
-                            </tr>
-                            <tr class="answerRow">
-                                <td colspan="6">
-                                    <div class="question">
-                                        <p class="tit">
-                                            사이즈가 너무 작아요. 반품 요청합니다.
-                                            <span class="date">2022-12-16 10:08:25</span>
-                                        </p>
-                                        <p class="content">
-                                            반품 해주세요.
-                                        </p>
-                                    </div>
-                                    <div class="answer">
-                                        <p class="tit">
-                                            반품 문의 답변입니다.
-                                            <span class="date">2022-12-17 10:08:25</span>
-                                        </p>
-                                        <p class="content">
-                                            반품 안돼요.
-                                        </p>
-                                    </div>
-                                </td>
-                            </tr>
+
                         </table>
 
-                        <p class="page">
-                            <a href="#" class="prev">이전</a>
-                            <a href="#" class="num on">1</a>
-                            <a href="#" class="num">2</a>
-                            <a href="#" class="num">3</a>
-                            <a href="#" class="next">다음</a>
-                        </p>
+                        <div class="page">
+                <span class="prev" th:if="${csPageResponseDTO.prev}">
+                  <a th:href="@{/my/qna(pg=${csPageResponseDTO.start - 1},uid=${#authentication.principal.member.uid})}"><&nbsp;이전</a>
+                </span>
+                   <span th:each="num : ${#numbers.sequence(csPageResponseDTO.start, csPageResponseDTO.end)}" class="num">
+                  <a th:href="@{/my/qna(pg=${num},uid=${#authentication.principal.member.uid})}">
+                      [[${num}]]
+                  </a>
+                </span>
+                            <span class="next" th:if="${csPageResponseDTO.next}">
+                  <a th:href="@{/my/qna(pg=${csPageResponseDTO.end + 1},uid=${#authentication.principal.member.uid})}">다음&nbsp;></a>
+                </span>
+                        </div>
                     </article>
                 </section>
 

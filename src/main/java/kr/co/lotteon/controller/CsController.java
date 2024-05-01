@@ -54,7 +54,7 @@ public class CsController {
 
     /* 문의하기 -------------------------------------------------------------------------------------------------------*/
     // QnA list
-    @GetMapping(value = "/cs/qna/list")
+    @GetMapping("/cs/qna/list")
     public String qnaList(Model model, CsPageRequestDTO csPageRequestDTO, String group) {
         CsPageResponseDTO csPageResponseDTO = csService.findByCate(csPageRequestDTO);
 
@@ -101,6 +101,8 @@ public class CsController {
         log.info("types : " + types);
         return "/cs/qna/write";
     }
+
+    // QnA write(기능)
     @PostMapping("/cs/qna/write")
     public String qnaWrite(HttpServletRequest request, BoardDTO dto, String cate){
         dto.setStatus("검토중");
@@ -109,7 +111,7 @@ public class CsController {
         return "redirect:/cs/qna/list?group=qna&cate=" + cate + "&success=200";
     }
 
-    // QnA 글수정(페이지)
+    // QnA modify(페이지)
     @GetMapping("/cs/qna/modify")
     public String qnaModifyForm(Model model, int bno, String cate, String group){
         BoardDTO boardDTO = csService.findByBnoForBoard(bno);
@@ -125,7 +127,7 @@ public class CsController {
         return "/cs/qna/modify";
     }
 
-    // QnA 글수정
+    // QnA modify(기능)
     @PostMapping("/cs/qna/modify")
     public String qnaModify(BoardDTO dto) {
 
@@ -134,7 +136,7 @@ public class CsController {
         return "redirect:/cs/qna/view?group=qna&cate="+dto.getCate()+"&bno="+dto.getBno()+"&success=200";
     }
 
-    // QnA 글삭제
+    // QnA delete
     @GetMapping("/cs/qna/delete")
     public String qnaDelete(int bno, String cate, String group) {
 
@@ -144,13 +146,34 @@ public class CsController {
         return "redirect:/cs/qna/list?cate=" + cate + "&group=" + group;
     }
 
+    // QnA 댓글입력
+    @PostMapping("/cs/qna/insertComment")
+    public ResponseEntity<Comment> qnaCommentWrite(@RequestBody CommentDTO commentDTO) {
+
+        ResponseEntity<Comment> commentResponseEntity = csService.insertComment(commentDTO);
+        log.info(commentResponseEntity.getBody().toString());
+        return commentResponseEntity;
+    }
+
+    // QnA 댓글수정
+    @PutMapping("/cs/qna/modifyComment")
+    public ResponseEntity<?> qnaModifyComment(@RequestBody CommentDTO commentDTO){
+        log.info("modifyComment : " +commentDTO.toString());
+        return csService.updateComment(commentDTO);
+    }
+
+    // QnA 댓글삭제
+    @ResponseBody
+    @DeleteMapping("/cs/qna/deleteComment/{cno}") // 기본키인 cno를 매개변수로 받도록 수정
+    public ResponseEntity<?> qnaDeleteComment(@PathVariable("cno") int cno) {
+        log.info("컨트롤러 cno : " + cno);
+        return csService.deleteComment(cno);
+    }
+
     /* 공지사항 -------------------------------------------------------------------------------------------------------*/
     // 공지사항 list
     @GetMapping("/cs/notice/list")
     public String noticeList(Model model, CsPageRequestDTO csPageRequestDTO, String group) {
-        if (csPageRequestDTO.getCate() == null) {
-            csPageRequestDTO.setCate("null");
-        }
         CsPageResponseDTO csPageResponseDTO = csService.findByCate(csPageRequestDTO);
 
         model.addAttribute(csPageResponseDTO);
@@ -164,6 +187,9 @@ public class CsController {
     public String noticeView(Model model, int bno, String cate, String group){
         BoardDTO boardDTO = csService.findByBnoForBoard(bno);
 
+        // 관리자 답변 조회
+        List<CommentDTO> comments = commentService.commentList(bno);
+
         // 조회수 증가 로직 추가
         boardDTO.setHit(boardDTO.getHit() + 1);
         csService.updateHit(boardDTO);
@@ -172,16 +198,45 @@ public class CsController {
         model.addAttribute("cate", cate);
         model.addAttribute("group", group);
 
+        model.addAttribute("comments",comments );
+
         return "/cs/notice/view";
+    }
+
+    // QnA 댓글입력
+    @PostMapping("/cs/notice/insertComment")
+    public ResponseEntity<Comment> noticeCommentWrite(@RequestBody CommentDTO commentDTO) {
+
+        ResponseEntity<Comment> commentResponseEntity = csService.insertComment(commentDTO);
+        log.info(commentResponseEntity.getBody().toString());
+        return commentResponseEntity;
+    }
+
+    // QnA 댓글수정
+    @PutMapping("/cs/notice/modifyComment")
+    public ResponseEntity<?> noticeModifyComment(@RequestBody CommentDTO commentDTO){
+        log.info("modifyComment : " +commentDTO.toString());
+        return csService.updateComment(commentDTO);
+    }
+
+    // QnA 댓글삭제
+    @ResponseBody
+    @DeleteMapping("/cs/notice/deleteComment/{cno}") // 기본키인 cno를 매개변수로 받도록 수정
+    public ResponseEntity<?> noticeDeleteComment(@PathVariable("cno") int cno) {
+        log.info("컨트롤러 cno : " + cno);
+        return csService.deleteComment(cno);
     }
 
     /* 자주묻는 질문 ---------------------------------------------------------------------------------------------------*/
     // FAQ list
     @GetMapping("/cs/faq/list")
     public String faqList(Model model, String cate, String group) {
-        List<BoardDTO> dtoList = csService.findByCateForFaq(cate);
-        List<BoardTypeDTO> boardTypeDTOs = csCateService.findByCateTypeDTOS(cate);
+        log.info("컨트롤러 group : " + group);
+        List<BoardDTO> dtoList = csService.findByCateForFaq(cate, group);
+        log.info("컨트롤러 dtoList : " + dtoList);
 
+        List<BoardTypeDTO> boardTypeDTOs = csCateService.findByCateTypeDTOS(cate);
+        log.info("컨트롤러 boardTypeDTOs : " + boardTypeDTOs);
         for (BoardTypeDTO boardTypeDTO : boardTypeDTOs) {
             List<BoardDTO> boardDTOS = new ArrayList<>();
             int i = 0;
@@ -205,40 +260,50 @@ public class CsController {
 
     // FAQ view
     @GetMapping("/cs/faq/view")
-    public String faqView(Model model ,int bno, String group, String cate) {
-
+    public String faqView(Model model, int bno, String cate, String group){
         BoardDTO boardDTO = csService.findByBnoForBoard(bno);
+
+        // 관리자 답변 조회
+        List<CommentDTO> comments = commentService.commentList(bno);
+
+        // 조회수 증가 로직 추가
+        boardDTO.setHit(boardDTO.getHit() + 1);
+        csService.updateHit(boardDTO);
+
         model.addAttribute("boardDTO", boardDTO);
         model.addAttribute("cate", cate);
         model.addAttribute("group", group);
+
+        model.addAttribute("comments",comments );
+
         return "/cs/faq/view";
     }
 
-    /* qna 댓글 구현중 ------------------------------------------------------------------------------------------------*/
-
-    // 댓글삭제(기능) - 동적
-    @ResponseBody
-    @DeleteMapping("/cs/qna/deleteComment/{cno}") // 기본키인 cno를 매개변수로 받도록 수정
-    public ResponseEntity<?> qnaDeleteComment(@PathVariable("cno") int cno) {
-        log.info("컨트롤러 cno : " + cno);
-        return csService.deleteComment(cno);
-    }
-
-
-    // 댓글등록
-    @PostMapping("/cs/qna/insertComment")
-    public ResponseEntity<Comment> qnaCommentWrite(@RequestBody CommentDTO commentDTO) {
+    // QnA 댓글입력
+    @PostMapping("/cs/faq/insertComment")
+    public ResponseEntity<Comment> faqCommentWrite(@RequestBody CommentDTO commentDTO) {
 
         ResponseEntity<Comment> commentResponseEntity = csService.insertComment(commentDTO);
         log.info(commentResponseEntity.getBody().toString());
         return commentResponseEntity;
     }
 
-    // 댓글 수정
-    @PutMapping("/cs/qna/modifyComment")
-    public ResponseEntity<?> modifyComment(@RequestBody CommentDTO commentDTO){
+    // QnA 댓글수정
+    @PutMapping("/cs/faq/modifyComment")
+    public ResponseEntity<?> faqModifyComment(@RequestBody CommentDTO commentDTO){
         log.info("modifyComment : " +commentDTO.toString());
         return csService.updateComment(commentDTO);
     }
+
+    // QnA 댓글삭제
+    @ResponseBody
+    @DeleteMapping("/cs/faq/deleteComment/{cno}") // 기본키인 cno를 매개변수로 받도록 수정
+    public ResponseEntity<?> faqDeleteComment(@PathVariable("cno") int cno) {
+        log.info("컨트롤러 cno : " + cno);
+        return csService.deleteComment(cno);
+    }
+
+
+
 
 }

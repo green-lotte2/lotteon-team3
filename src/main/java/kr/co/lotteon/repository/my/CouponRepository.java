@@ -10,6 +10,7 @@ import java.util.List;
 @Repository
 public interface CouponRepository extends JpaRepository<Coupon,String> {
     public List<Coupon> findCouponsByUid(String uid);
+    public int countByUidAndUseYn(String uid, String useYn);
 
 
 }

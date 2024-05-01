@@ -55,7 +55,7 @@ public class CartRepositoryImpl implements CartRepositoryCustom {
     public List<CartInfoDTO> selectCartProduct(String uid) {
 
 
-        List<Tuple> result = jpaQueryFactory.select(qCart.count, qCart.opNo, qProduct)
+        List<Tuple> result = jpaQueryFactory.select(qCart.count, qCart.opNo, qCart.cartNo, qProduct)
                 .from(qCart)
                 .join(qProduct).on(qCart.prodNo.eq(qProduct.prodNo))
                 .where(qCart.uid.eq(uid))
@@ -65,11 +65,12 @@ public class CartRepositoryImpl implements CartRepositoryCustom {
 
         List<CartInfoDTO> resultValue = result.stream()
                 .map(tuple -> {
-                    Product product = tuple.get(2, Product.class);
+                    Product product = tuple.get(3, Product.class);
 
                     CartInfoDTO cartInfoDTO = modelMapper.map(product, CartInfoDTO.class);
                     cartInfoDTO.setCount(tuple.get(0, Integer.class));
                     cartInfoDTO.setOpNo(tuple.get(1, String.class));
+                    cartInfoDTO.setCartNo(tuple.get(2, Integer.class));
                     log.info(" pppppppp : "+product);
                     log.info(" gggggggg : "+cartInfoDTO);
                     return cartInfoDTO;

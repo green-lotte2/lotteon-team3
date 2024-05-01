@@ -340,4 +340,20 @@ public class AdminController {
         return "/admin/member/list";
     }
 
+    ////////////////  order  ///////////////////////////////////////////////////
+    // 관리자 주문 현황 매핑
+    @GetMapping("/admin/order/list")
+    public String orderList(Model model, AdminPageRequestDTO adminPageRequestDTO){
+        SellerOrderPageResponseDTO sellerOrderPageResponseDTO = null;
+        if(adminPageRequestDTO.getKeyword() == null) {
+            // 일반 주문 목록 조회
+            sellerOrderPageResponseDTO = adminService.selectOrderList(adminPageRequestDTO);
+        }else {
+            // 검색 주문 목록 조회 //////
+            log.info("키워드 검색 Cont" + adminPageRequestDTO.getKeyword());
+            sellerOrderPageResponseDTO = adminService.searchOrderList(adminPageRequestDTO);
+        }
+        model.addAttribute("pageResponseDTO", sellerOrderPageResponseDTO);
+        return "/admin/order/list";
+    }
 }

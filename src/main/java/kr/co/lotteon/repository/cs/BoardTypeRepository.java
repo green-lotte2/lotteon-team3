@@ -11,4 +11,6 @@ import java.util.List;
 public interface BoardTypeRepository extends JpaRepository<BoardTypeEntity, Integer> {
 
     public List<BoardTypeEntity> findByCate(String cate);
+
+
 }

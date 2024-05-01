@@ -16,6 +16,7 @@
                   // 모든 아코디언 버튼 요소 가져오기
                   var accordionButtons = document.querySelectorAll('.accordion-button');
 
+                  document.querySelectorAll('.number')
                   // 각 아코디언 버튼에 대해 이벤트 리스너 추가
                   accordionButtons.forEach(function(button) {
                     button.addEventListener('click', function() {
@@ -42,38 +43,114 @@
 
                 window.onload = function (){
 
-                  // 수량 감소 부분
-                  document.querySelectorAll('.decrease').forEach(button => {
-                    button.addEventListener('click', function (e){
+                  // 숫자를 3자리마다 콤마를 추가하여 문자열로 반환하는 함수
+                  function numberWithCommas(x) {
+                    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                  }
+
+                  // 가격 업데이트
+                  document.querySelectorAll('.cartProduct').forEach(input =>{
+
+                    const product = input.closest('.cartProduct');
+                    const inputs = product.querySelector('.count .number' );
+                    const increase = product.querySelector('.count .increase');
+                    const decrease = product.querySelector('.count .decrease');
+
+                    let value = inputs.value;
+
+                    const priceElement = product.querySelector('.currentPrice strong');
+
+                    // 가격을 숫자로 파싱
+                    const price = parseFloat(priceElement.innerText.replace('원', '').replace(',', ''));
+
+                    // 수량을 숫자로 파싱
+                    let intValue = parseInt(value);
+
+                    // 수량 증가 버튼
+                    increase.addEventListener('click', function(e){
                       e.preventDefault();
-                      const input = button.closest('.count').querySelector('.number');
-                      // 현재 값
-                      let value = parseInt(input.value);
-                      value = Math.max(1, value -1);
-                      input.value = value;
+
+                      intValue += 1
+                      inputs.value = intValue;
+                      // 총 가격 계산
+                      const totalPrice = price * intValue;
+                      // 총 가격을 화면에 업데이트
+                      priceElement.innerText = numberWithCommas(totalPrice);
+                    });
+                    // 수량 감소 버튼
+                    decrease.addEventListener('click', function(e){
+                      e.preventDefault();
+                      intValue -= 1
+
+                      if(intValue <1){
+                        alert('최소1개까지 구매 가능한 상품입니다.');
+                        intValue=1;
+                      }
+
+                      inputs.value = intValue;
+                      // 총 가격 계산
+                      const totalPrice = price * intValue;
+                      // 총 가격을 화면에 업데이트
+                      priceElement.innerText = numberWithCommas(totalPrice);
+                    });
+
+                    // 총 가격 계산
+                    const totalPrice = price * intValue;
+                    // 총 가격을 화면에 업데이트
+                    priceElement.innerText = numberWithCommas(totalPrice);
+
+                  });
+
+                  // 전체 선택
+                  const selectAll = document.getElementsByClassName('selectAll')[0];
+                  const checkboxes = document.querySelectorAll('.checkbox');
+                  const checkCom = document.querySelectorAll('.checkCom');
+
+                  selectAll.addEventListener('click', function () {
+                      for(let i = 0; i<checkboxes.length; i++){
+                        checkboxes[i].checked = selectAll.checked;
+                      }
+
+                      for(let j = 0; j<checkCom.length; j++){
+                        checkCom[j].checked = selectAll.checked;
+                      }
+                  });
+
+                  checkCom.forEach(function (e) {
+                    e.addEventListener('click', function (check) {
+                      check.stopPropagation();
+                      const company = e.getAttribute('data-company');
+                      console.log(company)
+
+                      const checkbox = document.querySelectorAll(`.checkbox[data-company="${company}"]`);
+                      checkbox.forEach(checkbox =>{
+                        checkbox.checked = e.checked;
+                      });
+
                     });
                   });
 
-                  // 수량 증가
-                  document.querySelectorAll('.increase').forEach(button =>{
-                    button.addEventListener('click', function (e){
-                      e.preventDefault();
-                      const input = button.closest('.count').querySelector('.number');
-                      // 현재 값
-                      let value = parseInt(input.value);
-                      console.log(value);
-                      input.value = value+1;
+                  const deleteCartItems = document.getElementsByClassName('deleteCartItems')[0];
+                  deleteCartItems.addEventListener('click', function(e){
+                    e.preventDefault();
+                    const checkbox = document.querySelectorAll('.checkbox:checked');
+                    checkbox.forEach(e => {
+                      console.log(e.value);
+                      fetch()
+                      .then()
+                      .then()
+                      .catch((err)=>{
+                      console.log(err)});
                     });
                   });
 
-                  document.querySelectorAll('.currentPrice strong').forEach(currentPrice =>{
-                    let priceValue = parseInt(currentPrice.innerText);
-                    const input = currentPrice.closest('.count').querySelector('.number');
-                    let count = parseInt(input.value);
-                    console.log(count);
+                  const total = document.getElementsByClassName('total')[0];
 
+                  document.addEventListener('scroll', function(event) {
+                    let scrollY = window.scrollY;
+
+                    total.style.top = scrollY + 'px';
                   });
-
                 }
               </script>
               <!-- 제목, 페이지 네비게이션 -->
@@ -84,10 +161,10 @@
                 </p>
               </nav>
                             
-              <form action="#">
+              <form class="cartForm" action="#">
                 <div class="itemController">
                   <div class="checkboxController">
-                    <input id="checkboxController" type="checkbox" class="cur_hand">
+                    <input id="checkboxController" type="checkbox" class="selectAll">
                     <label for="checkboxController" class="cur_hand">전체선택</label>
                   </div>
                   <div class="deleteBtnGroup">
@@ -96,21 +173,22 @@
                     </button>
                   </div>
                 </div>
+
                 <div th:each="company, iterStat : ${companies}" class="accordion" id="accordionPanelsStayOpenExample">
                   <div class="accordion-item">
                     <h2 class="accordion-header">
                       <button th:id="'accordionButton'+${iterStat.index}" class="accordion-button" type="button" data-bs-toggle="collapse" th:data-bs-target="'panelsStayOpen-collapse'+${iterStat.index}" aria-expanded="true" th:aria-controls="'panelsStayOpen-collapse'+${iterStat.index}">
-                        <input type="checkbox" class="checkbox" value="0">
+                        <input type="checkbox" class="checkCom" th:data-company="${company}" value="0">
                         [[${company}]]
                       </button>
                     </h2>
                     <!-- 내용 -->
                     <div th:id="'panelsStayOpen-collapse'+${iterStat.index}" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingOne">
                       <th:block th:each="cartProduct:${cartProducts}" >
-                      <div  th:if="${company == cartProduct.company}" class="accordion-body">
-                        <div>
+                      <div th:if="${company == cartProduct.company}" class="accordion-body">
+                        <div class="cartProduct">
                           <label>
-                            <input type="checkbox" class="checkbox" value="0">
+                            <input type="checkbox" class="checkbox" th:data-company="${company}" th:value="${cartProduct.cartNo}">
                           </label>
                           <a th:href="@{#}">
                             <img th:src="@{|/prodImg/${cartProduct.thumb3}|}" style="width: 80px; height: auto;" alt="상품이미지">
@@ -124,6 +202,10 @@
                             <p class="productDeliveryInfo"> 4/30(화) 이내 도착 </p>
                           </div>
 
+                          <p>
+                            <span class="delivery">배송비 : [[${cartProduct.delivery}]] </span>
+                          </p>
+
                           <div class="count">
                             <button th:class="'decrease'">-</button>
                             <input type="text" class="number" name="num" th:value="${cartProduct.count}"/>
@@ -132,6 +214,7 @@
 
                           <div class="cartPrice order-3">
                             <p class="originalPrice"><span data-v-15ea7d62="">[[${cartProduct.price}]]원</span></p>
+                            <span class="discount">[[${cartProduct.discount}]]%</span>
                             <p class="currentPrice" style="">
                               <strong>[[${((100-cartProduct.discount)/100.0)*cartProduct.price}]]</strong><span>원</span>
                             </p>
@@ -150,19 +233,19 @@
                   <table border="0">
                     <tr>
                       <td>상품수</td>
-                      <td>1</td>
+                      <td></td>
                     </tr>
                     <tr>
                       <td>상품금액</td>
-                      <td>27,000</td>
+                      <td>2</td>
                     </tr>
                     <tr>
                       <td>할인금액</td>
-                      <td>-1,000</td>
+                      <td></td>
                     </tr>
                     <tr>
                       <td>배송비</td>
-                      <td>0</td>
+                      <td></td>
                     </tr>              
                     <tr>
                       <td>포인트</td>

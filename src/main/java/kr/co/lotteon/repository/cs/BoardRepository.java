@@ -22,6 +22,8 @@ public interface BoardRepository extends JpaRepository<BoardEntity, Integer>, Bo
 
     List<BoardEntity> findTop10ByTypeNoOrderByRdateDesc(int typeNo);
 
+    List<BoardEntity> findByGroupOrderByRdateDesc(String group);
+
     // 인덱스 - notice, qna 리스트 출력
     public List<BoardEntity> findByGroupOrderByRdateDescBnoDesc(String group, Pageable pageable);
 
@@ -37,4 +39,14 @@ public interface BoardRepository extends JpaRepository<BoardEntity, Integer>, Bo
     @Modifying
     @Query("UPDATE BoardEntity a set a.status = '답변완료' where a.bno = :bno")
     void modifyStatusByBno(@Param("bno") int bno);
+
+
+    @Query("SELECT b FROM BoardEntity b WHERE b.uid = :uid")
+    public List<BoardEntity> findByUid(@Param("uid") String uid);
+
+    @Query("SELECT COUNT(b) FROM BoardEntity b WHERE b.uid = :uid")
+    public int countByUid(@Param("uid") String uid);
+
+
+
 }

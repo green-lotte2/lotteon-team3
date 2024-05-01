@@ -52,7 +52,7 @@ public class CartInfoDTO {
     // option
     private String opName;
     private String opValue;
-
+    private int cartNo;
     //cart
     private int count;
     private String opNo;

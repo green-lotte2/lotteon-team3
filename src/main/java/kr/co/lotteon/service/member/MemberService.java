@@ -20,6 +20,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
@@ -35,7 +36,6 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final MemberMapper memberMapper;
     private final JavaMailSender javaMailSender;
-    private final CouponRepository couponRepository;
 
     // 회원 가입 - DB 입력
     public void save(MemberDTO memberDTO){
@@ -73,18 +73,12 @@ public class MemberService {
         Optional<Member> member=memberRepository.findById(uid);
         return modelMapper.map(member, MemberDTO.class);
     }
-
-    public List<CouponDTO> findCouponsByUid(String uid){
-        log.info("내 쿠폰"+couponRepository.findCouponsByUid(uid));
-        List<Coupon> result=couponRepository.findCouponsByUid(uid);
-        List<CouponDTO> couponDTOS=result.stream().map(coupons->modelMapper.map(coupons,CouponDTO.class))
-                .collect(Collectors.toList());
-        for (CouponDTO couponDTO : couponDTOS) {
-            couponDTO.changeUseYnString();
-        }
-        return couponDTOS;
+    //회원탈퇴
+    public void updateWdate(String uid) {
+        Member member = memberRepository.findById(uid).get();
+        member.setWdate(LocalDateTime.now());
+        memberRepository.save(member);
     }
-
 
 
 
