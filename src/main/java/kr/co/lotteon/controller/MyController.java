@@ -1,28 +1,27 @@
 package kr.co.lotteon.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import kr.co.lotteon.dto.admin.BannerDTO;
 import kr.co.lotteon.dto.cs.BoardDTO;
+import kr.co.lotteon.dto.cs.CsPageRequestDTO;
 import kr.co.lotteon.dto.member.CouponDTO;
 import kr.co.lotteon.dto.member.MemberDTO;
 import kr.co.lotteon.dto.member.MyInfoDTO;
+import kr.co.lotteon.dto.member.point.PointPageRequestDTO;
+import kr.co.lotteon.dto.member.point.PointPageResponseDTO;
 import kr.co.lotteon.entity.member.Member;
+import kr.co.lotteon.entity.member.Point;
 import kr.co.lotteon.security.MyUserDetails;
 import kr.co.lotteon.service.admin.BannerService;
 import kr.co.lotteon.service.member.MemberService;
 import kr.co.lotteon.service.my.MyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -78,11 +77,16 @@ public class MyController {
     public String order(){
         return "/my/order";
     }
+
     // my - point (나의 포인트) 페이지 매핑
     @GetMapping("/my/point")
-    public String point(){
+    public String point(@RequestParam String uid, Model model, PointPageRequestDTO pointPageRequestDTO) {
+        PointPageResponseDTO pointPageResponseDTO = myService.getPointListByUid(uid, pointPageRequestDTO);
+        model.addAttribute("pointPageResponseDTO", pointPageResponseDTO);
         return "/my/point";
     }
+
+
     // my - coupon 페이지 매핑
     @GetMapping("/my/coupon")
     public String coupon(Model model,@RequestParam String uid){

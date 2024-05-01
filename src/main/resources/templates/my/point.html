@@ -3,104 +3,75 @@
       layout:decorate="~{/layout/myLayout}">
 <main id="myLayout" layout:fragment="content">
     <script th:src="@{/js/myInfo.js}"></script>
-        <div id="my">
-
-
-            <div class="point">
-                <ul>
-                    <span class="menu_else"></span>
-                    <li><a th:href="@{/my/order(uid=${#authentication.principal.member.uid})}">전체주문내역</a></li>
-                    <!--<li><a href="./favorite.html">관심상품</a></li>-->
-                    <li class="on"><a th:href="@{/my/point(uid=${#authentication.principal.member.uid})}">포인트내역</a></li>
-                    <li><a th:href="@{/my/coupon(uid=${#authentication.principal.member.uid})}">쿠폰</a></li>
-                    <li><a th:href="@{/my/review(uid=${#authentication.principal.member.uid})}">나의리뷰</a></li>
-                    <li><a th:href="@{/my/qna(uid=${#authentication.principal.member.uid})}">문의하기</a></li>
-                    <li><a th:href="@{/my/info(uid=${#authentication.principal.member.uid})}">나의설정</a></li>
-                </ul>
-
-                <section>
-                    <a th:href="@{#}"><img th:src="@{/my/images/my_banner1.jpg}" alt="패션, 타운 하나로 끝" class="banner"></a>
-                    <article>
-                        <h3>포인트내역</h3>
-
-                        <div class="byDate">
-                            <span class="tit">기간별조회</span>                            
-                            <ul class="date_3ea">
-                                <li><a href="#"><em>1</em>주일</a></li>
-                                <li><a href="#"><em>15</em>일</a></li>
-                                <li><a href="#" class="on"><em>1</em>개월</a></li>
-                            </ul>
-                            <ul class="date_5ea">
-                                <li><a href="#"><em>11</em>월</a></li>
-                                <li><a href="#"><em>10</em>월</a></li>
-                                <li><a href="#"><em>9</em>월</a></li>
-                                <li><a href="#"><em>8</em>월</a></li>
-                                <li><a href="#"><em>7</em>월</a></li>
-                            </ul>
-                            <p>
-                                <input type="date" name="begin"><span>~</span><input type="date" name="end">
-                            </p>
-                            <button class="btnConfirm">조회하기</button>
-                        </div>
-
-                        <table border="0">
-                            <tr>
-                                <th>날짜</th>
-                                <th>구분</th>
-                                <th>주문번호</th>                                
-                                <th>적립금액</th>
-                                <th>비고</th>
-                                <th>유효기간</th>
-                            </tr>
-                            <tr>
-                                <td class="date">2022-12-13</td>
-                                <td class="type">적립</td>
-                                <td class="ordNo">2022121001</td>                                
-                                <td class="point">340</td>
-                                <td class="desc">상품 구매확정</td>
-                                <td class="expire">2024-12-12</td>
-                            </tr>
-                            <tr>
-                                <td class="date">2022-12-13</td>
-                                <td class="type">적립</td>
-                                <td class="ordNo">2022121001</td>
-                                <td class="point">100</td>
-                                <td class="desc">상품 리뷰 작성 추가 포인트</td>
-                                <td class="expire">2024-12-12</td>
-                            </tr>
-                            <tr>
-                                <td class="date">2022-12-13</td>
-                                <td class="type">적립</td>
-                                <td class="ordNo">2022121001</td>
-                                <td class="point">340</td>
-                                <td class="desc">상품 구매확정</td>
-                                <td class="expire">2024-12-12</td>
-                            </tr>
-                            <tr>
-                                <td class="date">2022-12-13</td>
-                                <td class="type">적립</td>
-                                <td class="ordNo">2022121001</td>
-                                <td class="point">340</td>
-                                <td class="desc">상품 구매확정</td>
-                                <td class="expire">2024-12-12</td>
-                            </tr>
-                            
-                        </table>
-
-                        <p class="page">
-                            <a href="#" class="prev">이전</a>
-                            <a href="#" class="num on">1</a>
-                            <a href="#" class="num">2</a>
-                            <a href="#" class="num">3</a>
-                            <a href="#" class="next">다음</a>
+    <div id="my">
+        <div class="point">
+            <ul>
+                <span class="menu_else"></span>
+                <li><a th:href="@{/my/order(uid=${#authentication.principal.member.uid})}">전체주문내역</a></li>
+                <li><a th:href="@{/my/point(uid=${#authentication.principal.member.uid})}" class="on">포인트내역</a></li>
+                <li><a th:href="@{/my/coupon(uid=${#authentication.principal.member.uid})}">쿠폰</a></li>
+                <li><a th:href="@{/my/review(uid=${#authentication.principal.member.uid})}">나의리뷰</a></li>
+                <li><a th:href="@{/my/qna(uid=${#authentication.principal.member.uid})}">문의하기</a></li>
+                <li><a th:href="@{/my/info(uid=${#authentication.principal.member.uid})}">나의설정</a></li>
+            </ul>
+            <section>
+                <a th:href="@{#}"><img th:src="@{/my/images/my_banner1.jpg}" alt="패션, 타운 하나로 끝" class="banner"></a>
+                <article>
+                    <h3>포인트내역</h3>
+                    <div class="byDate">
+                        <span class="tit">기간별조회</span>
+                        <ul class="date_3ea">
+                            <li><a href="#"><em>1</em>주일</a></li>
+                            <li><a href="#"><em>15</em>일</a></li>
+                            <li><a href="#" class="on"><em>1</em>개월</a></li>
+                        </ul>
+                        <ul class="date_5ea">
+                            <li><a href="#"><em>11</em>월</a></li>
+                            <li><a href="#"><em>10</em>월</a></li>
+                            <li><a href="#"><em>9</em>월</a></li>
+                            <li><a href="#"><em>8</em>월</a></li>
+                            <li><a href="#"><em>7</em>월</a></li>
+                        </ul>
+                        <p>
+                            <input type="date" name="begin"><span>~</span><input type="date" name="end">
                         </p>
-
-                    </article>                  
-
-                    
-
-                </section>
-
-            </div>
-        </div>        
+                        <button class="btnConfirm">조회하기</button>
+                    </div>
+                    <table border="0">
+                        <thead>
+                        <tr>
+                            <th>날짜</th>
+                            <th>구분</th>
+                            <th>주문번호</th>
+                            <th>적립금액</th>
+                            <th>비고</th>
+                            <th>유효기간</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="point : ${pointPageResponseDTO.dtoList}">
+                            <td th:text="${point.pointDate}"></td>
+                            <td th:text="${point.usecase}"></td>
+                            <td th:text="${point.ordNo}"></td>
+                            <td th:text="${point.point}"></td>
+                            <td th:text="${point.descript}"></td>
+                            <td th:text="${point.currentDate}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <div class="page">
+                        <span th:if="${pointPageResponseDTO.prev}" class="prev">
+                            <a th:href="@{/my/point(uid=${#authentication.principal.member.uid}, pg=${pointPageResponseDTO.start - 1})}">이전</a>
+                        </span>
+                        <span th:each="num: ${#numbers.sequence(pointPageResponseDTO.start, pointPageResponseDTO.end)}" class="num">
+                            <a th:href="@{/my/point(uid=${#authentication.principal.member.uid}, pg=${num})}" th:class="${pointPageResponseDTO.pg eq num ? 'on' : 'off'}" th:text="${num}"></a>
+                        </span>
+                        <span th:if="${pointPageResponseDTO.next}" class="next">
+                            <a th:href="@{/my/point(uid=${#authentication.principal.member.uid}, pg=${pointPageResponseDTO.start + 1})}">다음</a>
+                        </span>
+                    </div>
+                </article>
+            </section>
+        </div>
+    </div>
 </main>

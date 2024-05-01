@@ -4,16 +4,244 @@
       layout:decorate="~{/layout/csLayout}">
 
 <section id="cs" layout:fragment = "content">
+  <script>
+    // 페이지 로드가 완료되면 실행
+    window.onload = function () {
+
+      const commentList = document.getElementsByClassName('commentList')[0];
+      const btnSubmit = document.commentForm.submit;
+      const form = document.commentForm;
+
+
+      document.addEventListener('click', function (e) {
+        if (e.target.classList.contains('remove')) {
+          e.preventDefault();
+          const cno = e.target.dataset.no; // 댓글 번호를 가져옴
+
+          // 댓글삭제
+          fetch(`/lotteon/cs/notice/deleteComment/${cno}`, {
+            method: 'DELETE'
+          })
+                  .then(response => {
+                    if (response.ok) {
+                      return response.json();
+                    } else {
+                      throw new Error('Network response was not ok.');
+                      return  null;
+                    }
+                  })
+
+                  // 댓글 삭제 요청 후 화면 업데이트
+                  .then(data => {
+                    if (data != null) {
+                      const article = e.target.closest('article');
+                      article.remove();
+                      alert('댓글이 삭제 되었습니다.');
+
+                      // 댓글 목록 다시 불러오기
+                      fetchComments();
+
+                    } else {
+                      alert('삭제에 실패하였습니다.');
+                    }
+                  })
+
+                  // 댓글 수정 요청 후 화면 업데이트
+                  .then(data => {
+                    // 수정 성공 시
+                    if (data != null) {
+                      // 수정된 댓글의 내용 업데이트
+                      contentElement.innerText = data.data.content;
+                      // 수정 폼 숨기기
+                      editForm.style.display = 'none';
+                      // 댓글 내용 표시
+                      contentElement.style.display = 'block';
+                      // 수정 버튼 표시
+                      const modifyButton = modifiedComment.querySelector('.modify');
+                      modifyButton.style.display = 'inline-block';
+                      // 알림 메시지
+                      alert('댓글이 수정되었습니다.');
+                      // 댓글 목록 다시 불러오기
+                      fetchComments();
+                    }
+                  })
+
+        }
+      });
+
+      // 댓글입력
+      btnSubmit.onclick = function (e) {
+        e.preventDefault();
+        const bno = form.bno.value;
+        const uid = form.uid.value;
+        const content = form.content.value;
+        const cate = form.cate.value;
+        const group = form.group.value;
+
+        // 입력된 내용이 없는 경우 처리
+        if (!content.trim()) {
+          alert('댓글을 입력해주세요.');
+          return;
+        }
+
+        const jsonData = {
+          "bno": bno,
+          "uid": uid,
+          "content": content,
+          "cate": cate,
+          "group": group
+        };
+
+        // 댓글 추가
+        fetch('/lotteon/cs/notice/insertComment', {
+          method: 'POST',
+          headers: { "Content-type": "application/json" },
+          body: JSON.stringify(jsonData)
+        })
+                .then((resp) => resp.json())
+                .then((data) => {
+                  if (data.pk > 0) {
+                    const today = new Date();
+                    const year = today.getFullYear();
+                    const month = today.getMonth() + 1;
+                    const date = today.getDate();
+
+                    const commentArticle = `<article>
+                              <span class="nick">${sessUser.uid}</span>
+                              <span class="date">${year}-${month}-${date}</span>
+                              <p class="content">${content}</p>
+                              <div>
+                                  <a href="#" data-no="${data.pk}" data-parent="${data.cno}" class="remove">삭제</a>
+                                  <a href="#" class="modify">수정</a>
+                              </div>
+                          </article>`;
+                    // 댓글 목록에 삽입
+                    commentList.insertAdjacentHTML('beforeend', commentArticle);
+                  }
+                  alert('댓글이 추가되었습니다.');
+                  location.reload();
+                })
+                .catch((err) => {
+                  console.log(err);
+                });
+      }
+
+      // 댓글 수정 폼 숨기기(수정버튼 눌렸을때 활성화)
+      function hideEditForm() {
+        const editForms = document.querySelectorAll('.editForm');
+        editForms.forEach(form => {
+          form.style.display = 'none';
+        });
+      }
+
+      hideEditForm(); // 페이지 로드 시 숨김
+
+      // 댓글 수정 폼
+      document.addEventListener('click', function (e) {
+        if (e.target.classList.contains('modify')) {
+          e.preventDefault();
+          const article = e.target.closest('article');
+          const commentContent = article.querySelector('.content');
+          const editForm = article.querySelector('.editForm');
+
+          // 댓글 내용 설정
+          const content = commentContent.innerText;
+          editForm.querySelector('textarea[name="content"]').value = content;
+
+          // 댓글 수정 폼 표시 및 버튼 숨김
+          commentContent.style.display = 'none';
+          editForm.style.display = 'block';
+          e.target.style.display = 'none';
+        }
+      });
+
+      // 댓글 수정창에서 취소누를시 수정창 비활성화
+      document.addEventListener('click', function (e) {
+        if (e.target.classList.contains('cancelEdit')) {
+          e.preventDefault();
+          const editForm = e.target.closest('.editForm');
+          const commentContent = editForm.parentElement.querySelector('.content');
+
+          // 수정 폼 숨김 및 댓글 내용 표시
+          editForm.style.display = 'none';
+          commentContent.style.display = 'block';
+
+          // 수정 버튼 표시여부
+          const modifyButton = editForm.parentElement.querySelector('.modify');
+          modifyButton.style.display = 'inline-block';
+        }
+      });
+
+      // 댓글 수정
+      document.addEventListener('submit', function (e) {
+        e.preventDefault();
+        if (e.target.classList.contains('editForm')) {
+          const textarea = document.getElementsByName('content')[0].innerText;
+
+          const formData = new FormData(e.target);
+          const jsonData = {};
+          formData.forEach((value, key) => jsonData[key] = value);
+
+          // 댓글 수정 요청
+          fetch('/lotteon/cs/notice/modifyComment', {
+            method: 'PUT',
+            headers: { "Content-type": "application/json" },
+            body: JSON.stringify(jsonData)
+          })
+                  .then(response => {
+                    if (response.ok) {
+                      return response.json();
+                    } else {
+                      throw new Error('Network response was not ok.');
+                    }
+                  })
+                  .then(data => {
+                    // 수정 성공 시 댓글 내용 업데이트
+                    const modifiedComment = e.target.closest('article');
+                    const contentElement = modifiedComment.querySelector('.content');
+                    contentElement.innerText = data.data.content;
+
+                    // 수정 폼 숨김 및 댓글 내용 표시
+                    const editForm = modifiedComment.querySelector('.editForm');
+                    editForm.style.display = 'none';
+                    contentElement.style.display = 'block';
+
+                    // 수정 버튼 표시
+                    const modifyButton = modifiedComment.querySelector('.modify');
+                    modifyButton.style.display = 'inline-block';
+
+                    alert('댓글이 수정되었습니다.');
+                  })
+                  .catch(error => {
+                    console.error('Error:', error);
+                    alert('댓글 수정 도중 에러가 발생하였습니다.');
+                  });
+        }
+      });
+
+
+      // 댓글쓰기에서 취소를 누를시 textarea 초기화
+      document.addEventListener('click', function (e) {
+        if (e.target.classList.contains('btnCancel1')) {
+          e.preventDefault();
+          const commentForm = document.forms['commentForm'];
+          commentForm.reset(); // textarea 내용 초기화
+        }
+      });
+
+    }
+
+  </script>
         <div class="notice">
           <nav>
             <div>
               <p>홈
                 <span>></span>
                 <span th:switch="${group}">
-                      <span th:case="notice" style="font-size: 16px; color: black;">공지사항</span>
-                      <span th:case="qna" style="font-size: 16px; color: black;">고객문의</span>
-                      <span th:case="faq" style="font-size: 16px; color: black;">자주묻는질문</span>
-                      </span>
+                        <span th:case="notice" style="font-size: 16px; color: black;">공지사항</span>
+                        <span th:case="qna" style="font-size: 16px; color: black;">고객문의</span>
+                        <span th:case="faq" style="font-size: 16px; color: black;">자주묻는질문</span>
+                    </span>
               </p>
             </div>
           </nav>
@@ -34,19 +262,93 @@
                   [<span style="font-size: 32px; font-weight: bold" th:text="${boardDTO.typeName}"></span>]
                   [[${boardDTO.title}]]
                 </h2>
-                <span style="font: normal 14px 'Noto Sans CJK KR'; color: #777;" th:text="${#temporals.format(boardDTO.rdate, 'yyyy.MM.dd')}"></span>
-
+                <p>
+                  <span class="uid" style="font-size: 14px;" th:text="관리자"></span>
+                  <span style="font: normal 14px 'Noto Sans CJK KR'; color: #777;" th:text="${#temporals.format(boardDTO.rdate, 'yyyy.MM.dd')}"></span>
+                </p>
               </nav>
 
               <div class="content">
                 <p>
                   [[${boardDTO.content}]]
-                </p><br><br>
+                </p><br>
 
+                <div class="filebox" th:if="${boardDTO.fileDTOList != null and not #lists.isEmpty(boardDTO.fileDTOList)}">
+                  <p th:each="fileDTO, iterStat : ${boardDTO.fileDTOList}" th:style="'display: inline-block; margin-right: 10px;' + (${iterStat.last} ? 'margin-right: 0;' : '')">
+                    <img th:src="@{|/uploads/${fileDTO.sfile}|}" alt="상품이미지"/>
+                  </p>
+                </div>
               </div>
-              <a th:href="@{/cs/notice/list(group='notice', cate=${cate})}" class="btnList">목록보기</a>
+
+              <!-- 댓글목록 -->
+              <section class="commentList">
+                <h3>댓글목록</h3>
+                <th:block th:each="comment : ${comments}">
+                  <article>
+                    <span class="uid" th:text="${#strings.substring(boardDTO.uid, 0, 3) + '***'}"></span>
+                    <span class="date" th:text="${#strings.substring(comment.rdate, 2, 10)}"></span>
+                    <p class="content" th:text="${comment.content}"></p>
+                    <div>
+                      <th:block th:if="${#authentication.principal != 'anonymousUser'}">
+                        <a th:if="${#authentication.principal.member.uid == comment.uid}" href="#" class="remove" th:data-no="${comment.cno}">삭제</a>
+                        <a th:if="${#authentication.principal.member.uid == comment.uid}" href="#" class="modify">수정</a>
+                      </th:block>
+                    </div><br><br>
+
+                    <form class="editForm" style="display: none;">
+                      <input type="hidden" name="bno" th:value="${comment.bno}" />
+                      <input type="hidden" name="cno" th:value="${comment.cno}" />
+                      <input type="hidden" name="uid" th:value="${comment.uid}" />
+                      <input type="hidden" name="nick" th:value="${#authentication.principal.member.nick}" />
+                      <textarea name="content" th:text="${comment.content}"></textarea>
+                      <div class="button-group">
+                        <input type="submit" value="댓글수정" class="submitEdit">
+                        <button type="button" class="cancelEdit">취소</button>
+                      </div>
+                    </form>
+
+                  </article>
+
+                </th:block>
+
+                <th:block th:if="${#lists.isEmpty(comments)}">
+                  <p class="empty">등록된 댓글이 없습니다.</p>
+                </th:block>
+              </section>
+
+              <th:block th:if="${#authorization.expression('isAuthenticated()')}">
+                <section class="commentForm">
+                  <h3>댓글쓰기</h3>
+                  <form name="commentForm" th:action="@{/comment}" method="post"  id="commentForm">
+                    <input type="hidden" name="bno" th:value="${boardDTO.bno}">
+                    <input type="hidden" name="uid" th:value="${#authentication.principal.member.uid}">
+                    <input type="hidden" name="cate" th:value="${boardDTO.cate}">
+                    <input type="hidden" name="group" th:value="${boardDTO.group}">
+                    <textarea name="content" placeholder="댓글 입력"></textarea>
+                    <div>
+                      <a th:href="@{#}" class="btn btnCancel1">취소</a>
+                      <input type="submit" name="submit" value="작성완료" id="btnSubmit" class="btn btnComplete"/>
+                    </div>
+                  </form>
+                </section>
+              </th:block>
+
+              <a th:href="@{/cs/qna/list(group='qna', cate=${cate})}" class="btnList">목록보기</a>
+              <!-- 로그인한 사용자일 때만 삭제 버튼과 수정 버튼을 표시 -->
+              <th:block th:if="${#authentication.principal != 'anonymousUser'}">
+                <a th:if="${#authentication.principal.member.uid == boardDTO.uid}"
+                   th:href="@{/cs/qna/delete(cate=${cate}, bno=${boardDTO.bno}, group=${group})}"
+                   onclick="return confirm('정말로 삭제하시겠습니까?');"
+                   class="btnDelete">삭제</a>
+                <!-- 수정 버튼 -->
+                <a th:if="${#authentication.principal.member.uid == boardDTO.uid}"
+                   th:href="@{/cs/qna/modify(cate=${cate}, bno=${boardDTO.bno}, group=${group})}" class="btnModify">수정</a>
+              </th:block>
             </article>
           </section>
         </div>
 </section>
+
+
 </html>
+

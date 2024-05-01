@@ -1271,19 +1271,6 @@ footer p > strong {
   font-weight: bolder;
 }
 
-#cs > .qna > .view > article > .filebox {
-  width: 100%;
-  height: 100%;
-  border-bottom: 3px solid #e9e9e9;
-  padding: 26px;
-  box-sizing: border-box;
-}
-
-#cs > .qna > .view > article > .filebox * {
-  font-size: 16px;
-  line-height: 32px;
-}
-
 .btnModify {
   display: inline-block;
   width: 200px;
@@ -1314,8 +1301,43 @@ footer p > strong {
   text-align: center;
   box-sizing: border-box;
 }
+
+.btnList {
+  float: left; /* 왼쪽으로 이동 */
+}
+
+.btnModify, .btnDelete {
+  float: right; /* 오른쪽으로 이동 */
+}
+
+.btnList, .btnModify, .btnDelete {
+  display: inline-block;
+  width: 200px;
+  height: 60px;
+  margin: 40px 10px; /* 좌우 여백을 조정하여 간격을 설정 */
+  border: 1px solid #ccc;
+  border-radius: 34px;
+  font-size: 16px;
+  color: #000;
+  line-height: 58px;
+  text-align: center;
+  box-sizing: border-box;
+}
 /* qna css -----------------------------------------------------------------------*/
 /* 댓글 목록에 대한 CSS */
+#cs > .qna > .view > article > .filebox {
+  width: 100%;
+  height: 100%;
+  border-bottom: 3px solid #e9e9e9;
+  padding: 26px;
+  box-sizing: border-box;
+}
+
+#cs > .qna > .view > article > .filebox * {
+  font-size: 16px;
+  line-height: 32px;
+}
+
 #cs .qna .view .commentList {
   width: 100%;
   height: auto;
@@ -1327,6 +1349,7 @@ footer p > strong {
   border-image: initial;
   background: rgb(249, 249, 249);
   padding: 16px;
+  border-radius: 20px 20px 20px 20px;
 }
 
 #cs .qna .view .commentList > h3{
@@ -1367,6 +1390,7 @@ footer p > strong {
   margin-top: 10px;
 }
 
+/* 댓글 쓰기에 대한 CSS */
 #cs .qna .view .commentForm {
   width: 100%;
   height: auto;
@@ -1379,6 +1403,7 @@ footer p > strong {
   background: rgb(249, 249, 249);
   padding: 16px;
   overflow: hidden;
+  border-radius: 20px 20px 20px 20px;
 }
 
 #cs .qna .view .commentForm > h3{
@@ -1404,24 +1429,214 @@ footer p > strong {
   margin-top: 10px;
 }
 
-.btnList {
-  float: left; /* 왼쪽으로 이동 */
-}
-
-.btnModify, .btnDelete {
-  float: right; /* 오른쪽으로 이동 */
-}
-
-.btnList, .btnModify, .btnDelete {
-  display: inline-block;
-  width: 200px;
-  height: 60px;
-  margin: 40px 10px; /* 좌우 여백을 조정하여 간격을 설정 */
-  border: 1px solid #ccc;
-  border-radius: 34px;
-  font-size: 16px;
-  color: #000;
-  line-height: 58px;
-  text-align: center;
+/* notice css -----------------------------------------------------------------------*/
+/* 댓글 목록에 대한 CSS */
+#cs > .notice > .view > article > .filebox {
+  width: 100%;
+  height: 100%;
+  border-bottom: 3px solid #e9e9e9;
+  padding: 26px;
   box-sizing: border-box;
+}
+
+#cs > .notice > .view > article > .filebox * {
+  font-size: 16px;
+  line-height: 32px;
+}
+
+#cs .notice .view .commentList {
+  width: 100%;
+  height: auto;
+  box-sizing: border-box;
+  margin-top: 10px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: rgb(227, 227, 227);
+  border-image: initial;
+  background: rgb(249, 249, 249);
+  padding: 16px;
+  border-radius: 20px 20px 20px 20px;
+}
+
+#cs .notice .view .commentList > h3{
+  font-size: 13px;
+  font-weight: bold;
+  border-bottom: 1px dotted #111;
+  padding-bottom: 6px;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+}
+
+#cs .notice .view .commentList .content {padding: 10px;}
+
+#cs .notice .view .commentList > article > div {float: right;}
+
+
+#cs .notice .view .commentList > .empty {
+  text-align: center;
+  margin: 20px;
+}
+
+/* 댓글 수정 폼에 대한 CSS */
+#cs .notice .view .commentList > article > .editForm {
+  overflow: hidden;
+}
+
+#cs .notice .view .commentList > article > .editForm > textarea {
+  width: 100%;
+  height: 60px;
+  border: 1px solid #e4eaec;
+  padding: 6px;
+  box-sizing: border-box;
+  resize: none;
+}
+
+#cs .notice .view .commentList > article > .editForm > div {
+  float: right;
+  margin-top: 10px;
+}
+
+/* 댓글 쓰기에 대한 CSS */
+#cs .notice .view .commentForm {
+  width: 100%;
+  height: auto;
+  box-sizing: border-box;
+  margin-top: 10px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: rgb(227, 227, 227);
+  border-image: initial;
+  background: rgb(249, 249, 249);
+  padding: 16px;
+  overflow: hidden;
+  border-radius: 20px 20px 20px 20px;
+}
+
+#cs .notice .view .commentForm > h3{
+  font-size: 13px;
+  font-weight: bold;
+  padding-bottom: 6px;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+  border-bottom: 1px dotted rgb(17, 17, 17);
+}
+
+#cs .notice .view .commentForm textarea {
+  width: 100%;
+  height: 60px;
+  border: 1px solid #e4eaec;
+  padding: 6px;
+  box-sizing: border-box;
+  resize: none;
+}
+
+#cs .notice .view .commentForm div {
+  float: right;
+  margin-top: 10px;
+}
+
+/* faq css -----------------------------------------------------------------------*/
+/* 댓글 목록에 대한 CSS */
+#cs > .faq > .view > article > .filebox {
+  width: 100%;
+  height: 100%;
+  border-bottom: 3px solid #e9e9e9;
+  padding: 26px;
+  box-sizing: border-box;
+}
+
+#cs > .faq > .view > article > .filebox * {
+  font-size: 16px;
+  line-height: 32px;
+}
+
+#cs .faq .view .commentList {
+  width: 100%;
+  height: auto;
+  box-sizing: border-box;
+  margin-top: 10px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: rgb(227, 227, 227);
+  border-image: initial;
+  background: rgb(249, 249, 249);
+  padding: 16px;
+  border-radius: 20px 20px 20px 20px;
+}
+
+#cs .faq .view .commentList > h3{
+  font-size: 13px;
+  font-weight: bold;
+  border-bottom: 1px dotted #111;
+  padding-bottom: 6px;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+}
+
+#cs .faq .view .commentList .content {padding: 10px;}
+
+#cs .faq .view .commentList > article > div {float: right;}
+
+
+#cs .faq .view .commentList > .empty {
+  text-align: center;
+  margin: 20px;
+}
+
+/* 댓글 수정 폼에 대한 CSS */
+#cs .faq .view .commentList > article > .editForm {
+  overflow: hidden;
+}
+
+#cs .faq .view .commentList > article > .editForm > textarea {
+  width: 100%;
+  height: 60px;
+  border: 1px solid #e4eaec;
+  padding: 6px;
+  box-sizing: border-box;
+  resize: none;
+}
+
+#cs .faq .view .commentList > article > .editForm > div {
+  float: right;
+  margin-top: 10px;
+}
+
+/* 댓글 쓰기에 대한 CSS */
+#cs .faq .view .commentForm {
+  width: 100%;
+  height: auto;
+  box-sizing: border-box;
+  margin-top: 10px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: rgb(227, 227, 227);
+  border-image: initial;
+  background: rgb(249, 249, 249);
+  padding: 16px;
+  overflow: hidden;
+  border-radius: 20px 20px 20px 20px;
+}
+
+#cs .faq .view .commentForm > h3{
+  font-size: 13px;
+  font-weight: bold;
+  padding-bottom: 6px;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+  border-bottom: 1px dotted rgb(17, 17, 17);
+}
+
+#cs .faq .view .commentForm textarea {
+  width: 100%;
+  height: 60px;
+  border: 1px solid #e4eaec;
+  padding: 6px;
+  box-sizing: border-box;
+  resize: none;
+}
+
+#cs .faq .view .commentForm div {
+  float: right;
+  margin-top: 10px;
 }
