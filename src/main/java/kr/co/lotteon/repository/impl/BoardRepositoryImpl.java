@@ -259,9 +259,11 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
         QueryResults<BoardEntity> results = jpaQueryFactory
                 .select(qBoardEntity)
                 .from(qBoardEntity)
-                // 수정하기
-                .where(qBoardEntity.group.eq("qna").and (qBoardEntity.status.eq("답변완료")))
-                .orderBy(qBoardEntity.rdate.desc())
+                .where(qBoardEntity.group.eq("qna"))
+                .orderBy(
+                        qBoardEntity.status.desc(), // 상태값을 기준으로 내림차순으로 정렬
+                        qBoardEntity.rdate.desc() // rdate를 기준으로 내림차순으로 정렬
+                )
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetchResults();
