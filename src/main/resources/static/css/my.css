@@ -1241,6 +1241,9 @@ footer p > strong {
     background-color: #e9e9e9;
     cursor: pointer;
 }
+#btnContainer {
+    text-align: right; /* 버튼을 오른쪽 정렬 */
+}
 
 #my #btnWithdraw {
     background: #e74929;

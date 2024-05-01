@@ -15,6 +15,9 @@ import kr.co.lotteon.service.my.MyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,6 +35,7 @@ public class MyController {
     private final BannerService bannerService;
     private final MemberService memberService;
     private final MyService myService;
+    private final AuthenticationManager authenticationManager;
 
     // my - home (마이페이지 메인) 페이지 매핑
     @GetMapping("/my/home")
@@ -70,6 +74,20 @@ public class MyController {
         memberService.save(memberDTO);
 
         return "redirect:/index?success=200";
+    }
+
+    @ResponseBody
+    @PostMapping("/my/withdraw")
+    public String withdraw(@RequestParam String uid, String inputPass) {
+        Authentication authentication = new UsernamePasswordAuthenticationToken(uid, inputPass);
+        Authentication result = authenticationManager.authenticate(authentication);
+
+        if (result.isAuthenticated()) {
+            memberService.updateWdate(uid);
+            return "success";
+        } else {
+            return "fail";
+        }
     }
 
 
@@ -119,6 +137,7 @@ public class MyController {
                 .qnaCount(qnaCount)
                 .build();
     }
+
 
 
 
