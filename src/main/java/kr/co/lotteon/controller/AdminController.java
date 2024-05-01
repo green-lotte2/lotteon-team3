@@ -339,7 +339,11 @@ public class AdminController {
         model.addAttribute("pageResponseDTO", adminMemberPageResponseDTO);
         return "/admin/member/list";
     }
-
+    // 관리자 회원 삭제
+    @GetMapping("/admin/member/delete/{uid}")
+    public ResponseEntity<?> memberDelete(@PathVariable("uid") String uid){
+        return adminService.deleteMember(uid);
+    }
     ////////////////  order  ///////////////////////////////////////////////////
     // 관리자 주문 현황 매핑
     @GetMapping("/admin/order/list")
