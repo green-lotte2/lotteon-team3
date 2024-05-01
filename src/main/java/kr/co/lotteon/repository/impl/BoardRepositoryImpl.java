@@ -243,4 +243,13 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
         // 페이지 처리용 page 객체 리턴
         return new PageImpl<>(content, pageable, total);
     }
+@Override
+    public int countByUidAndStatusIn (String uid, List<String> statusList){
+    return (int) jpaQueryFactory
+            .select(qBoardEntity)
+            .from(qBoardEntity)
+            .where(qBoardEntity.uid.eq(uid)
+                    .and(qBoardEntity.status.in(statusList)))
+            .fetchCount();
+}
 }

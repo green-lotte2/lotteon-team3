@@ -23,6 +23,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -122,16 +123,26 @@ public class MyController {
     @GetMapping("/my/myInfo")
     @ResponseBody
     public MyInfoDTO myInfo(@AuthenticationPrincipal Object principal) {
-        Member memberEntity = ((MyUserDetails) principal).getMember();
-        String uid = memberEntity.getUid();
+        Member member = ((MyUserDetails) principal).getMember();
+        String uid = member.getUid();
+
+        log.info("uid " + uid);
+
         int couponCount = myService.findCouponCountByUidAndUseYn(uid);
         log.info("쿠폰의 수"+couponCount);
-        int orderCount = myService.findOrderByUidAndOrdStatus(uid);
+
+        List<String> ordStatusList = Arrays.asList("배송준비", "배송중");
+        int orderCount = myService.countOrderItemsByUidAndOrdStatusIn(uid, ordStatusList);
         log.info("주문의 수"+orderCount);
-        int qnaCount = myService.findQnaByUidAndStatus(uid);
+
+        List<String> statusList = Arrays.asList("검토중", "답변완료");
+        int qnaCount = myService.countByUidAndStatusIn(uid,statusList);
         log.info("문의의 수"+qnaCount);
+
+        log.info("포인트 값"+member.getPoint());
+
         return MyInfoDTO.builder()
-                .myPoint(memberEntity.getPoint())
+                .myPoint(member.getPoint())
                 .couponCount(couponCount)
                 .orderCount(orderCount)
                 .qnaCount(qnaCount)

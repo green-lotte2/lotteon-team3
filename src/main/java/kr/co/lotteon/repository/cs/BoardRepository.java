@@ -38,7 +38,6 @@ public interface BoardRepository extends JpaRepository<BoardEntity, Integer>, Bo
     @Query("UPDATE BoardEntity a set a.status = '답변완료' where a.bno = :bno")
     void modifyStatusByBno(@Param("bno") int bno);
 
-    public int countByUidAndStatusNot(String uid, String status);
 
     @Query("SELECT b FROM BoardEntity b WHERE b.uid = :uid")
     public List<BoardEntity> findByUid(@Param("uid") String uid);

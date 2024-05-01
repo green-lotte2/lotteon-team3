@@ -43,12 +43,12 @@ public class MyService {
         return couponRepository.countByUidAndUseYn(uid, "Y");
     }
 
-    public int findOrderByUidAndOrdStatus(String uid) {
-        return orderItemRepository.countByUidAndOrdStatusNot(uid,"배송중");
+    public int countOrderItemsByUidAndOrdStatusIn(String uid, List<String> ordStatusList) {
+        return orderItemRepository.countByUidAndOrdStatusIn(uid, ordStatusList);
     }
 
-    public int findQnaByUidAndStatus(String uid) {
-        return boardRepository.countByUidAndStatusNot(uid, "답변완료");
+    public int countByUidAndStatusIn(String uid,List<String> statusList) {
+        return boardRepository.countByUidAndStatusIn(uid, statusList);
     }
 
     public List<BoardDTO> findByBoardAndUid(String uid) {
@@ -65,7 +65,7 @@ public class MyService {
         return boardRepository.countByUid(uid);
     }
 
-    // 회원 탈퇴
+
 
 
 }
