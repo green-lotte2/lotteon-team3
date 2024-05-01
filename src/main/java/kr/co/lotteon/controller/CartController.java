@@ -5,17 +5,24 @@ import kr.co.lotteon.service.product.CartService;
 import kr.co.lotteon.service.product.OptionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
-@RestController
+@Controller
 public class CartController {
 
     private final CartService cartService;
     private final OptionService optionService;
 
+    // 카트에 답기
     @PostMapping("/cart/insert")
     public ResponseEntity<CartDTO> insertCart(@RequestBody CartDTO cartDTO){
 
@@ -25,9 +32,19 @@ public class CartController {
         return ResponseEntity.ok(cartDTO);
     }
 
+    // 카트의 정보 가져오기
     @GetMapping("/cart/opValue/{prodNo}/{opName}")
     public ResponseEntity<?> selectOpvalue(@PathVariable int prodNo, @PathVariable String opName){
         log.info("prodNo : " + prodNo + ", opName : " + opName);
         return optionService.selectOpDetail(prodNo, opName);
+    }
+
+    @ResponseBody
+    @PostMapping("/cart/delete")
+    public ResponseEntity<?> deleteCart(@RequestBody Map<String, int[]> cartNoData){
+        int[] cartNoArray = cartNoData.get("cartNo");
+        log.info("카트 삭제 Controller" + cartNoArray);
+        cartService.deleteCart(cartNoArray);
+        return ResponseEntity.ok().body(cartNoData);
     }
 }
