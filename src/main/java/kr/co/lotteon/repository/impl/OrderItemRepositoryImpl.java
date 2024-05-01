@@ -246,6 +246,7 @@ public class OrderItemRepositoryImpl implements OrderItemRepositoryCustom {
         return new PageImpl<>(results.getResults(), pageable, results.getTotal());
     }
 
+
     @Override
     public int countByUidAndOrdStatusIn(String uid, List<String> ordStatusList) {
         return (int) jpaQueryFactory
