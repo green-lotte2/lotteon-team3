@@ -1,6 +1,6 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{/layout/sellerListLayout}">
+      layout:decorate="~{/layout/adminListLayout}">
 
             <section id="admin-index" layout:fragment="content">
                 <script>
@@ -200,7 +200,7 @@
                                 styleColor = "color: #e8bf18";
                                 break;
                             case "주문취소" :
-                                ordStatus = "cancel";
+                                ordStatus = "ready";
                                 styleColor = "color: #0ca03c";
                                 break;
                             case "교환요청" :
@@ -233,7 +233,7 @@
                     }
                 </script>
                 <nav>
-                    <h3>판매자 주문관리</h3>
+                    <h3>관리자 주문관리</h3>
                     <p>
                         HOME > <strong>주문현황</strong>
                     </p>
@@ -258,13 +258,14 @@
                 <nav class="navbar navbar-expand-lg navbar-light bg-light">
                     <div class="container-fluid">
                         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                            <form th:action="@{/seller/order/list}" method="get" class="d-flex" id="searchForm">
+                            <form th:action="@{/admin/order/list}" method="get" class="d-flex" id="searchForm">
                                 <select class="form-select form-select" name="type" aria-label=".form-select-sm example" onchange="findCate(this)">
                                     <option value="all">전체</option>
                                     <option value="prodName">상품명</option>
                                     <option value="prodNo">상품번호</option>
                                     <option value="cate1" >상품분류</option>
                                     <option value="company">제조사</option>
+                                    <option value="seller">판매자</option>
                                     <option value="ordStatus">주문상태</option>
                                 </select>
                                 <input class="form-control me-2" type="search" name="keyword" id="keywordInput" placeholder="Search" aria-label="Search">

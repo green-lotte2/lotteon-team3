@@ -63,7 +63,6 @@ main > aside {
 }
 /* 인덱스 카드 */
 body{
-    margin-top:20px;
     background:#FAFAFA;
 }
 .order-card {
@@ -2117,7 +2116,7 @@ col {
     display: none;
     padding: 0px;
     width: 550px !important;
-    height: 300px !important;
+    height: 200px !important;
     background-color: rgba(17, 17, 18, 0.6);
     z-index: 1000;
 }
@@ -2125,7 +2124,7 @@ col {
     width: 550px !important;
     height: 300px;
     float: none !important;
-    margin: 100px;
+    margin: 10px 60px;
     padding: 10px;
 }
 #statusModal .btnOrdStatus{

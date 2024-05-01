@@ -229,7 +229,7 @@ public class SellerController {
         }else {
             // 검색 주문 목록 조회 //////
             log.info("키워드 검색 Cont" + adminPageRequestDTO.getKeyword());
-            sellerOrderPageResponseDTO = sellerService.selectOrderList(adminPageRequestDTO);
+            sellerOrderPageResponseDTO = sellerService.searchOrderList(adminPageRequestDTO);
         }
         model.addAttribute("pageResponseDTO", sellerOrderPageResponseDTO);
         return "/seller/order/list";
@@ -249,7 +249,14 @@ public class SellerController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("JSON 변환 오류");
         }
     }
-
+    // 주문 상태 변경
+    @GetMapping("/seller/ordStat/{ordItemno}/{ordStatus}")
+    @ResponseBody
+    public ResponseEntity<?> orderStatus(@PathVariable("ordItemno") int ordItemno, @PathVariable("ordStatus") String ordStatus){
+        log.info("주문 상태 변경 Cont 1: " + ordItemno);
+        log.info("주문 상태 변경 Cont 2: " + ordStatus);
+        return sellerService.modifyOrdStatus(ordItemno ,ordStatus);
+    }
     ////////////////  cs  ///////////////////////////////////////////////////
     // 판매자 게시판 목록 페이지 매핑
     @GetMapping("/seller/cs/list")

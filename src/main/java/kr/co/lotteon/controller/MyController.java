@@ -3,11 +3,16 @@ package kr.co.lotteon.controller;
 import kr.co.lotteon.dto.admin.BannerDTO;
 import kr.co.lotteon.dto.cs.BoardDTO;
 import kr.co.lotteon.dto.cs.CsPageRequestDTO;
+
+import kr.co.lotteon.dto.cs.CsPageResponseDTO;
 import kr.co.lotteon.dto.member.CouponDTO;
 import kr.co.lotteon.dto.member.MemberDTO;
 import kr.co.lotteon.dto.member.MyInfoDTO;
+import kr.co.lotteon.dto.product.PageRequestDTO;
+import kr.co.lotteon.dto.product.PageResponseDTO;
 import kr.co.lotteon.dto.member.point.PointPageRequestDTO;
 import kr.co.lotteon.dto.member.point.PointPageResponseDTO;
+
 import kr.co.lotteon.entity.member.Member;
 import kr.co.lotteon.entity.member.Point;
 import kr.co.lotteon.security.MyUserDetails;
@@ -16,10 +21,20 @@ import kr.co.lotteon.service.member.MemberService;
 import kr.co.lotteon.service.my.MyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+
+import java.util.Arrays;
+import java.util.HashMap;
 
 import java.util.List;
 
@@ -31,6 +46,7 @@ public class MyController {
     private final BannerService bannerService;
     private final MemberService memberService;
     private final MyService myService;
+    private final AuthenticationManager authenticationManager;
 
     // my - home (마이페이지 메인) 페이지 매핑
     @GetMapping("/my/home")
@@ -71,6 +87,20 @@ public class MyController {
         return "redirect:/index?success=200";
     }
 
+    @ResponseBody
+    @PostMapping("/my/withdraw")
+    public String withdraw(@RequestParam String uid, String inputPass) {
+        Authentication authentication = new UsernamePasswordAuthenticationToken(uid, inputPass);
+        Authentication result = authenticationManager.authenticate(authentication);
+
+        if (result.isAuthenticated()) {
+            memberService.updateWdate(uid);
+            return "success";
+        } else {
+            return "fail";
+        }
+    }
+
 
     // my - order (나의 전체 주문내역) 페이지 매핑
     @GetMapping("/my/order")
@@ -96,7 +126,7 @@ public class MyController {
         int count = myService.findCouponCountByUidAndUseYn(uid);
 
         model.addAttribute("coupons",coupons);
-        model.addAttribute("count : ",count);
+        model.addAttribute("count",count);
 
         log.info("내 쿠폰"+coupons);
         log.info("count"+count);
@@ -108,16 +138,26 @@ public class MyController {
     @GetMapping("/my/myInfo")
     @ResponseBody
     public MyInfoDTO myInfo(@AuthenticationPrincipal Object principal) {
-        Member memberEntity = ((MyUserDetails) principal).getMember();
-        String uid = memberEntity.getUid();
+        Member member = ((MyUserDetails) principal).getMember();
+        String uid = member.getUid();
+
+        log.info("uid " + uid);
+
         int couponCount = myService.findCouponCountByUidAndUseYn(uid);
         log.info("쿠폰의 수"+couponCount);
-        int orderCount = myService.findOrderByUidAndOrdStatus(uid);
+
+        List<String> ordStatusList = Arrays.asList("배송준비", "배송중");
+        int orderCount = myService.countOrderItemsByUidAndOrdStatusIn(uid, ordStatusList);
         log.info("주문의 수"+orderCount);
-        int qnaCount = myService.findQnaByUidAndStatus(uid);
+
+        List<String> statusList = Arrays.asList("검토중", "답변완료");
+        int qnaCount = myService.countByUidAndStatusIn(uid,statusList);
         log.info("문의의 수"+qnaCount);
+
+        log.info("포인트 값"+member.getPoint());
+
         return MyInfoDTO.builder()
-                .myPoint(memberEntity.getPoint())
+                .myPoint(member.getPoint())
                 .couponCount(couponCount)
                 .orderCount(orderCount)
                 .qnaCount(qnaCount)
@@ -126,9 +166,10 @@ public class MyController {
 
 
 
+
     // my - qna (마이페이지 문의하기) 페이지 매핑
     @GetMapping("/my/qna")
-    public String qna(Model model,@RequestParam String uid){
+    public String qna(Model model, @RequestParam String uid, CsPageRequestDTO csPageRequestDTO){
 
         List<BoardDTO> boards = myService.findByBoardAndUid(uid);
         int count = myService.countByUid(uid);
@@ -138,6 +179,14 @@ public class MyController {
 
         log.info("내 문의 : "+boards);
         log.info("내 문의 수 : "+count);
+
+        // 문의 목록 조회
+        CsPageResponseDTO csPageResponseDTO = null;
+        csPageResponseDTO = myService.QnaList(csPageRequestDTO);
+
+        model.addAttribute("csPageResponseDTO", csPageResponseDTO);
+
+        log.info("문의 목록 조회"+csPageResponseDTO);
 
         return "/my/qna";
     }

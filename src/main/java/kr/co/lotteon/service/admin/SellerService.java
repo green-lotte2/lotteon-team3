@@ -16,6 +16,7 @@ import kr.co.lotteon.entity.cs.BoardTypeEntity;
 import kr.co.lotteon.entity.member.Member;
 import kr.co.lotteon.entity.member.Terms;
 import kr.co.lotteon.entity.product.*;
+import kr.co.lotteon.mapper.OrderItemMapper;
 import kr.co.lotteon.mapper.ProductMapper;
 import kr.co.lotteon.repository.BannerRepository;
 import kr.co.lotteon.repository.cs.BoardCateRepository;
@@ -71,6 +72,7 @@ public class SellerService {
 
     private final ModelMapper modelMapper;
     private final ProductMapper productMapper;
+    private final OrderItemMapper orderItemMapper;
 
     @Value("${img.upload.path}")
     private String imgUploadPath;
@@ -147,11 +149,7 @@ public class SellerService {
     public OrderCardDTO selectCountSumByPeriod(LocalDateTime period){
 
         // 현재 로그인 중인 사용자 정보 불러오기
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        // 로그인 중일 때 해당 사용자 id를 seller에 입력
-        MyUserDetails userDetails = (MyUserDetails) authentication.getPrincipal();
-        String sellerId = userDetails.getMember().getName();
+        String sellerId = whoAmI();
 
         // 해당 판매자의 상품번호 전부 조회
         List<Integer> prodNos = productRepository.selectProdNoForQna(sellerId);
@@ -643,6 +641,124 @@ public class SellerService {
                 .dtoList(dtoList)
                 .total(total)
                 .build();
+    }
+    // 판매자 주문 검색 현황
+    @Transactional
+    public SellerOrderPageResponseDTO searchOrderList(AdminPageRequestDTO adminPageRequestDTO){
+        log.info("판매자 주문 검색 검색 Serv 1  ");
+        Pageable pageable = adminPageRequestDTO.getPageable("no");
+
+        if(adminPageRequestDTO.getType().equals("ordStatus")) {
+            switch (adminPageRequestDTO.getKeyword()) {
+                case "prepare":
+                    adminPageRequestDTO.setKeyword("배송준비");
+                    break;
+                case "going":
+                    adminPageRequestDTO.setKeyword("배송중");
+                    break;
+                case "delivered":
+                    adminPageRequestDTO.setKeyword("배송완료");
+                    break;
+                case "cancel":
+                    adminPageRequestDTO.setKeyword("주문취소");
+                    break;
+                case "exchange":
+                    adminPageRequestDTO.setKeyword("교환요청");
+                    break;
+                case "refund":
+                    adminPageRequestDTO.setKeyword("환불요청");
+                    break;
+                case "complete":
+                    adminPageRequestDTO.setKeyword("처리완료");
+                    break;
+            }
+        }
+        // 현재 로그인 중인 사용자 정보 불러오기
+        String sellerId = whoAmI();
+
+        // 해당 판매자의 상품번호 전부 조회
+        List<Integer> prodNos = productRepository.selectProdNoForQna(sellerId);
+
+        // order, orderItem, product, option 정보 DB 조회
+        Page<Tuple> results = orderItemRepository.searchOrderList(adminPageRequestDTO, pageable, prodNos);
+        log.info("판매자 주문 검색 Serv 3 : " + results.getContent().size());
+        List<OrderListDTO> dtoList = results.getContent().stream()
+                .map(tuple -> {
+
+                    OrderListDTO orderListDTO = new OrderListDTO();
+
+                    // Tuple -> Entity
+                    OrderItem orderItem = tuple.get(0, OrderItem.class);
+                    Order order         = tuple.get(1, Order.class);
+                    Product product     = tuple.get(2, Product.class);
+                    Option option       = tuple.get(3, Option.class);
+
+                    // Entity -> DTO
+                    OrderItemDTO orderItemDTO   = modelMapper.map(orderItem, OrderItemDTO.class);
+                    OrderDTO orderDTO           = modelMapper.map(order, OrderDTO.class);
+                    ProductDTO productDTO       = modelMapper.map(product, ProductDTO.class);
+                    if (option != null) {
+                        OptionDTO optionDTO = modelMapper.map(option, OptionDTO.class);
+                        orderListDTO.setOptionDTO(optionDTO);
+                    } else {
+                        // Option이 null인 경우 처리
+                        orderListDTO.setOptionDTO(null);
+                    }
+                    // DTO들을 OrderListDTO에 포함
+                    orderListDTO.setOrderItemDTO(orderItemDTO);
+                    orderListDTO.setOrderDTO(orderDTO);
+                    orderListDTO.setProductDTO(productDTO);
+                    return orderListDTO;
+
+                })
+                .toList();
+
+        log.info("판매자 주문 검색 Serv 4 : " + dtoList);
+
+        // total 값
+        int total = (int) results.getTotalElements();
+
+        // List<OrderListDTO>와 page 정보 리턴
+        return SellerOrderPageResponseDTO.builder()
+                .adminPageRequestDTO(adminPageRequestDTO)
+                .dtoList(dtoList)
+                .total(total)
+                .build();
+    }
+
+    // 판매자 주문 상태 변경
+    public ResponseEntity<?> modifyOrdStatus(int ordItemno, String ordStatus){
+        log.info("주문 상태 변경 Serv 1: " + ordItemno);
+        log.info("주문 상태 변경 Serv 2: " + ordStatus);
+
+        switch (ordStatus){
+            case "prepare" :
+                ordStatus = "배송준비";
+                break;
+            case "going" :
+                ordStatus = "배송중";
+                break;
+            case "delivered" :
+                ordStatus = "배송완료";
+                break;
+            case "cancel" :
+                ordStatus = "주문취소";
+                break;
+            case "exchange" :
+                ordStatus = "교환요청";
+                break;
+            case "refund" :
+                ordStatus = "환불요청";
+                break;
+            case "complete" :
+                ordStatus = "처리완료";
+                break;
+        }
+
+        // 상태 업데이트
+        orderItemMapper.updateOrdStatus(ordStatus, ordItemno);
+
+        return ResponseEntity.ok().body("update stauts ...");
     }
     // 판매자 게시판 관리 - 게시글 검색 카테고리 조회
     public List<BoardCateDTO> findBoardCate() {

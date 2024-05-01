@@ -338,4 +338,41 @@ window.onload = function () {
         // 폼 전송
         return true;
     }
+
+    document.getElementById('btnWithdraw').addEventListener('click', function (e) {
+        let result = confirm("회원 탈퇴를 희망하시는게 맞나요?");
+        if (result) {
+            document.getElementById('popWithdraw').classList.add('on'); // 비밀번호 입력 팝업
+
+            document.querySelector('.btnPopWithdraw').addEventListener('click', function (e) {
+                const uid = document.querySelector('input[name=uid]').value;
+                const inputPass = document.querySelector('input[name=passCheck]').value;
+
+                fetch('/lotteon/my/withdraw', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: 'uid=' + encodeURIComponent(uid) + '&inputPass=' + encodeURIComponent(inputPass)
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.text();
+                    })
+                    .then(data => {
+                        if (data === "success") {
+                            alert('탈퇴가 완료되었습니다.');
+                            window.location.href = "/lotteon/member/logout";
+                        } else {
+                            alert("비밀번호가 일치하지 않습니다.");
+                        }
+                    })
+                    .catch(error => {
+                        console.error('There has been a problem with your fetch operation:', error);
+                    });
+            });
+        }
+    });
 }

@@ -20,6 +20,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
@@ -71,6 +72,12 @@ public class MemberService {
 
         Optional<Member> member=memberRepository.findById(uid);
         return modelMapper.map(member, MemberDTO.class);
+    }
+    //회원탈퇴
+    public void updateWdate(String uid) {
+        Member member = memberRepository.findById(uid).get();
+        member.setWdate(LocalDateTime.now());
+        memberRepository.save(member);
     }
 
 
