@@ -32,9 +32,9 @@
                                 <th>상태</th>
                             </tr>
                             <tr th:each="board , index : ${csPageResponseDTO.dtoList}">
+<!--                                중첩for문으로 type 들고오기-->
                                 <td class="no">[[${index.index + 1}]]</td>
-                                <td class="type">[[${board.cate}]]</td>
-                                <td class="tit"><a href="#">[[${board.title}]]</a></td>
+                                <td class="type" th:text="${board.cate == 'member' ? '회원' : (board.cate == 'coupon' ? '쿠폰/이벤트' : board.cate)}"></td>                                <td class="tit"><a href="#">[[${board.title}]]</a></td>
                                 <td class="date">[[${#temporals.format(board.rdate, 'yyyy-MM-dd')}]]</td>
                                 <td class="status" th:style="${board.status == '답변완료'} ? 'font-weight: bold;' : 'color: #999'">
                                     [[${board.status}]]
