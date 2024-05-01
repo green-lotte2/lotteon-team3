@@ -1,6 +1,6 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{/layout/sellerListLayout}">
+      layout:decorate="~{/layout/adminListLayout}">
 
             <section id="admin-index" layout:fragment="content">
                 <script>
@@ -55,6 +55,56 @@
                                 }
                             }
                         });
+                    }
+                    // type 상품 분류 선택 시 cate1 조회후 select 태그 추가
+                    async function findCate(type){
+                        console.log(type);
+                        const searchForm = document.getElementById('searchForm');
+                        const keywordInput = document.getElementById('keywordInput');
+                        if(type == 'cate1') {
+                            console.log(type);
+
+                            const cate1s = await fetchGet('/lotteon/admin/findCate1')
+                            // 기존 <input> 태그 삭제
+                            keywordInput.remove();
+
+                            // cate1용 <select> 태그 생성
+                            let cate2Option = `<select name="keyword" id="keywordInput" onchange="formSubmit()">`;
+
+                            // cate1 갯수만큼  <option> 태그 추가
+                            for (const cate1 of cate1s) {
+                                cate2Option += `<option value="${cate1.cate1}">${cate1.c1Name}</option>`;
+                            }
+                            cate2Option += `</select>`;
+                            console.log("cate2Option : " + cate2Option);
+                            // 태그 문자열 삽입
+                            searchForm.insertAdjacentHTML('beforeend', cate2Option);
+
+                            // 전체 조회면
+                        }else if(type == 'all'){
+                            keywordInput.remove();
+                            searchForm.submit();
+
+                            // 선택 x
+                        }else if(type == 'noselect'){
+                            keywordInput.remove();
+
+                            const noInputTag = `<input class="form-control me-2" type="search" name="keyword" id="keywordInput" placeholder="Search" aria-label="Search">`;
+                            console.log("noInputTag : " + noInputTag);
+                            // 태그 문자열 삽입
+                            searchForm.insertAdjacentHTML('beforeend', noInputTag);
+
+                        }else{
+                            console.log(type);
+
+                            // 기존 <input> 태그 삭제
+                            keywordInput.remove();
+
+                            const keywordInputTag = `<input class="form-control me-2" type="search" name="keyword" id="keywordInput" placeholder="Search" aria-label="Search">`;
+                            console.log("keywordInputTag : " + keywordInputTag);
+                            // 태그 문자열 삽입
+                            searchForm.insertAdjacentHTML('beforeend', keywordInputTag);
+                        }
                     }
                     // 아코디언 상태 변경
                     function accordionControl(button){
@@ -167,6 +217,25 @@
                     </table>
                 </article>
                 <h4>쇼핑몰 주문현황</h4>
+                <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                    <div class="container-fluid">
+                        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                            <form class="d-flex" id="searchForm">
+                                <select class="form-select form-select" aria-label=".form-select-sm example" onchange="findCate(this.value)">
+                                    <option value="all">전체</option>
+                                    <option value="prodName">상품명</option>
+                                    <option value="prodNo">상품번호</option>
+                                    <option value="cate1" >상품분류</option>
+                                    <option value="company">제조사</option>
+                                    <option value="seller">판매자</option>
+                                    <option value="ordStatus">주문상태</option>
+                                </select>
+                                <input class="form-control me-2" type="search" name="keyword" id="keywordInput" placeholder="Search" aria-label="Search">
+                                <button class="btn btn-outline-success" type="submit">Search</button>
+                            </form>
+                        </div>
+                    </div>
+                </nav>
                 <th:block th:if="${pageResponseDTO.dtoList.isEmpty()}">
                     <div>
                         <img th:src="@{/admin/images/noproduct.png}" style="width: 900px; height: 460px">

@@ -2,6 +2,7 @@ package kr.co.lotteon.repository.impl;
 
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.co.lotteon.dto.admin.AdminPageRequestDTO;
@@ -124,6 +125,68 @@ public class OrderItemRepositoryImpl implements OrderItemRepositoryCustom {
                 .limit(pageable.getPageSize())
                 .fetchResults();
         log.info("판매자 주문 현황 조회 Impl 3 : " + results);
+        return new PageImpl<>(results.getResults(), pageable, results.getTotal());
+    }
+    // 판매자 주문 현황 리스트 검색 조회
+    public Page<Tuple> searchOrderList(AdminPageRequestDTO pageRequestDTO, Pageable pageable, List<Integer> prodNos){
+        log.info("판매자 주문 현황 검색 Impl 1 : " + pageRequestDTO);
+        log.info("판매자 주문 현황 검색 Impl 2 : " + prodNos);
+        log.info("상품 목록 키워드 검색 impl 3 : " + pageRequestDTO.getKeyword());
+        String keyword = pageRequestDTO.getKeyword();
+        String type = pageRequestDTO.getType();
+
+        BooleanExpression expression = null;
+
+        // 검색 종류에 따른 where절 표현식 생성
+        if(type.equals("prodName")){
+            expression = qProduct.prodName.contains(keyword).and(qOrderItem.prodNo.in(prodNos));
+            log.info("prodName 검색 : " + expression);
+
+        }else if(type.equals("prodNo")){
+            // 입력된 키워드를 정수형으로 변환
+            int prodNo = Integer.parseInt(keyword);
+            expression = qProduct.prodNo.eq(prodNo).and(qOrderItem.prodNo.in(prodNos));
+            log.info("prodNo 검색 : " + expression);
+
+        }else if(type.equals("cate1")){
+            int cate1 = Integer.parseInt(keyword);
+            expression = qProduct.cate1.eq(cate1).and(qOrderItem.prodNo.in(prodNos));
+            log.info("cate1 검색 : " + expression);
+
+        }else if(type.equals("company")){
+            expression = qProduct.company.contains(keyword).and(qOrderItem.prodNo.in(prodNos));
+            log.info("company 검색 : " + expression);
+        }
+
+        QueryResults<Tuple> results =  jpaQueryFactory.select(qOrderItem, qOrder, qProduct, qOption)
+                .from(qOrderItem)
+                .join(qOrder).on(qOrderItem.ordNo.eq(qOrder.ordNo))
+                .join(qProduct).on(qOrderItem.prodNo.eq(qProduct.prodNo))
+                .leftJoin(qOption).on(qOption.opNo.eq(qOrderItem.opNo))
+                .where()
+                .orderBy(qOrderItem.ordItemno.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetchResults();
+
+        return null;
+    }
+    // 관리자 주문 현황
+    @Override
+    public Page<Tuple> selectOrderListAll(AdminPageRequestDTO pageRequestDTO, Pageable pageable){
+        log.info("관리자 주문 현황 조회 Impl 1 : " + pageRequestDTO);
+
+        QueryResults<Tuple> results =  jpaQueryFactory.select(qOrderItem, qOrder, qProduct, qOption)
+                .from(qOrderItem)
+                .join(qOrder).on(qOrderItem.ordNo.eq(qOrder.ordNo))
+                .join(qProduct).on(qOrderItem.prodNo.eq(qProduct.prodNo))
+                .leftJoin(qOption).on(qOption.opNo.eq(qOrderItem.opNo))
+                .orderBy(qOrderItem.ordItemno.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetchResults();
+
+        log.info("관리자 주문 현황 조회 Impl 2 : " + results);
         return new PageImpl<>(results.getResults(), pageable, results.getTotal());
     }
 }

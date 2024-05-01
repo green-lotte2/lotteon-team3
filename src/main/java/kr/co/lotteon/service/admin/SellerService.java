@@ -16,6 +16,7 @@ import kr.co.lotteon.entity.cs.BoardTypeEntity;
 import kr.co.lotteon.entity.member.Member;
 import kr.co.lotteon.entity.member.Terms;
 import kr.co.lotteon.entity.product.*;
+import kr.co.lotteon.mapper.OrderItemMapper;
 import kr.co.lotteon.mapper.ProductMapper;
 import kr.co.lotteon.repository.BannerRepository;
 import kr.co.lotteon.repository.cs.BoardCateRepository;
@@ -71,6 +72,7 @@ public class SellerService {
 
     private final ModelMapper modelMapper;
     private final ProductMapper productMapper;
+    private final OrderItemMapper orderItemMapper;
 
     @Value("${img.upload.path}")
     private String imgUploadPath;
@@ -643,6 +645,40 @@ public class SellerService {
                 .dtoList(dtoList)
                 .total(total)
                 .build();
+    }
+    // 판매자 주문 상태 변경
+    public ResponseEntity<?> modifyOrdStatus(int ordItemno, String ordStatus){
+        log.info("주문 상태 변경 Serv 1: " + ordItemno);
+        log.info("주문 상태 변경 Serv 2: " + ordStatus);
+
+        switch (ordStatus){
+            case "prepare" :
+                ordStatus = "배송준비";
+                break;
+            case "going" :
+                ordStatus = "배송중";
+                break;
+            case "delivered" :
+                ordStatus = "배송완료";
+                break;
+            case "ready" :
+                ordStatus = "주문취소";
+                break;
+            case "exchange" :
+                ordStatus = "교환요청";
+                break;
+            case "refund" :
+                ordStatus = "환불요청";
+                break;
+            case "complete" :
+                ordStatus = "처리완료";
+                break;
+        }
+
+        // 상태 업데이트
+        orderItemMapper.updateOrdStatus(ordStatus, ordItemno);
+
+        return ResponseEntity.ok().body("update stauts ...");
     }
     // 판매자 게시판 관리 - 게시글 검색 카테고리 조회
     public List<BoardCateDTO> findBoardCate() {

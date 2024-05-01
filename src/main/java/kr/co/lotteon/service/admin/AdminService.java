@@ -12,9 +12,7 @@ import kr.co.lotteon.entity.cs.BoardEntity;
 import kr.co.lotteon.entity.cs.BoardTypeEntity;
 import kr.co.lotteon.entity.member.Member;
 import kr.co.lotteon.entity.member.Terms;
-import kr.co.lotteon.entity.product.Cate1;
-import kr.co.lotteon.entity.product.Option;
-import kr.co.lotteon.entity.product.Product;
+import kr.co.lotteon.entity.product.*;
 import kr.co.lotteon.mapper.ProductMapper;
 import kr.co.lotteon.repository.BannerRepository;
 import kr.co.lotteon.repository.cs.*;
@@ -60,8 +58,10 @@ public class AdminService {
     private final BannerRepository bannerRepository;
     private final BoardFileRepository fileRepository;
     private final CommentRepository commentRepository;
+    private final OrderItemRepository orderItemRepository;
 
     private final ProductMapper productMapper;
+
 
     private final ModelMapper modelMapper;
 
@@ -727,7 +727,58 @@ public class AdminService {
                 .total(total)
                 .build();
     }
+    // 관리자 주문 현황
+    @Transactional
+    public SellerOrderPageResponseDTO selectOrderList(AdminPageRequestDTO adminPageRequestDTO){
+        log.info("관리자 주문 현황 Serv 1  ");
+        Pageable pageable = adminPageRequestDTO.getPageable("no");
+        // order, orderItem, product, option 정보 DB 조회
+        Page<Tuple> results = orderItemRepository.selectOrderListAll(adminPageRequestDTO, pageable);
+        log.info("관리자 주문 현황 Serv 3 : " + results.getContent().size());
+        List<OrderListDTO> dtoList = results.getContent().stream()
+                .map(tuple -> {
 
+                    OrderListDTO orderListDTO = new OrderListDTO();
+
+                    // Tuple -> Entity
+                    OrderItem orderItem = tuple.get(0, OrderItem.class);
+                    Order order         = tuple.get(1, Order.class);
+                    Product product     = tuple.get(2, Product.class);
+                    Option option       = tuple.get(3, Option.class);
+
+                    // Entity -> DTO
+                    OrderItemDTO orderItemDTO   = modelMapper.map(orderItem, OrderItemDTO.class);
+                    OrderDTO orderDTO           = modelMapper.map(order, OrderDTO.class);
+                    ProductDTO productDTO       = modelMapper.map(product, ProductDTO.class);
+                    if (option != null) {
+                        OptionDTO optionDTO = modelMapper.map(option, OptionDTO.class);
+                        orderListDTO.setOptionDTO(optionDTO);
+                    } else {
+                        // Option이 null인 경우 처리
+                        orderListDTO.setOptionDTO(null);
+                    }
+                    // DTO들을 OrderListDTO에 포함
+                    orderListDTO.setOrderItemDTO(orderItemDTO);
+                    orderListDTO.setOrderDTO(orderDTO);
+                    orderListDTO.setProductDTO(productDTO);
+                    log.info("stream 내부 orderListDTO : " + orderListDTO);
+                    return orderListDTO;
+
+                })
+                .toList();
+
+        log.info("판매자 주문 현황 Serv 4 : " + dtoList);
+
+        // total 값
+        int total = (int) results.getTotalElements();
+
+        // List<OrderListDTO>와 page 정보 리턴
+        return SellerOrderPageResponseDTO.builder()
+                .adminPageRequestDTO(adminPageRequestDTO)
+                .dtoList(dtoList)
+                .total(total)
+                .build();
+    }
     // 이미지 리사이징 함수 - width, height
     public String imgResizing(MultipartFile file, String orgPath, String path, int targetWidth, int targetHeight) {
         String oName = file.getOriginalFilename();
