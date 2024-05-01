@@ -4,9 +4,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import kr.co.lotteon.dto.admin.BannerDTO;
 import kr.co.lotteon.dto.cs.BoardDTO;
+import kr.co.lotteon.dto.cs.CsPageRequestDTO;
+import kr.co.lotteon.dto.cs.CsPageResponseDTO;
 import kr.co.lotteon.dto.member.CouponDTO;
 import kr.co.lotteon.dto.member.MemberDTO;
 import kr.co.lotteon.dto.member.MyInfoDTO;
+import kr.co.lotteon.dto.product.PageRequestDTO;
+import kr.co.lotteon.dto.product.PageResponseDTO;
 import kr.co.lotteon.entity.member.Member;
 import kr.co.lotteon.security.MyUserDetails;
 import kr.co.lotteon.service.admin.BannerService;
@@ -154,7 +158,7 @@ public class MyController {
 
     // my - qna (마이페이지 문의하기) 페이지 매핑
     @GetMapping("/my/qna")
-    public String qna(Model model,@RequestParam String uid){
+    public String qna(Model model, @RequestParam String uid, CsPageRequestDTO csPageRequestDTO){
 
         List<BoardDTO> boards = myService.findByBoardAndUid(uid);
         int count = myService.countByUid(uid);
@@ -164,6 +168,14 @@ public class MyController {
 
         log.info("내 문의 : "+boards);
         log.info("내 문의 수 : "+count);
+
+        // 문의 목록 조회
+        CsPageResponseDTO csPageResponseDTO = null;
+        csPageResponseDTO = myService.QnaList(csPageRequestDTO);
+
+        model.addAttribute("csPageResponseDTO", csPageResponseDTO);
+
+        log.info("문의 목록 조회"+csPageResponseDTO);
 
         return "/my/qna";
     }

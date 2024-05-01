@@ -1,10 +1,15 @@
 package kr.co.lotteon.service.my;
 
 import kr.co.lotteon.dto.cs.BoardDTO;
+import kr.co.lotteon.dto.cs.CsPageRequestDTO;
+import kr.co.lotteon.dto.cs.CsPageResponseDTO;
 import kr.co.lotteon.dto.member.CouponDTO;
+import kr.co.lotteon.dto.product.PageResponseDTO;
+import kr.co.lotteon.dto.product.ProductDTO;
 import kr.co.lotteon.entity.cs.BoardEntity;
 import kr.co.lotteon.entity.member.Coupon;
 import kr.co.lotteon.entity.member.Member;
+import kr.co.lotteon.entity.product.Product;
 import kr.co.lotteon.repository.cs.BoardRepository;
 import kr.co.lotteon.repository.member.MemberRepository;
 import kr.co.lotteon.repository.my.CouponRepository;
@@ -12,6 +17,8 @@ import kr.co.lotteon.repository.product.OrderItemRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -63,6 +70,30 @@ public class MyService {
     public int countByUid(String uid){
 
         return boardRepository.countByUid(uid);
+    }
+
+    public CsPageResponseDTO QnaList(CsPageRequestDTO csPageRequestDTO){
+
+        log.info("문의 목록 조회 1" + csPageRequestDTO);
+
+        Pageable pageable = csPageRequestDTO.getPageable("bno");
+
+        Page<BoardEntity> boardsPage = boardRepository.memberSelectBoards(csPageRequestDTO, pageable);
+        log.info("문의 목록 조회 2" + boardsPage);
+
+        // Page<Product>를 List<ProductDTO>로 변환
+        List<BoardDTO> boardDTOS = boardsPage.getContent().stream()
+                .map(entity-> modelMapper.map(entity, BoardDTO.class))
+                .toList();
+        log.info("문의 목록 조회 3" + boardDTOS);
+
+        int total = (int) boardsPage.getTotalElements();
+
+        return CsPageResponseDTO.builder()
+                .csPageRequestDTO(csPageRequestDTO)
+                .dtoList(boardDTOS)
+                .total(total)
+                .build();
     }
 
 
