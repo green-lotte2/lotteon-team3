@@ -4,7 +4,9 @@ import kr.co.lotteon.dto.cs.BoardDTO;
 import kr.co.lotteon.dto.member.CouponDTO;
 import kr.co.lotteon.entity.cs.BoardEntity;
 import kr.co.lotteon.entity.member.Coupon;
+import kr.co.lotteon.entity.member.Member;
 import kr.co.lotteon.repository.cs.BoardRepository;
+import kr.co.lotteon.repository.member.MemberRepository;
 import kr.co.lotteon.repository.my.CouponRepository;
 import kr.co.lotteon.repository.product.OrderItemRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,12 +43,12 @@ public class MyService {
         return couponRepository.countByUidAndUseYn(uid, "Y");
     }
 
-    public int findOrderByUidAndOrdStatus(String uid) {
-        return orderItemRepository.countByUidAndOrdStatusNot(uid,"배송중");
+    public int countOrderItemsByUidAndOrdStatusIn(String uid, List<String> ordStatusList) {
+        return orderItemRepository.countByUidAndOrdStatusIn(uid, ordStatusList);
     }
 
-    public int findQnaByUidAndStatus(String uid) {
-        return boardRepository.countByUidAndStatusNot(uid, "답변완료");
+    public int countByUidAndStatusIn(String uid,List<String> statusList) {
+        return boardRepository.countByUidAndStatusIn(uid, statusList);
     }
 
     public List<BoardDTO> findByBoardAndUid(String uid) {
@@ -61,5 +64,8 @@ public class MyService {
 
         return boardRepository.countByUid(uid);
     }
+
+
+
 
 }

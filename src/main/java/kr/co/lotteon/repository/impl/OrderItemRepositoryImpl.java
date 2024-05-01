@@ -244,5 +244,15 @@ public class OrderItemRepositoryImpl implements OrderItemRepositoryCustom {
 
         log.info("관리자 주문 현황 리스트 검색 조회 Impl 3 : " + results);
         return new PageImpl<>(results.getResults(), pageable, results.getTotal());
+
+
+    @Override
+    public int countByUidAndOrdStatusIn(String uid, List<String> ordStatusList) {
+        return (int) jpaQueryFactory
+                .select(qOrderItem)
+                .from(qOrderItem)
+                .where(qOrderItem.uid.eq(uid)
+                        .and(qOrderItem.ordStatus.in(ordStatusList)))
+                .fetchCount();
     }
 }
