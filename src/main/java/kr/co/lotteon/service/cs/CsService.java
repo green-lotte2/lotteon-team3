@@ -31,6 +31,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -48,14 +49,20 @@ public class CsService {
     // 글목록(notice, qna)
     public CsPageResponseDTO findByCate(CsPageRequestDTO csPageRequestDTO) {
 
+        // CsPageRequestDTO에서 Pageable을 생성
         Pageable pageable = csPageRequestDTO.getPageable("bno");
 
+        // boardCateRepository에서 모든 게시판 카테고리를 가져옴(cate별로 다 띄우려면 필요)
         List<BoardCateEntity> boardCateEntitieList = boardCateRepository.findAll();
+
+        //typeRepository에서 모든 게시판 타입을 가져옴(type별로 다 띄우려면 필요)
         List<BoardTypeEntity> boardTypeEntitieList = typeRepository.findAll();
 
+        // 각 카테고리별로 해당하는 타입을 매핑하여 cateMap에 저장합니다. 또한 카테고리명을 cateNameMap에 저장
         Map<String, String> cateNameMap = new HashMap<>();
         Map<String, Map<Integer, String>> cateMap = new HashMap<>();
 
+        // boardCateEntitieList와 boardTypeEntitieList를 사용하여 카테고리와 타입을 매핑하는 부분
         for (BoardCateEntity boardCateEntity : boardCateEntitieList) {
             Map<Integer, String> typeMap = new HashMap<>();
 
@@ -68,13 +75,16 @@ public class CsService {
             cateMap.put(boardCateEntity.getCate(), typeMap);
         }
 
+        // 그룹과 카테고리에 해당하는 게시글을 가져옵니다. 이때 페이징 정보도 함께 전달
         Page<BoardEntity> result = boardRepository.findByGroupAndCate(csPageRequestDTO.getGroup(), csPageRequestDTO.getCate(), pageable);
 
+        // 가져온 결과(엔티티)를 DTO로 변환
         List<BoardDTO> dtoList = result.getContent()
                 .stream()
                 .map(entity -> modelMapper.map(entity, BoardDTO.class))
                 .toList();
 
+        // 변환된 DTO 리스트를 순회하면서 각 DTO에 해당하는 카테고리명과 타입명을 설정
         for (BoardDTO boardDTO : dtoList) {
             boardDTO.setTypeName(
                     cateMap.get(boardDTO.getCate()).get(boardDTO.getTypeNo())
@@ -85,8 +95,10 @@ public class CsService {
             );
         }
 
+        // 전체 결과의 총 개수를 가져옵니다. 이는 페이징 처리를 위해 필요
         int totalElement = (int) result.getTotalElements();
 
+        // CsPageResponseDTO를 생성하여 결과를 담고 이를 반환(요청된 페이징 정보, DTO로 변환된 게시글 리스트, 그리고 전체 결과의 총 개수가 포함)
         return CsPageResponseDTO.builder()
                 .csPageRequestDTO(csPageRequestDTO)
                 .dtoList(dtoList)
@@ -123,12 +135,17 @@ public class CsService {
 
     }
 
-    public List<BoardDTO> findByCateForFaq(String cate) {
+    public List<BoardDTO> findByCateForFaq(String cate, String group) {
+        log.info("서비스 group : " +  group);
         List<BoardDTO> dtoList = new ArrayList<>();
+        log.info("서비스 dtoList : " +  dtoList);
         List<BoardTypeEntity> boardTypeEntities = typeRepository.findByCate(cate);
+        log.info("서비스 boardTypeEntities : " +  dtoList);
+
         for (BoardTypeEntity boardTypeEntity : boardTypeEntities) {
             // 최신 글이 먼저 나오도록 변경된 부분
             List<BoardEntity> boardEntities = boardRepository.findTop10ByTypeNoOrderByRdateDesc(boardTypeEntity.getTypeNo());
+            log.info("서비스2 --------------------------------------: " + boardTypeEntities);
             List<BoardDTO> boardDTOS = boardEntities
                     .stream()
                     .map(entity -> modelMapper.map(entity, BoardDTO.class))
@@ -137,7 +154,9 @@ public class CsService {
                 dtoList.add(boardDTO);
             }
         }
-        return dtoList;
+        List<BoardEntity> boardEntities = boardRepository.findByGroupOrderByRdateDesc(group);
+
+        return boardEntities.stream().map(entity -> modelMapper.map(entity, BoardDTO.class)).collect(Collectors.toList());
     }
 
     // 인덱스에 notice 리스트출력

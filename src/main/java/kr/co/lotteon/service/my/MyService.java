@@ -4,15 +4,21 @@ import kr.co.lotteon.dto.cs.BoardDTO;
 import kr.co.lotteon.dto.cs.CsPageRequestDTO;
 import kr.co.lotteon.dto.cs.CsPageResponseDTO;
 import kr.co.lotteon.dto.member.CouponDTO;
+
+import kr.co.lotteon.dto.member.point.PointPageRequestDTO;
+import kr.co.lotteon.dto.member.point.PointPageResponseDTO;
 import kr.co.lotteon.dto.product.PageResponseDTO;
 import kr.co.lotteon.dto.product.ProductDTO;
 import kr.co.lotteon.entity.cs.BoardEntity;
 import kr.co.lotteon.entity.member.Coupon;
 import kr.co.lotteon.entity.member.Member;
 import kr.co.lotteon.entity.product.Product;
+import kr.co.lotteon.entity.member.Point;
+
 import kr.co.lotteon.repository.cs.BoardRepository;
 import kr.co.lotteon.repository.member.MemberRepository;
 import kr.co.lotteon.repository.my.CouponRepository;
+import kr.co.lotteon.repository.my.PointRepository;
 import kr.co.lotteon.repository.product.OrderItemRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +40,7 @@ public class MyService {
     private final ModelMapper modelMapper;
     private final OrderItemRepository orderItemRepository;
     private final BoardRepository boardRepository;
+    private final PointRepository pointRepository;
 
     public List<CouponDTO> findCouponsByUid(String uid){
         log.info("내 쿠폰"+couponRepository.findCouponsByUid(uid));
@@ -72,6 +79,22 @@ public class MyService {
         return boardRepository.countByUid(uid);
     }
 
+
+    public PointPageResponseDTO getPointListByUid(String uid, PointPageRequestDTO pointPageRequestDTO) {
+        Pageable pageable = pointPageRequestDTO.getPageable("pointDate");
+        Page<Point> pointPage = pointRepository.findByUid(uid, pageable);
+
+        return new PointPageResponseDTO(
+                pointPageRequestDTO,
+                pointPage.getContent().stream()
+                        .map(Point::toDTO)
+                        .collect(Collectors.toList()),
+                (int) pointPage.getTotalElements()
+        );
+    }
+
+
+
     public CsPageResponseDTO QnaList(CsPageRequestDTO csPageRequestDTO){
 
         log.info("문의 목록 조회 1" + csPageRequestDTO);
@@ -95,6 +118,7 @@ public class MyService {
                 .total(total)
                 .build();
     }
+
 
 
 
