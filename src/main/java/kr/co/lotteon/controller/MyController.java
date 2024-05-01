@@ -110,7 +110,7 @@ public class MyController {
         int count = myService.findCouponCountByUidAndUseYn(uid);
 
         model.addAttribute("coupons",coupons);
-        model.addAttribute("count : ",count);
+        model.addAttribute("count",count);
 
         log.info("내 쿠폰"+coupons);
         log.info("count"+count);
