@@ -1,16 +1,19 @@
-$(function(){
-    $(window).scroll(function(){
-        
-        let top = $(this).scrollTop();
-        if(top > 10){
-            $('#wrapper > header').css('background', 'white');
-            $('#wrapper > header a').css('color', '#222');
-            $('#wrapper > header img').attr('src', './img/company_header_logo1.png');
-        }else{
-            $('#wrapper > header').css('background', 'transparent');
-            $('#wrapper > header a').css('color', '#fff');
-            $('#wrapper > header img').attr('src', './img/company_header_logo2.png');
-        }
+window.addEventListener('scroll', function() {
+    const top = window.scrollY || document.documentElement.scrollTop;
 
-    });
+    if (top > 10) {
+        document.querySelector('#wrapper > header').style.background = 'white';
+        const headerLinks = document.querySelectorAll('#wrapper > header a');
+        headerLinks.forEach(function(link) {
+            link.style.color = '#222';
+        });
+        document.querySelector('#wrapper > header img').src = './images/header_logo.png';
+    } else {
+        document.querySelector('#wrapper > header').style.background = 'transparent';
+        const headerLinks = document.querySelectorAll('#wrapper > header a');
+        headerLinks.forEach(function(link) {
+            link.style.color = '#fff';
+        });
+        document.querySelector('#wrapper > header img').src = './images/header_logo.png';
+    }
 });
