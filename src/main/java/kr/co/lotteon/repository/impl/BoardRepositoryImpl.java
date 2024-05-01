@@ -13,6 +13,7 @@ import kr.co.lotteon.entity.cs.QBoardEntity;
 import kr.co.lotteon.entity.cs.QBoardTypeEntity;
 import kr.co.lotteon.entity.member.Member;
 import kr.co.lotteon.entity.member.QMember;
+import kr.co.lotteon.entity.product.Product;
 import kr.co.lotteon.repository.custom.BoardRepositoryCustom;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -243,13 +244,34 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
         // 페이지 처리용 page 객체 리턴
         return new PageImpl<>(content, pageable, total);
     }
-@Override
-    public int countByUidAndStatusIn (String uid, List<String> statusList){
-    return (int) jpaQueryFactory
-            .select(qBoardEntity)
-            .from(qBoardEntity)
-            .where(qBoardEntity.uid.eq(uid)
-                    .and(qBoardEntity.status.in(statusList)))
-            .fetchCount();
-}
+    @Override
+        public int countByUidAndStatusIn (String uid, List<String> statusList){
+        return (int) jpaQueryFactory
+                .select(qBoardEntity)
+                .from(qBoardEntity)
+                .where(qBoardEntity.uid.eq(uid)
+                        .and(qBoardEntity.status.in(statusList)))
+                .fetchCount();
+    }
+    @Override
+    public Page<BoardEntity> memberSelectBoards(CsPageRequestDTO csPageRequestDTO, Pageable pageable){
+        log.info("마이페이지 문의내역 목록 조회 Impl 1 : " + csPageRequestDTO);
+        QueryResults<BoardEntity> results = jpaQueryFactory
+                .select(qBoardEntity)
+                .from(qBoardEntity)
+                // 수정하기
+                .where(qBoardEntity.group.eq("qna").and (qBoardEntity.status.eq("답변완료")))
+                .orderBy(qBoardEntity.rdate.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetchResults();
+
+        long total = results.getTotal();
+        log.info("마이페이지 문의내역 목록 조회 Impl 2 : " + total);
+        List<BoardEntity> boardList = results.getResults();
+        log.info("마이페이지 문의내역 목록 조회 Impl 3 : " + boardList);
+        return new PageImpl<>(boardList, pageable, total);
+    }
+
+
 }
