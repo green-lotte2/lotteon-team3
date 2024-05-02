@@ -9,10 +9,10 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.co.lotteon.dto.admin.AdminProductPageRequestDTO;
 import kr.co.lotteon.dto.product.PageRequestDTO;
 import kr.co.lotteon.dto.product.ProductDTO;
-import kr.co.lotteon.entity.product.Option;
-import kr.co.lotteon.entity.product.Product;
-import kr.co.lotteon.entity.product.QOption;
-import kr.co.lotteon.entity.product.QProduct;
+import kr.co.lotteon.dto.product.ProductReviewPageRequestDTO;
+import kr.co.lotteon.dto.product.ReviewDTO;
+import kr.co.lotteon.entity.cs.BoardEntity;
+import kr.co.lotteon.entity.product.*;
 import kr.co.lotteon.repository.custom.ProductRepositoryCustom;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +34,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
     private final ModelMapper modelMapper;
     private final QProduct qProduct = QProduct.product;
     private final QOption qOption = QOption.option;
+    private final QReview qReview = QReview.review;
 
     // 관리자 - 상품 목록 기본 조회
     @Override
@@ -193,7 +194,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
                                 .orderBy(qProduct.prodNo.desc())
                                 .offset(pageable.getOffset())
                                 .limit(pageable.getPageSize())
-                                .where(predicate)
+                                .where(predicate.and(qProduct.status.eq("새상품")))
                                 .fetchResults();
 
         return new PageImpl<>(results.getResults(), pageable, results.getTotal());
@@ -282,6 +283,26 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
                     .collect(Collectors.toList());
     }
     // =====================
+    @Override
+    public Page<Review> memberSelectReview(String uid, ProductReviewPageRequestDTO productReviewPageRequestDTO, Pageable pageable){
+
+        log.info("마이페이지 리뷰내역 목록 조회 Impl 1 : " + productReviewPageRequestDTO);
+        QueryResults<Review> results = jpaQueryFactory
+                .select(qReview)
+                .from(qReview)
+                .where(qReview.uid.eq(uid))
+                .orderBy(qReview.rdate.desc()) // rdate를 기준으로 내림차순으로 정렬)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetchResults();
+
+        long total = results.getTotal();
+        log.info("마이페이지 리뷰내역 목록 조회 Impl 2 : " + total);
+        List<Review> reviewList = results.getResults();
+        log.info("마이페이지 리뷰내역 목록 조회 Impl 3 : " + reviewList);
+        return new PageImpl<>(reviewList, pageable, total);
+
+    }
 }
 
 

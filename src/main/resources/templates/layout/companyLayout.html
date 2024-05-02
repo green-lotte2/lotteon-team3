@@ -1,41 +1,33 @@
-<!DOCTYPE html>
-<head>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LotteON Inc. 상상하는 모든것</title>
-    <link rel="shortcut icon" type="image/x-icon" th:href="@{/images/favicon.ico}" />
+    <link rel="shortcut icon" type="image/x-icon" th:href="@{../images/favicon.ico}" />
     <link rel="stylesheet" th:href="@{/css/company.css}">
     <script th:src="@{https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js}"></script>
     <script th:src="@{/company/js/header.js}"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 </head>
 <body>
 <div id="wrapper">
     <header>
         <div>
-            <a th:href="@{/}"><img th:src="@{/company/images/header_logo.png}" width="180" alt="로고"></a>
+            <a th:href="@{/}"><img th:src="@{/images/header_logo.png}" width="200" alt="로고"></a>
             <ul>
-                <li><a th:href="@{/company/introduce}">회사소개</a></li>
-                <li><a th:href="@{/company/notice}">전자공시</a></li>
-                <li><a th:href="@{/company/promote}">홍보채널</a></li>
-                <li><a th:href="@{/company/manage}">투명경영</a></li>
+                <li><a th:href="@{/company/index}">HOME</a></li>
+                <li><a th:href="@{/company/culture}">기업문화</a></li>
+                <li><a th:href="@{/company/story}">소식과 이야기</a></li>
+                <li><a th:href="@{/company/recruit}">채용</a></li>
+                <li><a th:href="@{/company/media}">미디어</a></li>
+
             </ul>
         </div>
     </header>
-    <main id="notice">
-        <div class="cover">
-            <div>
-                <h1>전자공시</h1>
-                <p>
-                    LotteON의 공지사항을<br>
-                    안내해드립니다.
-                </p>
-            </div>
-        </div>
-        <section class="content">
-            <img th:src="@{/company/images/notice_sample.png}" alt="">
+    <main layout:fragment="content">
 
-        </section>
     </main>
     <footer>
         <div>
@@ -48,8 +40,4 @@
     </footer>
 </div>
 </body>
-</html>
-
-
-
 </html>

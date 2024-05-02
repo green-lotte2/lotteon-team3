@@ -8,11 +8,14 @@ import kr.co.lotteon.dto.cs.CsPageResponseDTO;
 import kr.co.lotteon.dto.member.CouponDTO;
 import kr.co.lotteon.dto.member.MemberDTO;
 import kr.co.lotteon.dto.member.MyInfoDTO;
+import kr.co.lotteon.dto.member.point.PointDTO;
 import kr.co.lotteon.dto.product.PageRequestDTO;
 import kr.co.lotteon.dto.product.PageResponseDTO;
 import kr.co.lotteon.dto.member.point.PointPageRequestDTO;
 import kr.co.lotteon.dto.member.point.PointPageResponseDTO;
 
+import kr.co.lotteon.dto.product.ProductReviewPageRequestDTO;
+import kr.co.lotteon.dto.product.ProductReviewPageResponseDTO;
 import kr.co.lotteon.entity.member.Member;
 import kr.co.lotteon.entity.member.Point;
 import kr.co.lotteon.security.MyUserDetails;
@@ -22,6 +25,8 @@ import kr.co.lotteon.service.my.MyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -33,10 +38,15 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -108,6 +118,7 @@ public class MyController {
         return "/my/order";
     }
 
+
     // my - point (나의 포인트) 페이지 매핑
     @GetMapping("/my/point")
     public String point(@RequestParam String uid, Model model, PointPageRequestDTO pointPageRequestDTO) {
@@ -116,6 +127,34 @@ public class MyController {
         return "/my/point";
     }
 
+    // my - point (나의 포인트) 페이지 매핑 새로운 엔드포인트(조회)
+
+    @GetMapping("/my/point/period")
+    public ResponseEntity<?> getPointByPeriod(String uid,
+                                              String period) {
+
+        log.info("period : "+period);
+
+        LocalDateTime start = null;
+
+        if (period.equals("week")) {
+            start = LocalDateTime.now().minusWeeks(1);
+            log.info("start : "+start);
+        }else if(period.equals("2week")){
+            start = LocalDateTime.now().minusWeeks(2);
+            log.info("start : "+start);
+        }else if(period.equals("month")){
+            start = LocalDateTime.now().minusMonths(1);
+            log.info("start : "+start);
+        }
+
+
+        // 주어진 기간에 해당하는 포인트 데이터를 가져오는 서비스 메서드를 호출합니다.
+       // List<PointDTO> pointList = myService.getPointByPeriod(uid, LocalStart, LocalEnd);
+       // log.info("피리오드 컨트롤러 2"+pointList.toString());
+        // 가져온 포인트 데이터를 ResponseEntity로 감싸서 반환합니다.
+        return ResponseEntity.ok().body("ok");
+    }
 
     // my - coupon 페이지 매핑
     @GetMapping("/my/coupon")
@@ -171,28 +210,54 @@ public class MyController {
     @GetMapping("/my/qna")
     public String qna(Model model, @RequestParam String uid, CsPageRequestDTO csPageRequestDTO){
 
-        List<BoardDTO> boards = myService.findByBoardAndUid(uid);
-        int count = myService.countByUid(uid);
-
-        model.addAttribute("boards",boards);
-        model.addAttribute("count",count);
-
-        log.info("내 문의 : "+boards);
-        log.info("내 문의 수 : "+count);
-
         // 문의 목록 조회
         CsPageResponseDTO csPageResponseDTO = null;
-        csPageResponseDTO = myService.QnaList(csPageRequestDTO);
+        csPageResponseDTO = myService.QnaList(uid,csPageRequestDTO);
+
+        List<BoardDTO> updatedBoardDTOs = csPageResponseDTO.getDtoList().stream()
+                .peek(boardDTO -> {
+                    if ("coupon".equals(boardDTO.getCate())) {
+                        boardDTO.setCate("쿠폰/이벤트");
+                    }else if("cs".equals(boardDTO.getCate())){
+                        boardDTO.setCate("고객서비스");
+                    }else if("dangerProd".equals(boardDTO.getCate())){
+                        boardDTO.setCate("위해상품");
+                    }else if("delivery".equals(boardDTO.getCate())){
+                        boardDTO.setCate("배송");
+                    }else if("member".equals(boardDTO.getCate())){
+                        boardDTO.setCate("회원");
+                    }else if("order".equals(boardDTO.getCate())){
+                        boardDTO.setCate("주문/결제");
+                    }else if("refund".equals(boardDTO.getCate())){
+                        boardDTO.setCate("취소/반품/교환");
+                    }else if("safe".equals(boardDTO.getCate())){
+                        boardDTO.setCate("안전");
+                    }else if("travel".equals(boardDTO.getCate())){
+                        boardDTO.setCate("여행/숙박/항공");
+                    }
+                })
+                .collect(Collectors.toList());
+
+
+
+        csPageResponseDTO.setDtoList(updatedBoardDTOs);
 
         model.addAttribute("csPageResponseDTO", csPageResponseDTO);
 
         log.info("문의 목록 조회"+csPageResponseDTO);
 
+
+
         return "/my/qna";
     }
     // my - review (나의 리뷰내역) 페이지 매핑
     @GetMapping("/my/review")
-    public String review(){
+    public String review(Model model, @RequestParam String uid, ProductReviewPageRequestDTO productReviewPageRequestDTO){
+        ProductReviewPageResponseDTO productReviewPageResponseDTO = null;
+        productReviewPageResponseDTO = myService.reviewList(uid,productReviewPageRequestDTO);
+
+        model.addAttribute("productReviewPageResponseDTO",productReviewPageResponseDTO);
+
         return "/my/review";
     }
 }

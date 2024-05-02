@@ -69,6 +69,7 @@
                     // 수량 증가 버튼
                     increase.addEventListener('click', function(e){
                       e.preventDefault();
+                      const checkboxes = document.querySelectorAll('.checkbox');
 
                       intValue += 1
                       inputs.value = intValue;
@@ -76,6 +77,24 @@
                       const totalPrice = price * intValue;
                       // 총 가격을 화면에 업데이트
                       priceElement.innerText = numberWithCommas(totalPrice);
+
+                      checkboxes.forEach(e=>{
+                        if(e.checked){
+                          // 토탈 메뉴
+                          const cartTotal = document.getElementById('prodTotalPrice');
+                          let cartTotalValue = 0;
+
+                          document.querySelectorAll('.currentPrice strong').forEach(e => {
+                            var noComma = e.innerText.replace(/,/g, '');
+                            let int =parseInt(noComma);
+                            cartTotalValue += int
+
+                          });
+                          cartTotal.innerHTML = "";
+                          cartTotal.textContent +=numberWithCommas(cartTotalValue);
+                        }
+                      });
+
                     });
                     // 수량 감소 버튼
                     decrease.addEventListener('click', function(e){
@@ -90,8 +109,23 @@
                       inputs.value = intValue;
                       // 총 가격 계산
                       const totalPrice = price * intValue;
+                      console.log(totalPrice);
                       // 총 가격을 화면에 업데이트
                       priceElement.innerText = numberWithCommas(totalPrice);
+
+                      // 토탈 메뉴
+                      const cartTotal = document.getElementById('prodTotalPrice');
+                      let cartTotalValue = 0;
+
+                      document.querySelectorAll('.currentPrice strong').forEach(e => {
+                        var noComma = e.innerText.replace(/,/g, '');
+                        let int =parseInt(noComma);
+
+                        cartTotalValue += int
+
+                      });
+                      cartTotal.innerHTML = "";
+                      cartTotal.textContent +=numberWithCommas(cartTotalValue);
                     });
 
                     // 총 가격 계산
@@ -107,15 +141,17 @@
                   const checkCom = document.querySelectorAll('.checkCom');
 
                   selectAll.addEventListener('click', function () {
-                      for(let i = 0; i<checkboxes.length; i++){
+                      for(let i = 0; i<checkboxes.length; i++) {
                         checkboxes[i].checked = selectAll.checked;
                       }
-
                       for(let j = 0; j<checkCom.length; j++){
                         checkCom[j].checked = selectAll.checked;
                       }
+                      updateTotal();
+                      updateCount();
                   });
 
+                  // 회사별로 전체 선택
                   checkCom.forEach(function (e) {
                     e.addEventListener('click', function (check) {
                       check.stopPropagation();
@@ -126,31 +162,116 @@
                       checkbox.forEach(checkbox =>{
                         checkbox.checked = e.checked;
                       });
-
+                      updateTotal();
+                      updateCount();
                     });
                   });
 
+                  // 선택삭제
                   const deleteCartItems = document.getElementsByClassName('deleteCartItems')[0];
+                  var cartNumbers = [];
                   deleteCartItems.addEventListener('click', function(e){
-                    e.preventDefault();
+
                     const checkbox = document.querySelectorAll('.checkbox:checked');
                     checkbox.forEach(e => {
-                      console.log(e.value);
-                      fetch()
-                      .then()
-                      .then()
-                      .catch((err)=>{
-                      console.log(err)});
+                      cartNumbers.push(e.value);
                     });
+                    e.preventDefault();
+
+                    console.log(cartNumbers);
+
+                    if (confirm('장바구니에서 삭제하시겠습니까?')){
+                       const jsonData = {
+                         cartNo : cartNumbers
+                       };
+
+                      fetch('/lotteon/cart/delete', {
+                        method:'POST',
+                        headers:{"Content-type":"application/json"},
+                        body: JSON.stringify(jsonData)
+                      })
+                              .then(response=> response.json())
+                              .then(data =>{
+                                console.log(data);
+                                if (data!=null){
+                                  location.reload();
+                                }
+                              })
+                              .catch((err)=>{
+                                console.log(err)}
+                              );
+                    }
+
                   });
 
                   const total = document.getElementsByClassName('total')[0];
 
+                  // 스크롤시 total 폼 따라오기
                   document.addEventListener('scroll', function(event) {
                     let scrollY = window.scrollY;
 
                     total.style.top = scrollY + 'px';
                   });
+
+                  // 가격 계산
+                  const cartOrg = document.getElementById('prodOrgPrice');
+                  // 수량
+                  const cartCount = document.getElementById('prodCount');
+
+
+                  const cartDis = document.getElementById('prodDisPrice');
+                  const cartDel = document.getElementById('prodDelivery');
+                  const cartPoi = document.getElementById('prodPoint');
+                  const cartTotal = document.getElementById('prodTotalPrice');
+
+                  var totalPrice = 0;
+
+                  // 전체 가격 함수
+                 function updateTotal(){
+                   totalPrice = 0;
+
+                   // 각 체크된 상품의 가격 합산
+                   var checkedBoxes = document.querySelectorAll('.checkbox:checked');
+
+                   checkedBoxes.forEach(function (checkbox){
+
+                     let productPrice = checkbox.closest('.cartProduct').querySelector('.currentPrice strong').textContent;
+                     let noComma = parseInt(productPrice.replace(/,/g, ''));
+                     totalPrice += noComma
+
+                     cartTotal.innerHTML = "";
+                     cartTotal.textContent +=numberWithCommas(totalPrice)+'원';
+
+                   })
+                   if (checkedBoxes.length === 0){
+
+                     cartTotal.innerHTML = "";
+                     cartTotal.textContent += 0+'원';
+                   }
+                 }
+
+                 // 전체 수량 가져오기
+                 function updateCount(){
+                   var checkedBoxes = document.querySelectorAll('.checkbox:checked');
+
+                   checkedBoxes.forEach(function (checkbox){
+                     let count = checkedBoxes.length;
+                     cartCount.innerHTML = "";
+                     cartCount.innerText = count;
+                   })
+                   if (checkedBoxes.length === 0){
+
+                     cartCount.innerHTML = "";
+                     cartCount.innerText = 0;
+                   }
+                 }
+
+                 // 체크박스 개별 선택시 가격 변경
+                  checkboxes.forEach(function(checkbox) {
+                    checkbox.addEventListener('change', updateTotal);
+                  });
+
+
                 }
               </script>
               <!-- 제목, 페이지 네비게이션 -->
@@ -188,7 +309,7 @@
                       <div th:if="${company == cartProduct.company}" class="accordion-body">
                         <div class="cartProduct">
                           <label>
-                            <input type="checkbox" class="checkbox" th:data-company="${company}" th:value="${cartProduct.cartNo}">
+                            <input type="checkbox" class="checkbox" th:data-company="${company}" data-status="0" th:value="${cartProduct.cartNo}">
                           </label>
                           <a th:href="@{#}">
                             <img th:src="@{|/prodImg/${cartProduct.thumb3}|}" style="width: 80px; height: auto;" alt="상품이미지">
@@ -203,7 +324,9 @@
                           </div>
 
                           <p>
-                            <span class="delivery">배송비 : [[${cartProduct.delivery}]] </span>
+                            <span class="delivery"> </span>
+                            <span class="deliveryFree"> </span>
+
                           </p>
 
                           <div class="count">
@@ -223,9 +346,18 @@
                       </div>
                       </th:block>
                     </div>
+                    <div class="cartFooter">
+                      <p>
+                      <span class="point">431,000원</span>
+                      + 배송비 0원
+
+                      - 할인 86,330원
+                      <span > = </span>
+                      <span class="price"> <strong>344,670원 </strong> </span>
+                      </p>
+                    </div>
                   </div>
                 </div>
-
 
                 <!-- 장바구니 전체합계 -->
                 <div class="total">
@@ -233,27 +365,27 @@
                   <table border="0">
                     <tr>
                       <td>상품수</td>
-                      <td></td>
+                      <td id="prodCount">0</td>
                     </tr>
                     <tr>
                       <td>상품금액</td>
-                      <td>2</td>
+                      <td id="prodOrgPrice">0</td>
                     </tr>
                     <tr>
                       <td>할인금액</td>
-                      <td></td>
+                      <td id="prodDisPrice">-</td>
                     </tr>
                     <tr>
                       <td>배송비</td>
-                      <td></td>
+                      <td id="prodDelivery">0</td>
                     </tr>              
                     <tr>
-                      <td>포인트</td>
-                      <td>260</td>
+                      <td id="prodPoint">포인트</td>
+                      <td>0</td>
                     </tr>
                     <tr>
                       <td>전체주문금액</td>
-                      <td>26,000</td>
+                      <td id="prodTotalPrice">0원</td>
                     </tr>
                   </table>
                   <input type="submit" name="" value="주문하기">    

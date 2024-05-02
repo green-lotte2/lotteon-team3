@@ -10,24 +10,29 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class CompanyController {
 
-    @GetMapping(value = {"/company", "/company/introduce"})
+    @GetMapping(value = {"/company", "/company/index"})
     public String index() {
-      return ("/company/introduce");
+      return ("/company/index");
     }
 
-    @GetMapping(value = {"/company/notice"})
-    public String notice() {
-        return ("/company/notice");
+    @GetMapping(value = {"/company/recruit"})
+    public String recruit() {
+        return "/company/recruit";
     }
 
-    @GetMapping(value = { "/company/promote"})
-    public String promote() {
-        return ("/company/promote");
+    @GetMapping(value = { "/company/media"})
+    public String media() {
+        return "/company/media";
     }
 
-    @GetMapping(value = { "/company/manage"})
-    public String manage() {
-        return ("/company/manage");
+    @GetMapping(value = { "/company/culture"})
+    public String culture() {
+        return "/company/culture";
+    }
+
+    @GetMapping(value = { "/company/story"})
+    public String story() {
+        return "/company/story";
     }
 
 

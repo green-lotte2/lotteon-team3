@@ -1,5 +1,5 @@
-<!DOCTYPE html>
-<head>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, width=device-width, user-scalable=no">
@@ -11,20 +11,23 @@
     <script th:src="@{https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js}"></script>
     <script th:src="@{/company/js/header.js}"></script>
     <script>
-        $(function() {
-
+        document.addEventListener('DOMContentLoaded', function() {
             const swiper = new Swiper('.swiper', {
+
+                // 자동높이 사용여부 : 사용하지 않을시 기본값은 false
+                autoHeight : false,
+
                 // Optional parameters
                 direction: 'vertical',
                 loop: false,
                 speed: 1000,
 
-                // If we need pagination
+                // 페이징
                 pagination: {
                     el: '.swiper-pagination',
                 },
 
-                // Navigation arrows
+                // 네비게이션
                 navigation: {
                     nextEl: '.swiper-button-next',
                     prevEl: '.swiper-button-prev',
@@ -40,20 +43,25 @@
                 },
             });
 
+            // 슬라이드 변경 이벤트 시 마지막 슬라이드의 높이를 기준으로 슬라이드 컨테이너의 높이 재설정
             swiper.on('slideChange', function () {
                 const slideIndex = swiper.realIndex;
 
-                if(slideIndex == 0){
-                    $('header').css('background', 'transparent');
-                }else if(slideIndex == 3){
-                    $('footer').slideDown(1000);
-                }else{
-                    $('header').css('background', 'white');
-                    $('footer').slideUp(1000);
+                console.log("slideIndex : " +slideIndex );
+                if (slideIndex === 0) {
+                    document.querySelector('header').style.background = 'transparent';
+                } else if (slideIndex === 3) {
+                    document.querySelector('footer').style.display = 'block';
+                } else if(slideIndex === 2){
+                    document.querySelector('header').style.background = 'white';
+                    document.querySelector('footer').style.display = 'none';
+                } else {
+                    document.querySelector('header').style.background = 'white';
+                    document.querySelector('footer').style.display = 'none';
                 }
-            })
-
+            });
         });
+
     </script>
 </head>
 <body>
@@ -62,24 +70,22 @@
         <div>
             <a th:href="@{/}"><img th:src="@{/company/images/header_logo.png}" width="200" alt="로고"></a>
             <ul>
-                <li><a th:href="@{/company/introduce}">회사소개</a></li>
-                <li><a th:href="@{/company/notice}">전자공시</a></li>
-                <li><a th:href="@{/company/promote}">홍보채널</a></li>
-                <li><a th:href="@{/company/manage}">투명경영</a></li>
+                <li><a th:href="@{/company/index}">HOME</a></li>
+                <li><a th:href="@{/company/culture}">기업문화</a></li>
+                <li><a th:href="@{/company/story}">소식과 이야기</a></li>
+                <li><a th:href="@{/company/recruit}">채용</a></li>
+                <li><a th:href="@{/company/media}">미디어</a></li>
+
             </ul>
         </div>
     </header>
 
     <!-- Additional required wrapper -->
+
     <div class="swiper-wrapper">
       <!-- Slides -->
         <div class="swiper-slide slide1">
             <img th:src="@{/company/images/bg_main.jpg}" id="mainBanner">
-            <div class="scroll-icon">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
         </div>
         <div class="swiper-slide slide2">
             <section>
@@ -114,9 +120,6 @@
     </div>
     <!-- If we need pagination -->
     <div class="swiper-pagination"></div>
-
-    <!-- If we need scrollbar -->
-    <!--<div class="swiper-scrollbar"></div>-->
 
 </div>
 </body>
