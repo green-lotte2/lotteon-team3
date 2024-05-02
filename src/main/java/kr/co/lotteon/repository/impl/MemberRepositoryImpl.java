@@ -41,6 +41,7 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
                 .orderBy(qMember.rdate.year().asc(), qMember.rdate.month().asc())
                 .fetch();
     }
+
     // 회원 목록 (현황) 기본 조회
     @Override
     public Page<Member> selectMemberList(AdminPageRequestDTO adminPageRequestDTO, Pageable pageable){
