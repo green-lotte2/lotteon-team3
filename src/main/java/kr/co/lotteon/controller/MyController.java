@@ -172,18 +172,9 @@ public class MyController {
     @GetMapping("/my/qna")
     public String qna(Model model, @RequestParam String uid, CsPageRequestDTO csPageRequestDTO){
 
-        List<BoardDTO> boards = myService.findByBoardAndUid(uid);
-        int count = myService.countByUid(uid);
-
-        model.addAttribute("boards",boards);
-        model.addAttribute("count",count);
-
-        log.info("내 문의 : "+boards);
-        log.info("내 문의 수 : "+count);
-
         // 문의 목록 조회
         CsPageResponseDTO csPageResponseDTO = null;
-        csPageResponseDTO = myService.QnaList(csPageRequestDTO);
+        csPageResponseDTO = myService.QnaList(uid,csPageRequestDTO);
 
         List<BoardDTO> updatedBoardDTOs = csPageResponseDTO.getDtoList().stream()
                 .peek(boardDTO -> {

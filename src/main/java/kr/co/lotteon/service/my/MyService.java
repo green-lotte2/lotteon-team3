@@ -95,13 +95,13 @@ public class MyService {
 
 
 
-    public CsPageResponseDTO QnaList(CsPageRequestDTO csPageRequestDTO){
+    public CsPageResponseDTO QnaList(String uid,CsPageRequestDTO csPageRequestDTO){
 
         log.info("문의 목록 조회 1" + csPageRequestDTO);
 
         Pageable pageable = csPageRequestDTO.getPageable("bno");
 
-        Page<BoardEntity> boardsPage = boardRepository.memberSelectBoards(csPageRequestDTO, pageable);
+        Page<BoardEntity> boardsPage = boardRepository.memberSelectBoards(uid,csPageRequestDTO, pageable);
         log.info("문의 목록 조회 2" + boardsPage);
 
         // Page<Product>를 List<ProductDTO>로 변환
