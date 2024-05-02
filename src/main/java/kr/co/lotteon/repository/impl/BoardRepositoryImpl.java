@@ -254,12 +254,14 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
                 .fetchCount();
     }
     @Override
-    public Page<BoardEntity> memberSelectBoards(CsPageRequestDTO csPageRequestDTO, Pageable pageable){
+    public Page<BoardEntity> memberSelectBoards(String uid,CsPageRequestDTO csPageRequestDTO, Pageable pageable){
         log.info("마이페이지 문의내역 목록 조회 Impl 1 : " + csPageRequestDTO);
         QueryResults<BoardEntity> results = jpaQueryFactory
                 .select(qBoardEntity)
                 .from(qBoardEntity)
-                .where(qBoardEntity.group.eq("qna"))
+                .where(
+                        qBoardEntity.uid.eq(uid),
+                        qBoardEntity.group.eq("qna"))
                 .orderBy(
                         qBoardEntity.status.desc(), // 상태값을 기준으로 내림차순으로 정렬
                         qBoardEntity.rdate.desc() // rdate를 기준으로 내림차순으로 정렬

@@ -30,6 +30,6 @@ public interface BoardRepositoryCustom {
     public int countByUidAndStatusIn (String uid, List<String> statusList);
 
     // 마이페이지 문의내역 조회
-    public Page<BoardEntity> memberSelectBoards(CsPageRequestDTO csPageRequestDTO, Pageable pageable);
+    public Page<BoardEntity> memberSelectBoards(String uid,CsPageRequestDTO csPageRequestDTO, Pageable pageable);
 
 }
