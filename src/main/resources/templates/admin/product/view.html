@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{/layout/sellerLayout}">
+      layout:decorate="~{/layout/adminLayout}">
 <!-- 상품 상세페이지 시작 -->
 <section class="prodView" layout:fragment="content">
     <script>
@@ -15,29 +15,29 @@
     <!-- 상품 전체 정보 내용 -->
     <article class="info">
         <div class="image">
-            <img th:src="@{|/prodImg/${productDTO.thumb3}|}" alt="상품이미지"/>
+            <img th:src="@{|/prodImg/${product.thumb3}|}" alt="상품이미지"/>
         </div>
         <div class="summary">
             <nav>
-                <h1>[[${productDTO.company}]]</h1>
-                <h2>상품번호&nbsp;:&nbsp;<span>[[${productDTO.prodNo}]]</span></h2>
+                <h1>[[${product.company}]]</h1>
+                <h2>상품번호&nbsp;:&nbsp;<span>[[${product.prodNo}]]</span></h2>
             </nav>
             <nav>
-                <h3>[[${productDTO.prodName}]]</h3>
-                <p>[[${productDTO.descript}]]</p>
+                <h3>[[${product.prodName}]]</h3>
+                <p>[[${product.descript}]]</p>
             </nav>
             <nav>
                 <div class="org_price">
-                    <del>[[${productDTO.price}]]</del>
-                    <span>[[${productDTO.discount}]]%</span>
+                    <del>[[${product.price}]]</del>
+                    <span>[[${product.discount}]]%</span>
                 </div>
                 <div class="dis_price">
                     <ins>27,000</ins>
                 </div>
             </nav>
-            <nav th:if="${productDTO.delivery} == 0">
+            <nav th:if="${product.delivery} == 0">
                 <span class="delivery">무료배송</span>
-                <span class="arrival">모레(금) [[${productDTO.rdate}]] 도착예정</span>
+                <span class="arrival">모레(금) [[${product.rdate}]] 도착예정</span>
                 <span class="desc">본 상품은 국내배송만 가능합니다.</span>
             </nav>
             <div class="button">
@@ -108,37 +108,37 @@
         <table border="0">
             <tr>
                 <td>상품번호</td>
-                <td>[[${productDTO.prodNo}]]</td>
+                <td>[[${product.prodNo}]]</td>
             </tr>
             <tr>
                 <td>상품상태</td>
-                <td>[[${productDTO.status}]]</td>
+                <td>[[${product.status}]]</td>
             </tr>
             <tr>
                 <td>부가세 면세여부</td>
-                <td>[[${productDTO.duty}]]</td>
+                <td>[[${product.duty}]]</td>
             </tr>
             <tr>
                 <td>영수증발행</td>
-                <td>[[${productDTO.receipt}]]</td>
+                <td>[[${product.receipt}]]</td>
             </tr>
             <tr>
                 <td>사업자구분</td>
-                <td>[[${productDTO.bizType}]]</td>
+                <td>[[${product.bizType}]]</td>
             </tr>
             <tr>
                 <td>브랜드</td>
-                <td>[[${productDTO.company}]]</td>
+                <td>[[${product.company}]]</td>
             </tr>
             <tr>
                 <td>원산지</td>
-                <td>[[${productDTO.origin}]]</td>
+                <td>[[${product.origin}]]</td>
             </tr>
         </table>
         <table border="0">
             <tr>
                 <td>제품소재</td>
-                <td>[[${productDTO.descript}]]</td>
+                <td>[[${product.descript}]]</td>
             </tr>
             <tr>
                 <td>색상</td>

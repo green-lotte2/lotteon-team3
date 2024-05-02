@@ -964,6 +964,16 @@ public class AdminService {
         // 상품 정보 DB 저장
         articleRepository.save(article);
     }
+    // 관리자 회사소개 삭제
+    public ResponseEntity<?> deleteArticle(int ano){
+        articleRepository.deleteById(ano);
+        return ResponseEntity.ok().body("delete article");
+    }
+    // 회사소개 게시글 상세 조회
+    public ArticleDTO selectArticle(int ano){
+        return modelMapper.map(articleRepository.findById(ano), ArticleDTO.class);
+    }
+    /////  이미지 리사이징 //////////////////////////////////////////////////
     // 이미지 리사이징 함수 - width, height
     public String imgResizing(MultipartFile file, String orgPath, String path, int targetWidth, int targetHeight) {
         String oName = file.getOriginalFilename();

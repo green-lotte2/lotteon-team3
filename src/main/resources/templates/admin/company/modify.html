@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/adminListLayout}">
+<head>
+  <script>
+    // 부제목일 때 글자 수 제한
+    function checkMaxLength(textarea) {
+      if (textarea.value.length > 250) {
+        textarea.value = textarea.value.substring(0, 250);
+        alert("부제목은 최대 250자까지 입력할 수 있습니다.");
+      }
+    }
+    // 폼 전송
+    function btnWrite(button){
+      const writeForm = document.getElementById('writeForm');
+      writeForm.submit();
+    }
+    // 취소
+    function btnCancel(button){
+      const cate1 = [[${cate1}]];
+      location.href = `/lotteon/admin/company/`+cate1;
+    }
+    document.addEventListener("DOMContentLoaded", function() {
+      var writeForm = document.getElementById('writeForm');
+
+      writeForm.addEventListener('submit', function(event) {
+        // 글 등록 후 알림 창 표시
+        alert('글이 성공적으로 등록되었습니다.');
+
+        // 이벤트 기본 동작 중단하지 않고 폼 제출
+        writeForm.submit();
+      });
+    });
+  </script>
+</head>
+<section id="company" layout:fragment="content">
+  <div class="companyWrite">
+    <section class="write">
+      <article>
+        <form id="writeForm" th:action="@{/admin/company/modify}" method="POST" enctype="multipart/form-data">
+          <input type="hidden" name="cate1" readonly th:value="${article.cate1}" />
+          <input th:if="${article.cate1 == 'recruit'}" type="hidden" name="cate2" value="recruit" />
+          <table>
+            <tr th:if="${article.cate1 == 'story'}" >
+              <td>카테고리</td>
+              <td>
+                <select name="cate2" id="cate2" required>
+                  <option th:selected="${article.cate2 == 'culture'}" value="culture">기업문화</option>
+                  <option th:selected="${article.cate2 == 'interview'}" value="interview">인터뷰</option>
+                  <option th:selected="${article.cate2 == 'recruit'}" value="recruit" >채용</option>
+                  <option th:selected="${article.cate2 == 'lotteON'}" value="lotteON"> 롯데ON</option>
+                  <option th:selected="${article.cate2 == 'pressRelease'}" value="pressRelease">보도자료</option>
+                  <option th:selected="${article.cate2 == 'esg'}" value="esg">ESG</option>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td>제목</td>
+              <td>
+                <input type="text" name="title" placeholder="제목을 입력하세요." th:value="${article.title}"/>
+              </td>
+            </tr>
+            <tr>
+              <td th:if="${article.cate1 == 'story'}">부제목</td>
+              <td th:if="${article.cate1 == 'recruit'}">내용</td>
+              <td>
+                <img th:if="${article.thumb != null}" th:src="@{'/prodImg/'+${article.thumb}}"
+                     class="thumb">
+                <textarea name="content" placeholder="부제목은 최대 200자 입력가능합니다." th:if="${article.cate1 == 'story'}" oninput="checkMaxLength(this)"  th:text="${article.content}"></textarea>
+                <textarea name="content" placeholder="내용을 입력하세요." th:if="${article.cate1 == 'recruit'}"  th:text="${article.content}"></textarea>
+              </td>
+            </tr>
+            <tr th:if="${article.cate1 == 'story'}">
+              <td>파일</td>
+              <td>
+                <span>크기 336 x 230</span>
+                <input style="margin-top: 12px;" type="file" name="thumb336" onchange="handleFileSelect(this)" accept="image/*"/>
+              </td>
+            </tr>
+            <tr th:if="${article.cate1 == 'recruit'}" style="visibility: hidden">
+              <td>파일</td>
+              <td>
+                <span>크기 336 x 230</span>
+                <input style="margin-top: 12px;" type="file" name="thumb336" onchange="handleFileSelect(this)" accept="image/*"/>
+              </td>
+            </tr>
+          </table>
+          <div>
+            <button type="button" class="btn btn-secondary" onclick="btnWrite(this)">글쓰기</button>
+            <button type="button" class="btn btn-secondary" onclick="btnCancel(this)">취소</button>
+          </div>
+        </form>
+      </article>
+    </section>
+  </div>
+</section>
