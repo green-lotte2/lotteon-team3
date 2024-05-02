@@ -193,7 +193,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
                                 .orderBy(qProduct.prodNo.desc())
                                 .offset(pageable.getOffset())
                                 .limit(pageable.getPageSize())
-                                .where(predicate)
+                                .where(predicate.and(qProduct.status.eq("새상품")))
                                 .fetchResults();
 
         return new PageImpl<>(results.getResults(), pageable, results.getTotal());
