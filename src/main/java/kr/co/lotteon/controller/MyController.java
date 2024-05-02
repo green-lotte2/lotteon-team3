@@ -13,6 +13,8 @@ import kr.co.lotteon.dto.product.PageResponseDTO;
 import kr.co.lotteon.dto.member.point.PointPageRequestDTO;
 import kr.co.lotteon.dto.member.point.PointPageResponseDTO;
 
+import kr.co.lotteon.dto.product.ProductReviewPageRequestDTO;
+import kr.co.lotteon.dto.product.ProductReviewPageResponseDTO;
 import kr.co.lotteon.entity.member.Member;
 import kr.co.lotteon.entity.member.Point;
 import kr.co.lotteon.security.MyUserDetails;
@@ -214,7 +216,12 @@ public class MyController {
     }
     // my - review (나의 리뷰내역) 페이지 매핑
     @GetMapping("/my/review")
-    public String review(){
+    public String review(Model model, @RequestParam String uid, ProductReviewPageRequestDTO productReviewPageRequestDTO){
+        ProductReviewPageResponseDTO productReviewPageResponseDTO = null;
+        productReviewPageResponseDTO = myService.reviewList(uid,productReviewPageRequestDTO);
+
+        model.addAttribute("productReviewPageResponseDTO",productReviewPageResponseDTO);
+
         return "/my/review";
     }
 }

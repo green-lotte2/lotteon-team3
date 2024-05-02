@@ -1,10 +1,15 @@
 package kr.co.lotteon.repository.custom;
 
 import kr.co.lotteon.dto.admin.AdminProductPageRequestDTO;
+import kr.co.lotteon.dto.cs.CsPageRequestDTO;
 import kr.co.lotteon.dto.product.PageRequestDTO;
 import kr.co.lotteon.dto.product.ProductDTO;
+import kr.co.lotteon.dto.product.ProductReviewPageRequestDTO;
+import kr.co.lotteon.dto.product.ReviewDTO;
+import kr.co.lotteon.entity.cs.BoardEntity;
 import kr.co.lotteon.entity.product.Option;
 import kr.co.lotteon.entity.product.Product;
+import kr.co.lotteon.entity.product.Review;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -45,4 +50,8 @@ public interface ProductRepositoryCustom {
     // 추천상품
     public List<ProductDTO> recommendProductMain();
 // ===========================================
+    
+    // 마이페이지 리뷰내역 조회
+    public Page<Review> memberSelectReview(String uid, ProductReviewPageRequestDTO productReviewPageRequestDTO, Pageable pageable);
+
 }

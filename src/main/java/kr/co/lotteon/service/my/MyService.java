@@ -7,19 +7,20 @@ import kr.co.lotteon.dto.member.CouponDTO;
 
 import kr.co.lotteon.dto.member.point.PointPageRequestDTO;
 import kr.co.lotteon.dto.member.point.PointPageResponseDTO;
-import kr.co.lotteon.dto.product.PageResponseDTO;
-import kr.co.lotteon.dto.product.ProductDTO;
+import kr.co.lotteon.dto.product.*;
 import kr.co.lotteon.entity.cs.BoardEntity;
 import kr.co.lotteon.entity.member.Coupon;
 import kr.co.lotteon.entity.member.Member;
 import kr.co.lotteon.entity.product.Product;
 import kr.co.lotteon.entity.member.Point;
 
+import kr.co.lotteon.entity.product.Review;
 import kr.co.lotteon.repository.cs.BoardRepository;
 import kr.co.lotteon.repository.member.MemberRepository;
 import kr.co.lotteon.repository.my.CouponRepository;
 import kr.co.lotteon.repository.my.PointRepository;
 import kr.co.lotteon.repository.product.OrderItemRepository;
+import kr.co.lotteon.repository.product.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -41,6 +42,7 @@ public class MyService {
     private final OrderItemRepository orderItemRepository;
     private final BoardRepository boardRepository;
     private final PointRepository pointRepository;
+    private final ProductRepository productRepository;
 
     public List<CouponDTO> findCouponsByUid(String uid){
         log.info("내 쿠폰"+couponRepository.findCouponsByUid(uid));
@@ -117,6 +119,31 @@ public class MyService {
                 .dtoList(boardDTOS)
                 .total(total)
                 .build();
+    }
+
+    public ProductReviewPageResponseDTO reviewList(String uid, ProductReviewPageRequestDTO productReviewPageRequestDTO){
+
+        log.info("리뷰 목록 조회 1" + productReviewPageRequestDTO);
+
+        Pageable pageable = productReviewPageRequestDTO.getPageable("rdate");
+
+        Page<Review> reviewPage = productRepository.memberSelectReview(uid,productReviewPageRequestDTO, pageable);
+        log.info("리뷰 목록 조회 2" + reviewPage);
+
+        List<ReviewDTO> reviewDTOS = reviewPage.getContent().stream()
+                .map(entity-> modelMapper.map(entity, ReviewDTO.class))
+                .toList();
+        log.info("리뷰 목록 조회 3" + reviewDTOS);
+
+        int total = (int) reviewPage.getTotalElements();
+
+        return ProductReviewPageResponseDTO.builder()
+                .productReviewPageRequestDTO(productReviewPageRequestDTO)
+                .dtoList(reviewDTOS)
+                .total(total)
+                .build();
+
+
     }
 
 
