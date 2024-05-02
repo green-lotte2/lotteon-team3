@@ -37,6 +37,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -184,9 +185,39 @@ public class MyController {
         CsPageResponseDTO csPageResponseDTO = null;
         csPageResponseDTO = myService.QnaList(csPageRequestDTO);
 
+        List<BoardDTO> updatedBoardDTOs = csPageResponseDTO.getDtoList().stream()
+                .peek(boardDTO -> {
+                    if ("coupon".equals(boardDTO.getCate())) {
+                        boardDTO.setCate("쿠폰/이벤트");
+                    }else if("cs".equals(boardDTO.getCate())){
+                        boardDTO.setCate("고객서비스");
+                    }else if("dangerProd".equals(boardDTO.getCate())){
+                        boardDTO.setCate("위해상품");
+                    }else if("delivery".equals(boardDTO.getCate())){
+                        boardDTO.setCate("배송");
+                    }else if("member".equals(boardDTO.getCate())){
+                        boardDTO.setCate("회원");
+                    }else if("order".equals(boardDTO.getCate())){
+                        boardDTO.setCate("주문/결제");
+                    }else if("refund".equals(boardDTO.getCate())){
+                        boardDTO.setCate("취소/반품/교환");
+                    }else if("safe".equals(boardDTO.getCate())){
+                        boardDTO.setCate("안전");
+                    }else if("travel".equals(boardDTO.getCate())){
+                        boardDTO.setCate("여행/숙박/항공");
+                    }
+                })
+                .collect(Collectors.toList());
+
+
+
+        csPageResponseDTO.setDtoList(updatedBoardDTOs);
+
         model.addAttribute("csPageResponseDTO", csPageResponseDTO);
 
         log.info("문의 목록 조회"+csPageResponseDTO);
+
+
 
         return "/my/qna";
     }
