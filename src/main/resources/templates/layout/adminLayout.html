@@ -42,7 +42,7 @@
                 <li>
                     <a href="#"><i class="fas fa-store" aria-hidden="true"></i>상점관리</a>
                     <ol>
-                        <li><a th:href="@{/admin/}">판매자현황</a></li>
+                        <li><a th:href="@{/admin/member/seller}">판매자현황</a></li>
                         <li><a th:href="@{/admin/product/list}">상품현황</a></li>
                     </ol>
                 </li>
@@ -66,6 +66,13 @@
                         <li><a th:href="@{/admin/cs/list(group='notice', cate=null)}">공지사항</a></li>
                         <li><a th:href="@{/admin/cs/list(group='faq', cate=null)}">자주묻는질문</a></li>
                         <li><a th:href="@{/admin/cs/list(group='qna', cate=null)}">고객문의</a></li>
+                    </ol>
+                </li>
+                <li>
+                    <a href="#"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>회사소개관리</a>
+                    <ol>
+                        <li><a th:href="@{/admin/company/story}">소식과 이야기</a></li>
+                        <li><a th:href="@{/admin/company/recruit}">채용정보</a></li>
                     </ol>
                 </li>
             </ul>

@@ -2132,3 +2132,63 @@ col {
     font-size: 14px;
     background-color: #e4eaec;
 }
+/* 회사소개 글쓰기 */
+/* qna - 글쓰기 */
+#company > .companyWrite > .write > article table {
+    width: 100%;
+    border-collapse: collapse;
+    border-top: 2px solid #111;
+}
+#company > .companyWrite > .write > article table tr {
+    width: 100%;
+    height: 26px;
+}
+
+#company > .companyWrite > .write > article table td {
+    padding: 16px;
+    border-bottom: 1px solid #ccc;
+    font-size: 16px;
+}
+
+#company > .companyWrite > .write > article table td:first-child {
+    width: 100px;
+}
+
+#company > .companyWrite > .write > article table input {
+    width: 100%;
+    height: 40px;
+    font-size: 16px;
+    border: none;
+    box-sizing: border-box;
+    text-indent: 10px;
+    outline: none;
+}
+
+#company > .companyWrite > .write > article table select {
+    width: 100px;
+    height: 40px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+#company > .companyWrite > .write > article table select * {
+    font-size: inherit;
+}
+
+#company > .companyWrite > .write > article table textarea {
+    width: 100%;
+    height: 360px;
+    resize: none;
+    font-size: 16px;
+    padding: 10px;
+    border: none;
+    background-color: #ffffff;
+    box-sizing: border-box;
+}
+#write > article > form > table > tbody > tr:nth-child(4) > td.form-group > label {
+    padding: 16px;
+    font-size: 16px;
+}
+#write > article > form > table > tbody > tr:nth-child(4) > td:nth-child(2) > input[type=file]{
+    margin-top: 10px;
+}

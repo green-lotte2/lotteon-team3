@@ -1,0 +1,66 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/adminListLayout}">
+<section id="admin-index" layout:fragment="content">
+    <script>
+        function btnWrite() {
+            const cate1 = "recruit";
+            location.href = `/lotteon/admin/company/write?cate1=` + cate1;
+
+        }
+    </script>
+    <nav>
+        <h3>채용정보</h3>
+        <p>
+            HOME > <strong>채용정보</strong>
+        </p>
+    </nav>
+    <article>
+    </article>
+    <h4>채용정보</h4>
+    <!-- 글 목록 -->
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">글번호</th>
+            <th scope="col">제목</th>
+            <th scope="col">내용</th>
+            <th scope="col">작성일</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="article : ${pageResponseDTO.dtoList}">
+            <td th:text="${article.ano}"></td>
+            <td th:text="${article.title}"></td>
+            <td th:text="${article.content}"></td>
+            <td th:text="${article.rdate}"></td>
+        </tr>
+        </tbody>
+    </table>
+    <button type="button" class="btn btn-secondary" onclick="btnWrite(this)">글쓰기</button>
+    <!-- 페이지 -->
+    <nav aria-label="Page navigation example" th:if="${!pageResponseDTO.dtoList.isEmpty()}">
+        <ul class="pagination">
+            <li class="page-item">
+                <a class="page-link" th:href="@{/admin/company/recruit(pg=${pageResponseDTO.start - 1})}" aria-label="Previous"  th:if="${pageResponseDTO.keyword == null}" >
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+                <a class="page-link" th:href="@{/admin/company/recruit(pg=${pageResponseDTO.start - 1}, type=${pageResponseDTO.type}, keyword=${pageResponseDTO.keyword})}" aria-label="Previous"  th:if="${pageResponseDTO.keyword != null}" >
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            <th:block th:each="num:${#numbers.sequence(pageResponseDTO.start, pageResponseDTO.end)}">
+                <li class="page-item"><a class="page-link" th:href="@{/admin/company/recruit(pg=${num})}" th:if="${pageResponseDTO.keyword == null}">[[${num}]]</a></li>
+                <li class="page-item"><a class="page-link" th:href="@{/admin/company/recruit(pg=${num}, type=${pageResponseDTO.type}, keyword=${pageResponseDTO.keyword})}" th:if="${pageResponseDTO.keyword != null}">[[${num}]]</a></li>
+            </th:block>
+                <li class="page-item">
+                    <a th:if="${pageResponseDTO.keyword == null}" class="page-link"  th:href="@{/admin/company/recruit(pg=${pageResponseDTO.end + 1})}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+                    <a th:if="${pageResponseDTO.keyword != null}" class="page-link"  th:href="@{/admin/company/recruit(pg=${pageResponseDTO.end + 1}, type=${pageResponseDTO.type}, keyword=${pageResponseDTO.keyword})}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</section>
