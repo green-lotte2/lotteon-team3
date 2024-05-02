@@ -18,6 +18,8 @@ public class ReviewDTO {
     private int prodNo;
     private int ordItemno;
     private int rating;
+    private int cate1;
+    private int cate2;
     private String prodName;
     private LocalDateTime rdate;
     private String content;
