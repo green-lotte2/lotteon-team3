@@ -288,7 +288,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
 
         log.info("마이페이지 리뷰내역 목록 조회 Impl 1 : " + productReviewPageRequestDTO);
         QueryResults<Tuple> results = jpaQueryFactory
-                .select(qReview, qProduct.prodName)
+                .select(qReview, qProduct.prodName,qProduct.cate1,qProduct.cate2)
                 .from(qReview)
                 .where(qReview.uid.eq(uid))
                 .join(qProduct).on(qReview.prodNo.eq(qProduct.prodNo))

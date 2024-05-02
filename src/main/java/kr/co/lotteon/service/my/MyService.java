@@ -158,9 +158,13 @@ public class MyService {
                 .map(tuple -> {
                     Review review=tuple.get(0,Review.class);
                     String prodName=tuple.get(1,String.class);
+                    int cate1=tuple.get(2,Integer.class);
+                    int cate2=tuple.get(3,Integer.class);
 
                     ReviewDTO reviewDTO=modelMapper.map(review,ReviewDTO.class);
                     reviewDTO.setProdName(prodName);
+                    reviewDTO.setCate1(cate1);
+                    reviewDTO.setCate2(cate2);
 
                     return reviewDTO;
                 })

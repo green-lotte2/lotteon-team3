@@ -33,7 +33,7 @@
                             </tr>
                             <tr th:each="review, index:${productReviewPageResponseDTO.dtoList}">
                                 <td class="no">[[${index.index + 1}]]</td>
-                                <td class="prodName"><a href="#">[[${review.prodName}]]</a></td>
+                                <td class="prodName"><a th:href="@{/product/view(prodNo=${review.prodNo},cate1=${review.cate1},cate2=${review.cate2})}">[[${review.prodName}]]</a></td>
                                 <td class="content">[[${review.content}]]</td>
                                 <td class="score"><span th:class="'rating star' + ${review.rating}"></span></td>
                                 <td class="date">[[${#temporals.format(review.rdate, 'yyyy-MM-dd')}]]</td>
