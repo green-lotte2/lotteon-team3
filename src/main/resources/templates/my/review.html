@@ -31,50 +31,29 @@
                                 <th>평점</th>
                                 <th>작성일</th>
                             </tr>
-                            <tr>
-                                <td class="no">5</td>
+                            <tr th:each="review, index:${productReviewPageResponseDTO.dtoList}">
+                                <td class="no">[[${index.index + 1}]]</td>
                                 <td class="prodName"><a href="#">상품명</a></td>
-                                <td class="content">배송이 빠릅니다. 잘 사용하겠습니다.</td>                                
+                                <td class="content">[[${review.content}]]</td>
                                 <td class="score"><span class="rating star1">평점</span></td>
-                                <td class="date">2024-12-12</td>
+                                <td class="date">[[${#temporals.format(review.rdate, 'yyyy-MM-dd')}]]</td>
                             </tr>
-                            <tr>
-                                <td class="no">4</td>
-                                <td class="prodName"><a href="#">상품명</a></td>
-                                <td class="content">배송이 빠릅니다. 잘 사용하겠습니다.</td>                                
-                                <td class="score"><span class="rating star2">평점</span></td>
-                                <td class="date">2024-12-12</td>
-                            </tr>
-                            <tr>
-                                <td class="no">3</td>
-                                <td class="prodName"><a href="#">상품명</a></td>
-                                <td class="content">배송이 빠릅니다. 잘 사용하겠습니다.</td>                                
-                                <td class="score"><span class="rating star3">평점</span></td>
-                                <td class="date">2024-12-12</td>
-                            </tr>
-                            <tr>
-                                <td class="no">2</td>
-                                <td class="prodName"><a href="#">상품명</a></td>
-                                <td class="content">배송이 빠릅니다. 잘 사용하겠습니다.</td>                                
-                                <td class="score"><span class="rating star4">평점</span></td>
-                                <td class="date">2024-12-12</td>
-                            </tr>
-                            <tr>
-                                <td class="no">1</td>
-                                <td class="prodName"><a href="#">상품명</a></td>
-                                <td class="content">배송이 빠릅니다. 잘 사용하겠습니다.</td>                                
-                                <td class="score"><span class="rating star5">평점</span></td>
-                                <td class="date">2024-12-12</td>
-                            </tr>
+
                         </table>
 
-                        <p class="page">
-                            <a href="#" class="prev">이전</a>
-                            <a href="#" class="num on">1</a>
-                            <a href="#" class="num">2</a>
-                            <a href="#" class="num">3</a>
-                            <a href="#" class="next">다음</a>
-                        </p>
+                        <div class="page">
+                <span class="prev" th:if="${productReviewPageResponseDTO.prev}">
+                  <a th:href="@{/my/review(pg=${productReviewPageResponseDTO.start - 1},uid=${#authentication.principal.member.uid})}"><&nbsp;이전</a>
+                </span>
+                            <span th:each="num : ${#numbers.sequence(productReviewPageResponseDTO.start, productReviewPageResponseDTO.end)}" class="num">
+                  <a th:href="@{/my/review(pg=${num},uid=${#authentication.principal.member.uid})}">
+                      [[${num}]]
+                  </a>
+                </span>
+                            <span class="next" th:if="${productReviewPageResponseDTO.next}">
+                  <a th:href="@{/my/review(pg=${productReviewPageResponseDTO.end + 1},uid=${#authentication.principal.member.uid})}">다음&nbsp;></a>
+                </span>
+                        </div>
                     </article>
                 </section>
 
