@@ -118,16 +118,24 @@ public class MyService {
 
         Pageable pageable = csPageRequestDTO.getPageable("bno");
 
-        Page<BoardEntity> boardsPage = boardRepository.memberSelectBoards(uid,csPageRequestDTO, pageable);
-        log.info("문의 목록 조회 2" + boardsPage);
+        Page<Tuple> tuples = boardRepository.memberSelectBoards(uid,csPageRequestDTO, pageable);
+        log.info("문의 목록 조회 2" + tuples);
 
         // Page<Product>를 List<ProductDTO>로 변환
-        List<BoardDTO> boardDTOS = boardsPage.getContent().stream()
-                .map(entity-> modelMapper.map(entity, BoardDTO.class))
+        List<BoardDTO> boardDTOS = tuples.getContent().stream()
+                .map(tuple -> {
+                    BoardEntity board=tuple.get(0,BoardEntity.class);
+                    String cateName=tuple.get(1,String.class);
+
+                    BoardDTO boardDTO=modelMapper.map(board,BoardDTO.class);
+                    boardDTO.setCateName(cateName);
+
+                    return boardDTO;
+                })
                 .toList();
         log.info("문의 목록 조회 3" + boardDTOS);
 
-        int total = (int) boardsPage.getTotalElements();
+        int total = (int) tuples.getTotalElements();
 
         return CsPageResponseDTO.builder()
                 .csPageRequestDTO(csPageRequestDTO)
@@ -150,9 +158,13 @@ public class MyService {
                 .map(tuple -> {
                     Review review=tuple.get(0,Review.class);
                     String prodName=tuple.get(1,String.class);
+                    int cate1=tuple.get(2,Integer.class);
+                    int cate2=tuple.get(3,Integer.class);
 
                     ReviewDTO reviewDTO=modelMapper.map(review,ReviewDTO.class);
                     reviewDTO.setProdName(prodName);
+                    reviewDTO.setCate1(cate1);
+                    reviewDTO.setCate2(cate2);
 
                     return reviewDTO;
                 })

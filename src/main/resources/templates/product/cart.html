@@ -213,11 +213,10 @@
                     total.style.top = scrollY + 'px';
                   });
 
-                  // 가격 계산
+                  // 원가격
                   const cartOrg = document.getElementById('prodOrgPrice');
                   // 수량
                   const cartCount = document.getElementById('prodCount');
-
 
                   const cartDis = document.getElementById('prodDisPrice');
                   const cartDel = document.getElementById('prodDelivery');
@@ -251,13 +250,14 @@
                  }
 
                  // 전체 수량 가져오기
-                 function updateCount(){
+                 function updateCount(intValue){
                    var checkedBoxes = document.querySelectorAll('.checkbox:checked');
 
                    checkedBoxes.forEach(function (checkbox){
                      let count = checkedBoxes.length;
+                     let int = parseInt(count);
                      cartCount.innerHTML = "";
-                     cartCount.innerText = count;
+                     cartCount.innerText =+ int;
                    })
                    if (checkedBoxes.length === 0){
 
@@ -266,9 +266,33 @@
                    }
                  }
 
+                 // 전체 상품 원래금액 가져오기
+                  function updateOrgPrice() {
+                    var checkedBoxes = document.querySelectorAll('.checkbox:checked');
+
+                    checkedBoxes.forEach(function (checkbox) {
+                      let orgPrice = checkbox.closest('.cartProduct').querySelector('.originalPrice').innerText;
+                      let count = parseInt(checkbox.closest('.cartProduct').querySelector('.number').value);
+                      let int = parseInt(orgPrice.split('원')[0]);
+                      let calc = (int*count);
+                      console.log(calc);
+                      cartOrg.innerHTML = "";
+                      cartOrg.innerText =+ calc;
+                    })
+                    if (checkedBoxes.length === 0) {
+
+                      cartOrg.innerHTML = "";
+                      cartOrg.innerText = 0;
+
+                    }
+                  }
                  // 체크박스 개별 선택시 가격 변경
                   checkboxes.forEach(function(checkbox) {
-                    checkbox.addEventListener('change', updateTotal);
+                    checkbox.addEventListener('change', function (){
+                      updateCount();
+                      updateTotal();
+                      updateOrgPrice();
+                    });
                   });
 
 

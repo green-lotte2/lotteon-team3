@@ -23,6 +23,7 @@ public class BoardDTO {
     private String title;           // 게시글 제목
     private String content;         // 게시글 내용
 
+
     private int file;               // 첨부된 파일 개수
     private int hit;                // 조회수
     private String status;          // 게시글의 상태(게시, 비공개, 삭제)

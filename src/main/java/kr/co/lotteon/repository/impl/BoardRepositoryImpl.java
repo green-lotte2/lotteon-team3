@@ -254,14 +254,15 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
                 .fetchCount();
     }
     @Override
-    public Page<BoardEntity> memberSelectBoards(String uid,CsPageRequestDTO csPageRequestDTO, Pageable pageable){
+    public Page<Tuple> memberSelectBoards(String uid,CsPageRequestDTO csPageRequestDTO, Pageable pageable){
         log.info("마이페이지 문의내역 목록 조회 Impl 1 : " + csPageRequestDTO);
-        QueryResults<BoardEntity> results = jpaQueryFactory
-                .select(qBoardEntity)
+        QueryResults<Tuple> results = jpaQueryFactory
+                .select(qBoardEntity,qCateEntity.cateName)
                 .from(qBoardEntity)
                 .where(
                         qBoardEntity.uid.eq(uid),
                         qBoardEntity.group.eq("qna"))
+                .join(qCateEntity).on(qCateEntity.cate.eq(qBoardEntity.cate))
                 .orderBy(
                         qBoardEntity.status.desc(), // 상태값을 기준으로 내림차순으로 정렬
                         qBoardEntity.rdate.desc() // rdate를 기준으로 내림차순으로 정렬
@@ -270,11 +271,14 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
                 .limit(pageable.getPageSize())
                 .fetchResults();
 
+        List<Tuple> content = results.getResults();
+
+        log.info("마이페이지 문의내역 목록 조회 Impl 2 : " + content);
         long total = results.getTotal();
-        log.info("마이페이지 문의내역 목록 조회 Impl 2 : " + total);
-        List<BoardEntity> boardList = results.getResults();
-        log.info("마이페이지 문의내역 목록 조회 Impl 3 : " + boardList);
-        return new PageImpl<>(boardList, pageable, total);
+
+        log.info("마이페이지 문의내역 목록 조회 Impl 3 : " + total);
+
+        return new PageImpl<>(content, pageable, total);
     }
 
 
