@@ -33,7 +33,7 @@
                             </tr>
                             <tr th:each="board , index : ${csPageResponseDTO.dtoList}">
                                 <td class="no">[[${index.index + 1}]]</td>
-                                <td class="type">[[${board.cate}]]</td>
+                                <td class="type">[[${board.cateName}]]</td>
                                 <td class="tit"><a href="#">[[${board.title}]]</a></td>
                                 <td class="date">[[${#temporals.format(board.rdate, 'yyyy-MM-dd')}]]</td>
                                 <td class="status" th:style="${board.status == '답변완료'} ? 'font-weight: bold;' : 'color: #999'">
