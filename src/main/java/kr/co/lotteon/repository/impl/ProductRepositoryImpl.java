@@ -284,23 +284,27 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
     }
     // =====================
     @Override
-    public Page<Review> memberSelectReview(String uid, ProductReviewPageRequestDTO productReviewPageRequestDTO, Pageable pageable){
+    public Page<Tuple> memberSelectReview(String uid, ProductReviewPageRequestDTO productReviewPageRequestDTO, Pageable pageable){
 
         log.info("마이페이지 리뷰내역 목록 조회 Impl 1 : " + productReviewPageRequestDTO);
-        QueryResults<Review> results = jpaQueryFactory
-                .select(qReview)
+        QueryResults<Tuple> results = jpaQueryFactory
+                .select(qReview, qProduct.prodName)
                 .from(qReview)
                 .where(qReview.uid.eq(uid))
+                .join(qProduct).on(qReview.prodNo.eq(qProduct.prodNo))
                 .orderBy(qReview.rdate.desc()) // rdate를 기준으로 내림차순으로 정렬)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetchResults();
 
+        List<Tuple> review=results.getResults();
+        log.info("마이페이지 리뷰내역 목록 조회 Impl 2 : " + review);
+
         long total = results.getTotal();
-        log.info("마이페이지 리뷰내역 목록 조회 Impl 2 : " + total);
-        List<Review> reviewList = results.getResults();
-        log.info("마이페이지 리뷰내역 목록 조회 Impl 3 : " + reviewList);
-        return new PageImpl<>(reviewList, pageable, total);
+
+        log.info("마이페이지 리뷰내역 목록 조회 Impl 3 : " + total);
+
+        return new PageImpl<>(review, pageable, total);
 
     }
 }

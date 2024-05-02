@@ -1,5 +1,6 @@
 package kr.co.lotteon.service.my;
 
+import com.querydsl.core.Tuple;
 import kr.co.lotteon.dto.cs.BoardDTO;
 import kr.co.lotteon.dto.cs.CsPageRequestDTO;
 import kr.co.lotteon.dto.cs.CsPageResponseDTO;
@@ -127,15 +128,24 @@ public class MyService {
 
         Pageable pageable = productReviewPageRequestDTO.getPageable("rdate");
 
-        Page<Review> reviewPage = productRepository.memberSelectReview(uid,productReviewPageRequestDTO, pageable);
-        log.info("리뷰 목록 조회 2" + reviewPage);
+        Page<Tuple> tuples = productRepository.memberSelectReview(uid, productReviewPageRequestDTO, pageable);
 
-        List<ReviewDTO> reviewDTOS = reviewPage.getContent().stream()
-                .map(entity-> modelMapper.map(entity, ReviewDTO.class))
+        log.info("리뷰 목록 조회 2" + tuples.getContent());
+
+        List<ReviewDTO> reviewDTOS = tuples.getContent().stream()
+                .map(tuple -> {
+                    Review review=tuple.get(0,Review.class);
+                    String prodName=tuple.get(1,String.class);
+
+                    ReviewDTO reviewDTO=modelMapper.map(review,ReviewDTO.class);
+                    reviewDTO.setProdName(prodName);
+
+                    return reviewDTO;
+                })
                 .toList();
         log.info("리뷰 목록 조회 3" + reviewDTOS);
 
-        int total = (int) reviewPage.getTotalElements();
+        int total = (int) tuples.getTotalElements();
 
         return ProductReviewPageResponseDTO.builder()
                 .productReviewPageRequestDTO(productReviewPageRequestDTO)

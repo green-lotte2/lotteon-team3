@@ -33,7 +33,7 @@
                             </tr>
                             <tr th:each="review, index:${productReviewPageResponseDTO.dtoList}">
                                 <td class="no">[[${index.index + 1}]]</td>
-                                <td class="prodName"><a href="#">상품명</a></td>
+                                <td class="prodName"><a href="#">[[${review.prodName}]]</a></td>
                                 <td class="content">[[${review.content}]]</td>
                                 <td class="score"><span class="rating star1">평점</span></td>
                                 <td class="date">[[${#temporals.format(review.rdate, 'yyyy-MM-dd')}]]</td>
