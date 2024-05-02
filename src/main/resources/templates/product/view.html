@@ -102,16 +102,16 @@
                                             selectDetail.appendChild(newOption);
                                         });
                                         }
+                                        let stringValue;
                                         // 선택한 옵션 값
                                         selectDetail.addEventListener('change', async function (){
                                             // 선택된 옵션의 value값 배열로 넣기
                                             if(newOption != null){
                                                 selectedArray.push(this.value);
 
-                                                let stringValue = selectedArray.join(',');
+                                                stringValue = selectedArray.join(',');
                                                 console.log(stringValue);
                                             }
-
 
                                             // 장바구니 버튼
                                             const cart = document.getElementsByClassName('cart')[0];
@@ -184,9 +184,9 @@
                                 count.value = countValue;
                                 // 30000원 이상 무료배송
                                 if (totalPrice >= 30000) {
-                                    totalSpan.innerText = (discountPrice * count.value);
+                                    totalSpan.innerText = numberWithCommas(discountPrice * count.value);
                                 } else if (totalPrice <= 30000) {
-                                    let totalPrice = (discountPrice * count.value) + deliveryInt;
+                                    let totalPrice = numberWithCommas((discountPrice * count.value) + deliveryInt);
                                     totalSpan.innerText = totalPrice;
                                 }
 
@@ -197,7 +197,6 @@
 
                         });
 
-
                         increase.addEventListener('click', await function (){
                             countValue = countValue +1;
                             count.value = countValue;
@@ -205,9 +204,9 @@
                             // 30000원 이상 무료배송
                             if(totalPrice>=30000){
                                 let totalPrice = (discountPrice*count.value);
-                                totalSpan.innerText = totalPrice;
+                                totalSpan.innerText = numberWithCommas(totalPrice);
                             }else if(totalPrice <= 30000){
-                                let totalPrice = (discountPrice*count.value)+deliveryInt;
+                                let totalPrice = numberWithCommas((discountPrice*count.value)+deliveryInt);
                                 totalSpan.innerText = totalPrice;
                             }
                         });

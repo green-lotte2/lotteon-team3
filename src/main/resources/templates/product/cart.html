@@ -78,23 +78,28 @@
                       // 총 가격을 화면에 업데이트
                       priceElement.innerText = numberWithCommas(totalPrice);
 
+                      // 토탈 메뉴
                       checkboxes.forEach(e=>{
                         if(e.checked){
-                          // 토탈 메뉴
+
                           const cartTotal = document.getElementById('prodTotalPrice');
                           let cartTotalValue = 0;
 
-                          document.querySelectorAll('.currentPrice strong').forEach(e => {
-                            var noComma = e.innerText.replace(/,/g, '');
-                            let int =parseInt(noComma);
-                            cartTotalValue += int
-
+                          document.querySelectorAll('.currentPrice strong').forEach(price => {
+                            // 해당 요소의 체크박스가 선택되었는지 확인
+                            if (price.closest('.cartProduct').querySelector('.checkbox').checked) {
+                              let noComma = price.innerText.replace(/,/g, '');
+                              let int = parseInt(noComma);
+                              cartTotalValue += int;
+                            }
                           });
+
+
                           cartTotal.innerHTML = "";
-                          cartTotal.textContent +=numberWithCommas(cartTotalValue);
+                          cartTotal.textContent +=numberWithCommas(cartTotalValue)+'원';
                         }
                       });
-
+                      updateOrgPriceButton(intValue);
                     });
                     // 수량 감소 버튼
                     decrease.addEventListener('click', function(e){
@@ -114,18 +119,35 @@
                       priceElement.innerText = numberWithCommas(totalPrice);
 
                       // 토탈 메뉴
-                      const cartTotal = document.getElementById('prodTotalPrice');
-                      let cartTotalValue = 0;
+                      checkboxes.forEach(e=>{
+                        if(e.checked){
 
-                      document.querySelectorAll('.currentPrice strong').forEach(e => {
-                        var noComma = e.innerText.replace(/,/g, '');
-                        let int =parseInt(noComma);
+                          const cartTotal = document.getElementById('prodTotalPrice');
+                          let cartTotalValue = 0;
 
-                        cartTotalValue += int
+                          document.querySelectorAll('.currentPrice strong').forEach(price => {
+                            // 해당 요소의 체크박스가 선택되었는지 확인
+                            if (price.closest('.cartProduct').querySelector('.checkbox').checked) {
+                              let noComma = price.innerText.replace(/,/g, '');
+                              let int = parseInt(noComma);
+                              cartTotalValue += int;
+                            }
+                          });
+                          cartTotal.innerHTML = "";
+                          cartTotal.textContent +=numberWithCommas(cartTotalValue)+'원';
 
+                          const cartOrg = document.getElementById('prodOrgPrice');
+                          let orgTotal = 0;
+                          document.querySelectorAll('.originalPrice p').forEach(price=>{
+                            if (price.closest('.cartProduct').querySelector('.checkbox').checked) {
+                              console.log(price);
+                              let orgPrice = parseInt(price.innerText);
+                              console.log('수량감소' + orgPrice);
+                            }
+                          });
+                        }
                       });
-                      cartTotal.innerHTML = "";
-                      cartTotal.textContent +=numberWithCommas(cartTotalValue);
+
                     });
 
                     // 총 가격 계산
@@ -149,6 +171,7 @@
                       }
                       updateTotal();
                       updateCount();
+                      updateOrgPrice();
                   });
 
                   // 회사별로 전체 선택
@@ -164,6 +187,7 @@
                       });
                       updateTotal();
                       updateCount();
+                      updateOrgPrice();
                     });
                   });
 
@@ -229,7 +253,7 @@
                  function updateTotal(){
                    totalPrice = 0;
 
-                   // 각 체크된 상품의 가격 합산
+                   // 체크된 상품의 총 가격 합산
                    var checkedBoxes = document.querySelectorAll('.checkbox:checked');
 
                    checkedBoxes.forEach(function (checkbox){
@@ -250,14 +274,14 @@
                  }
 
                  // 전체 수량 가져오기
-                 function updateCount(intValue){
+                 function updateCount(){
                    var checkedBoxes = document.querySelectorAll('.checkbox:checked');
 
                    checkedBoxes.forEach(function (checkbox){
                      let count = checkedBoxes.length;
                      let int = parseInt(count);
                      cartCount.innerHTML = "";
-                     cartCount.innerText =+ int;
+                     cartCount.innerText = int;
                    })
                    if (checkedBoxes.length === 0){
 
@@ -268,6 +292,7 @@
 
                  // 전체 상품 원래금액 가져오기
                   function updateOrgPrice() {
+                   totalPrice = 0;
                     var checkedBoxes = document.querySelectorAll('.checkbox:checked');
 
                     checkedBoxes.forEach(function (checkbox) {
@@ -275,9 +300,10 @@
                       let count = parseInt(checkbox.closest('.cartProduct').querySelector('.number').value);
                       let int = parseInt(orgPrice.split('원')[0]);
                       let calc = (int*count);
-                      console.log(calc);
+                      totalPrice += calc;
+
                       cartOrg.innerHTML = "";
-                      cartOrg.innerText =+ calc;
+                      cartOrg.innerHTML += numberWithCommas(totalPrice);
                     })
                     if (checkedBoxes.length === 0) {
 
@@ -286,6 +312,8 @@
 
                     }
                   }
+
+
                  // 체크박스 개별 선택시 가격 변경
                   checkboxes.forEach(function(checkbox) {
                     checkbox.addEventListener('change', function (){
@@ -373,12 +401,10 @@
                     <div class="cartFooter">
                       <p>
                       <span class="point">431,000원</span>
-                      + 배송비 0원
-
-                      - 할인 86,330원
+                        <span class="deliverySpan">+ 배송비 0원<span> - <span class="discountSpan">할인 86,330원</span>
                       <span > = </span>
-                      <span class="price"> <strong>344,670원 </strong> </span>
-                      </p>
+                      <span> <strong class="totalPriceSpan">344,670원 </strong> </span>
+                      </span>
                     </div>
                   </div>
                 </div>
