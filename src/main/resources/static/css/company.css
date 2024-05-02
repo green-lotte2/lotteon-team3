@@ -36,7 +36,7 @@ header ul > li {
 }
 
 header ul > li > a {
-  font-size: 18px;
+  font-size: 16px;
 }
 
 /* footer */
@@ -145,7 +145,7 @@ p.desc {
   height: auto;
 }
 .slide2 {background-image: url('../company/images/bg_highAndTech.png');}
-.slide3 {background-image: url('../company/images/bg_history.png'); margin-top: 100px
+.slide3 {background-image: url('../company/images/bg_history.png'); margin-top: 100px;     background-size: contain;
 }
 /*.slide4 {background-image: url('../images/bg_product_sec.jpg');}*/
 
@@ -261,7 +261,7 @@ main > .content > p {
   line-height: 28px;
   margin-bottom: 80px;
 }
-#promote .cover > div > h1 {
+#media .cover > div > h1 {
   position: absolute;
   left: 10px;
   top: 280px;
@@ -269,13 +269,15 @@ main > .content > p {
   font-weight: bold;
   color: #ef2a23;
 }
-#promote > div > div > p {
-  position: absolute;
+#media > div > div > p {
+  animation-duration: 3s;
+  animation-name: slidein;
   left: 10px;
   top: 380px;
-  font-size: 22px;
-  font-weight: 500;
-  color: #fff;
+  color: #FFFDFD;
+  font-size: 35px;
+  font-weight: 600;
+  text-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
 }
 
 /* íšŒì‚¬ì†Œê°œ */
@@ -289,51 +291,51 @@ main > .content > p {
   margin: 28px auto;
 }
 
-/* ì „ìžê³µì‹œ */
-#notice > .cover {
+/* 채용 */
+#recuit > .cover {
   background-image: url('../company/images/bg_company_recuit.png');
 }
 
-#notice img {
+#recuit img {
   display: block;
   width: 80%;
   margin: 28px auto;
 }
 
-/* í™ë³´ì±„ë„ */
-#promote {}
-#promote > .cover {
+/* 미디어 */
+#media {}
+#media > .cover {
   background-image: url('../company/images/bg_company_promote_lotte.png');
 }
-#promote > .content {}
-#promote > .content > article {
+#media > .content {}
+#media > .content > article {
   position: relative;
   width: 100%;
   height: auto;
   box-sizing: border-box;
   margin-bottom: 26px;
 }
-#promote > .content > article > h3 {
+#media > .content > article > h3 {
   position: absolute;
   left: 740px;
   top: 0;
   font-size: 22px;
   font-weight: bold;
 }
-#promote > section > article:nth-child(1) > p{
+#media > section > article:nth-child(1) > p{
   position: absolute;
   left: 740px;
-  top: 40px;
+  top: 60px;
   font-size: 18px;
 }
-#promote > .content > article > p {
+#media > .content > article > p {
   position: absolute;
   left: 740px;
   top: 60px;
   font-size: 18px;
 }
 
-/* íˆ¬ëª…ê²½ì˜ */
+/* 기업문화 */
 #culture > .cover {
   background-image: url('../company/images/lotte_tower.jpg');
 }
@@ -342,7 +344,7 @@ main > .content > p {
   animation-name: slidein;
   top: 380px;
   color: #FFFDFD;
-  font-size: 40px;
+  font-size: 35px;
   font-weight: 600;
   text-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
 }

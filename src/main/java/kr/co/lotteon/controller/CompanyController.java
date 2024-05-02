@@ -16,18 +16,23 @@ public class CompanyController {
     }
 
     @GetMapping(value = {"/company/recruit"})
-    public String notice() {
+    public String recruit() {
         return "/company/recruit";
     }
 
     @GetMapping(value = { "/company/media"})
-    public String promote() {
+    public String media() {
         return "/company/media";
     }
 
     @GetMapping(value = { "/company/culture"})
-    public String manage() {
+    public String culture() {
         return "/company/culture";
+    }
+
+    @GetMapping(value = { "/company/story"})
+    public String story() {
+        return "/company/story";
     }
 
 
