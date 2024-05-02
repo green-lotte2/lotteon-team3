@@ -397,4 +397,20 @@ public class AdminController {
         adminService.insertArticle(thumb336, articleDTO);
         return "redirect:/admin/company/"+articleDTO.getCate1();
     }
+
+    // 관리자 회사소개 글 수정 매핑
+    @GetMapping("/admin/company/modify/{ano}")
+    public String companyWrite(Model model, @PathVariable("ano") int ano){
+        ArticleDTO article = adminService.selectArticle(ano);
+        model.addAttribute("article", article);
+        return "/admin/company/modify";
+    }
+
+    // 관리자 회사소개 삭제
+    @GetMapping("/admin/company/delete/{ano}")
+    @ResponseBody
+    public ResponseEntity<?> deleteArticle(@PathVariable("ano") int ano){
+
+        return adminService.deleteArticle(ano);
+    }
 }

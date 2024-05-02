@@ -132,6 +132,8 @@ body{
 #gnb {
     width: 100%;
     height: auto;
+    padding: 0;
+    margin: 0;
 }
 #gnb > li {
     width: 100%;
@@ -361,7 +363,7 @@ button[type=submit] {
 
 
 /* admin-index */
-#admin-index {}        
+#admin-index {}
 
 #admin-index > article {
     width: 100%;
@@ -1302,6 +1304,16 @@ col {
 }
 .page-link {
     display: inline-block; !important
+}
+.pageDiv {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+.btnWrite{
+    float: right;
+    margin-right: 30px;
 }
 .prev {
     font-weight: bold;

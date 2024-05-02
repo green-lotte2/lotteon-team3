@@ -8,7 +8,12 @@
             location.href = `/lotteon/admin/company/write?cate1=` + cate1;
 
         }
+        // 글 수정
+        function btnModify(button){
+            const ano = button.dataset.ano;
 
+            location.href = `/lotteon/admin/company/modify/${ano}`;
+        }
         // 이미지 크게보기
         function bigImg(button) {
             const src = button.dataset.src;
@@ -67,6 +72,7 @@
             <th scope="col">부제목</th>
             <th scope="col">작성일</th>
             <th scope="col">이미지</th>
+            <th scope="col">관리</th>
         </tr>
         </thead>
         <tbody>
@@ -80,17 +86,21 @@
             <td th:text="${article.ano}"></td>
             <td th:text="${article.title}"></td>
             <td th:text="${article.content}"></td>
-            <td th:text="${article.rdate}"></td>
+            <td th:text="${#temporals.format(article.rdate, 'yyyy-MM-dd')}"></td>
             <td>
                 <button type="button" class="btn btn-secondary" th:data-src="@{'/prodImg/'+${article.thumb}}"
                         onclick="bigImg(this)">이미지보기
                 </button>
             </td>
+            <td>
+                <button type="button" class="btn btn-secondary" onclick="btnModify(this)" th:data-ano="${article.ano}">수정</button>
+            </td>
         </tr>
         </tbody>
     </table>
-    <button type="button" class="btn btn-secondary" onclick="btnWrite(this)">글쓰기</button>
+
     <!-- 페이지 -->
+    <div class="pageDiv">
     <nav aria-label="Page navigation example" th:if="${!pageResponseDTO.dtoList.isEmpty()}">
         <ul class="pagination">
             <li class="page-item">
@@ -115,6 +125,8 @@
             </li>
         </ul>
     </nav>
+    </div>
+    <button type="button" class="btn btn-secondary btnWrite" onclick="btnWrite(this)">글쓰기</button>
     <!-- 이미지 모달 -->
     <div class="modal" onclick="closeBigImg()">
         <span class="close" onclick="closeBigImg()">&times;</span>

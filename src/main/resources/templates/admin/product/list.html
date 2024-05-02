@@ -3,6 +3,17 @@
       layout:decorate="~{/layout/adminLayout}">
 <section id="admin-product-list" layout:fragment="content">
     <script>
+        window.onload = function () {
+            // 숫자를 3자리마다 콤마를 추가하여 문자열로 반환하는 함수
+            function numberWithCommas(x) {
+                return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            }
+            document.querySelectorAll('.price').forEach(priceTd =>{
+               const price = priceTd.innerText;
+               const commasPrice = numberWithCommas(price);
+                priceTd.innerText = commasPrice;
+            });
+        }
         // type 상품 분류 선택 시 cate1 조회후 select 태그 추가
         async function findCate(type){
             console.log(type);
@@ -158,7 +169,7 @@
                                     </td>
                                     <td th:text="${product.prodNo}">상품코드</td>
                                     <td th:text="${product.prodName}">상품명</td>
-                                    <td th:text="${product.price}">가격</td>
+                                    <td><span class="price">[[${product.price}]]</span>  <strong> 원</strong></td>
                                     <td th:text="${product.discount}">할인율</td>
                                     <td th:text="${product.point}">적립금</td>
                                     <td th:text="${product.stock}">재고</td>
