@@ -1,0 +1,123 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/adminListLayout}">
+<section id="admin-index" layout:fragment="content">
+    <script>
+        function btnWrite() {
+            const cate1 = "story";
+            location.href = `/lotteon/admin/company/write?cate1=` + cate1;
+
+        }
+
+        // 이미지 크게보기
+        function bigImg(button) {
+            const src = button.dataset.src;
+            const modal = document.querySelector(".modal");
+            const modal_img = document.querySelector(".modal_content");
+            const span = document.querySelector(".close");
+
+            modal_img.src = src;
+            modal.style.display = "block";
+        }
+
+        // 이미지 크게보기 끄기
+        function closeBigImg() {
+            const modal = document.querySelector(".modal");
+            const modal_img = document.querySelector(".modal_content");
+            modal_img.src = "";
+            modal.style.display = "none";
+        }
+    </script>
+    <nav>
+        <h3>소식과 이야기</h3>
+        <p>
+            HOME > <strong>소식과 이야기</strong>
+        </p>
+    </nav>
+    <article>
+    </article>
+    <h4>소식과 이야기</h4>
+    <!-- 검색 nav -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <form th:action="@{/admin/company/story}" method="get" class="d-flex" id="searchForm">
+                    <select class="form-select form-select" name="keyword" aria-label=".form-select-sm example"
+                            onchange="findCate(this)">
+                        <option value="all">전체보기</option>
+                        <option value="culture">기업문화</option>
+                        <option value="interview">인터뷰</option>
+                        <option value="recruit">채용</option>
+                        <option value="lotteON"> 롯데ON</option>
+                        <option value="pressRelease">보도자료</option>
+                        <option value="esg">ESG</option>
+                    </select>
+                    <button class="btn btn-outline-success" type="submit" onclick="bigImg()">Search</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+    <!-- 글 목록 -->
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">카테고리</th>
+            <th scope="col">글번호</th>
+            <th scope="col">제목</th>
+            <th scope="col">부제목</th>
+            <th scope="col">작성일</th>
+            <th scope="col">이미지</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="article : ${pageResponseDTO.dtoList}">
+            <th scope="row" th:if="${article.cate2 == 'culture'}">기업문화</th>
+            <th scope="row" th:if="${article.cate2 == 'interview'}">인터뷰</th>
+            <th scope="row" th:if="${article.cate2 == 'recruit'}">채용</th>
+            <th scope="row" th:if="${article.cate2 == 'lotteON'}">롯데ON</th>
+            <th scope="row" th:if="${article.cate2 == 'pressRelease'}">보도자료</th>
+            <th scope="row" th:if="${article.cate2 == 'esg'}">ESG</th>
+            <td th:text="${article.ano}"></td>
+            <td th:text="${article.title}"></td>
+            <td th:text="${article.content}"></td>
+            <td th:text="${article.rdate}"></td>
+            <td>
+                <button type="button" class="btn btn-secondary" th:data-src="@{'/prodImg/'+${article.thumb}}"
+                        onclick="bigImg(this)">이미지보기
+                </button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <button type="button" class="btn btn-secondary" onclick="btnWrite(this)">글쓰기</button>
+    <!-- 페이지 -->
+    <nav aria-label="Page navigation example" th:if="${!pageResponseDTO.dtoList.isEmpty()}">
+        <ul class="pagination">
+            <li class="page-item">
+                <a class="page-link" th:href="@{/admin/company/recruit(pg=${pageResponseDTO.start - 1})}" aria-label="Previous"  th:if="${pageResponseDTO.keyword == null}" >
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+                <a class="page-link" th:href="@{/admin/company/recruit(pg=${pageResponseDTO.start - 1}, type=${pageResponseDTO.type}, keyword=${pageResponseDTO.keyword})}" aria-label="Previous"  th:if="${pageResponseDTO.keyword != null}" >
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            <th:block th:each="num:${#numbers.sequence(pageResponseDTO.start, pageResponseDTO.end)}">
+                <li class="page-item"><a class="page-link" th:href="@{/admin/company/recruit(pg=${num})}" th:if="${pageResponseDTO.keyword == null}">[[${num}]]</a></li>
+                <li class="page-item"><a class="page-link" th:href="@{/admin/company/recruit(pg=${num}, type=${pageResponseDTO.type}, keyword=${pageResponseDTO.keyword})}" th:if="${pageResponseDTO.keyword != null}">[[${num}]]</a></li>
+            </th:block>
+            <li class="page-item">
+                <a th:if="${pageResponseDTO.keyword == null}" class="page-link"  th:href="@{/admin/company/recruit(pg=${pageResponseDTO.end + 1})}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+                <a th:if="${pageResponseDTO.keyword != null}" class="page-link"  th:href="@{/admin/company/recruit(pg=${pageResponseDTO.end + 1}, type=${pageResponseDTO.type}, keyword=${pageResponseDTO.keyword})}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <!-- 이미지 모달 -->
+    <div class="modal" onclick="closeBigImg()">
+        <span class="close" onclick="closeBigImg()">&times;</span>
+        <img class="modal_content" style="width: 350px; height: auto;">
+    </div>
+</section>

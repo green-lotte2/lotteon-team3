@@ -18,5 +18,10 @@ public interface MemberRepositoryCustom {
 
     // 회원 목록 검색 조회
     public Page<Member> searchMemberList(AdminPageRequestDTO adminPageRequestDTO, Pageable pageable);
+    // 판매자 목록 기본 조회
+    public Page<Member> selectSellerList(AdminPageRequestDTO adminPageRequestDTO, Pageable pageable);
+
+    // 판매자 목록 검색 조회
+    public Page<Member> searchSellerList(AdminPageRequestDTO adminPageRequestDTO, Pageable pageable);
 
 }

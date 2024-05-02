@@ -2,6 +2,7 @@ package kr.co.lotteon.entity.admin;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -24,5 +25,6 @@ public class Article {
     private String cate2;
     private String thumb;
 
+    @CreationTimestamp
     private LocalDateTime rdate;
 }
