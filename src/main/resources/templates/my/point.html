@@ -4,24 +4,131 @@
 <main id="myLayout" layout:fragment="content">
     <script th:src="@{/js/myInfo.js}"></script>
     <script type="text/javascript">
-        function changePeriod(days) {
-            // 현재 날짜를 기준으로 선택된 기간의 시작일과 종료일 계산
-            var endDate = new Date();
+        // 오늘 날짜에서 월을 추출하고 offset 만큼 빼서 반환하는 함수
+        function getAdjustedMonth(offset) {
+            var now = new Date();
+            var currentYear = now.getFullYear();
+            var currentMonth = now.getMonth() + 1 + offset; // 현재 월에 오프셋을 추가하여 시작 월 설정
+            var adjustedMonth = currentMonth;
+
+            // 새로운 해의 시작 조건 확인
+            if (adjustedMonth > 12) {
+                currentYear += Math.floor(adjustedMonth / 12);
+                adjustedMonth = adjustedMonth % 12;
+                if (adjustedMonth === 0) { // 월이 0인 경우 12월로 설정
+                    adjustedMonth = 12;
+                }
+            } else if (adjustedMonth <= 0) {
+                var yearsToSubtract = Math.ceil(Math.abs(adjustedMonth) / 12);
+                currentYear -= yearsToSubtract;
+                adjustedMonth = 12 - (Math.abs(adjustedMonth) % 12);
+            }
+            return { month: adjustedMonth, year: currentYear };
+        }
+
+        function changePeriod(period) {
+
             var startDate = new Date();
-            startDate.setDate(endDate.getDate() - days);
+            var endDate = new Date();
 
-            // 선택된 기간을 서버로 전달
-            window.location.href = '/lotteon/my/point?uid=' + [[${#authentication.principal.member.uid}]] + '&begin=' + formatDate(startDate) + '&end=' + formatDate(endDate);
+            if (period === 'week') {
+                startDate.setDate(endDate.getDate() - 7); // 1주일 전
+            } else if (period === 'day') {
+                startDate.setDate(endDate.getDate() - 15); // 15일 전
+            } else if (period === 'month') {
+                startDate.setMonth(endDate.getMonth() - 1); // 1개월 전
+            }
+
+            var start = startDate.toISOString().slice(0,19);
+            const href = `/my/point/period(uid=` + [[${#authentication.principal.member.uid}]] +`,start=`+start+`,end=`[[${end}]];
+
+            console.log(start);
+            console.log(href);
+            const weekAtag = document.getElementById('weekAtag');
+            weekAtag.href = href;
+
+            var end = endDate.toISOString().slice(0, 19);
+
+            // 버튼에서 uid 값을 가져오도록 수정
+            var uid = document.querySelector('.point ul li a.on').getAttribute('href').split('=')[1];
+
+
+            // 요청 URL을 동적으로 생성
+            var fetchURL = `/lotteon/my/point/period/${uid}/${start}/${end}`;
+
+            // AJAX를 통해 서버에 데이터를 요청
+            fetch(fetchURL)
+                .then(response => response.json())
+                .then(data => {
+
+                    console.log(data);
+
+                    // 유효기간이 해당 범위에 속하는 데이터만 필터링하여 출력
+                    var filteredData = data.filter(function(item) {
+                        console.log("filteredData1................... : " + filteredData);
+                        var pointDate = new Date(item.pointDate);
+                        console.log("pointDate................... : " + pointDate);
+                        var now = new Date();
+                        var diff = pointDate - now;
+                        if (period === 'week') {
+                            return diff >= -7 * 24 * 60 * 60 * 1000 && diff <= 0; // 1주일 내의 데이터
+                        } else if (period === 'day') {
+                            return diff >= -15 * 24 * 60 * 60 * 1000 && diff <= 0; // 15일 내의 데이터
+                        } else if (period === 'month') {
+                            return pointDate.getMonth() === now.getMonth(); // 같은 월 내의 데이터
+                        }
+                    });
+                    // 서버에서 받은 데이터를 화면에 출력
+                    renderPointList(filteredData);
+                    console.log(renderPointList)
+
+
+
+                })
+                .catch(error => console.error('Error fetching data:', error));
         }
 
-        // 날짜를 "YYYY-MM-DD" 형식의 문자열로 변환하는 함수
-        function formatDate(date) {
-            var year = date.getFullYear();
-            var month = (date.getMonth() + 1).toString().padStart(2, '0');
-            var day = date.getDate().toString().padStart(2, '0');
-            return year + '-' + month + '-' + day;
-        }
+
+
+        // 기간별조회 개월표시
+        document.addEventListener('DOMContentLoaded', function() {
+            var currentMonthMinus2 = getAdjustedMonth(-2);
+            document.getElementById('monthMinus2').innerText = currentMonthMinus2.month;
+
+            var currentMonthMinus1 = getAdjustedMonth(-1);
+            document.getElementById('monthMinus1').innerText = currentMonthMinus1.month;
+
+            var currentMonth = getAdjustedMonth(0);
+            document.getElementById('monthNow').innerText = currentMonth.month;
+
+            var currentMonthPlus1 = getAdjustedMonth(1);
+            document.getElementById('monthPlus1').innerText = currentMonthPlus1.month;
+
+            var currentMonthPlus2 = getAdjustedMonth(2);
+            document.getElementById('monthPlus2').innerText = currentMonthPlus2.month;
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            var dateItems = document.querySelectorAll('.date_3ea li a');
+            dateItems.forEach(function(item) {
+                item.addEventListener('click', function(event) {
+                    // 모든 요소에서 'on' 클래스 제거
+                    dateItems.forEach(function(element) {
+                        element.classList.remove('on');
+                    });
+                    // 클릭한 요소에 'on' 클래스 추가
+                    event.target.classList.add('on');
+                });
+            });
+        });
+
+
+
+
+
     </script>
+
+
     <div id="my">
         <div class="point">
             <ul>
@@ -40,16 +147,19 @@
                     <div class="byDate">
                         <span class="tit">기간별조회</span>
                         <ul class="date_3ea">
-                            <li><a href="#" th:onclick="'javascript:changePeriod(7)'"><em>1</em>주일</a></li>
-                            <li><a href="#" th:onclick="'javascript:changePeriod(15)'"><em>15</em>일</a></li>
-                            <li><a href="#" class="on" th:onclick="'javascript:changePeriod(30)'"><em>1</em>개월</a></li>
+                            <!-- th:href="@{/my/point/period(uid=${#authentication.principal.member.uid},start=${start},end=${end})"-->
+                            <li><a th:href="@{/my/point/period(uid=${#authentication.principal.member.uid}, period = 'week')}" th:class="${period eq 'week' ? 'on' : ''}">1주일</a></li>
+                            <li><a th:href="@{/my/point/period(uid=${#authentication.principal.member.uid}, period = '2week')}" th:class="${period eq 'day' ? 'on' : ''}">15일</a></li>
+                            <li><a th:href="@{/my/point/period(uid=${#authentication.principal.member.uid}, period = 'month')}" th:class="${period eq 'month' ? 'on' : ''}">1개월</a></li>
+
                         </ul>
+
                         <ul class="date_5ea">
-                            <li><a href="#"><em>11</em>월</a></li>
-                            <li><a href="#"><em>10</em>월</a></li>
-                            <li><a href="#"><em>9</em>월</a></li>
-                            <li><a href="#"><em>8</em>월</a></li>
-                            <li><a href="#"><em>7</em>월</a></li>
+                            <li><a href="#" onclick=""><em id="monthMinus2"></em>월</a></li>
+                            <li><a href="#"><em id="monthMinus1"></em>월</a></li>
+                            <li><a href="#"><em id="monthNow"></em>월</a></li>
+                            <li><a href="#"><em id="monthPlus1"></em>월</a></li>
+                            <li><a href="#"><em id="monthPlus2"></em>월</a></li>
                         </ul>
                         <p>
                             <input type="date" name="begin"><span>~</span><input type="date" name="end">
@@ -83,7 +193,8 @@
                             <a th:href="@{/my/point(uid=${#authentication.principal.member.uid}, pg=${pointPageResponseDTO.start - 1})}">이전</a>
                         </span>
                         <span th:each="num: ${#numbers.sequence(pointPageResponseDTO.start, pointPageResponseDTO.end)}">
-                            <a th:href="@{/my/point(uid=${#authentication.principal.member.uid}, pg=${num})}" th:class="${pointPageResponseDTO.pg eq num ? 'num on' : 'num'}" th:text="${num}"></a>
+                            <a th:href="@{/my/point(uid=${#authentication.principal.member.uid}, pg=${num})}"
+                               th:class="${pointPageResponseDTO.pg eq num ? 'num on' : 'num'}" th:text="${num}"></a>
                         </span>
                         <span th:if="${pointPageResponseDTO.next}" class="next">
                             <a th:href="@{/my/point(uid=${#authentication.principal.member.uid}, pg=${pointPageResponseDTO.end + 1})}">다음</a>
