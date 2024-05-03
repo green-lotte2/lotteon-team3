@@ -59,42 +59,13 @@
                         </div>
                     </div>
                 </article>
-
-                <h4>주문 업무현황</h4>
-                <article>
-                    <table>
-                        <tr>
-                            <td>
-                                <strong>입금대기(건)</strong>
-                                <span>100</span>
-                            </td>
-                            <td>
-                                <strong>배송준비(건)</strong>
-                                <span>100</span>
-                            </td>
-                            <td>
-                                <strong>취소요청(건)</strong>
-                                <span>100</span>
-                            </td>
-                            <td>
-                                <strong>교환요청(건)</strong>
-                                <span>100</span>
-                            </td>
-                            <td>
-                                <strong>반품요청(건)</strong>
-                                <span>100</span>
-                            </td>
-                        </tr>
-                    </table>                    
-                </article>
-
                 <div>
                     <div>
                         <h4>공지사항</h4>
                         <article>
                             <th:block th:each="notice, loop : ${noticeList}">
                             <div>
-                                <a th:href="@{/cs/notice/view}"><span>[ [[${notice.typeName}]] ]</span> [[${notice.title}]]</a>
+                                <a th:href="@{/cs/notice/view(group='notice',bno=${notice.bno}, cate=${notice.cate})}"><span>[ [[${notice.typeName}]] ]</span> [[${notice.title}]]</a>
                                 <span th:text="${#temporals.format(notice.rdate, 'yyyy-MM-dd HH:mm')}"></span>
                             </div>
                             </th:block>
@@ -106,7 +77,7 @@
                         <article>
                             <th:block th:each="qna, loop : ${qnaList}">
                                 <div>
-                                    <a th:href="@{/cs/qna/view}"><span>[ [[${qna.typeName}]] ]</span> [[${qna.title}]]</a>
+                                    <a th:href="@{/cs/qna/view(group='qna',bno=${qna.bno}, cate=${qna.cate})}"><span>[ [[${qna.typeName}]] ]</span> [[${qna.title}]]</a>
                                     <span th:text="${#temporals.format(qna.rdate, 'yyyy-MM-dd HH:mm')}"></span>
                                 </div>
                             </th:block>

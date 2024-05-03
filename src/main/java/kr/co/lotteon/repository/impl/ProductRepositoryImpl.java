@@ -4,14 +4,11 @@ package kr.co.lotteon.repository.impl;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.co.lotteon.dto.admin.AdminProductPageRequestDTO;
 import kr.co.lotteon.dto.product.PageRequestDTO;
 import kr.co.lotteon.dto.product.ProductDTO;
 import kr.co.lotteon.dto.product.ProductReviewPageRequestDTO;
-import kr.co.lotteon.dto.product.ReviewDTO;
-import kr.co.lotteon.entity.cs.BoardEntity;
 import kr.co.lotteon.entity.product.*;
 import kr.co.lotteon.repository.custom.ProductRepositoryCustom;
 import lombok.RequiredArgsConstructor;
@@ -35,10 +32,11 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
     private final QProduct qProduct = QProduct.product;
     private final QOption qOption = QOption.option;
     private final QReview qReview = QReview.review;
+    private final QOrderItem qOrderItem=QOrderItem.orderItem;
 
     // 관리자 - 상품 목록 기본 조회
     @Override
-    public Page<Product> adminSelectProducts(AdminProductPageRequestDTO adminProductPageRequestDTO, Pageable pageable){
+    public Page<Product> adminSelectProducts(AdminProductPageRequestDTO adminProductPageRequestDTO, Pageable pageable) {
         log.info("상품 목록 기본 조회 Impl 1 : " + adminProductPageRequestDTO);
         QueryResults<Product> results = jpaQueryFactory
                 .select(qProduct)
@@ -57,7 +55,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
 
     // 관리자 - 상품 목록 검색 조회
     @Override
-    public Page<Product> adminSearchProducts(AdminProductPageRequestDTO adminProductPageRequestDTO, Pageable pageable){
+    public Page<Product> adminSearchProducts(AdminProductPageRequestDTO adminProductPageRequestDTO, Pageable pageable) {
         log.info("상품 목록 키워드 검색 impl 1 : " + adminProductPageRequestDTO.getKeyword());
         String type = adminProductPageRequestDTO.getType();
         String keyword = adminProductPageRequestDTO.getKeyword();
@@ -65,26 +63,26 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
         BooleanExpression expression = null;
 
         // 검색 종류에 따른 where절 표현식 생성
-        if(type.equals("prodName")){
+        if (type.equals("prodName")) {
             expression = qProduct.prodName.contains(keyword);
             log.info("prodName 검색 : " + expression);
 
-        }else if(type.equals("prodNo")){
+        } else if (type.equals("prodNo")) {
             // 입력된 키워드를 정수형으로 변환
             int prodNo = Integer.parseInt(keyword);
             expression = qProduct.prodNo.eq(prodNo);
             log.info("prodCode 검색 : " + expression);
 
-        }else if(type.equals("cate1")){
+        } else if (type.equals("cate1")) {
             int cate1 = Integer.parseInt(keyword);
             expression = qProduct.cate1.eq(cate1);
             log.info("cate1 검색 : " + expression);
 
-        }else if(type.equals("company")){
+        } else if (type.equals("company")) {
             expression = qProduct.company.contains(keyword);
             log.info("company 검색 : " + expression);
 
-        }else if(type.equals("seller")){
+        } else if (type.equals("seller")) {
             expression = qProduct.seller.contains(keyword);
             log.info("seller 검색 : " + expression);
         }
@@ -108,7 +106,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
     }
 
     // 판매자  - 상품 목록 기본 조회
-    public Page<Product> sellerSelectProducts(AdminProductPageRequestDTO adminProductPageRequestDTO, Pageable pageable, String sellerId){
+    public Page<Product> sellerSelectProducts(AdminProductPageRequestDTO adminProductPageRequestDTO, Pageable pageable, String sellerId) {
 
         log.info("상품 목록 기본 조회 Impl 1 : " + adminProductPageRequestDTO);
         QueryResults<Product> results = jpaQueryFactory
@@ -126,8 +124,9 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
         log.info("상품 목록 기본 조회 Impl 3 : " + productList);
         return new PageImpl<>(productList, pageable, total);
     }
+
     // 판매자  - 상품 목록 검색 조회
-    public Page<Product> sellerSearchProducts(AdminProductPageRequestDTO adminProductPageRequestDTO, Pageable pageable, String sellerId){
+    public Page<Product> sellerSearchProducts(AdminProductPageRequestDTO adminProductPageRequestDTO, Pageable pageable, String sellerId) {
         log.info("상품 목록 키워드 검색 impl 1 : " + adminProductPageRequestDTO.getKeyword());
         String type = adminProductPageRequestDTO.getType();
         String keyword = adminProductPageRequestDTO.getKeyword();
@@ -135,22 +134,22 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
         BooleanExpression expression = null;
 
         // 검색 종류에 따른 where절 표현식 생성
-        if(type.equals("prodName")){
+        if (type.equals("prodName")) {
             expression = qProduct.prodName.contains(keyword).and(qProduct.seller.eq(sellerId));
             log.info("prodName 검색 : " + expression);
 
-        }else if(type.equals("prodNo")){
+        } else if (type.equals("prodNo")) {
             // 입력된 키워드를 정수형으로 변환
             int prodNo = Integer.parseInt(keyword);
             expression = qProduct.prodNo.eq(prodNo).and(qProduct.seller.eq(sellerId));
             log.info("prodNo 검색 : " + expression);
 
-        }else if(type.equals("cate1")){
+        } else if (type.equals("cate1")) {
             int cate1 = Integer.parseInt(keyword);
             expression = qProduct.cate1.eq(cate1).and(qProduct.seller.eq(sellerId));
             log.info("cate1 검색 : " + expression);
 
-        }else if(type.equals("company")){
+        } else if (type.equals("company")) {
             expression = qProduct.company.contains(keyword).and(qProduct.seller.eq(sellerId));
             log.info("company 검색 : " + expression);
 
@@ -174,6 +173,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
         log.info("상품 목록 검색 조회 Impl 3 : " + productList);
         return new PageImpl<>(productList, pageable, total);
     }
+
     // 기본 상품 리스트
     @Override
     public Page<Product> productList(PageRequestDTO pageRequestDTO, Pageable pageable) {
@@ -191,17 +191,17 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
         }
 
         QueryResults<Product> results = jpaQueryFactory.selectFrom(qProduct)
-                                .orderBy(qProduct.prodNo.desc())
-                                .offset(pageable.getOffset())
-                                .limit(pageable.getPageSize())
-                                .where(predicate.and(qProduct.status.eq("새상품")))
-                                .fetchResults();
+                .orderBy(qProduct.prodNo.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .where(predicate.and(qProduct.status.eq("새상품")))
+                .fetchResults();
 
         return new PageImpl<>(results.getResults(), pageable, results.getTotal());
     }
 
     // 판매자 - 상품 목록 All
-    public List<Integer> selectProdNoForQna(String sellerId){
+    public List<Integer> selectProdNoForQna(String sellerId) {
         // SELECT ProdNo FROM product WHERE seller = ?;
 
         List<Integer> prodNos = jpaQueryFactory
@@ -210,7 +210,8 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
                 .where(qProduct.seller.eq(sellerId))
                 .fetch();
 
-        log.info("판매자 상품 번호 All 조회 Impl");;
+        log.info("판매자 상품 번호 All 조회 Impl");
+        ;
         return prodNos;
     }
 
@@ -234,13 +235,13 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
     public List<ProductDTO> recentProductMain() {
         // SELECT * FROM PRODUCT ORDER BY rdate DESC LIMIT 8
         List<Product> products = jpaQueryFactory.selectFrom(qProduct)
-                                                .orderBy(qProduct.rdate.desc())
-                                                .limit(8)
-                                                .fetch();
+                .orderBy(qProduct.rdate.desc())
+                .limit(8)
+                .fetch();
 
         return products.stream()
-                    .map(product -> modelMapper.map(product, ProductDTO.class))
-                    .collect(Collectors.toList());
+                .map(product -> modelMapper.map(product, ProductDTO.class))
+                .collect(Collectors.toList());
     }
 
     // 할인상품
@@ -248,12 +249,12 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
     public List<ProductDTO> discountProductMain() {
         // SELECT * FROM PRODUCT ORDER BY discount DESC LIMIT 8
         List<Product> products = jpaQueryFactory.selectFrom(qProduct)
-                                                .orderBy(qProduct.discount.desc())
-                                                .limit(8)
-                                                .fetch();
+                .orderBy(qProduct.discount.desc())
+                .limit(8)
+                .fetch();
         return products.stream()
-                    .map(product -> modelMapper.map(product, ProductDTO.class))
-                    .collect(Collectors.toList());
+                .map(product -> modelMapper.map(product, ProductDTO.class))
+                .collect(Collectors.toList());
     }
 
     // 히트상품
@@ -261,13 +262,13 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
     public List<ProductDTO> hitProductMain() {
         // SELECT * FROM PRODUCT ORDER BY discount DESC LIMIT 8
         List<Product> products = jpaQueryFactory.selectFrom(qProduct)
-                                                .orderBy(qProduct.hit.desc())
-                                                .limit(8)
-                                                .fetch();
+                .orderBy(qProduct.hit.desc())
+                .limit(8)
+                .fetch();
 
         return products.stream()
-                    .map(product -> modelMapper.map(product, ProductDTO.class))
-                    .collect(Collectors.toList());
+                .map(product -> modelMapper.map(product, ProductDTO.class))
+                .collect(Collectors.toList());
     }
 
     // 추천 상품
@@ -275,20 +276,21 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
     public List<ProductDTO> recommendProductMain() {
         // SELECT * FROM PRODUCT ORDER BY score DESC LIMIT 8
         List<Product> products = jpaQueryFactory.selectFrom(qProduct)
-                                                .orderBy(qProduct.score.desc())
-                                                .limit(8)
-                                                .fetch();
+                .orderBy(qProduct.score.desc())
+                .limit(8)
+                .fetch();
         return products.stream()
-                    .map(product -> modelMapper.map(product, ProductDTO.class))
-                    .collect(Collectors.toList());
+                .map(product -> modelMapper.map(product, ProductDTO.class))
+                .collect(Collectors.toList());
     }
+
     // =====================
     @Override
-    public Page<Tuple> memberSelectReview(String uid, ProductReviewPageRequestDTO productReviewPageRequestDTO, Pageable pageable){
+    public Page<Tuple> memberSelectReview(String uid, ProductReviewPageRequestDTO productReviewPageRequestDTO, Pageable pageable) {
 
         log.info("마이페이지 리뷰내역 목록 조회 Impl 1 : " + productReviewPageRequestDTO);
         QueryResults<Tuple> results = jpaQueryFactory
-                .select(qReview, qProduct.prodName,qProduct.cate1,qProduct.cate2)
+                .select(qReview, qProduct.prodName, qProduct.cate1, qProduct.cate2)
                 .from(qReview)
                 .where(qReview.uid.eq(uid))
                 .join(qProduct).on(qReview.prodNo.eq(qProduct.prodNo))
@@ -297,7 +299,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
                 .limit(pageable.getPageSize())
                 .fetchResults();
 
-        List<Tuple> review=results.getResults();
+        List<Tuple> review = results.getResults();
         log.info("마이페이지 리뷰내역 목록 조회 Impl 2 : " + review);
 
         long total = results.getTotal();
@@ -307,6 +309,32 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
         return new PageImpl<>(review, pageable, total);
 
     }
+
+    @Override
+    public Page<Tuple> selectProductReview(int prodNo, ProductReviewPageRequestDTO productReviewPageRequestDTO, Pageable pageable) {
+        log.info("상품 리뷰내역 목록 조회 Impl 1 : " + productReviewPageRequestDTO);
+        QueryResults<Tuple> results = jpaQueryFactory
+                .select(qReview, qProduct.prodName, qOption.opValue)
+                .from(qReview)
+                .join(qProduct).on(qReview.prodNo.eq(qProduct.prodNo))
+                .join(qOrderItem).on(qReview.ordItemno.eq(qOrderItem.ordItemno))
+                .join(qOption).on(qOrderItem.opNo.eq(qOption.opNo))
+                .where(qReview.prodNo.eq(prodNo))
+                .orderBy(qReview.rdate.desc()) // rdate를 기준으로 내림차순으로 정렬)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetchResults();
+
+        List<Tuple> review = results.getResults();
+        log.info("상품 리뷰내역 목록 조회 Impl 2 : " + review);
+        long total = results.getTotal();
+        log.info("상품 리뷰내역 목록 조회 Impl 3 : " + total);
+
+        return new PageImpl<>(review, pageable, total);
+
+    }
 }
+
+    
 
 

@@ -1,9 +1,11 @@
 package kr.co.lotteon.service.product;
 
+import com.querydsl.core.Tuple;
 import kr.co.lotteon.dto.product.*;
 import kr.co.lotteon.entity.product.Cart;
 import kr.co.lotteon.entity.product.Option;
 import kr.co.lotteon.entity.product.Product;
+import kr.co.lotteon.entity.product.Review;
 import kr.co.lotteon.mapper.ProductMapper;
 import kr.co.lotteon.repository.product.OptionRepository;
 import kr.co.lotteon.repository.product.ProductRepository;
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service @RequiredArgsConstructor @Slf4j
 public class ProductService {
@@ -71,10 +74,40 @@ public class ProductService {
         productMapper.updateProductHit(prodNo);
     }
 
+    // 상품 리뷰 조회
+    public ProductReviewPageResponseDTO selectProductReview(int prodNo, ProductReviewPageRequestDTO productReviewPageRequestDTO) {
+
+        log.info("상품 리뷰 목록 조회 1" + productReviewPageRequestDTO);
+        Pageable pageable = productReviewPageRequestDTO.getPageable("rdate");
+        Page<Tuple> tuples = productRepository.selectProductReview(prodNo, productReviewPageRequestDTO, pageable);
+        log.info("상품 리뷰 목록 조회 2" + tuples.getContent());
+
+        List<ReviewDTO> reviewDTOS = tuples.getContent().stream()
+                .map(tuple -> {
+                    Review review=tuple.get(0,Review.class);
+                    String prodName=tuple.get(1,String.class);
+                    String optionValue=tuple.get(2,String.class);
+
+                    ReviewDTO reviewDTO=modelMapper.map(review,ReviewDTO.class);
+                    reviewDTO.setProdName(prodName);
+                    reviewDTO.setOptionValue(optionValue);
+                    return reviewDTO;
+                })
+                .toList();
+        log.info("상품 리뷰 목록 조회 3" + reviewDTOS);
+
+        int total = (int) tuples.getTotalElements();
+
+        return ProductReviewPageResponseDTO.builder()
+                .productReviewPageRequestDTO(productReviewPageRequestDTO)
+                .dtoList(reviewDTOS)
+                .total(total)
+                .build();
+    }
 
 
 
-    // ========== 메인페이지 ==========
+        // ========== 메인페이지 ==========
     // 최신상품
     public List<ProductDTO> bestProductMain(){return productRepository.bestProductMain();}
     public List<ProductDTO> recentProductMain(){return productRepository.recentProductMain();}
@@ -82,4 +115,6 @@ public class ProductService {
     public List<ProductDTO> hitProductMain(){return productRepository.hitProductMain();}
     public List<ProductDTO> recommendProductMain(){return productRepository.recommendProductMain();}
     // ==============================
+
+
 }

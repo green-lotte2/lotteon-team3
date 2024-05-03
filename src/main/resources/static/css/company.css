@@ -3,7 +3,6 @@
   padding: 0;
   font: normal 16px "Noto Sans CJK KR";
 }
-
 ul, ol {list-style: none;}
 a {text-decoration: none; color: #111111; font-weight: bold}
 
@@ -261,6 +260,31 @@ main > .content > p {
   line-height: 28px;
   margin-bottom: 80px;
 }
+
+
+#companyMain > .swiper > .swiper-wrapper {
+  background-image: url('../company/images/bg_main.jpg');
+  background-repeat: no-repeat;
+}
+#companyMain > .swiper .slide1 > section {
+  position: relative;
+  width: 100%;
+}
+#companyMain > .swiper .slide1  p {
+  position: absolute;
+  animation-duration: 3s;
+  animation-name: slidein;
+  left: 40px;
+  bottom: 380px;
+  color: #FFFDFD;
+  font-size: 40px;
+  font-weight: 700;
+  text-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+}
+
+#introduce > .cover {
+  background-image: url('../company/images/bg_company_introduce.jpg');
+}
 #media .cover > div > h1 {
   position: absolute;
   left: 10px;
@@ -459,6 +483,18 @@ main > .content > p {
 }
 #story .navbar-nav > .nav-item >.nav-link:hover {
   color: #df2c2c;
+}
+#buttonDiv {
+  text-align: center;
+  padding: 5px;
+}
+#story .btnMoreView {
+  padding: 12px 24px;
+  color: #F0F4F9;
+  font-weight: bold;
+  font-size: 17px;
+  background-color: #E30613;
+  border-radius: 50px 50px 50px 50px;
 }
 /* 텍스트 애니메이션 */
 @keyframes slidein {
