@@ -60,15 +60,19 @@
 
                     const priceElement = product.querySelector('.currentPrice strong');
 
+                    const orgPriceElement = product.querySelector('.originalPrice span').innerText;
+                    const orgPriceElementWithoutwon = orgPriceElement.split('원')[0];
                     // 가격을 숫자로 파싱
                     const price = parseFloat(priceElement.innerText.replace('원', '').replace(',', ''));
+                    const orgPrice = parseInt(orgPriceElement);
 
+                    console.log(orgPrice);
                     // 수량을 숫자로 파싱
                     let intValue = parseInt(value);
 
                     // 수량 증가 버튼
-                    increase.addEventListener('click', function(e){
-                      e.preventDefault();
+                    increase.addEventListener('click', function(increase){
+                      increase.preventDefault();
                       const checkboxes = document.querySelectorAll('.checkbox');
 
                       intValue += 1
@@ -79,8 +83,8 @@
                       priceElement.innerText = numberWithCommas(totalPrice);
 
                       // 토탈 메뉴
-                      checkboxes.forEach(e=>{
-                        if(e.checked){
+                      checkboxes.forEach(checked=>{
+                        if(checked.checked){
 
                           const cartTotal = document.getElementById('prodTotalPrice');
                           let cartTotalValue = 0;
@@ -93,17 +97,15 @@
                               cartTotalValue += int;
                             }
                           });
-
-
                           cartTotal.innerHTML = "";
                           cartTotal.textContent +=numberWithCommas(cartTotalValue)+'원';
                         }
                       });
-                      updateOrgPriceButton(intValue);
+
                     });
                     // 수량 감소 버튼
-                    decrease.addEventListener('click', function(e){
-                      e.preventDefault();
+                    decrease.addEventListener('click', function(decrease){
+                      decrease.preventDefault();
                       intValue -= 1
 
                       if(intValue <1){
@@ -114,13 +116,14 @@
                       inputs.value = intValue;
                       // 총 가격 계산
                       const totalPrice = price * intValue;
-                      console.log(totalPrice);
+
+                      console.log('감소버튼'+price);
                       // 총 가격을 화면에 업데이트
                       priceElement.innerText = numberWithCommas(totalPrice);
 
                       // 토탈 메뉴
-                      checkboxes.forEach(e=>{
-                        if(e.checked){
+                      checkboxes.forEach(checked=>{
+                        if(checked.checked){
 
                           const cartTotal = document.getElementById('prodTotalPrice');
                           let cartTotalValue = 0;
@@ -138,13 +141,26 @@
 
                           const cartOrg = document.getElementById('prodOrgPrice');
                           let orgTotal = 0;
-                          document.querySelectorAll('.originalPrice p').forEach(price=>{
+                          let calc;
+
+                          // 선택된 상품 중 수량 감소 버튼을 누른 상품의 원 가격을 찾아서 빼기
+                          document.querySelectorAll('.originalPrice span').forEach(price => {
+
                             if (price.closest('.cartProduct').querySelector('.checkbox').checked) {
-                              console.log(price);
-                              let orgPrice = parseInt(price.innerText);
-                              console.log('수량감소' + orgPrice);
+                              // 현재 버튼과 일치하는 상품의 원 가격만 빼기
+                              if (price.closest('.cartProduct').querySelector('.decrease') === decrease.target) {
+                                let checkedOrgTotal = parseInt(cartOrg.innerText.replace(/,/g, ''));
+                                console.log('수량감소 체크된 총 원가격' + checkedOrgTotal);
+                                let checkedOrgProdPrice = parseInt(price.innerText);
+                                calc = parseInt(checkedOrgTotal - checkedOrgProdPrice);
+                                console.log('수량감소 체크된 상품 원가격 : ' + checkedOrgProdPrice);
+                                console.log('수량감소 체크된 상품 계산된 가격 : ' + calc);
+                              }
                             }
                           });
+
+                          cartOrg.innerHTML = "";
+                          cartOrg.textContent += numberWithCommas(calc);
                         }
                       });
 
