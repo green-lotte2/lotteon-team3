@@ -33,4 +33,7 @@ public interface OrderItemRepositoryCustom {
     // myInfo 주문 및 배송 수 출력
    public int countByUidAndOrdStatusIn(String uid, List<String> ordStatusList);
 
+   // seller 매출 차트
+   public List<Tuple> selectSales(String sellerId);
+
 }

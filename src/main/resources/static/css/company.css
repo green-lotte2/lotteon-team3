@@ -3,7 +3,6 @@
   padding: 0;
   font: normal 16px "Noto Sans CJK KR";
 }
-
 ul, ol {list-style: none;}
 a {text-decoration: none; color: #111111; font-weight: bold}
 
@@ -260,6 +259,25 @@ main > .content > p {
   font-size: 19px;
   line-height: 28px;
   margin-bottom: 80px;
+}
+
+
+#companyMain > .swiper .slide1 {
+  background-image: url('../company/images/bg_main.jpg');
+}
+#companyMain > .swiper .slide1 > p {
+  animation-duration: 3s;
+  animation-name: slidein;
+  left: 10px;
+  top: 380px;
+  color: #FFFDFD;
+  font-size: 35px;
+  font-weight: 600;
+  text-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+}
+
+#introduce > .cover {
+  background-image: url('../company/images/bg_company_introduce.jpg');
 }
 #media .cover > div > h1 {
   position: absolute;

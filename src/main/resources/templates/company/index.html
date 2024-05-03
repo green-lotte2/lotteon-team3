@@ -7,7 +7,7 @@
     <link rel="stylesheet" th:href="@{https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css}"/>
     <link rel="stylesheet" th:href="@{/css/company.css}">
     <script th:src="@{https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script th:src="@{/company/js/header.js}"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
@@ -28,7 +28,20 @@
                     nextEl: '.swiper-button-next',
                     prevEl: '.swiper-button-prev',
                 },
-
+                breakpoints: {
+                  640: {
+                      slidesPreview : 2,
+                      spaceBetween: 20,
+                  },
+                  768: {
+                      slidesPreview : 2,
+                      spaceBetween: 40,
+                  },
+                  1024: {
+                      slidesPreview : 4,
+                      spaceBetween: 50,
+                  },
+                },
                 // And if we need scrollbar
                 scrollbar: {
                     el: '.swiper-scrollbar',
@@ -37,6 +50,7 @@
                 mousewheel: {
                     invert: false,
                 },
+                breakpointBase: 'window'
             });
 
             swiper.on('slideChange', function () {
@@ -56,7 +70,7 @@
 
     </script>
 </head>
-<body>
+<body id="companyMain">
 <div class="swiper">
     <header>
         <div>
@@ -78,6 +92,8 @@
       <!-- Slides -->
         <div class="swiper-slide slide1">
             <img th:src="@{/company/images/bg_main.jpg}" id="mainBanner">
+            <p>취향을, 브랜드를, 혜택을 발견하는 즐거움 <br>
+                지금 롯데온에서 만나요</p>
         </div>
         <div class="swiper-slide slide2">
             <section>
