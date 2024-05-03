@@ -55,4 +55,6 @@ public interface ProductRepositoryCustom {
     // 마이페이지 리뷰내역 조회
     public Page<Tuple> memberSelectReview(String uid, ProductReviewPageRequestDTO productReviewPageRequestDTO, Pageable pageable);
 
+    // 상품리뷰 조회
+    Page<Tuple> selectProductReview(int prodNo, ProductReviewPageRequestDTO productReviewPageRequestDTO, Pageable pageable);
 }

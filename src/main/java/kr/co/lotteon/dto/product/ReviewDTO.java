@@ -17,6 +17,7 @@ public class ReviewDTO {
     private int ordNo;
     private int prodNo;
     private int ordItemno;
+    private String optionValue;
     private int rating;
     private int cate1;
     private int cate2;
