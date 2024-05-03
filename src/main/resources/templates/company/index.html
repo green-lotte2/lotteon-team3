@@ -78,7 +78,7 @@
             <ul>
                 <li><a th:href="@{/company/index}">HOME</a></li>
                 <li><a th:href="@{/company/culture}">기업문화</a></li>
-                <li><a th:href="@{/company/story}">소식과 이야기</a></li>
+                <li><a th:href="@{/company/story(start=0, cate2='all')}">소식과 이야기</a></li>
                 <li><a th:href="@{/company/recruit}">채용</a></li>
                 <li><a th:href="@{/company/media}">미디어</a></li>
 
@@ -91,9 +91,11 @@
     <div class="swiper-wrapper">
       <!-- Slides -->
         <div class="swiper-slide slide1">
-            <img th:src="@{/company/images/bg_main.jpg}" id="mainBanner">
+            <section>
+            <!--<img th:src="@{/company/images/bg_main.jpg}" id="mainBanner">-->
             <p>취향을, 브랜드를, 혜택을 발견하는 즐거움 <br>
                 지금 롯데온에서 만나요</p>
+            </section>
         </div>
         <div class="swiper-slide slide2">
             <section>

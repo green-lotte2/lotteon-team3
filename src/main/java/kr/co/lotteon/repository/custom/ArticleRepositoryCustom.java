@@ -15,4 +15,5 @@ public interface ArticleRepositoryCustom {
     public Page<Article> searchArticleForAdmin(AdminPageRequestDTO adminPageRequestDTO, Pageable pageable, String cate1);
 
     public List<Article> selectStorys(int start);
+    public List<Article> searchStorys(int start, String cate2);
 }

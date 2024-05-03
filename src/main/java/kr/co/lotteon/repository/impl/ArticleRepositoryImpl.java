@@ -66,13 +66,28 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
     // 회사소개 - 소식과 이야기 (9개) 리스트
     @Override
     public List<Article> selectStorys(int start){
-
+        log.info("소식과 이야기 (9개) 리스트 Impl start : " + start);
         List<Article> results = jpaQueryFactory.selectFrom(qArticle)
                 .where(qArticle.cate1.eq("story"))
                 .orderBy(qArticle.ano.desc())
                 .offset(start)
                 .limit(9)
                 .fetch();
+
+        log.info("소식과 이야기 (9개) 리스트 Impl results : " + results);
+        return results;
+    }
+    // 회사소개 - 소식과 이야기 (9개) 리스트 검색
+    @Override
+    public List<Article> searchStorys(int start, String cate2){
+
+        List<Article> results = jpaQueryFactory.selectFrom(qArticle)
+                .where(qArticle.cate1.eq("story").and(qArticle.cate2.eq(cate2)))
+                .orderBy(qArticle.ano.desc())
+                .offset(start)
+                .limit(9)
+                .fetch();
+
         return results;
     }
 }
