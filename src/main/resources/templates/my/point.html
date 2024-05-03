@@ -3,7 +3,7 @@
       layout:decorate="~{/layout/myLayout}">
 <main id="myLayout" layout:fragment="content">
     <script th:src="@{/js/myInfo.js}"></script>
-    <script type="text/javascript">
+    <script type="text/javascript" th:inline="javascript">
 
         // 1주일, 14일, 1개월 버튼 클릭 시 이벤트
         function changeDate(element, str) {
@@ -51,6 +51,7 @@
             }
         }
 
+        // 테이블 리로드(조회하기 눌렸을때 시작일, 종료일, 페이지 넘겨줌)
         function tableReload(pg) {
             page = pg;
             let beginDate = document.querySelector('input[name=begin]').value;
