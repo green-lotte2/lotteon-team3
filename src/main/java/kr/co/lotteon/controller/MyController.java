@@ -1,5 +1,7 @@
 package kr.co.lotteon.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import kr.co.lotteon.dto.admin.BannerDTO;
 import kr.co.lotteon.dto.cs.BoardDTO;
 import kr.co.lotteon.dto.cs.CsPageRequestDTO;
@@ -41,11 +43,8 @@ import org.springframework.web.bind.annotation.*;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
+import java.util.*;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -58,6 +57,7 @@ public class MyController {
     private final MyService myService;
     private final AuthenticationManager authenticationManager;
 
+
     // my - home (마이페이지 메인) 페이지 매핑
     @GetMapping("/my/home")
     public String home(Model model, @RequestParam String uid){
@@ -69,6 +69,7 @@ public class MyController {
         model.addAttribute("myPageBanners",myPageBanners);
         return "/my/home";
     }
+
     // my - info (나의 설정) 페이지 매핑
     @GetMapping("/my/info")
     public String info(Model model,@RequestParam String uid){
@@ -118,8 +119,6 @@ public class MyController {
         return "/my/order";
     }
 
-
-    // my - point (나의 포인트) 페이지 매핑
     @GetMapping("/my/point")
     public String point(@RequestParam String uid, Model model, PointPageRequestDTO pointPageRequestDTO) {
         PointPageResponseDTO pointPageResponseDTO = myService.getPointListByUid(uid, pointPageRequestDTO);
@@ -127,33 +126,15 @@ public class MyController {
         return "/my/point";
     }
 
-    // my - point (나의 포인트) 페이지 매핑 새로운 엔드포인트(조회)
+    // my - point (나의 포인트) 페이지 매핑
+    @GetMapping("/my/pointList")
+    @ResponseBody
+    public PointPageResponseDTO pointList(PointPageRequestDTO pointPageRequestDTO, @AuthenticationPrincipal Object principal) {
+        log.info("pointPageRequestDTO................ : " + pointPageRequestDTO);
 
-    @GetMapping("/my/point/period")
-    public ResponseEntity<?> getPointByPeriod(String uid,
-                                              String period) {
-
-        log.info("period : "+period);
-
-        LocalDateTime start = null;
-
-        if (period.equals("week")) {
-            start = LocalDateTime.now().minusWeeks(1);
-            log.info("start : "+start);
-        }else if(period.equals("2week")){
-            start = LocalDateTime.now().minusWeeks(2);
-            log.info("start : "+start);
-        }else if(period.equals("month")){
-            start = LocalDateTime.now().minusMonths(1);
-            log.info("start : "+start);
-        }
-
-
-        // 주어진 기간에 해당하는 포인트 데이터를 가져오는 서비스 메서드를 호출합니다.
-       // List<PointDTO> pointList = myService.getPointByPeriod(uid, LocalStart, LocalEnd);
-       // log.info("피리오드 컨트롤러 2"+pointList.toString());
-        // 가져온 포인트 데이터를 ResponseEntity로 감싸서 반환합니다.
-        return ResponseEntity.ok().body("ok");
+        Member member = ((MyUserDetails) principal).getMember();
+        String uid = member.getUid();
+        return myService.findPointList(uid, pointPageRequestDTO);
     }
 
     // my - coupon 페이지 매핑
