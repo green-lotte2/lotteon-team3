@@ -256,4 +256,21 @@ public class OrderItemRepositoryImpl implements OrderItemRepositoryCustom {
                         .and(qOrderItem.ordStatus.in(ordStatusList)))
                 .fetchCount();
     }
+
+    // 판매자 - 월별 매출 현황 조회
+    @Override
+    public List<Tuple> selectSales(String sellerId){
+
+        LocalDateTime twelveMonthsAgo = LocalDateTime.now().minusMonths(12);
+        log.info("월별 주문 매출 조회 Impl 1 : " + twelveMonthsAgo);
+
+        return jpaQueryFactory.select(qOrderItem.ordDate.year(), qOrderItem.ordDate.month(), qProduct.price.sum())
+                .from(qProduct)
+                .join(qOrderItem).on(qOrderItem.prodNo.eq(qProduct.prodNo))
+                .where(qOrderItem.ordDate.after(twelveMonthsAgo).and(qProduct.seller.eq(sellerId)))
+                .groupBy(qOrderItem.ordDate.year(), qOrderItem.ordDate.month())
+                .orderBy(qOrderItem.ordDate.year().asc(), qOrderItem.ordDate.month().asc())
+                .fetch();
+
+    }
 }

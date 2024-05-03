@@ -1,0 +1,108 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/sellerListLayout}">
+
+            <section id="admin-index" layout:fragment="content">
+                <script>
+                    window.onload = async function (){
+                        // 숫자를 3자리마다 콤마를 추가하여 문자열로 반환하는 함수
+                        function numberWithCommas(x) {
+                            return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                        }
+
+                        // 주문 차트
+                        let salesChart = document.getElementById('salesChart');
+
+                        // 주문 데이터 가져오기
+                        const response = await fetch('/lotteon/seller/sales');
+                        const dataText = await response.text(); // JSON 형식의 문자열을 가져옴
+                        console.log("주문 데이터 dataText : " + dataText);
+                        let total = 0;
+                        let data = [];
+
+                        // json 파싱
+                        try {
+                            // JSON 형식의 문자열을 JavaScript 객체로 변환
+                            data = JSON.parse(dataText);
+                            console.log("기간 : ", data);
+
+                            // total 값 추출
+                            total = numberWithCommas(data.pop().total);
+                            console.log("매출액 total :", total);
+                        } catch (error) {
+                            console.error('주문 데이터 변환 오류:', error);
+                        }
+                        // 차트 상단에 출력
+                        const salesTotal = document.getElementById('salesTotal');
+                        salesTotal.innerText = total;
+
+                        let orderChart = new Chart(salesChart,     {
+                            type: 'bar',
+                            data: {
+                                labels: data.map(row => row.month),
+                                datasets: [{
+                                    label: '월별 매출액',
+                                    data: data.map(row => row.sum),
+                                    backgroundColor: 'rgb(116,152,202)',}]},
+                            options: {
+                                // 크기 조절을 위해 false
+                                responsive: false,
+                                title: {
+                                    display: true,
+                                },
+                                plugins: {//그래프에 데이터 직접 표시 (마우스 올렸을때가 아니라 그래프 자체에 데이터표시)
+                                    datalabels: {
+                                        borderRadius: 4,
+                                        color: '#dfd5d2',
+                                        font: {
+                                            weight: 'bold'
+                                        },
+                                        formatter: function(value, context) { return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "원"; },
+                                        padding: 1,
+                                        align: 'end'
+                                    }
+                                },
+                                tooltips: {
+                                    callbacks: {
+                                        label: function(tooltipItem, data) { //그래프 콤마
+                                            return tooltipItem.yLabel.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "원";
+                                        }
+                                    },
+                                },
+                                scales: {
+                                    yAxes: [{
+                                        ticks: {
+                                            min: 10000,
+                                            stepSize : 20000,
+                                            fontSize : 14,
+                                            beginAtZero: true,
+                                        }
+                                    }]
+                                }
+                            }
+                        });
+                    }
+
+                </script>
+                <nav>
+                    <h3>판매자 주문관리</h3>
+                    <p>
+                        HOME > <strong>매출현황</strong>
+                    </p>
+                </nav>
+                <article>
+                    <table>
+                        <tr>
+                            <td>
+                                <strong>매출현황</strong>
+                                <span id="salesTotal"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <canvas id="salesChart" width="800" height="300" style="margin-left: 140px"></canvas>
+                            </td>
+                        </tr>
+                    </table>
+                </article>
+            </section>
