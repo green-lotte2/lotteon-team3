@@ -3,7 +3,6 @@
   padding: 0;
   font: normal 16px "Noto Sans CJK KR";
 }
-
 ul, ol {list-style: none;}
 a {text-decoration: none; color: #111111; font-weight: bold}
 
@@ -261,6 +260,31 @@ main > .content > p {
   line-height: 28px;
   margin-bottom: 80px;
 }
+
+
+#companyMain > .swiper > .swiper-wrapper {
+  background-image: url('../company/images/bg_main.jpg');
+  background-repeat: no-repeat;
+}
+#companyMain > .swiper .slide1 > section {
+  position: relative;
+  width: 100%;
+}
+#companyMain > .swiper .slide1  p {
+  position: absolute;
+  animation-duration: 3s;
+  animation-name: slidein;
+  left: 40px;
+  bottom: 380px;
+  color: #FFFDFD;
+  font-size: 40px;
+  font-weight: 700;
+  text-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+}
+
+#introduce > .cover {
+  background-image: url('../company/images/bg_company_introduce.jpg');
+}
 #media .cover > div > h1 {
   position: absolute;
   left: 10px;
@@ -292,11 +316,11 @@ main > .content > p {
 }
 
 /* 채용 */
-#recuit > .cover {
-  background-image: url('../company/images/bg_company_recuit.png');
+#recruit > .cover {
+  background-image: url('../company/images/bg_company_manage.jpg');
 }
 
-#recuit img {
+#recruit img {
   display: block;
   width: 80%;
   margin: 28px auto;
@@ -400,7 +424,78 @@ main > .content > p {
   height: 347px;
   border-radius: 10px 0px 0px 10px;
 }
+/* 소식과 이야기 */
+#story > .cover {
+  height: 400px;
+  background-color: #242238;
+}
+#story > .cover >div > p {
+  animation-duration: 3s;
+  animation-name: slidein;
+  top: 250px;
+  color: #d3c7c7;
+  font-size: 35px;
+  font-weight: 400;
+  text-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+}
+#story > .cover > div > h1 {
+  position: absolute;
+  left: 0px;
+  top: 180px;
+  font-size: 40px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #f3eaea;
+}
+.cards{
+  margin-top: 40px;
+  margin-left: 40px;
+  width: 1180px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
 
+#story > .content > .cards > .card  {
+  display: flex;
+  float: left;
+  margin-right: 5px;
+  height: 430px;
+  width: calc(30% - 1rem); /* 1rem 마진 제외한 1/3 폭으로 설정 */
+  margin-bottom: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 추가 */
+  transition: box-shadow 0.3s ease; /* 그림자 변경을 부드럽게 전환 */
+  border-radius: 10px;
+  overflow: hidden;
+}
+.card:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* 호버 시 그림자 크게 변경 */
+}
+.card-img-top {
+  width: 100%;
+  height: 230px;
+}
+.card-body {
+  height: 150px;
+}
+#story .navbar-nav > .nav-item >.nav-link {
+  color: #7a7a7a;
+}
+#story .navbar-nav > .nav-item >.nav-link:hover {
+  color: #df2c2c;
+}
+#buttonDiv {
+  text-align: center;
+  padding: 5px;
+}
+#story .btnMoreView {
+  padding: 12px 24px;
+  color: #F0F4F9;
+  font-weight: bold;
+  font-size: 17px;
+  background-color: #E30613;
+  border-radius: 50px 50px 50px 50px;
+}
 /* 텍스트 애니메이션 */
 @keyframes slidein {
   from {

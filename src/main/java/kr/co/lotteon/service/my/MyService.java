@@ -1,5 +1,6 @@
 package kr.co.lotteon.service.my;
 
+import com.querydsl.core.Tuple;
 import kr.co.lotteon.dto.cs.BoardDTO;
 import kr.co.lotteon.dto.cs.CsPageRequestDTO;
 import kr.co.lotteon.dto.cs.CsPageResponseDTO;
@@ -32,6 +33,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -84,9 +86,9 @@ public class MyService {
         return boardRepository.countByUid(uid);
     }
 
-    // point 리스트 출력
+    // point 리스트 출력(전체)
     public PointPageResponseDTO getPointListByUid(String uid, PointPageRequestDTO pointPageRequestDTO) {
-        Pageable pageable = pointPageRequestDTO.getPageable("pointDate");
+        Pageable pageable = pointPageRequestDTO.getPageable();
         Page<Point> pointPage = pointRepository.findByUidOrderByCurrentDateDesc(uid, pageable);
 
         return new PointPageResponseDTO(
@@ -98,17 +100,30 @@ public class MyService {
         );
     }
 
-    // point 리스트 출력(period 3개)
-    public List<PointDTO> getPointByPeriod(String uid, LocalDateTime start, LocalDateTime end) {
-        // 기간에 해당하는 포인트 데이터를 가져오는 리포지토리 메서드 호출
-        log.info("피리오드 서비스" + uid, start, end);
-        List<Point> pointList = pointRepository.findByUidAndPointDateBetweenOrderByPointDateDesc(uid, start, end);
+    // point 리스트 출력(선택)
+    public PointPageResponseDTO findPointList(String uid, PointPageRequestDTO pointPageRequestDTO) {
 
-        // 포인트 데이터를 DTO로 변환하여 반환
-        return pointList.stream()
-                .map(Point::toDTO)
-                .collect(Collectors.toList());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+
+        LocalDateTime begin = LocalDateTime.parse(pointPageRequestDTO.getBegin() + "T00:00:00", formatter);
+
+        LocalDateTime end = LocalDateTime.parse(pointPageRequestDTO.getEnd() + "T23:59:59", formatter);
+        Page<Point> result = pointRepository.findByUidAndPointDateBetween(uid, begin, end, pointPageRequestDTO.getPageable());
+
+        List<PointDTO> dtoList = result
+                .getContent()
+                .stream()
+                .map(entity -> modelMapper.map(entity, PointDTO.class))
+                .toList();
+        int totalElement = (int) result.getTotalElements();
+        return PointPageResponseDTO.builder()
+                .pointPageRequestDTO(pointPageRequestDTO)
+                .dtoList(dtoList)
+                .total(totalElement)
+                .build();
     }
+
+
 
 
     public CsPageResponseDTO QnaList(String uid,CsPageRequestDTO csPageRequestDTO){
@@ -117,16 +132,24 @@ public class MyService {
 
         Pageable pageable = csPageRequestDTO.getPageable("bno");
 
-        Page<BoardEntity> boardsPage = boardRepository.memberSelectBoards(uid,csPageRequestDTO, pageable);
-        log.info("문의 목록 조회 2" + boardsPage);
+        Page<Tuple> tuples = boardRepository.memberSelectBoards(uid,csPageRequestDTO, pageable);
+        log.info("문의 목록 조회 2" + tuples);
 
         // Page<Product>를 List<ProductDTO>로 변환
-        List<BoardDTO> boardDTOS = boardsPage.getContent().stream()
-                .map(entity-> modelMapper.map(entity, BoardDTO.class))
+        List<BoardDTO> boardDTOS = tuples.getContent().stream()
+                .map(tuple -> {
+                    BoardEntity board=tuple.get(0,BoardEntity.class);
+                    String cateName=tuple.get(1,String.class);
+
+                    BoardDTO boardDTO=modelMapper.map(board,BoardDTO.class);
+                    boardDTO.setCateName(cateName);
+
+                    return boardDTO;
+                })
                 .toList();
         log.info("문의 목록 조회 3" + boardDTOS);
 
-        int total = (int) boardsPage.getTotalElements();
+        int total = (int) tuples.getTotalElements();
 
         return CsPageResponseDTO.builder()
                 .csPageRequestDTO(csPageRequestDTO)
@@ -141,15 +164,28 @@ public class MyService {
 
         Pageable pageable = productReviewPageRequestDTO.getPageable("rdate");
 
-        Page<Review> reviewPage = productRepository.memberSelectReview(uid,productReviewPageRequestDTO, pageable);
-        log.info("리뷰 목록 조회 2" + reviewPage);
+        Page<Tuple> tuples = productRepository.memberSelectReview(uid, productReviewPageRequestDTO, pageable);
 
-        List<ReviewDTO> reviewDTOS = reviewPage.getContent().stream()
-                .map(entity-> modelMapper.map(entity, ReviewDTO.class))
+        log.info("리뷰 목록 조회 2" + tuples.getContent());
+
+        List<ReviewDTO> reviewDTOS = tuples.getContent().stream()
+                .map(tuple -> {
+                    Review review=tuple.get(0,Review.class);
+                    String prodName=tuple.get(1,String.class);
+                    int cate1=tuple.get(2,Integer.class);
+                    int cate2=tuple.get(3,Integer.class);
+
+                    ReviewDTO reviewDTO=modelMapper.map(review,ReviewDTO.class);
+                    reviewDTO.setProdName(prodName);
+                    reviewDTO.setCate1(cate1);
+                    reviewDTO.setCate2(cate2);
+
+                    return reviewDTO;
+                })
                 .toList();
         log.info("리뷰 목록 조회 3" + reviewDTOS);
 
-        int total = (int) reviewPage.getTotalElements();
+        int total = (int) tuples.getTotalElements();
 
         return ProductReviewPageResponseDTO.builder()
                 .productReviewPageRequestDTO(productReviewPageRequestDTO)

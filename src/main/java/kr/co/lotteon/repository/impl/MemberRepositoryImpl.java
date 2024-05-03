@@ -109,4 +109,63 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
         log.info("회원 목록 (현황) 검색 조회 Impl 3 : " + memberList);
         return new PageImpl<>(memberList, pageable, total);
     }
+    // 판매자 목록 (현황) 기본 조회
+    @Override
+    public Page<Member> selectSellerList(AdminPageRequestDTO adminPageRequestDTO, Pageable pageable){
+        log.info("판매자 목록 (현황) 기본 조회 Impl 1 : " + adminPageRequestDTO);
+        QueryResults<Member> results = jpaQueryFactory
+                .select(qMember)
+                .from(qMember)
+                .where(qMember.level.eq(5))
+                .orderBy(qMember.rdate.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetchResults();
+
+        long total = results.getTotal();
+        log.info("판매자 목록 (현황) 기본 조회 Impl 2 : " + total);
+        List<Member> memberList = results.getResults();
+        log.info("판매자 목록 (현황) 기본 조회 Impl 3 : " + memberList);
+        return new PageImpl<>(memberList, pageable, total);
+    }
+    // 판매자 목록 (현황) 검색 조회
+    public Page<Member> searchSellerList(AdminPageRequestDTO adminPageRequestDTO, Pageable pageable){
+        log.info("판매자 목록 (현황) 검색 조회 Impl 1 : " + adminPageRequestDTO);
+        String type = adminPageRequestDTO.getType();
+        String keyword = adminPageRequestDTO.getKeyword();
+        log.info("판매자 목록 (현황) 검색 조회 Impl 2 : " + type);
+        log.info("판매자 목록 (현황) 검색 조회 Impl 3 : " + keyword);
+
+        BooleanExpression expression = null;
+
+        // 검색 종류에 따른 where절 표현식 생성
+        if(type.equals("uid")){
+            expression = qMember.uid.contains(keyword).and(qMember.level.eq(5));
+            log.info("uid 검색 : " + expression);
+
+        }else if(type.equals("name")){
+            expression = qMember.name.contains(keyword).and(qMember.level.eq(5));
+            log.info("name 검색 : " + expression);
+
+        }else if(type.equals("nick")){
+            expression = qMember.nick.contains(keyword).and(qMember.level.eq(5));
+            log.info("nick 검색 : " + expression);
+
+        }
+        // DB 조회
+        QueryResults<Member> results = jpaQueryFactory
+                .select(qMember)
+                .from(qMember)
+                .where(expression)
+                .orderBy(qMember.rdate.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetchResults();
+
+        long total = results.getTotal();
+        log.info("판매자 목록 (현황) 검색 조회 Impl 2 : " + total);
+        List<Member> memberList = results.getResults();
+        log.info("판매자 목록 (현황) 검색 조회 Impl 3 : " + memberList);
+        return new PageImpl<>(memberList, pageable, total);
+    }
 }

@@ -853,6 +853,37 @@ public class SellerService {
         }
     }
 
+    // 판매자 매출 현황 차트 조회
+    public List<Map<String, Object>> selectSalesChart(){
+        String sellerId = whoAmI();
+
+        // 총 매출액을 저장할 변수
+        AtomicLong totalOrders = new AtomicLong(0);
+
+        List<Map<String, Object>> jsonResult = orderItemRepository.selectSales(sellerId).stream()
+                .map(tuple -> {
+                    int year = tuple.get(0, Integer.class);
+                    int month = tuple.get(1, Integer.class);
+                    Integer sum = tuple.get(2, Integer.class);
+
+                    // 총 매출액에 현재 월의 매출액를 더함
+                    totalOrders.addAndGet(sum);
+
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("month", year+ "년 "+ month + "월");
+                    map.put("sum", sum);
+                    return map;
+                })
+                .collect(Collectors.toList());
+
+        // 총 매출액을 결과에 추가
+        Map<String, Object> totalMap = new HashMap<>();
+        totalMap.put("total", totalOrders.get());
+        jsonResult.add(totalMap);
+
+        return jsonResult;
+    }
+
     // 사용자 정보 함수
     public String whoAmI(){
         // 현재 로그인 중인 사용자 정보 불러오기

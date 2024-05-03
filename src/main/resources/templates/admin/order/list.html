@@ -147,7 +147,26 @@
                     function accordionControl(button){
                         // 해당 버튼의 data-bs-target 값을 사용하여 아코디언 컨텐츠 요소 가져오기
                         const targetId = button.getAttribute('data-bs-target');
-                        const targetContent = document.getElementById(targetId);
+                        const targetContent = document.getElementById(targetId); // 아코디언
+
+                        const price1span = targetContent.querySelector('.price1');
+                        const price2span = targetContent.querySelector('.price2');
+
+                        // 가격 가져오기
+                        const price1 = Number(price1span.innerText.replace(',', ''));
+                        const price2 = Number(price2span.innerText.replace(',', ''));
+
+                        // 가격 형식화
+                        const formattedPrice1 = new Intl.NumberFormat('ko-KR').format(price1);
+                        const formattedPrice2 = new Intl.NumberFormat('ko-KR').format(price2);
+
+                        console.log('price1 : ' + formattedPrice1);
+                        console.log('price2 : ' + formattedPrice2);
+
+                        // 형식화된 가격을 다시 span에 설정
+                        price1span.innerText = formattedPrice1;
+                        price2span.innerText = formattedPrice2;
+
 
                         // 현재 아코디언 상태 확인
                         const isExpanded = button.getAttribute('aria-expanded') === 'true';
@@ -231,6 +250,7 @@
                             .catch(err => {
                                 console.log(err);});
                     }
+
                 </script>
                 <nav>
                     <h3>관리자 주문관리</h3>
@@ -341,11 +361,11 @@
                                                     <ul class="list-group">
                                                         <li class="list-group-item">
                                                             <span>가격</span>
-                                                            <span>[[${OrderListDTO.productDTO.price}]] 원</span>
+                                                            <span class="price1">[[${OrderListDTO.productDTO.price}]]</span> <strong> 원</strong>
                                                         </li>
                                                         <li class="list-group-item">
                                                             <span>총 가격</span>
-                                                            <span>[[${OrderListDTO.orderItemDTO.count * OrderListDTO.productDTO.price}]] 원</span>
+                                                            <span class="price2">[[${OrderListDTO.orderItemDTO.count * OrderListDTO.productDTO.price}]]</span> <strong> 원</strong>
                                                         </li>
                                                         <li class="list-group-item">
                                                             <span>배송받는 분</span>

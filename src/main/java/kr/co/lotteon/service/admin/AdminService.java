@@ -6,6 +6,7 @@ import kr.co.lotteon.dto.admin.*;
 import kr.co.lotteon.dto.cs.*;
 import kr.co.lotteon.dto.member.MemberDTO;
 import kr.co.lotteon.dto.product.*;
+import kr.co.lotteon.entity.admin.Article;
 import kr.co.lotteon.entity.admin.Banner;
 import kr.co.lotteon.entity.cs.BoardCateEntity;
 import kr.co.lotteon.entity.cs.BoardEntity;
@@ -14,6 +15,7 @@ import kr.co.lotteon.entity.member.Member;
 import kr.co.lotteon.entity.member.Terms;
 import kr.co.lotteon.entity.product.*;
 import kr.co.lotteon.mapper.ProductMapper;
+import kr.co.lotteon.repository.ArticleRepository;
 import kr.co.lotteon.repository.BannerRepository;
 import kr.co.lotteon.repository.cs.*;
 import kr.co.lotteon.repository.member.MemberRepository;
@@ -25,6 +27,7 @@ import net.coobird.thumbnailator.Thumbnails;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -59,6 +62,7 @@ public class AdminService {
     private final BoardFileRepository fileRepository;
     private final CommentRepository commentRepository;
     private final OrderItemRepository orderItemRepository;
+    private final ArticleRepository articleRepository;
 
     private final ProductMapper productMapper;
 
@@ -727,6 +731,41 @@ public class AdminService {
                 .total(total)
                 .build();
     }
+    // 관리자 판매자 목록 (현황) 조회
+    public AdminMemberPageResponseDTO selectSellers(AdminPageRequestDTO adminPageRequestDTO) {
+        log.info("관리자 판매자 목록 Serv 1  ");
+        Pageable pageable = adminPageRequestDTO.getPageable("no");
+
+        Page<Member> members = null;
+        // 회원 기본 조회
+        if (adminPageRequestDTO.getKeyword() == null) {
+            // DB 조회
+            members = memberRepository.selectSellerList(adminPageRequestDTO, pageable);
+            log.info("관리자 판매자 기본 목록 Serv 2 : " + members);
+
+            // 회원 검색 조회
+        } else {
+            // DB 조회
+            members = memberRepository.searchSellerList(adminPageRequestDTO, pageable);
+            log.info("관리자 판매자 검색 목록 Serv 2 : " + members);
+        }
+        // Page<Entity>을 List<DTO>로 변환
+        List<MemberDTO> dtoList = members.getContent().stream()
+                .map(member -> modelMapper.map(member, MemberDTO.class))
+                .toList();
+
+        log.info("관리자 판매자 목록 Serv 3 : " + dtoList);
+
+        // total 값
+        int total = (int) members.getTotalElements();
+
+        // List<ProductDTO>와 page 정보 리턴
+        return AdminMemberPageResponseDTO.builder()
+                .adminPageRequestDTO(adminPageRequestDTO)
+                .dtoList(dtoList)
+                .total(total)
+                .build();
+    }
     // 관리자 주문 현황
     @Transactional
     public SellerOrderPageResponseDTO selectOrderList(AdminPageRequestDTO adminPageRequestDTO){
@@ -864,6 +903,77 @@ public class AdminService {
         }
         return ResponseEntity.ok().body("delete member");
     }
+    // 관리자 회사 소개 글 목록
+    public AdminArticlePageResponseDTO selectArticle(String cate1, AdminPageRequestDTO adminPageRequestDTO){
+        Pageable pageable = adminPageRequestDTO.getPageable("no");
+        String keyword = adminPageRequestDTO.getKeyword();
+        Page<Article> results = null;
+        // 일반 조회일 때
+        if(keyword == null || keyword.equals("") || keyword.equals("all")){
+            results = articleRepository.selectArticleForAdmin(adminPageRequestDTO, pageable, cate1);
+
+            // 검색 조회일 때
+        }else {
+            results = articleRepository.searchArticleForAdmin(adminPageRequestDTO, pageable, cate1);
+        }
+
+        List<ArticleDTO> dtoList = results.stream()
+                .map(result -> modelMapper.map(result, ArticleDTO.class))
+                .toList();
+
+        // total 값
+        int total = (int) results.getTotalElements();
+
+        // List<OrderListDTO>와 page 정보 리턴
+        return AdminArticlePageResponseDTO.builder()
+                .adminPageRequestDTO(adminPageRequestDTO)
+                .dtoList(dtoList)
+                .total(total)
+                .build();
+    }
+    // 관리자 회사 소개 글쓰기
+    public void insertArticle(MultipartFile thumb336, ArticleDTO articleDTO){
+        log.info("회사 소개 글쓰기 Serv 1 : " + thumb336);
+        log.info("회사 소개 글쓰기 Serv 2 : " + articleDTO);
+
+        // 이미지 파일 등록 : 해당 디렉토리 없을 경우 자동 생성
+        File file = new File(imgUploadPath);
+        if (!file.exists()) {
+            file.mkdir();
+        }
+        String path = file.getAbsolutePath();
+
+        // 원본 파일 폴더 자동 생성
+        String orgPath = path + "/orgImage";
+        File orgFile = new File(orgPath);
+        if (!orgFile.exists()) {
+            orgFile.mkdir();
+        }
+        // 이미지 리사이징
+        if (!thumb336.isEmpty()) {
+            // 리사이징 함수 호출 - 새 이미지 저장
+            String sName = imgResizing(thumb336, orgPath, path, 380, 240);
+            // 파일 이름 DTO에 저장
+            articleDTO.setThumb(sName);
+        }
+
+        // DTO -> Entity
+        Article article = modelMapper.map(articleDTO, Article.class);
+        log.info("회사 소개 글쓰기 Serv 3 : " + article.toString());
+
+        // 상품 정보 DB 저장
+        articleRepository.save(article);
+    }
+    // 관리자 회사소개 삭제
+    public ResponseEntity<?> deleteArticle(int ano){
+        articleRepository.deleteById(ano);
+        return ResponseEntity.ok().body("delete article");
+    }
+    // 회사소개 게시글 상세 조회
+    public ArticleDTO selectArticle(int ano){
+        return modelMapper.map(articleRepository.findById(ano), ArticleDTO.class);
+    }
+    /////  이미지 리사이징 //////////////////////////////////////////////////
     // 이미지 리사이징 함수 - width, height
     public String imgResizing(MultipartFile file, String orgPath, String path, int targetWidth, int targetHeight) {
         String oName = file.getOriginalFilename();

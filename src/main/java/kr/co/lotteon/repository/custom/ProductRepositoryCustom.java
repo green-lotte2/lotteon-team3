@@ -1,5 +1,6 @@
 package kr.co.lotteon.repository.custom;
 
+import com.querydsl.core.Tuple;
 import kr.co.lotteon.dto.admin.AdminProductPageRequestDTO;
 import kr.co.lotteon.dto.cs.CsPageRequestDTO;
 import kr.co.lotteon.dto.product.PageRequestDTO;
@@ -52,6 +53,8 @@ public interface ProductRepositoryCustom {
 // ===========================================
     
     // 마이페이지 리뷰내역 조회
-    public Page<Review> memberSelectReview(String uid, ProductReviewPageRequestDTO productReviewPageRequestDTO, Pageable pageable);
+    public Page<Tuple> memberSelectReview(String uid, ProductReviewPageRequestDTO productReviewPageRequestDTO, Pageable pageable);
 
+    // 상품리뷰 조회
+    Page<Tuple> selectProductReview(int prodNo, ProductReviewPageRequestDTO productReviewPageRequestDTO, Pageable pageable);
 }

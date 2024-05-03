@@ -13,10 +13,8 @@ import java.util.List;
 
 @Repository
 public interface PointRepository extends JpaRepository<Point, Integer> {
-
-    // point 기본 리스트
     Page<Point> findByUidOrderByCurrentDateDesc(String uid, Pageable pageable);
-
-    List<Point> findByUidAndPointDateBetweenOrderByPointDateDesc(String uid, LocalDateTime start, LocalDateTime end);
-
+    // point 기본 리스트
+    public Page<Point> findByUidAndPointDateBetween(String uid, LocalDateTime begin, LocalDateTime end, Pageable pageable);
+    public List<Point> findByUid(String uid);
 }

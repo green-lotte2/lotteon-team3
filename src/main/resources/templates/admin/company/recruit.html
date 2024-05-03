@@ -1,0 +1,132 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/adminListLayout}">
+<section id="admin-index" layout:fragment="content">
+    <script>
+        // 글쓰기 이동
+        function btnWrite() {
+            const cate1 = "recruit";
+            location.href = `/lotteon/admin/company/write?cate1=` + cate1;
+
+        }
+        // 글삭제
+        async function btnDelete(button){
+            const ano = button.dataset.ano;
+
+            if(confirm('삭제하시겠습니까?')){
+                await fetch(`/lotteon/admin/company/delete/${ano}`)
+                    .then(response => {
+                        if(response.ok){
+                            alert('삭제 완료되었습니다.');
+                            setTimeout(() => {
+                                location.reload();
+                            }, 100);
+                        }
+                    })
+                    .catch(err => console.log(err));
+            }
+        }
+        // 글 수정
+        function btnModify(button){
+            const ano = button.dataset.ano;
+
+            location.href = `/lotteon/admin/company/modify/${ano}`;
+        }
+        // 아코디언 상태 변경
+        function accordionControl(button){
+            // 해당 버튼의 data-bs-target 값을 사용하여 아코디언 컨텐츠 요소 가져오기
+            const targetId = button.getAttribute('data-bs-target');
+            const targetContent = document.getElementById(targetId);
+            const targetTd = targetContent.closest('td');
+            // 현재 아코디언 상태 확인
+            const isExpanded = button.getAttribute('aria-expanded') === 'true';
+
+            if (isExpanded) {
+                // 아코디언 닫기
+                button.setAttribute('aria-expanded', 'false');
+                targetContent.classList.remove('show');
+                targetTd.style.display = 'none';
+            } else {
+                // 아코디언 열기
+                button.setAttribute('aria-expanded', 'true');
+                targetContent.classList.add('show');
+                targetTd.style.display = 'table-cell';
+            }
+        }
+    </script>
+    <nav>
+        <h3>채용정보</h3>
+        <p>
+            HOME > <strong>채용정보</strong>
+        </p>
+    </nav>
+    <article>
+    </article>
+    <h4>채용정보</h4>
+    <!-- 글 목록 -->
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">글번호</th>
+            <th scope="col">제목</th>
+            <th scope="col">작성일</th>
+            <th scope="col">관리</th>
+        </tr>
+        </thead>
+        <tbody>
+        <th:block th:each="article, loop : ${pageResponseDTO.dtoList}">
+            <tr th:data-bs-target="'panel'+${loop}" onclick="accordionControl(this)">
+                <td th:text="${article.ano}"></td>
+                <td th:text="${article.title}"></td>
+                <td th:text="${#temporals.format(article.rdate, 'yyyy-MM-dd')}"></td>
+                <td>
+                    <button type="button" class="btn btn-danger" onclick="btnDelete(this)" th:data-ano="${article.ano}">삭제</button>
+                    <button type="button" class="btn btn-secondary" onclick="btnModify(this)" th:data-ano="${article.ano}">수정</button>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4" style="display: none">
+                    <div th:id="'panel'+${loop}" class="accordion-collapse collapse">
+                        <div class="accordion-body">
+                            <div>
+                                <div class="cartPrice order-3">
+                                    <p class="productDetail">내용</p>
+                                    <span th:text="${article.content}"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </th:block>
+        </tbody>
+    </table>
+    <!-- 페이지 -->
+    <div class="pageDiv">
+        <nav aria-label="Page navigation example" th:if="${!pageResponseDTO.dtoList.isEmpty()}">
+            <ul class="pagination">
+                <li class="page-item">
+                    <a class="page-link" th:href="@{/admin/company/recruit(pg=${pageResponseDTO.start - 1})}" aria-label="Previous"  th:if="${pageResponseDTO.keyword == null}" >
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                    <a class="page-link" th:href="@{/admin/company/recruit(pg=${pageResponseDTO.start - 1}, type=${pageResponseDTO.type}, keyword=${pageResponseDTO.keyword})}" aria-label="Previous"  th:if="${pageResponseDTO.keyword != null}" >
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                <th:block th:each="num:${#numbers.sequence(pageResponseDTO.start, pageResponseDTO.end)}">
+                    <li class="page-item"><a class="page-link" th:href="@{/admin/company/recruit(pg=${num})}" th:if="${pageResponseDTO.keyword == null}">[[${num}]]</a></li>
+                    <li class="page-item"><a class="page-link" th:href="@{/admin/company/recruit(pg=${num}, type=${pageResponseDTO.type}, keyword=${pageResponseDTO.keyword})}" th:if="${pageResponseDTO.keyword != null}">[[${num}]]</a></li>
+                </th:block>
+                <li class="page-item">
+                    <a th:if="${pageResponseDTO.keyword == null}" class="page-link"  th:href="@{/admin/company/recruit(pg=${pageResponseDTO.end + 1})}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                    <a th:if="${pageResponseDTO.keyword != null}" class="page-link"  th:href="@{/admin/company/recruit(pg=${pageResponseDTO.end + 1}, type=${pageResponseDTO.type}, keyword=${pageResponseDTO.keyword})}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+    <button type="button" class="btn btn-secondary btnWrite" onclick="btnWrite(this)">글쓰기</button>
+</section>

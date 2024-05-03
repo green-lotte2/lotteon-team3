@@ -4,6 +4,7 @@ import kr.co.lotteon.dto.admin.BannerDTO;
 import kr.co.lotteon.dto.product.*;
 import kr.co.lotteon.repository.product.Cate1Repository;
 import kr.co.lotteon.service.admin.BannerService;
+import kr.co.lotteon.service.my.MyService;
 import kr.co.lotteon.service.product.CartService;
 import kr.co.lotteon.service.product.CateService;
 import kr.co.lotteon.service.product.OptionService;
@@ -28,6 +29,7 @@ public class ProductController {
     // 상품 카테고리를 불러오기 위한 cateService
     private final CateService cateService;
     private final OptionService optionService;
+
 
     // cart 페이지 매핑
     @GetMapping("/product/cart")
@@ -107,7 +109,7 @@ public class ProductController {
 
     // view (상품 상세 보기) 페이지 매핑
     @GetMapping("/product/view")
-    public String view(Model model, ProductDTO productDTO){
+    public String view(Model model, ProductDTO productDTO,ProductReviewPageRequestDTO productReviewPageRequestDTO){
 
         // hit + 1
         productService.updateProductHit(productDTO.getProdNo());
@@ -154,6 +156,13 @@ public class ProductController {
         List<String> opNames = optionService.selectOpName(productDTO.getProdNo());
         log.info("opNames : " + opNames);
         model.addAttribute("opNames", opNames);
+
+        // 리뷰 가져오기
+        ProductReviewPageResponseDTO productReviewPageResponseDTO = productService.selectProductReview(productDTO.getProdNo(), productReviewPageRequestDTO);
+        log.info("선택한 상품 : "+productDTO.getProdNo());
+        log.info("테스트 : "+productService.selectProductReview(2,productReviewPageRequestDTO));
+        log.info("선택한 상품의 리뷰들 "+productReviewPageResponseDTO);
+        model.addAttribute("productReviewPageResponseDTO",productReviewPageResponseDTO);
 
 
         return "/product/view";

@@ -203,6 +203,7 @@ public class SellerController {
         model.addAttribute("productDTO", productDTO);
         return "/seller/product/view";
     }
+
     // 등록된 상품 커스텀 옵션 추가
     @RequestMapping(value = "/seller/option", produces = "application/json;charset=UTF-8", method = RequestMethod.POST)
     public ResponseEntity<?> optionAdd(@RequestBody List<OptionDTO> optionDTOS) {
@@ -256,6 +257,27 @@ public class SellerController {
         log.info("주문 상태 변경 Cont 1: " + ordItemno);
         log.info("주문 상태 변경 Cont 2: " + ordStatus);
         return sellerService.modifyOrdStatus(ordItemno ,ordStatus);
+    }
+    // 판매자 매출 현황 매핑
+    @GetMapping("/seller/order/sales")
+    public String orderSales(){
+
+        return "/seller/order/sales";
+    }
+    // 판매자 매출 현황 차트 조회
+    @GetMapping("/seller/sales")
+    public ResponseEntity<?> selectSalesChart(){
+        List<Map<String, Object>> jsonResult = sellerService.selectSalesChart();
+        log.info("페이지 그래프 조회 Cont 1: " + jsonResult);
+        try {
+            // 객체를 JSON으로 변환
+            String json = objectMapper.writeValueAsString(jsonResult);
+            // JSON 문자열을 ResponseEntity로 반환
+            return ResponseEntity.ok().body(json);
+        } catch (Exception e) {
+            // JSON 변환에 실패한 경우
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("JSON 변환 오류");
+        }
     }
     ////////////////  cs  ///////////////////////////////////////////////////
     // 판매자 게시판 목록 페이지 매핑

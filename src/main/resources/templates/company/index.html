@@ -1,5 +1,4 @@
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html xmlns:th="http://www.thymeleaf.org">
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, width=device-width, user-scalable=no">
@@ -8,31 +7,41 @@
     <link rel="stylesheet" th:href="@{https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css}"/>
     <link rel="stylesheet" th:href="@{/css/company.css}">
     <script th:src="@{https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js}"></script>
-    <script th:src="@{https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script th:src="@{/company/js/header.js}"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const swiper = new Swiper('.swiper', {
+        document.addEventListener("DOMContentLoaded", function() {
 
-                // 자동높이 사용여부 : 사용하지 않을시 기본값은 false
-                autoHeight : false,
-
+            var swiper = new Swiper('.swiper', {
                 // Optional parameters
                 direction: 'vertical',
                 loop: false,
                 speed: 1000,
 
-                // 페이징
+                // If we need pagination
                 pagination: {
                     el: '.swiper-pagination',
                 },
 
-                // 네비게이션
+                // Navigation arrows
                 navigation: {
                     nextEl: '.swiper-button-next',
                     prevEl: '.swiper-button-prev',
                 },
-
+                breakpoints: {
+                  640: {
+                      slidesPreview : 2,
+                      spaceBetween: 20,
+                  },
+                  768: {
+                      slidesPreview : 2,
+                      spaceBetween: 40,
+                  },
+                  1024: {
+                      slidesPreview : 4,
+                      spaceBetween: 50,
+                  },
+                },
                 // And if we need scrollbar
                 scrollbar: {
                     el: '.swiper-scrollbar',
@@ -41,30 +50,27 @@
                 mousewheel: {
                     invert: false,
                 },
+                breakpointBase: 'window'
             });
 
-            // 슬라이드 변경 이벤트 시 마지막 슬라이드의 높이를 기준으로 슬라이드 컨테이너의 높이 재설정
             swiper.on('slideChange', function () {
-                const slideIndex = swiper.realIndex;
+                var slideIndex = swiper.realIndex;
 
-                console.log("slideIndex : " +slideIndex );
-                if (slideIndex === 0) {
+                if (slideIndex == 0) {
                     document.querySelector('header').style.background = 'transparent';
-                } else if (slideIndex === 3) {
+                } else if (slideIndex == 3) {
                     document.querySelector('footer').style.display = 'block';
-                } else if(slideIndex === 2){
-                    document.querySelector('header').style.background = 'white';
-                    document.querySelector('footer').style.display = 'none';
                 } else {
                     document.querySelector('header').style.background = 'white';
                     document.querySelector('footer').style.display = 'none';
                 }
             });
+
         });
 
     </script>
 </head>
-<body>
+<body id="companyMain">
 <div class="swiper">
     <header>
         <div>
@@ -72,7 +78,7 @@
             <ul>
                 <li><a th:href="@{/company/index}">HOME</a></li>
                 <li><a th:href="@{/company/culture}">기업문화</a></li>
-                <li><a th:href="@{/company/story}">소식과 이야기</a></li>
+                <li><a th:href="@{/company/story(start=0, cate2='all')}">소식과 이야기</a></li>
                 <li><a th:href="@{/company/recruit}">채용</a></li>
                 <li><a th:href="@{/company/media}">미디어</a></li>
 
@@ -85,7 +91,11 @@
     <div class="swiper-wrapper">
       <!-- Slides -->
         <div class="swiper-slide slide1">
-            <img th:src="@{/company/images/bg_main.jpg}" id="mainBanner">
+            <section>
+            <!--<img th:src="@{/company/images/bg_main.jpg}" id="mainBanner">-->
+            <p>취향을, 브랜드를, 혜택을 발견하는 즐거움 <br>
+                지금 롯데온에서 만나요</p>
+            </section>
         </div>
         <div class="swiper-slide slide2">
             <section>

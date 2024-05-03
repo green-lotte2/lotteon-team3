@@ -17,6 +17,7 @@ public class PointPageResponseDTO {
     private boolean prev, next;             // 이전 페이지, 다음 페이지
 
     // 생성자 - PointPageRequestDTO, 게시글 목록(dtoList), 전체 항목 수(total)를 받아서 페이지 응답 DTO 객체를 생성
+    @Builder
     public PointPageResponseDTO(PointPageRequestDTO pointPageRequestDTO, List<PointDTO> dtoList, int total){
 
         this.pg = pointPageRequestDTO.getPg();

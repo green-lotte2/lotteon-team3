@@ -339,6 +339,13 @@ public class AdminController {
         model.addAttribute("pageResponseDTO", adminMemberPageResponseDTO);
         return "/admin/member/list";
     }
+    // 관리자 판매자 현황 매핑
+    @GetMapping("/admin/member/seller")
+    public String sellerList(Model model, AdminPageRequestDTO adminPageRequestDTO){
+        AdminMemberPageResponseDTO adminMemberPageResponseDTO = adminService.selectSellers(adminPageRequestDTO);
+        model.addAttribute("pageResponseDTO", adminMemberPageResponseDTO);
+        return "/admin/member/seller";
+    }
     // 관리자 회원 삭제
     @GetMapping("/admin/member/delete/{uid}")
     public ResponseEntity<?> memberDelete(@PathVariable("uid") String uid){
@@ -359,5 +366,51 @@ public class AdminController {
         }
         model.addAttribute("pageResponseDTO", sellerOrderPageResponseDTO);
         return "/admin/order/list";
+    }
+    ////////////////  company  ///////////////////////////////////////////////////
+    // 관리자 스토리 매핑
+    @GetMapping("/admin/company/story")
+    public String storyList(Model model, AdminPageRequestDTO adminPageRequestDTO){
+        AdminArticlePageResponseDTO pageResponseDTO = adminService.selectArticle("story", adminPageRequestDTO);
+        model.addAttribute("pageResponseDTO", pageResponseDTO);
+        return "/admin/company/story";
+    }
+    // 관리자 채용정보 매핑
+    @GetMapping("/admin/company/recruit")
+    public String recruitList(Model model, AdminPageRequestDTO adminPageRequestDTO){
+        AdminArticlePageResponseDTO pageResponseDTO = adminService.selectArticle("recruit", adminPageRequestDTO);
+        model.addAttribute("pageResponseDTO", pageResponseDTO);
+        return "/admin/company/recruit";
+    }
+    // 관리자 회사소개 글쓰기 매핑
+    @GetMapping("/admin/company/write")
+    public String companyWrite(Model model, @RequestParam("cate1") String cate1){
+        model.addAttribute("cate1", cate1);
+        return "/admin/company/write";
+    }
+
+    // 관리자 회사소개 글쓰기 전송
+    @PostMapping("/admin/company/write")
+    public String bannerRegister(@RequestParam("thumb336") MultipartFile thumb336, ArticleDTO articleDTO){
+        log.info("회사소개 글쓰기 Cont 1 : " + thumb336);
+        log.info("회사소개 글쓰기Cont 2 : " + articleDTO);
+        adminService.insertArticle(thumb336, articleDTO);
+        return "redirect:/admin/company/"+articleDTO.getCate1();
+    }
+
+    // 관리자 회사소개 글 수정 매핑
+    @GetMapping("/admin/company/modify/{ano}")
+    public String companyWrite(Model model, @PathVariable("ano") int ano){
+        ArticleDTO article = adminService.selectArticle(ano);
+        model.addAttribute("article", article);
+        return "/admin/company/modify";
+    }
+
+    // 관리자 회사소개 삭제
+    @GetMapping("/admin/company/delete/{ano}")
+    @ResponseBody
+    public ResponseEntity<?> deleteArticle(@PathVariable("ano") int ano){
+
+        return adminService.deleteArticle(ano);
     }
 }
