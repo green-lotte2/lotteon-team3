@@ -33,6 +33,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -85,9 +86,9 @@ public class MyService {
         return boardRepository.countByUid(uid);
     }
 
-    // point 리스트 출력
+    // point 리스트 출력(전체)
     public PointPageResponseDTO getPointListByUid(String uid, PointPageRequestDTO pointPageRequestDTO) {
-        Pageable pageable = pointPageRequestDTO.getPageable("pointDate");
+        Pageable pageable = pointPageRequestDTO.getPageable();
         Page<Point> pointPage = pointRepository.findByUidOrderByCurrentDateDesc(uid, pageable);
 
         return new PointPageResponseDTO(
@@ -99,17 +100,30 @@ public class MyService {
         );
     }
 
-    // point 리스트 출력(period 3개)
-    public List<PointDTO> getPointByPeriod(String uid, LocalDateTime start, LocalDateTime end) {
-        // 기간에 해당하는 포인트 데이터를 가져오는 리포지토리 메서드 호출
-        log.info("피리오드 서비스" + uid, start, end);
-        List<Point> pointList = pointRepository.findByUidAndPointDateBetweenOrderByPointDateDesc(uid, start, end);
+    // point 리스트 출력(선택)
+    public PointPageResponseDTO findPointList(String uid, PointPageRequestDTO pointPageRequestDTO) {
 
-        // 포인트 데이터를 DTO로 변환하여 반환
-        return pointList.stream()
-                .map(Point::toDTO)
-                .collect(Collectors.toList());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+
+        LocalDateTime begin = LocalDateTime.parse(pointPageRequestDTO.getBegin() + "T00:00:00", formatter);
+
+        LocalDateTime end = LocalDateTime.parse(pointPageRequestDTO.getEnd() + "T23:59:59", formatter);
+        Page<Point> result = pointRepository.findByUidAndPointDateBetween(uid, begin, end, pointPageRequestDTO.getPageable());
+
+        List<PointDTO> dtoList = result
+                .getContent()
+                .stream()
+                .map(entity -> modelMapper.map(entity, PointDTO.class))
+                .toList();
+        int totalElement = (int) result.getTotalElements();
+        return PointPageResponseDTO.builder()
+                .pointPageRequestDTO(pointPageRequestDTO)
+                .dtoList(dtoList)
+                .total(totalElement)
+                .build();
     }
+
+
 
 
     public CsPageResponseDTO QnaList(String uid,CsPageRequestDTO csPageRequestDTO){
