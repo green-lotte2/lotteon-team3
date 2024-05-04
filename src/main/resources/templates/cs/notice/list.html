@@ -3,49 +3,66 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{/layout/csLayout}">
 
+<head>
+    <script th:inline="javascript">
+        function showAlert() {
+            // 알림창 띄우기
+            alert('로그인 후에 이용 가능합니다.');
+            // 로그인 페이지로 이동
+            window.location.href = '/lotteon/member/login'; // 로그인 페이지 URL로 변경해주세요.
+        }
+    </script>
 
-<section id="cs" layout:fragment = "content">
-  <div class="notice">
-          <nav>
-              <div>
-                  <p>홈
-                      <span>></span>
-                      <span th:switch="${group}">
-                      <span th:case="notice" style="font-size: 16px; color: black;">공지사항</span>
-                      <span th:case="qna" style="font-size: 16px; color: black;">고객문의</span>
-                      <span th:case="faq" style="font-size: 16px; color: black;">자주묻는질문</span>
-                      </span>
-                  </p>
-              </div>
-          </nav>
-          <section class="list">
+</head>
+
+<body>
+<section id="cs" layout:fragment="content">
+    <div class="notice">
+        <nav>
+            <div>
+                <p>홈
+                    <span>></span>
+                    <span th:switch="${group}">
+                            <span th:case="notice" style="font-size: 16px; color: black;">공지사항</span>
+                            <span th:case="qna" style="font-size: 16px; color: black;">고객문의</span>
+                            <span th:case="faq" style="font-size: 16px; color: black;">자주묻는질문</span>
+                        </span>
+                </p>
+            </div>
+        </nav>
+        <section class="list">
             <aside>
-              <h2>공지사항</h2>
-              <ul>
-                <li th:class="${(cate eq 'null') ? 'on' : ''}"><a th:href="@{/cs/notice/list(group='notice', cate='null')}">전체</a></li>
-                <li th:class="${(cate=='cs') ? 'on' : ''}"><a th:href="@{/cs/notice/list(group='notice',cate='cs')}">고객서비스</a></li>
-                <li th:class="${(cate=='safe') ? 'on' : ''}"><a th:href="@{/cs/notice/list(group='notice',cate='safe')}">안전거래</a></li>
-                <li th:class="${(cate=='dangerProd') ? 'on' : ''}"><a th:href="@{/cs/notice/list(group='notice',cate='dangerProd')}">위해상품</a></li>
-                <li th:class="${(cate=='event') ? 'on' : ''}"><a th:href="@{/cs/notice/list(group='notice',cate='event')}">이벤트당첨</a></li>
-              </ul>
+                <h2>공지사항</h2>
+                <ul>
+                    <li th:class="${(cate eq 'null') ? 'on' : ''}"><a th:href="@{/cs/notice/list(group='notice', cate='null')}">전체</a></li>
+                    <li th:class="${(cate=='cs') ? 'on' : ''}"><a th:href="@{/cs/notice/list(group='notice',cate='cs')}">고객서비스</a></li>
+                    <li th:class="${(cate=='safe') ? 'on' : ''}"><a th:href="@{/cs/notice/list(group='notice',cate='safe')}">안전거래</a></li>
+                    <li th:class="${(cate=='dangerProd') ? 'on' : ''}"><a th:href="@{/cs/notice/list(group='notice',cate='dangerProd')}">위해상품</a></li>
+                    <li th:class="${(cate=='event') ? 'on' : ''}"><a th:href="@{/cs/notice/list(group='notice',cate='event')}">이벤트당첨</a></li>
+                </ul>
             </aside>
             <article>
                 <nav>
-                    <span th:switch="${cate}">
-                        <span th:case="'null'">전체</span>
-                        <span th:case="cs">고객서비스</span>
-                        <span th:case="safe">안전거래</span>
-                        <span th:case="dangerProd">위해상품</span>
-                        <span th:case="event">이벤트당첨</span>
-                    </span>
-                  
+                        <span th:switch="${cate}">
+                            <span th:case="'null'">전체</span>
+                            <span th:case="cs">고객서비스</span>
+                            <span th:case="safe">안전거래</span>
+                            <span th:case="dangerProd">위해상품</span>
+                            <span th:case="event">이벤트당첨</span>
+                        </span>
+
                     <h2>공지사항 <span th:utext="${(cate eq 'null') ? '전체' : (cate eq 'cs') ? '고객서비스' : (cate eq 'safe') ? '안전거래' : (cate eq 'dangerProd') ? '위해상품' : (cate eq 'event') ? '이벤트당첨' : ''}" style="font-size: 20px;"></span> 내용입니다.</h2>
                 </nav>
                 <!-- 글 목록 -->
                 <table>
-                    <tr th:each="article : ${csPageResponseDTO.dtoList}" >
+                    <tr th:each="article : ${csPageResponseDTO.dtoList}">
                         <td>
-                            <a th:href="@{/cs/notice/view(group=${csPageResponseDTO.group},cate=${csPageResponseDTO.cate},bno=${article.bno})}" >[<span th:text="${article.typeName}" style="font-size: 16px;"></span>] [[${article.title}]]</a>
+                            <a th:if="${#authorization.expression('isAuthenticated()')}" th:href="@{/cs/notice/view(group=${csPageResponseDTO.group},cate=${csPageResponseDTO.cate},bno=${article.bno})}">
+                                [<span th:text="${article.typeName}" style="font-size: 16px;"></span>] [[${article.title}]]
+                            </a>
+                            <a th:unless="${#authorization.expression('isAuthenticated()')}" onclick="showAlert()">
+                                [<span th:text="${article.typeName}" style="font-size: 16px;"></span>] [[${article.title}]]
+                            </a>
                         </td>
                         <td>
                             <span th:text="관리자"></span>
@@ -59,21 +76,23 @@
                 <!-- 페이지 -->
                 <th:block th:if="${csPageResponseDTO.end gt 0 }">
                     <div class="page">
-                      <span th:if="${csPageResponseDTO.prev}" class="prev">
-                        <a th:href="@{/cs/notice/list(group=${csPageResponseDTO.group},cate=${csPageResponseDTO.cate},pg=${csPageResponseDTO.start - 1})}">이전</a>
-                      </span>
+                            <span th:if="${csPageResponseDTO.prev}" class="prev">
+                                <a th:href="@{/cs/notice/list(group=${csPageResponseDTO.group},cate=${csPageResponseDTO.cate},pg=${csPageResponseDTO.start - 1})}">이전</a>
+                            </span>
 
                         <span th:each="num: ${#numbers.sequence(csPageResponseDTO.start, csPageResponseDTO.end)}" class="num">
-                        <a th:href="@{/cs/notice/list(group=${csPageResponseDTO.group},cate=${csPageResponseDTO.cate},pg=${num})}" th:class="${csPageResponseDTO.pg eq num ? 'on' : 'off'}">[[${num}]]</a>
-                      </span>
+                                <a th:href="@{/cs/notice/list(group=${csPageResponseDTO.group},cate=${csPageResponseDTO.cate},pg=${num})}" th:class="${csPageResponseDTO.pg eq num ? 'on' : 'off'}">[[${num}]]</a>
+                            </span>
 
                         <span th:if="${csPageResponseDTO.next}" class="next">
-                        <a th:href="@{/cs/notice/list(group=${csPageResponseDTO.group},cate=${csPageResponseDTO.cate},pg=${csPageResponseDTO.end + 1})}">다음</a>
-                      </span>
+                                <a th:href="@{/cs/notice/list(group=${csPageResponseDTO.group},cate=${csPageResponseDTO.cate},pg=${csPageResponseDTO.end + 1})}">다음</a>
+                            </span>
                     </div>
                 </th:block>
             </article>
-          </section>
-        </div>
+        </section>
+    </div>
 </section>
+</body>
+
 </html>

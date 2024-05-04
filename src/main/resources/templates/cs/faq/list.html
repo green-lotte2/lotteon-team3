@@ -35,6 +35,14 @@
             }
         }
     </script>
+    <script th:inline="javascript">
+        function showAlert() {
+            // 알림창 띄우기
+            alert('로그인 후에 이용 가능합니다.');
+            // 로그인 페이지로 이동
+            window.location.href = '/lotteon/member/login'; // 로그인 페이지 URL로 변경해주세요.
+        }
+    </script>
 </head>
 
 <section id="cs" layout:fragment = "content">
@@ -84,7 +92,10 @@
                     <ul>
                         <th:block th:each="dto, index : ${type.boards}" th:if="${dto.typeNo == type.typeNo}">
                             <li th:class="${index.index lt 3 ? dto.typeNo : 'collapse' + type.typeNo}" th:if="${index.index lt 3}">
-                                <a th:href="@{/cs/faq/view(group=${dto.group}, cate=${dto.cate},bno=${dto.bno})}">
+                                <a th:if="${#authorization.expression('isAuthenticated()')}" th:href="@{/cs/faq/view(group=${dto.group}, cate=${dto.cate},bno=${dto.bno})}">
+                                    <span>Q.</span>[[${dto.title}]]
+                                </a>
+                                <a th:unless="${#authorization.expression('isAuthenticated()')}" onclick="showAlert()">
                                     <span>Q.</span>[[${dto.title}]]
                                 </a>
                             </li>
@@ -92,7 +103,10 @@
                         <div class="collapse" th:id="'collapseExample_' + ${type.typeNo}">
                             <th:block th:each="dto, index : ${type.boards}" th:if="${dto.typeNo == type.typeNo && index.index ge 3 && index.index lt 10}">
                                 <li th:class="${index.index ge 3 ? dto.typeNo : '' }">
-                                    <a th:href="@{/cs/faq/view(group=${dto.group}, cate=${dto.cate},bno=${dto.bno})}" style="border-bottom: 1px solid #ccc; border-radius: 0;">
+                                    <a th:if="${#authorization.expression('isAuthenticated()')}" th:href="@{/cs/faq/view(group=${dto.group}, cate=${dto.cate},bno=${dto.bno})}" style="border-bottom: 1px solid #ccc; border-radius: 0;">
+                                        <span>Q.</span>[[${dto.title}]]
+                                    </a>
+                                    <a th:unless="${#authorization.expression('isAuthenticated()')}" onclick="showAlert()" style="border-bottom: 1px solid #ccc; border-radius: 0;">
                                         <span>Q.</span>[[${dto.title}]]
                                     </a>
                                 </li>
