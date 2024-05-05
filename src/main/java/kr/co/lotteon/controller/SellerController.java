@@ -235,12 +235,6 @@ public class SellerController {
         model.addAttribute("pageResponseDTO", sellerOrderPageResponseDTO);
         return "/seller/order/list";
     }
-    // 주문 현황 - 주문 옵션
-    @GetMapping("/seller/option/{opNos}")
-    public List<OptionDTO> orderOptionList(@PathVariable("opNos") String opNos){
-
-        return null;
-    }
     //주문수 그래프 조회
     @GetMapping("/seller/orderChart")
     public ResponseEntity<?> orderChart() {

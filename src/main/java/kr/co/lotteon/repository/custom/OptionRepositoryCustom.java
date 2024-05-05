@@ -17,4 +17,7 @@ public interface OptionRepositoryCustom {
 
     // 관리자 상품 수정 옵션 띄우기
     public Map<String, List<Map<String, String>>> adminSelectProdOption(int prodNo);
+
+    public List<Option> selectOptionByOpNos(List<Integer> opNos);
 }
+

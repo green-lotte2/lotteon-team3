@@ -123,7 +123,8 @@ public class OrderItemRepositoryImpl implements OrderItemRepositoryCustom {
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetchResults();
-        log.info("판매자 주문 현황 리스트 검색 조회 Impl 3 : " + results);
+
+        log.info("판매자 주문 현황 리스트 조회 Impl 3 : " + results);
         return new PageImpl<>(results.getResults(), pageable, results.getTotal());
     }
     // 판매자 주문 현황 리스트 검색 조회
