@@ -318,7 +318,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
                 .from(qReview)
                 .join(qProduct).on(qReview.prodNo.eq(qProduct.prodNo))
                 .join(qOrderItem).on(qReview.ordItemno.eq(qOrderItem.ordItemno))
-                .join(qOption).on(qOrderItem.opNo.eq(qOption.opNo))
+                //.join(qOption).on(qOrderItem.opNo.eq(qOption.opNo))
                 .where(qReview.prodNo.eq(prodNo))
                 .orderBy(qReview.rdate.desc()) // rdate를 기준으로 내림차순으로 정렬)
                 .offset(pageable.getOffset())

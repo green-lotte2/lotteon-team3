@@ -149,6 +149,10 @@
                         const targetId = button.getAttribute('data-bs-target');
                         const targetContent = document.getElementById(targetId);
 
+                        const strOpNos = targetId.split('acco')[0];
+
+                        console.log("opNos : " + strOpNos);
+
                         // 현재 아코디언 상태 확인
                         const isExpanded = button.getAttribute('aria-expanded') === 'true';
 
@@ -295,7 +299,7 @@
                             <div class="accordion myAccordion">
                                 <div class="accordion-item">
                                     <h2 class="accordion-header">
-                                        <span class="accordion-button" data-bs-toggle="collapse" th:data-bs-target="'panel'+${loop}" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne" onclick="accordionControl(this)">
+                                        <span class="accordion-button" data-bs-toggle="collapse" th:data-bs-target="${OrderListDTO.orderItemDTO.opNo}+'acco'+${loop}" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne" onclick="accordionControl(this)">
                                             <span th:text="${OrderListDTO.orderItemDTO.ordItemno}"></span>
                                             <span th:text="${OrderListDTO.productDTO.prodNo}"></span>
                                             <span th:text="${OrderListDTO.productDTO.prodName}"></span>
@@ -309,9 +313,9 @@
                                             <span th:class="${'statusSpan'+OrderListDTO.orderItemDTO.ordItemno}" th:if="${OrderListDTO.orderItemDTO.ordStatus == '처리완료'}" style="color: #bd0df4" th:text="${OrderListDTO.orderItemDTO.ordStatus}" th:data-no="${OrderListDTO.orderItemDTO.ordItemno}" onclick="changeStatus(this)"></span>
                                         </span>
                                     </h2>
-                                    <div th:id="'panel'+${loop}" class="accordion-collapse collapse">
+                                    <div th:id="${OrderListDTO.orderItemDTO.opNo}+'acco'+${loop}" class="accordion-collapse collapse">
                                         <div class="accordion-body">
-                                            <div>
+                                            <!--<div>
                                                 <div class="details" th:if="${OrderListDTO.optionDTO != null}">
                                                         <p class="productDetail">옵션</p>
                                                     <div class="optionDiv">
@@ -372,7 +376,7 @@
                                                         </li>
                                                     </ul>
                                                 </div>
-                                            </div>
+                                            </div>-->
                                         </div>
                                     </div>
                                 </div>
