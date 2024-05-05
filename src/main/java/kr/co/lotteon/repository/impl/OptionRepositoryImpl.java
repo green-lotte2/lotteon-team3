@@ -126,5 +126,13 @@ public class OptionRepositoryImpl implements OptionRepositoryCustom {
 
         return resultMap;
     }
+    // 판매자 - 주문 현황 옵션 조회 by opNos
+    @Override
+    public List<Option> selectOptionByOpNos(List<Integer> opNos){
+        return jpaQueryFactory
+                .selectFrom(qOption)
+                .where(qOption.opNo.in(opNos))
+                .fetch();
+    }
 
 }
