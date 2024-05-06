@@ -108,7 +108,7 @@ public class MyService {
         LocalDateTime begin = LocalDateTime.parse(pointPageRequestDTO.getBegin() + "T00:00:00", formatter);
 
         LocalDateTime end = LocalDateTime.parse(pointPageRequestDTO.getEnd() + "T23:59:59", formatter);
-        Page<Point> result = pointRepository.findByUidAndPointDateBetween(uid, begin, end, pointPageRequestDTO.getPageable());
+        Page<Point> result = pointRepository.findByUidAndCurrentDateBetweenOrderByCurrentDateDesc(uid, begin, end, pointPageRequestDTO.getPageable());
 
         List<PointDTO> dtoList = result
                 .getContent()
