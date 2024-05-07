@@ -122,9 +122,11 @@ window.onload = function() {
             if (btnNickChange&&isNickOk) {
                 btnNickChange.addEventListener('click', async function (e) {
 
-
+                    const confirmMessage = '닉네임을 변경하시겠습니까?';
+                    const isConfirmed = confirm(confirmMessage);
 
                     const uid = document.querySelector('input[name=uid]').value;
+                    if (isConfirmed) {
                     const jsonData={
                         "uid":uid,
                         "nick":inputNick.value,
@@ -144,6 +146,7 @@ window.onload = function() {
                             console.log(data);
                             if (data === "success") {
                                 alert('닉네임이 변경되었습니다.');
+                                location.href = `/lotteon/my/info?uid=${uid}`;
                             } else {
                                 alert('이미 사용중인 닉네임입니다.');
                             }
@@ -151,6 +154,10 @@ window.onload = function() {
                         .catch(error => {
                             console.log(error)
                         });
+                    } else {
+                        // 사용자가 취소를 선택한 경우
+                        alert('닉네임 변경이 취소되었습니다.');
+                    }
 
 
                 })
