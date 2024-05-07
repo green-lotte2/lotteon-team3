@@ -2,10 +2,7 @@ package kr.co.lotteon.controller;
 
 import kr.co.lotteon.config.AppInfo;
 import kr.co.lotteon.dto.admin.BannerDTO;
-import kr.co.lotteon.dto.product.Cate1DTO;
-import kr.co.lotteon.dto.product.Cate2DTO;
-import kr.co.lotteon.dto.product.Cate3DTO;
-import kr.co.lotteon.dto.product.ProductDTO;
+import kr.co.lotteon.dto.product.*;
 import kr.co.lotteon.service.admin.BannerService;
 import kr.co.lotteon.service.product.CateService;
 import kr.co.lotteon.service.product.ProductService;
@@ -28,6 +25,7 @@ public class MainController {
     // 메인페이지 매핑
     @GetMapping(value = {"/","/index"})
     public String index(Model model){
+
         List<Cate1DTO> cate1DTOS = cateService.getCate1List();
         List<Cate2DTO> cate2DTOS = cateService.getCate2List();
         List<Cate3DTO> cate3DTOS = cateService.getCate3List();
