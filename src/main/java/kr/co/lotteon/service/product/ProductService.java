@@ -106,11 +106,40 @@ public class ProductService {
                 .build();
     }
 
+    public PageResponseDTO searchProducts(PageRequestDTO pageRequestDTO){
+
+        Pageable pageable = pageRequestDTO.getPageable();
+        Page<Tuple> pageProduct = productRepository.searchProducts(pageRequestDTO, pageable);
+
+        List<ProductDTO> dtoList = pageProduct.getContent().stream()
+                .map(tuple ->
+                        {
+                            log.info("tuple : " + tuple);
+                            Product product = tuple.get(0, Product.class);
+
+                            log.info("product : " + product);
+
+                            return modelMapper.map(product, ProductDTO.class);
+                        }
+                )
+                .toList();
+
+        int total = (int) pageProduct.getTotalElements();
+
+        return PageResponseDTO.builder()
+                .pageRequestDTO(pageRequestDTO)
+                .dtoList(dtoList)
+                .total(total)
+                .build();
+    }
+
+
     // 오더 페이지
     public List<ProductDTO> selectProductList(int prodNo){
         log.info("오더 조회 서비스 1");
         return null;
     }
+
 
     // ========== 메인페이지 ==========
     // 최신상품

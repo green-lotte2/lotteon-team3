@@ -333,6 +333,47 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
         return new PageImpl<>(review, pageable, total);
 
     }
+
+    // 메인 검색창
+    @Override
+    public Page<Tuple> searchProducts(PageRequestDTO pageRequestDTO, Pageable pageable){
+
+        int cate1 = pageRequestDTO.getCate1();
+        int cate2 = pageRequestDTO.getCate2();
+        int cate3 = pageRequestDTO.getCate3();
+
+        BooleanExpression expression = null;
+
+        // 카테고리에 따른 where 표현식 생성
+        if(cate1 != 0 && cate2 == 0 && cate3 == 0) {
+            expression = qProduct.cate1.eq(cate1);
+        } else if(cate1 != 0 && cate2 != 0 && cate3 == 0) {
+            expression = qProduct.cate1.eq(cate1).and(qProduct.cate2.eq(cate2));
+        } else if(cate1 != 0 && cate2 != 0 && cate3 != 0) {
+            expression = qProduct.cate1.eq(cate1).and(qProduct.cate2.eq(cate2)).and(qProduct.cate3.eq(cate3));
+        }
+
+        // 부가적인 Query 실행 정보를 처리하기 위해 fetchResults()로 실행
+        QueryResults<Tuple> results = jpaQueryFactory
+                .select(qProduct.prodNo, qProduct.prodName)  // 필요한 필드들을 선택하여 Tuple로 변경
+                .from(qProduct)
+                .where(expression)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .orderBy(qProduct.prodNo.desc())
+                .fetchResults();
+
+
+
+        List<Tuple> content = results.getResults();
+        long total = results.getTotal();
+
+        // 페이징 처리를 위해 page 객체 리턴
+        return new PageImpl<>(content, pageable, total);
+    }
+
+
+
 }
 
     

@@ -17,7 +17,7 @@
 
           <!-- 검색결과 그룹박스 -->
           <div class="group">
-            <h3><strong>셔츠</strong>검색결과 <em>(총&nbsp;:&nbsp;<span>20</span>&nbsp;건)</em></h3>
+            <h3><strong>[[${keyword}]]</strong>검색결과 <em>(총&nbsp;:&nbsp;<span>20</span>&nbsp;건)</em></h3>
             <form action="#">
               <input type="text" name="search"/>
               <input type="submit" value="검색"/>
@@ -44,53 +44,29 @@
               <li><a href="#">최근등록순</a></li>
           </ul>
 
-          <!-- 검색목록 -->
-          <table border="0">                  
-            <tr>
-              <td><a href="#" class="thumb"><img src="https://via.placeholder.com/120x120" alt="상품이미지"/></a></td>
-              <td>
-                <h3 class="name">상품명</h3>
-                <a href="#" class="desc">상품 설명</a>
-              </td>
-              <td>
-                <ul>
-                  <li><ins class="dis-price">27,000</ins></li>
-                  <li>
-                    <del class="org-price">30,000</del>
-                    <span class="discount">10%</span>
-                  </li>
-                  <li><span class="free-delivery">무료배송</span></li>
-                </ul>
-              </td>
-              <td>
-                <h4 class="seller"><i class="fas fa-home"></i>&nbsp;판매자</h4>
-                <h5 class="badge power great">판매자등급</h5>
-                <h6 class="rating star3">상품평</h6>
-              </td>
-            </tr>
-            <tr>
-              <td><a href="#" class="thumb"><img src="https://via.placeholder.com/120x120" alt="상품이미지"/></a></td>
-              <td>
-                <h3 class="name">상품명</h3>
-                <a href="#" class="desc">상품 설명</a>
-              </td>
-              <td>
-                <ul>
-                  <li><ins class="dis-price">27,000</ins></li>
-                  <li>
-                    <del class="org-price">30,000</del>
-                    <span class="discount">10%</span>
-                  </li>
-                  <li><span class="free-delivery">무료배송</span></li>
-                </ul>
-              </td>
-              <td>
-                <h4 class="seller"><i class="fas fa-home"></i>&nbsp;판매자</h4>
-                <h5 class="badge power great">판매자등급</h5>
-                <h6 class="rating star3">상품평</h6>
-              </td>
-            </tr>
-          </table>
+          <!-- 상품목록 -->
+          <div class="row row-cols-md-2">
+            <div class="card card h-100" style="width: 18rem; margin-right: 10px;">
+              <a th:href="@{#}" class="thumb">
+                <img src="https://via.placeholder.com/120x120" class="card-img-top" style="width: 100%;" alt="상품이미지">
+              </a>
+              <div class="card-body">
+                <a th:href="@{#}" class="thumb">
+                  <h5 class="seller"></h5> <h6></h6>
+                  <p class="card-text"></p>
+                  <p></p>
+                  <ul>
+                    <li><ins class="dis-price"></ins></li>
+                    <li>
+                      <span class="discount"></span>
+                      <del class="org-price"></del>
+                    </li>
+                    <li><span class="free-delivery">무료배송</span></li>
+                  </ul>
+                </a>
+              </div>
+            </div>
+          </div>
 
           <!-- 상품목록 페이지번호 -->
           <div class="paging">

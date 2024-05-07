@@ -62,7 +62,14 @@ public class ProductController {
 
         // 상품 목록 조회
         PageResponseDTO pageResponseDTO = null;
-        pageResponseDTO = productService.productList(pageRequestDTO);
+
+        if (pageRequestDTO.getSearchKeyword() != null) {
+            // 검색 글 목록 조회
+            pageResponseDTO = productService.searchProducts(pageRequestDTO);
+
+        }else {
+            pageResponseDTO = productService.productList(pageRequestDTO);
+        }
 
         model.addAttribute("pageResponseDTO", pageResponseDTO);
 
@@ -110,9 +117,28 @@ public class ProductController {
 
     // search (상품 검색) 페이지 매핑
     @GetMapping("/product/search")
-    public String search(){
+    public String search(Model model,String keyword, PageRequestDTO pageRequestDTO)
+    {
+        PageResponseDTO pageResponseDTO = null;
+
+        if (pageRequestDTO.getSearchKeyword() != null) {
+            // 검색 글 목록 조회
+            pageResponseDTO = productService.searchProducts(pageRequestDTO);
+
+            model.addAttribute("pageResponseDTO", pageResponseDTO);
+            log.info("pageResponseDTO : " + pageResponseDTO);
+        }
+
+        if (keyword != null) {
+            // 키워드가 입력된 경우 로그 출력
+            log.info("keyword : " + keyword);
+        }
+
+        model.addAttribute("keyword", keyword);
+
         return "/product/search";
     }
+
 
     // view (상품 상세 보기) 페이지 매핑
     @GetMapping("/product/view")
