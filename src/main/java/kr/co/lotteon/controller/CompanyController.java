@@ -2,14 +2,18 @@ package kr.co.lotteon.controller;
 
 
 import kr.co.lotteon.dto.admin.ArticleDTO;
+import kr.co.lotteon.dto.company.StoryPageRequestDTO;
+import kr.co.lotteon.dto.company.StoryPageResponseDTO;
 import kr.co.lotteon.service.company.CompanyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
@@ -44,11 +48,21 @@ public class CompanyController {
     }
     // 소식과 이야기 매핑
     @GetMapping(value = { "/company/story"})
-    public String story(Model model, @RequestParam("start") int start, @RequestParam("cate2") String cate2) {
-         List<ArticleDTO> articles = companyService.selectStory(start, cate2);
+    public String story(Model model, StoryPageRequestDTO storyPageRequestDTO) {
+        StoryPageResponseDTO articles = companyService.selectStory(storyPageRequestDTO);
         log.info("컨트롤러 : "+ articles);
          model.addAttribute("articles", articles);
+         model.addAttribute("cate2", storyPageRequestDTO.getCate2());
         return "/company/story";
+    }
+    // 소식과 이야기 더보기
+    @GetMapping(value = { "/company/story/{pg}/{cate2}"})
+    public ResponseEntity<?> story(StoryPageRequestDTO storyPageRequestDTO) {
+        log.info("storyPageRequestDTO 더보기 : " + storyPageRequestDTO);
+        StoryPageResponseDTO articles = companyService.selectStory(storyPageRequestDTO);
+        log.info("더보기 컨트롤러 : "+ articles);
+
+        return ResponseEntity.ok().body(articles.getDtoList());
     }
 }
 

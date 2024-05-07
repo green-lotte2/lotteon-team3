@@ -5,8 +5,7 @@
     <script>
         // 글쓰기 이동
         function btnWrite() {
-            const cate1 = "recruit";
-            location.href = `/lotteon/admin/company/write?cate1=` + cate1;
+            location.href = `/lotteon/admin/company/post`;
 
         }
         // 글삭제
@@ -28,9 +27,9 @@
         }
         // 글 수정
         function btnModify(button){
-            const ano = button.dataset.ano;
+            const rno = button.dataset.rno;
 
-            location.href = `/lotteon/admin/company/modify/${ano}`;
+            location.href = `/lotteon/admin/company/put/${rno}`;
         }
         // 아코디언 상태 변경
         function accordionControl(button){
@@ -69,29 +68,48 @@
         <tr>
             <th scope="col">글번호</th>
             <th scope="col">제목</th>
-            <th scope="col">작성일</th>
+            <th scope="col">직군</th>
+            <th scope="col">경력</th>
+            <th scope="col">고용형태</th>
+            <th scope="col">상태</th>
             <th scope="col">관리</th>
         </tr>
         </thead>
         <tbody>
         <th:block th:each="article, loop : ${pageResponseDTO.dtoList}">
             <tr th:data-bs-target="'panel'+${loop}" onclick="accordionControl(this)">
-                <td th:text="${article.ano}"></td>
+                <td th:text="${article.rno}"></td>
                 <td th:text="${article.title}"></td>
-                <td th:text="${#temporals.format(article.rdate, 'yyyy-MM-dd')}"></td>
+                <td th:text="${article.occupation}"></td>
+                <td th:text="${article.experience}"></td>
                 <td>
-                    <button type="button" class="btn btn-danger" onclick="btnDelete(this)" th:data-ano="${article.ano}">삭제</button>
-                    <button type="button" class="btn btn-secondary" onclick="btnModify(this)" th:data-ano="${article.ano}">수정</button>
+                    <span th:class="${'statusSpan'+article.employment}" th:if="${article.employment == 0}" style="color: #d10e49" th:data-rno="${article.rno}" onclick="changeStatus(this)">정규직</span>
+                    <span th:class="${'statusSpan'+article.employment}" th:if="${article.employment == 1}" style="color: #e36731" th:data-rno="${article.rno}" onclick="changeStatus(this)">계약직</span>
+                    <span th:class="${'statusSpan'+article.employment}" th:if="${article.employment == 2}" style="color: #e8bf18" th:data-rno="${article.rno}" onclick="changeStatus(this)">인턴</span>
+                    <span th:class="${'statusSpan'+article.employment}" th:if="${article.employment == 3}" style="color: #0ca03c" th:data-rno="${article.rno}" onclick="changeStatus(this)">아르바이트</span>
+                    <span th:class="${'statusSpan'+article.employment}" th:if="${article.employment == 4}" style="color: #1e3fe3" th:data-rno="${article.rno}" onclick="changeStatus(this)">프리랜서</span>
+                    <span th:class="${'statusSpan'+article.employment}" th:if="${article.employment == 5}" style="color: #161875" th:data-rno="${article.rno}" onclick="changeStatus(this)">파견직</span>
+                    <span th:class="${'statusSpan'+article.employment}" th:if="${article.employment == 6}" style="color: #bd0df4" th:data-rno="${article.rno}" onclick="changeStatus(this)">일용직</span>
+                    <span th:class="${'statusSpan'+article.employment}" th:if="${article.employment == 7}" style="color: #bd0df4" th:data-rno="${article.rno}" onclick="changeStatus(this)">교육생</span>
+                </td>
+                <td>
+                    <span th:class="${'statusSpan'+article.status}" th:if="${article.status == 0}"  th:data-rno="${article.rno}" onclick="changeStatus(this)">모집 중</span>
+                    <span th:class="${'statusSpan'+article.status}" th:if="${article.status == 1}"  th:data-rno="${article.rno}" onclick="changeStatus(this)">상시 채용</span>
+                    <span th:class="${'statusSpan'+article.status}" th:if="${article.status == 2}"  th:data-rno="${article.rno}" onclick="changeStatus(this)">마감</span>
+                </td>
+                <td>
+                    <button type="button" class="btn btn-danger" onclick="btnDelete(this)" th:data-ano="${article.rno}">삭제</button>
+                    <button type="button" class="btn btn-secondary" onclick="btnModify(this)" th:data-ano="${article.rno}">수정</button>
                 </td>
             </tr>
             <tr>
-                <td colspan="4" style="display: none">
+                <td colspan="7" style="display: none" class="accordion-td">
                     <div th:id="'panel'+${loop}" class="accordion-collapse collapse">
                         <div class="accordion-body">
                             <div>
                                 <div class="cartPrice order-3">
-                                    <p class="productDetail">내용</p>
-                                    <span th:text="${article.content}"></span>
+                                    <p class="recruitDetail">내용</p>
+                                    <span class="recruitSpan" th:text="${article.content}"></span>
                                 </div>
                             </div>
                         </div>
