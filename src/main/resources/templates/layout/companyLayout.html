@@ -7,6 +7,8 @@
     <link rel="shortcut icon" type="image/x-icon" th:href="@{../images/favicon.ico}" />
     <link rel="stylesheet" th:href="@{/css/company.css}">
     <script th:src="@{https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js}"></script>
+    <link th:href="@{https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css}" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script th:src="@{https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js}" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script th:src="@{/company/js/header.js}"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
@@ -19,7 +21,7 @@
             <ul>
                 <li><a th:href="@{/company/index}">HOME</a></li>
                 <li><a th:href="@{/company/culture}">기업문화</a></li>
-                <li><a th:href="@{/company/story(start=0, cate2='all')}">소식과 이야기</a></li>
+                <li><a th:href="@{/company/story(pg=1, cate2='all')}">소식과 이야기</a></li>
                 <li><a th:href="@{/company/recruit}">채용</a></li>
                 <li><a th:href="@{/company/media}">미디어</a></li>
 

@@ -312,26 +312,26 @@
                                     <div th:id="'panel'+${loop}" class="accordion-collapse collapse">
                                         <div class="accordion-body">
                                             <div>
-                                                <div class="details" th:if="${OrderListDTO.optionDTO != null}">
+                                                <div class="details" th:if="${OrderListDTO.opList != null}">
                                                         <p class="productDetail">옵션</p>
-                                                    <div class="optionDiv">
+                                                    <div class="optionDiv" th:each="option : ${OrderListDTO.opList}">
                                                         <ul class="list-group">
                                                             <li class="list-group-item">
                                                                 <span>옵션번호</span>
-                                                                <span th:text="${OrderListDTO.optionDTO.opNo}"></span>
+                                                                <span th:text="${option.opNo}"></span>
                                                             </li>
                                                             <li class="list-group-item">
                                                                 <span>옵션이름</span>
-                                                                <span th:text="${OrderListDTO.optionDTO.opName}"></span>
+                                                                <span th:text="${option.opName}"></span>
                                                             </li>
                                                             <li class="list-group-item">
                                                                 <span>옵션값</span>
-                                                                <span th:text="${OrderListDTO.optionDTO.opValue}"></span>
+                                                                <span th:text="${option.opValue}"></span>
                                                             </li>
                                                         </ul>
                                                     </div>
                                                 </div>
-                                                <div class="details" th:if="${OrderListDTO.optionDTO == null}">
+                                                <div class="details" th:if="${OrderListDTO.opList == null}">
                                                     <p class="productDetail">옵션</p>
                                                     <img th:src="@{/admin/images/Empty-cuate.png}" style="width: auto; height: 200px">
                                                 </div>

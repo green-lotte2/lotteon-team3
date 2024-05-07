@@ -15,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -43,7 +44,6 @@ public class ProductController {
         // 참조
         model.addAttribute("companies", companies);
         model.addAttribute("cartProducts", cartProducts);
-
         log.info("companies: {}", companies);
         log.info("cartProducts: {} ", cartProducts );
 
@@ -97,7 +97,14 @@ public class ProductController {
 
     // order 페이지 매핑
     @GetMapping("/product/order")
-    public String order(){
+    public String order(@RequestParam Map<String, int[]> cartInfo){
+
+        log.info("cartInfo: {}", cartInfo);
+        String uid = cartInfo.keySet().toString();
+        int[] cartNo = cartInfo.get(uid);
+
+        log.info("uid" + uid);
+        log.info("cartNo" + cartNo);
         return "/product/order";
     }
 

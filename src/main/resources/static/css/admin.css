@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap');
 /* 초기화 */
 * {
     margin: 0;
@@ -12,7 +13,10 @@ a {text-decoration: none; color: #111;}
     width: 100%;
     height: auto;
 }
-
+.btnDiv {
+    margin: 10px;
+    float: right;
+}
 /* 헤더영역 */
 header {
     width: 100%;
@@ -2157,7 +2161,7 @@ col {
 }
 
 #company > .companyWrite > .write > article table td {
-    padding: 16px;
+    padding: 10px;
     border-bottom: 1px solid #ccc;
     font-size: 16px;
 }
@@ -2203,4 +2207,18 @@ col {
 }
 #write > article > form > table > tbody > tr:nth-child(4) > td:nth-child(2) > input[type=file]{
     margin-top: 10px;
+}
+/* 회사소개 글목록 */
+.accordion-td {
+    padding: 15px;
+}
+.recruitDetail{
+    color: #0b0a0a;
+    font-family: "Noto Sans KR", sans-serif;
+    font-size: 16px;
+}
+.accordion-body .recruitSpan{
+    color: #333030;
+    font-family: "Noto Sans KR", sans-serif;
+    font-size: 14px;
 }

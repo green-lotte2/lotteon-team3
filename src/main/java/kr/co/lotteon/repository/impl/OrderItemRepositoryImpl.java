@@ -114,17 +114,17 @@ public class OrderItemRepositoryImpl implements OrderItemRepositoryCustom {
         log.info("판매자 주문 현황 조회 Impl 1 : " + pageRequestDTO);
         log.info("판매자 주문 현황 조회 Impl 2 : " + prodNos);
 
-        QueryResults<Tuple> results =  jpaQueryFactory.select(qOrderItem, qOrder, qProduct, qOption)
+        QueryResults<Tuple> results =  jpaQueryFactory.select(qOrderItem, qOrder, qProduct)
                 .from(qOrderItem)
                 .join(qOrder).on(qOrderItem.ordNo.eq(qOrder.ordNo))
                 .join(qProduct).on(qOrderItem.prodNo.eq(qProduct.prodNo))
-                .leftJoin(qOption).on(qOption.opNo.eq(qOrderItem.opNo))
                 .where(qOrderItem.prodNo.in(prodNos))
                 .orderBy(qOrderItem.ordItemno.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetchResults();
-        log.info("판매자 주문 현황 리스트 검색 조회 Impl 3 : " + results);
+
+        log.info("판매자 주문 현황 리스트 조회 Impl 3 : " + results);
         return new PageImpl<>(results.getResults(), pageable, results.getTotal());
     }
     // 판매자 주문 현황 리스트 검색 조회
@@ -161,11 +161,10 @@ public class OrderItemRepositoryImpl implements OrderItemRepositoryCustom {
             log.info("ordStatus 검색 : " + expression);
         }
 
-        QueryResults<Tuple> results =  jpaQueryFactory.select(qOrderItem, qOrder, qProduct, qOption)
+        QueryResults<Tuple> results =  jpaQueryFactory.select(qOrderItem, qOrder, qProduct)
                 .from(qOrderItem)
                 .join(qOrder).on(qOrderItem.ordNo.eq(qOrder.ordNo))
                 .join(qProduct).on(qOrderItem.prodNo.eq(qProduct.prodNo))
-                .leftJoin(qOption).on(qOption.opNo.eq(qOrderItem.opNo))
                 .where(expression)
                 .orderBy(qOrderItem.ordItemno.desc())
                 .offset(pageable.getOffset())
@@ -180,11 +179,10 @@ public class OrderItemRepositoryImpl implements OrderItemRepositoryCustom {
     public Page<Tuple> selectOrderListAll(AdminPageRequestDTO pageRequestDTO, Pageable pageable){
         log.info("관리자 주문 현황 조회 Impl 1 : " + pageRequestDTO);
 
-        QueryResults<Tuple> results =  jpaQueryFactory.select(qOrderItem, qOrder, qProduct, qOption)
+        QueryResults<Tuple> results =  jpaQueryFactory.select(qOrderItem, qOrder, qProduct)
                 .from(qOrderItem)
                 .join(qOrder).on(qOrderItem.ordNo.eq(qOrder.ordNo))
                 .join(qProduct).on(qOrderItem.prodNo.eq(qProduct.prodNo))
-                .leftJoin(qOption).on(qOption.opNo.eq(qOrderItem.opNo))
                 .orderBy(qOrderItem.ordItemno.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -231,11 +229,10 @@ public class OrderItemRepositoryImpl implements OrderItemRepositoryCustom {
             log.info("ordStatus 검색 : " + expression);
         }
 
-        QueryResults<Tuple> results = jpaQueryFactory.select(qOrderItem, qOrder, qProduct, qOption)
+        QueryResults<Tuple> results = jpaQueryFactory.select(qOrderItem, qOrder, qProduct)
                 .from(qOrderItem)
                 .join(qOrder).on(qOrderItem.ordNo.eq(qOrder.ordNo))
                 .join(qProduct).on(qOrderItem.prodNo.eq(qProduct.prodNo))
-                .leftJoin(qOption).on(qOption.opNo.eq(qOrderItem.opNo))
                 .where(expression)
                 .orderBy(qOrderItem.ordItemno.desc())
                 .offset(pageable.getOffset())

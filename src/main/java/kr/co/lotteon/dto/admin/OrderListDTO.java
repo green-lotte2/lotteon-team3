@@ -6,6 +6,8 @@ import kr.co.lotteon.dto.product.OrderItemDTO;
 import kr.co.lotteon.dto.product.ProductDTO;
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -15,5 +17,5 @@ public class OrderListDTO {
     private OrderItemDTO orderItemDTO;
     private OrderDTO orderDTO;
     private ProductDTO productDTO;
-    private OptionDTO optionDTO;
+    private List<OptionDTO> opList;
 }

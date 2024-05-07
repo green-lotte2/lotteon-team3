@@ -3,11 +3,14 @@ package kr.co.lotteon.service.admin;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.querydsl.core.Tuple;
 import kr.co.lotteon.dto.admin.*;
+import kr.co.lotteon.dto.company.RecruitDTO;
+import kr.co.lotteon.dto.company.RecruitPageResponseDTO;
 import kr.co.lotteon.dto.cs.*;
 import kr.co.lotteon.dto.member.MemberDTO;
 import kr.co.lotteon.dto.product.*;
 import kr.co.lotteon.entity.admin.Article;
 import kr.co.lotteon.entity.admin.Banner;
+import kr.co.lotteon.entity.admin.Recruit;
 import kr.co.lotteon.entity.cs.BoardCateEntity;
 import kr.co.lotteon.entity.cs.BoardEntity;
 import kr.co.lotteon.entity.cs.BoardTypeEntity;
@@ -17,6 +20,7 @@ import kr.co.lotteon.entity.product.*;
 import kr.co.lotteon.mapper.ProductMapper;
 import kr.co.lotteon.repository.ArticleRepository;
 import kr.co.lotteon.repository.BannerRepository;
+import kr.co.lotteon.repository.RecruitRepository;
 import kr.co.lotteon.repository.cs.*;
 import kr.co.lotteon.repository.member.MemberRepository;
 import kr.co.lotteon.repository.member.TermsRepository;
@@ -63,6 +67,7 @@ public class AdminService {
     private final CommentRepository commentRepository;
     private final OrderItemRepository orderItemRepository;
     private final ArticleRepository articleRepository;
+    private final RecruitRepository recruitRepository;
 
     private final ProductMapper productMapper;
 
@@ -789,13 +794,7 @@ public class AdminService {
                     OrderItemDTO orderItemDTO   = modelMapper.map(orderItem, OrderItemDTO.class);
                     OrderDTO orderDTO           = modelMapper.map(order, OrderDTO.class);
                     ProductDTO productDTO       = modelMapper.map(product, ProductDTO.class);
-                    if (option != null) {
-                        OptionDTO optionDTO = modelMapper.map(option, OptionDTO.class);
-                        orderListDTO.setOptionDTO(optionDTO);
-                    } else {
-                        // Option이 null인 경우 처리
-                        orderListDTO.setOptionDTO(null);
-                    }
+
                     // DTO들을 OrderListDTO에 포함
                     orderListDTO.setOrderItemDTO(orderItemDTO);
                     orderListDTO.setOrderDTO(orderDTO);
@@ -868,13 +867,28 @@ public class AdminService {
                     OrderItemDTO orderItemDTO   = modelMapper.map(orderItem, OrderItemDTO.class);
                     OrderDTO orderDTO           = modelMapper.map(order, OrderDTO.class);
                     ProductDTO productDTO       = modelMapper.map(product, ProductDTO.class);
-                    if (option != null) {
-                        OptionDTO optionDTO = modelMapper.map(option, OptionDTO.class);
-                        orderListDTO.setOptionDTO(optionDTO);
-                    } else {
-                        // Option이 null인 경우 처리
-                        orderListDTO.setOptionDTO(null);
+
+                    // opNos
+                    String strOpNos = orderItemDTO.getOpNo();
+                    log.info("strOpNos : " + strOpNos);
+
+                    if(strOpNos != null) {
+
+                        // String -> List<Integer>
+                        List<Integer> opNos = Arrays.stream(strOpNos.split(","))
+                                .map(Integer::parseInt)
+                                .collect(Collectors.toList());
+
+                        // optionList 조회
+                        List<OptionDTO> options = optionRepository.selectOptionByOpNos(opNos)
+                                .stream()
+                                .map(entity -> modelMapper.map(entity, OptionDTO.class))
+                                .toList();
+                        log.info("options : "+ options);
+
+                        orderListDTO.setOpList(options);
                     }
+
                     // DTO들을 OrderListDTO에 포함
                     orderListDTO.setOrderItemDTO(orderItemDTO);
                     orderListDTO.setOrderDTO(orderDTO);
@@ -931,6 +945,34 @@ public class AdminService {
                 .total(total)
                 .build();
     }
+    // 관리자 회사 소개 채용 글 목록
+    public RecruitPageResponseDTO selectRecruit(AdminPageRequestDTO adminPageRequestDTO){
+        Pageable pageable = adminPageRequestDTO.getPageable("no");
+        String keyword = adminPageRequestDTO.getKeyword();
+        Page<Recruit> results = null;
+        // 일반 조회일 때
+        if(keyword == null || keyword.equals("") || keyword.equals("all")){
+            results = recruitRepository.selectRecruitForAdmin(adminPageRequestDTO, pageable);
+
+            // 검색 조회일 때
+        }else {
+            results = recruitRepository.searchRecruitForAdmin(adminPageRequestDTO, pageable);
+        }
+
+        List<RecruitDTO> dtoList = results.stream()
+                .map(result -> modelMapper.map(result, RecruitDTO.class))
+                .toList();
+
+        // total 값
+        int total = (int) results.getTotalElements();
+
+        // List<OrderListDTO>와 page 정보 리턴
+        return RecruitPageResponseDTO.builder()
+                .adminPageRequestDTO(adminPageRequestDTO)
+                .dtoList(dtoList)
+                .total(total)
+                .build();
+    }
     // 관리자 회사 소개 글쓰기
     public void insertArticle(MultipartFile thumb336, ArticleDTO articleDTO){
         log.info("회사 소개 글쓰기 Serv 1 : " + thumb336);
@@ -963,6 +1005,11 @@ public class AdminService {
 
         // 상품 정보 DB 저장
         articleRepository.save(article);
+    }
+    // 관리자 회사소개 채용 글쓰기
+    public void recruitPost(RecruitDTO recruitDTO){
+        Recruit recruit = modelMapper.map(recruitDTO, Recruit.class);
+        recruitRepository.save(recruit);
     }
     // 관리자 회사소개 삭제
     public ResponseEntity<?> deleteArticle(int ano){

@@ -594,9 +594,13 @@ public class SellerService {
         // 해당 판매자의 상품번호 전부 조회
         List<Integer> prodNos = productRepository.selectProdNoForQna(sellerId);
         log.info("판매자 주문 현황 Serv 2 : "+prodNos);
+
+
         // order, orderItem, product, option 정보 DB 조회
         Page<Tuple> results = orderItemRepository.selectOrderList(adminPageRequestDTO, pageable, prodNos);
         log.info("판매자 주문 현황 Serv 3 : " + results.getContent().size());
+
+
         List<OrderListDTO> dtoList = results.getContent().stream()
                 .map(tuple -> {
 
@@ -606,20 +610,33 @@ public class SellerService {
                     OrderItem orderItem = tuple.get(0, OrderItem.class);
                     Order order         = tuple.get(1, Order.class);
                     Product product     = tuple.get(2, Product.class);
-                    Option option       = tuple.get(3, Option.class);
 
                     // Entity -> DTO
                     OrderItemDTO orderItemDTO   = modelMapper.map(orderItem, OrderItemDTO.class);
                     OrderDTO orderDTO           = modelMapper.map(order, OrderDTO.class);
                     ProductDTO productDTO       = modelMapper.map(product, ProductDTO.class);
-                    if (option != null) {
-                        OptionDTO optionDTO = modelMapper.map(option, OptionDTO.class);
-                        orderListDTO.setOptionDTO(optionDTO);
-                    } else {
-                        // Option이 null인 경우 처리
-                        // 예: optionDTO를 null로 설정하거나 기본값으로 설정
-                        orderListDTO.setOptionDTO(null);
+
+                    // opNos
+                    String strOpNos = orderItemDTO.getOpNo();
+                    log.info("strOpNos : " + strOpNos);
+
+                    if(strOpNos != null) {
+
+                        // String -> List<Integer>
+                        List<Integer> opNos = Arrays.stream(strOpNos.split(","))
+                                .map(Integer::parseInt)
+                                .collect(Collectors.toList());
+
+                        // optionList 조회
+                        List<OptionDTO> options = optionRepository.selectOptionByOpNos(opNos)
+                                .stream()
+                                .map(entity -> modelMapper.map(entity, OptionDTO.class))
+                                .toList();
+                        log.info("options : "+ options);
+
+                        orderListDTO.setOpList(options);
                     }
+
                     // DTO들을 OrderListDTO에 포함
                     orderListDTO.setOrderItemDTO(orderItemDTO);
                     orderListDTO.setOrderDTO(orderDTO);
@@ -691,19 +708,33 @@ public class SellerService {
                     OrderItem orderItem = tuple.get(0, OrderItem.class);
                     Order order         = tuple.get(1, Order.class);
                     Product product     = tuple.get(2, Product.class);
-                    Option option       = tuple.get(3, Option.class);
 
                     // Entity -> DTO
                     OrderItemDTO orderItemDTO   = modelMapper.map(orderItem, OrderItemDTO.class);
                     OrderDTO orderDTO           = modelMapper.map(order, OrderDTO.class);
                     ProductDTO productDTO       = modelMapper.map(product, ProductDTO.class);
-                    if (option != null) {
-                        OptionDTO optionDTO = modelMapper.map(option, OptionDTO.class);
-                        orderListDTO.setOptionDTO(optionDTO);
-                    } else {
-                        // Option이 null인 경우 처리
-                        orderListDTO.setOptionDTO(null);
+
+                    // opNos
+                    String strOpNos = orderItemDTO.getOpNo();
+                    log.info("strOpNos : " + strOpNos);
+
+                    if(strOpNos != null) {
+
+                        // String -> List<Integer>
+                        List<Integer> opNos = Arrays.stream(strOpNos.split(","))
+                                .map(Integer::parseInt)
+                                .collect(Collectors.toList());
+
+                        // optionList 조회
+                        List<OptionDTO> options = optionRepository.selectOptionByOpNos(opNos)
+                                .stream()
+                                .map(entity -> modelMapper.map(entity, OptionDTO.class))
+                                .toList();
+                        log.info("options : "+ options);
+
+                        orderListDTO.setOpList(options);
                     }
+
                     // DTO들을 OrderListDTO에 포함
                     orderListDTO.setOrderItemDTO(orderItemDTO);
                     orderListDTO.setOrderDTO(orderDTO);
@@ -725,7 +756,7 @@ public class SellerService {
                 .total(total)
                 .build();
     }
-
+    // 판매자 주문 현황 옵션 조회
     // 판매자 주문 상태 변경
     public ResponseEntity<?> modifyOrdStatus(int ordItemno, String ordStatus){
         log.info("주문 상태 변경 Serv 1: " + ordItemno);

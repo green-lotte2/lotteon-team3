@@ -5,13 +5,10 @@ import kr.co.lotteon.service.product.CartService;
 import kr.co.lotteon.service.product.OptionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -47,4 +44,12 @@ public class CartController {
         cartService.deleteCart(cartNoArray);
         return ResponseEntity.ok().body(cartNoData);
     }
+
+    @ResponseBody
+    @PutMapping("/cart/count")
+    public void countCart(@RequestBody CartDTO cartDTO){
+        log.info("카트 수량 변경" + cartDTO);
+        cartService.updateCartCount(cartDTO);
+    }
+
 }

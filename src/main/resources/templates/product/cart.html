@@ -11,7 +11,6 @@
             <!-- 장바구니 페이지 시작 -->
             <section class="cart" layout:fragment="content">
               <script>
-
                 document.addEventListener('DOMContentLoaded', function() {
                   // 모든 아코디언 버튼 요소 가져오기
                   var accordionButtons = document.querySelectorAll('.accordion-button');
@@ -69,7 +68,7 @@
                     // 수량을 숫자로 파싱
                     let intValue = parseInt(value);
 
-                    orgPriceElement.innerText = numberWithCommas(orgPrice*value);
+                    orgPriceElement.innerText = numberWithCommas(orgPrice*value)+'원';
 
 
                     // 수량 증가 버튼
@@ -78,6 +77,26 @@
                       const checkboxes = document.querySelectorAll('.checkbox');
 
                       intValue += 1
+                      const cartNo = inbutton.target.closest('.cartProduct').querySelector('.checkbox').value;
+                      console.log(cartNo);
+                      console.log(intValue);
+                      const jsonData = {
+                        cartNo :cartNo,
+                        count: intValue
+                      };
+                      fetch('/lotteon/cart/count',{
+                        method:'PUT',
+                        headers:{"Content-type":"application/json"},
+                        body: JSON.stringify(jsonData)
+                      })
+                              .then(response => response.json())
+                              .then(data =>{
+                                console.log(data);
+                              })
+                              .catch((err)=>{
+                                console.log(err)});
+
+
                       inputs.value = intValue;
                       // 총 가격 계산
                       const totalPrice = price * intValue;
@@ -93,6 +112,20 @@
                       checkboxes.forEach(checked=>{
                         if(checked.checked){
 
+                          // 토탈 수량
+                          const cartCount = document.getElementById('prodCount');
+                          let cartTotalCount = 0;
+
+                          document.querySelectorAll('.count .number').forEach(count=> {
+                            if (count.closest('.cartProduct').querySelector('.checkbox').checked) {
+                              let value = parseInt(count.value);
+                              cartTotalCount += value;
+
+                              cartCount.innerHTML = "";
+                              cartCount.textContent = cartTotalCount;
+                            }
+                          });
+                          // 토탈가격
                           const cartTotal = document.getElementById('prodTotalPrice');
                           let cartTotalValue = 0;
 
@@ -119,7 +152,6 @@
                             let int = parseInt(noComma);
 
                             orgTotal += int;
-                            console.log(orgTotal);
                           }
 
                         });
@@ -154,20 +186,54 @@
                         intValue=1;
                       }
 
+                      const cartNo = debutton.target.closest('.cartProduct').querySelector('.checkbox').value;
+                      console.log(cartNo);
+                      console.log(intValue);
+                      const jsonData = {
+                        cartNo :cartNo,
+                        count: intValue
+                      };
+                      fetch('/lotteon/cart/count',{
+                        method:'PUT',
+                        headers:{"Content-type":"application/json"},
+                        body: JSON.stringify(jsonData)
+                      })
+                              .then(response => response.json())
+                              .then(data =>{
+                                console.log(data);
+                              })
+                              .catch((err)=>{
+                                console.log(err)});
                       inputs.value = intValue;
+
                       // 총 가격 계산
                       const totalPrice = price * intValue;
                       const totalorgPrice = orgPrice*intValue;
 
                       orgPriceElement.innerHTML = "";
                       orgPriceElement.innerText = numberWithCommas(totalorgPrice);
-                      console.log('감소버튼'+price);
                       // 총 가격을 화면에 업데이트
                       priceElement.innerText = numberWithCommas(totalPrice);
 
                       // 토탈 메뉴
                       checkboxes.forEach(checked=>{
                         if(checked.checked){
+                          // 토탈 수량
+                          const cartCount = document.getElementById('prodCount');
+                          let cartTotalCount = 0;
+
+                          document.querySelectorAll('.count .number').forEach(count=>{
+                            if (count.closest('.cartProduct').querySelector('.checkbox').checked) {
+                              let value = parseInt(count.value);
+                              cartTotalCount +=value;
+
+                              cartCount.innerHTML = "";
+                              cartCount.textContent = cartTotalCount;
+                            }
+
+
+                          });
+
                           const cartTotal = document.getElementById('prodTotalPrice');
                           let cartTotalValue = 0;
 
@@ -196,7 +262,6 @@
                               let int = parseInt(noComma);
 
                               orgTotal += int;
-                              console.log(orgTotal);
                             }
 
                           });
@@ -216,6 +281,8 @@
                             }
                           });
                         }
+
+
                       });
 
                     });
@@ -242,7 +309,13 @@
                       updateTotal();
                       updateCount();
                       updateOrgPrice();
-                      updateDiscount()
+                      updateDiscount();
+                      updatePoint();
+                      updateFooterOrg();
+                      updateFooterTotal();
+                      updateFooterDiscount();
+                      updateFooterDel()
+                      updateDelivery()
                   });
 
                   // 회사별로 전체 선택
@@ -259,7 +332,13 @@
                       updateTotal();
                       updateCount();
                       updateOrgPrice();
-                      updateDiscount()
+                      updateDiscount();
+                      updatePoint();
+                      updateFooterOrg();
+                      updateFooterTotal();
+                      updateFooterDiscount();
+                      updateFooterDel();
+                      updateDelivery();
                     });
                   });
 
@@ -313,9 +392,11 @@
                   const cartOrg = document.getElementById('prodOrgPrice');
                   // 수량
                   const cartCount = document.getElementById('prodCount');
-
+                  // 배송비
                   const cartDel = document.getElementById('prodDelivery');
+                  // 포인트
                   const cartPoi = document.getElementById('prodPoint');
+                  // 전체 주문금액
                   const cartTotal = document.getElementById('prodTotalPrice');
 
                   var totalPrice = 0;
@@ -346,13 +427,14 @@
 
                  // 전체 수량 가져오기
                  function updateCount(){
+                   totalPrice = 0;
                    var checkedBoxes = document.querySelectorAll('.checkbox:checked');
 
                    checkedBoxes.forEach(function (checkbox){
-                     let count = checkedBoxes.length;
-                     let int = parseInt(count);
+                    let prodCount = parseInt(checkbox.closest('.cartProduct').querySelector('.count .number').value);
+                     totalPrice += prodCount;
                      cartCount.innerHTML = "";
-                     cartCount.textContent = int;
+                     cartCount.textContent = totalPrice;
                    })
                    if (checkedBoxes.length === 0){
 
@@ -368,7 +450,6 @@
 
                     checkedBoxes.forEach(function (checkbox) {
                       let orgPrice = parseInt(checkbox.closest('.cartProduct').querySelector('.originalPrice').innerText.replace(/,/g, ''));
-                      console.log(orgPrice);
                       totalPrice +=orgPrice;
                       cartOrg.innerHTML = "";
                       cartOrg.textContent += numberWithCommas(totalPrice)+'원';
@@ -401,7 +482,178 @@
                       cartDis.innerHTML = "";
                       cartDis.textContent = 0;
                     }
+                  }
 
+                  // 전체 포인트 가져오기
+                  function updatePoint(){
+
+                    var checkedBoxes = document.querySelectorAll('.checkbox:checked');
+                    checkedBoxes.forEach(function (checkbox) {
+                      let prodTotal = parseInt(document.getElementById('prodTotalPrice').innerText.replace(/,/g, '').split('원')[0]);
+                      let int = parseInt(prodTotal*0.01);
+                      cartPoi.innerHTML = "";
+                      cartPoi.textContent = numberWithCommas(int);
+
+                    });
+                    if (checkedBoxes.length === 0) {
+
+                      cartPoi.innerHTML = "";
+                      cartPoi.textContent = 0;
+                    }
+                  }
+                 // 배송비 가져오기
+                 function updateDelivery(){
+                   var checkedBoxes = document.querySelectorAll('.checkbox:checked');
+                   var company;
+                   var num;
+                   checkedBoxes.forEach(function (checkbox) {
+                     company = checkbox.getAttribute('data-company');
+                     num = checkbox.getAttribute('data-num');
+
+                     // 해당하는 회사의 푸터
+                     var footer = document.querySelector('#cartTotalPrice'+company);
+                     // 해당하는 회사의 배송비
+                     var footerDelivery = parseInt(footer.querySelector('.deliverySpan').innerText.match(/\d+/));
+
+                     cartDel.innerHTML = "";
+                     cartDel.textContent = numberWithCommas(footerDelivery);
+
+                   });
+                   if (checkedBoxes.length === 0) {
+
+                     cartDel.innerHTML = "";
+                     cartDel.textContent = 0;
+                   }
+                 }
+                 // 회사별 푸터 원가격
+                 function updateFooterOrg(){
+                   var totalOrg = 0;
+                   var checkedBoxes = document.querySelectorAll('.checkbox:checked');
+                   var company;
+                   var num;
+
+                   checkedBoxes.forEach(function (checkbox) {
+                     company = checkbox.getAttribute('data-company');
+                     num = checkbox.getAttribute('data-num');
+                     // 해당하는 회사의 푸터
+                     var footer = document.querySelector('#cartTotalPrice'+company);
+                     // 해당하는 회사의 푸터 원가격
+                     var footerOrg = footer.querySelector('.point');
+
+                     // 체크된, 해당하는 회사
+                     const priceInfo = document.querySelector('#cartPrice'+company+num);
+                     // 원 가격
+                     const checkedOrg = parseInt(priceInfo.querySelector('.originalPrice span').innerText.replace(/,/g, '').split('원')[0]);
+                     totalOrg +=checkedOrg;
+
+                     // 체크된 원가격 표시하기
+                     footerOrg.innerHTML = "";
+                     footerOrg.textContent = numberWithCommas(totalOrg)+'원';
+
+                   });
+
+                   // 해당하는 회사의 푸터
+                   var footer = document.querySelector('#cartTotalPrice'+company);
+                   // 해당하는 회사의 푸터 원가격
+                   var footerOrg = footer.querySelector('.point');
+
+                   if (checkedBoxes.length === 0) {
+                     footerOrg.innerHTML = "";
+                     footerOrg.textContent = 0+'원';
+                   }
+                 }
+
+                  // 회사별 푸터 총가격
+                  function updateFooterTotal(){
+                    var totalOrg = 0;
+                    var checkedBoxes = document.querySelectorAll('.checkbox:checked');
+                    var company;
+                    var num;
+
+                    checkedBoxes.forEach(function (checkbox) {
+                      company = checkbox.getAttribute('data-company');
+                      num = checkbox.getAttribute('data-num');
+                      // 해당하는 회사의 푸터
+                      var footer = document.querySelector('#cartTotalPrice'+company);
+                      // 해당하는 회사의 푸터 할인 후 가격
+                      var footerTotal = footer.querySelector('.totalPriceSpan');
+                      // 해당하는 회사의 배송비
+                      var footerDelivery = parseInt(footer.querySelector('.deliverySpan').innerText.match(/\d+/));
+
+                      // 체크된, 해당하는 회사
+                      const priceInfo = document.querySelector('#cartPrice'+company+num);
+                      // 원 가격
+                      const checkedOrg = parseInt(priceInfo.querySelector('.currentPrice strong').innerText.replace(/,/g, '').split('원')[0]);
+                      totalOrg +=checkedOrg+footerDelivery;
+                      // 체크된 원가격 표시하기
+                      footerTotal.innerHTML = "";
+                      footerTotal.textContent = numberWithCommas(totalOrg)+'원';
+                    });
+                  }
+
+                  // 회사별 푸터 할인가격
+                  function updateFooterDiscount(){
+                    var totalOrg = 0;
+                    var checkedBoxes = document.querySelectorAll('.checkbox:checked');
+                    var company;
+                    var num;
+
+                    checkedBoxes.forEach(function (checkbox) {
+                      company = checkbox.getAttribute('data-company');
+                      num = checkbox.getAttribute('data-num');
+                      // 해당하는 회사의 푸터
+                      var footer = document.querySelector('#cartTotalPrice'+company);
+                      // 해당하는 회사의 푸터 할인가격
+                      var footerDiscount = footer.querySelector('.discountSpan');
+
+                      // 해당하는 회사의 푸터 할인 후 가격
+                      var footerTotal = parseInt(footer.querySelector('.totalPriceSpan').innerText.replace(/,/g, '').split('원')[0]);
+
+                      // 해당하는 회사의 푸터 원가격
+                      var footerOrg = parseInt(footer.querySelector('.point').innerText.replace(/,/g, '').split('원')[0]);
+
+                      totalOrg =(footerOrg - footerTotal);
+
+                      // 체크된 원가격 표시하기
+                      footerDiscount.innerHTML = "";
+                      footerDiscount.textContent = '할인'+numberWithCommas(totalOrg)+'원';
+                    });
+                  }
+
+                  // 회사별 푸터 배송비
+                  function updateFooterDel(){
+                    var checkedBoxes = document.querySelectorAll('.checkbox:checked');
+                    var company;
+                    var num;
+
+                    checkedBoxes.forEach(function (checkbox) {
+                      company = checkbox.getAttribute('data-company');
+                      num = checkbox.getAttribute('data-num');
+                      // 해당하는 회사의 푸터
+                      var footer = document.querySelector('#cartTotalPrice'+company);
+                      // 해당하는 회사의 푸터 할인가격
+                      var footerDelivery = footer.querySelector('.deliverySpan');
+
+
+                      // 체크된, 해당하는 회사
+                      const priceInfo = document.querySelector('#cartPrice'+company+num);
+                      // 해당하는 상품의 할인후 가격
+                      const checkedPrice = parseInt(priceInfo.querySelector('.currentPrice strong').innerText.replace(/,/g, '').split('원')[0]);
+
+                      if(checkedPrice>=30000){
+                        // 체크된 원가격 표시하기
+                        footerDelivery.innerHTML = "";
+                        footerDelivery.textContent = '+ '+'배송비'+ 0 +'원';
+
+                      }else if(checkedPrice<30000){
+                        var delPrice = parseInt(document.querySelector('.delivery'+company).value);
+                        // 체크된 원가격 표시하기
+                        footerDelivery.innerHTML = "";
+                        footerDelivery.textContent = '+ ' + '배송비'+ delPrice +'원';
+
+                      }
+
+                    });
                   }
 
                  // 체크박스 개별 선택시 가격 변경
@@ -411,11 +663,52 @@
                       updateTotal();
                       updateOrgPrice();
                       updateDiscount();
+                      updatePoint();
+                      updateFooterOrg();
+                      updateFooterDel();
+                      updateFooterTotal();
+                      updateFooterDiscount();
+                      updateDelivery()
                     });
                   });
 
+                  // 주문하기
+                  const btnOrder = document.getElementById('btnOrder');
+                  btnOrder.onclick = (e) => {
+                    e.preventDefault();
 
+                    if(document.getElementById('prodCount').innerText === "0"){
+                      alert('주문 할 상품을 선택해주세요.');
+                    }else{
+                      let cartNoArray = [];
+                      var stringCartNo;
+                      var checkedBoxes = document.querySelectorAll('.checkbox:checked');
+                      checkedBoxes.forEach(function (checkbox) {
+                        cartNoArray.push(checkbox.value);
+
+                      });
+                      var stringValue = cartNoArray.join(',');
+
+                      const uid = document.getElementById('userForDirect').value;
+                      console.log(uid);
+
+                     fetch(`/lotteon/product/order?uid=${uid},cartNo=${stringValue}`)
+                      .then(response=>response.json())
+                      .then(data=> {
+                        if(data != null){
+                          console.log(data);
+                        }
+                      })
+                      .catch(
+                      (err)=>{console.log(err)});
+                    }
+                  }
                 }
+                // 최상단 이동 (topButton) 함수 //
+                function movePageTop() {
+                  window.scrollTo(0, 0);
+                }
+
               </script>
               <!-- 제목, 페이지 네비게이션 -->
               <nav>
@@ -441,18 +734,21 @@
                 <div th:each="company, iterStat : ${companies}" class="accordion" id="accordionPanelsStayOpenExample">
                   <div class="accordion-item">
                     <h2 class="accordion-header">
-                      <button th:id="'accordionButton'+${iterStat.index}" class="accordion-button" type="button" data-bs-toggle="collapse" th:data-bs-target="'panelsStayOpen-collapse'+${iterStat.index}" aria-expanded="true" th:aria-controls="'panelsStayOpen-collapse'+${iterStat.index}">
+                      <button th:id="'accordionButton'+${iterStat.index}" class="accordion-button" type="button" data-bs-toggle="collapse"
+                              th:data-iter="${iterStat.index}" th:data-bs-target="'panelsStayOpen-collapse'+${iterStat.index}" aria-expanded="true" th:aria-controls="'panelsStayOpen-collapse'+${iterStat.index}">
                         <input type="checkbox" class="checkCom" th:data-company="${company}" value="0">
                         [[${company}]]
                       </button>
                     </h2>
                     <!-- 내용 -->
-                    <div th:id="'panelsStayOpen-collapse'+${iterStat.index}" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingOne">
+                    <div th:id="'panelsStayOpen-collapse'+${iterStat.index}"
+                         th:data-iter="${iterStat.index}" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingOne">
                       <th:block th:each="cartProduct, loop:${cartProducts}" >
-                      <div th:if="${company == cartProduct.company}" class="accordion-body">
+                      <div th:if="${company == cartProduct.company}" th:data-company="${company}" class="accordion-body">
+                        <input type="hidden" th:class="'delivery'+${company}" th:value="${cartProduct.delivery}"/>
                         <div class="cartProduct">
                           <label>
-                            <input type="checkbox" class="checkbox" th:data-company="${company}" data-status="0" th:value="${cartProduct.cartNo}">
+                            <input type="checkbox" th:id="'checkbox'+${company}" class="checkbox" th:data-company="${company}" th:data-num="${cartProduct.cartNo}" th:value="${cartProduct.cartNo}">
                           </label>
                           <a th:href="@{#}">
                             <img th:src="@{|/prodImg/${cartProduct.thumb3}|}" style="width: 80px; height: auto;" alt="상품이미지">
@@ -462,7 +758,7 @@
                             <a th:href="@{#}">
                               <p class="productDetail">[[${cartProduct.prodName}]]</p>
                             </a>
-                            <div class="optionDiv">옵션 밸류</div>
+                            <div class="optionDiv">[[${cartProduct.opNo}]]</div>
                             <p class="productDeliveryInfo"> 4/30(화) 이내 도착 </p>
                           </div>
 
@@ -473,12 +769,12 @@
                           </p>
 
                           <div class="count">
-                            <button th:class="'decrease'" th:data-aaa="'btn'+ ${loop.index}">-</button>
+                            <button th:class="'decrease'">-</button>
                             <input type="text" class="number" name="num" th:value="${cartProduct.count}"/>
                             <button class="increase">+</button>
                           </div>
 
-                          <div class="cartPrice order-3">
+                          <div class="cartPrice order-3" th:id="'cartPrice'+${company}+${cartProduct.cartNo}">
                             <p class="originalPrice"><span data-v-15ea7d62="">[[${cartProduct.price}]]원</span></p>
                             <span class="discount">[[${cartProduct.discount}]]%</span>
                             <p class="currentPrice" style="">
@@ -489,13 +785,12 @@
                       </div>
                       </th:block>
                     </div>
-                    <div class="cartFooter">
+                    <div class="cartFooter" th:data-company="${company}" th:id="'cartTotalPrice'+${company}">
                       <p>
-                      <span class="point">431,000원</span>
-                        <span class="deliverySpan">+ 배송비 0원<span> - <span class="discountSpan">할인 86,330원</span>
+                      <span class="point">0</span>
+                        <span class="deliverySpan">+ 배송비 0원</span> - <span class="discountSpan">할인 0원</span>
                       <span > = </span>
-                      <span> <strong class="totalPriceSpan">344,670원 </strong> </span>
-                      </span>
+                      <span> <strong class="totalPriceSpan"></strong> </span>
                     </div>
                   </div>
                 </div>
@@ -521,15 +816,18 @@
                       <td id="prodDelivery">0</td>
                     </tr>              
                     <tr>
-                      <td id="prodPoint">포인트</td>
-                      <td>0</td>
+                      <td>포인트</td>
+                      <td id="prodPoint">0</td>
                     </tr>
                     <tr>
                       <td>전체주문금액</td>
                       <td id="prodTotalPrice">0원</td>
                     </tr>
                   </table>
-                  <input type="submit" name="" value="주문하기">    
+                  <form id="buyForm" th:action="@{/product/order}" method="POST">
+                    <input type="submit" id="btnOrder" value="주문하기">
+                    <input type="hidden" name="user" id="userForDirect" th:value="${#authentication.principal.member.uid}">
+                  </form>
                 </div>
 
               </form>

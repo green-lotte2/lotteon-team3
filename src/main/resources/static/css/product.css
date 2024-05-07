@@ -146,14 +146,14 @@
 .accordion-body .count {
     margin-left: 50px;
     margin-right: 10px;
-
     position: relative;
-    width: 100px;
+    width: 150px;
     height: 80px;
 }
 
 .accordion-body .count > button {
     position: absolute;
+    flex: none;
     width: 21px;
     height: 21px;
     background-image: url('../product/images/ico_sprites.png');
@@ -234,12 +234,12 @@
 .cartFooter{
     display: -webkit-box;
     display: -ms-flexbox;
-    display: flex;
+    //display: flex;
     height: 48px;
     padding: 0 20px;
     font-size: 13px;
     line-height: 48px;
-    letter-spacing: .2px;
+    letter-spacing: 1px;
     color: #757575;
     border-top: 1px solid #eee;
     background-color: #f9f9f9;

@@ -1,15 +1,12 @@
 package kr.co.lotteon.repository.impl;
 
 import com.querydsl.core.QueryResults;
-import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.co.lotteon.dto.admin.AdminPageRequestDTO;
+import kr.co.lotteon.dto.company.StoryPageRequestDTO;
 import kr.co.lotteon.entity.admin.Article;
-import kr.co.lotteon.entity.admin.Banner;
 import kr.co.lotteon.entity.admin.QArticle;
-import kr.co.lotteon.entity.admin.QBanner;
 import kr.co.lotteon.repository.custom.ArticleRepositoryCustom;
-import kr.co.lotteon.repository.custom.BannerRepositoryCustom;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -65,29 +62,34 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
 
     // 회사소개 - 소식과 이야기 (9개) 리스트
     @Override
-    public List<Article> selectStorys(int start){
-        log.info("소식과 이야기 (9개) 리스트 Impl start : " + start);
+    public Page<Article> selectStories(StoryPageRequestDTO storyPageRequestDTO, Pageable pageable){
+        log.info("소식과 이야기 (9개) 리스트 Impl : " + storyPageRequestDTO);
         List<Article> results = jpaQueryFactory.selectFrom(qArticle)
                 .where(qArticle.cate1.eq("story"))
                 .orderBy(qArticle.ano.desc())
-                .offset(start)
-                .limit(9)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .fetch();
 
         log.info("소식과 이야기 (9개) 리스트 Impl results : " + results);
-        return results;
+        long total = jpaQueryFactory.selectFrom(qArticle).where(qArticle.cate1.eq("story")).fetchCount();
+        // 페이지 처리용 page 객체 리턴
+        return new PageImpl<>(results, pageable, total);
     }
+
     // 회사소개 - 소식과 이야기 (9개) 리스트 검색
     @Override
-    public List<Article> searchStorys(int start, String cate2){
+    public Page<Article> searchStories(StoryPageRequestDTO storyPageRequestDTO, Pageable pageable){
 
         List<Article> results = jpaQueryFactory.selectFrom(qArticle)
-                .where(qArticle.cate1.eq("story").and(qArticle.cate2.eq(cate2)))
+                .where(qArticle.cate1.eq("story").and(qArticle.cate2.eq(storyPageRequestDTO.getCate2())))
                 .orderBy(qArticle.ano.desc())
-                .offset(start)
-                .limit(9)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .fetch();
 
-        return results;
+        long total = jpaQueryFactory.selectFrom(qArticle).where(qArticle.cate1.eq("story").and(qArticle.cate2.eq(storyPageRequestDTO.getCate2()))).fetchCount();
+        // 페이지 처리용 page 객체 리턴
+        return new PageImpl<>(results, pageable, total);
     }
 }
