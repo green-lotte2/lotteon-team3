@@ -2,6 +2,60 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{/layout/companyLayout}">
 <main id="story" layout:fragment="content">
+    <script>
+        let pg = 1;
+        const lastPg = [[${articles.last}]];
+        // 더보기
+        function moreView(button){
+            const buttonDiv = document.getElementById('buttonDiv');
+            const storyList = document.getElementById('storyList');
+            const spanMoreView = button.querySelector('.spanMoreView');
+            const spinner = button.querySelector('.spinner-border');
+            const cate2 = button.dataset.cate2;
+            console.log("cate2 : "+ cate2);
+
+            // 스피너 공개 + 글자 숨기기
+            spinner.style.visibility = 'visible';
+            spanMoreView.style.visibility = 'hidden';
+
+            setTimeout(async () => {
+            pg ++;
+
+            if(lastPg == pg){
+                button.style.display = 'none';
+            }
+            // 게시글 불러오기
+            await fetch(`/lotteon/company/story/${pg}/${cate2}`)
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    }else {
+                        return  null;
+                    }})
+                .then(data => {
+                    if (data.length > 0) {
+                        for (const article of data) {
+                            const artCard = `<div class="card">
+                                            <img src="/lotteon/prodImg/${article.thumb}"
+                                                 class="thumb" style="height: 237px">
+                                            <div class="card-body" style="height: 150px;">
+                                                <p class="card-text card-title">${article.title}</p>
+                                                <p>${article.content}</p>
+                                            </div>
+                                            </div>`;
+                            storyList.insertAdjacentHTML('beforeend', artCard);
+                        }
+                    }
+
+                    // 스피너 숨기기 + 글자 공개
+                    spinner.style.visibility = 'hidden';
+                    spanMoreView.style.visibility = 'visible';
+                })
+                .catch(err=>console.log(err));
+            }, 1500);
+
+        }
+    </script>
     <div class="cover">
         <div>
             <h1>롯데ON을 더 알고 싶다면!</h1>
@@ -18,43 +72,47 @@
                 <div class="collapse navbar-collapse" id="navbarNavDropdown">
                     <ul class="navbar-nav">
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="#">전체보기</a>
+                            <a th:class="${cate2 == 'all'} ? 'nav-link active' : 'nav-link'" th:href="@{/company/story(cate2='all')}">전체보기</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">기업문화</a>
+                            <a th:class="${cate2 == 'culture'} ? 'nav-link active' : 'nav-link'" th:href="@{/company/story(cate2='culture')}">기업문화</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">인터뷰</a>
+                            <a th:class="${cate2 == 'interview'} ? 'nav-link active' : 'nav-link'" th:href="@{/company/story(cate2='interview')}">인터뷰</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">채용</a>
+                            <a th:class="${cate2 == 'recruit'} ? 'nav-link active' : 'nav-link'" th:href="@{/company/story(cate2='recruit')}">채용</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">롯데ON</a>
+                            <a th:class="${cate2 == 'lotteON'} ? 'nav-link active' : 'nav-link'" th:href="@{/company/story(cate2='lotteON')}">롯데ON</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">보도자료</a>
+                            <a th:class="${cate2 == 'pressRelease'} ? 'nav-link active' : 'nav-link'" th:href="@{/company/story(cate2='pressRelease')}">보도자료</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">ESG</a>
+                            <a th:class="${cate2 == 'esg'} ? 'nav-link active' : 'nav-link'" th:href="@{/company/story(cate2='esg')}">ESG</a>
                         </li>
                     </ul>
                 </div>
             </div>
         </nav>
         <!-- 스토리 리스트 출력 -->
-        <div class="cards">
-            <div class="card" th:each="article :${articles}">
+        <div class="cards" id="storyList">
+            <div class="card" th:each="article :${articles.dtoList}">
                 <img th:src="@{'/prodImg/'+${article.thumb}}"
                      class="thumb" style="height: 237px">
                 <div class="card-body" style="height: 150px;">
-                    <p class="card-text">[[${article.title}]]</p>
-                    <p>[[${article.content}]]</p>
+                    <p class="card-text card-title"> [[${article.title}]]</p>
+                    <p class="card-sub">[[${article.content}]]</p>
                 </div>
             </div>
         </div>
-        <div id="buttonDiv">
-            <span class="btnMoreView">콘텐츠 더보기 + </span>
+        <div id="buttonDiv" role="status" th:if="${articles.last != 1}">
+
+            <span class="btnMoreView" onclick="moreView(this)" th:data-cate2="${cate2}">
+                <span class="spanMoreView">콘텐츠 더보기 + </span>
+                <span class="spinner-border spinner-border" aria-hidden="true" style="visibility: hidden"></span>
+            </span>
         </div>
     </section>
 </main>

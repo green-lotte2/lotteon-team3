@@ -1,0 +1,50 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/myLayout}">
+<main id="myLayout" layout:fragment="content">
+    <script th:src="@{/js/changeInfo.js}"></script>
+    <script th:src="@{/js/myInfo.js}"></script>
+    <div id="my">
+        <div class="infoAccessCheck">
+            <ul>
+                <span class="menu_else"></span>
+                <li><a th:href="@{/my/order(uid=${#authentication.principal.member.uid})}">전체주문내역</a></li>
+                <!--<li><a href="./favorite.html">관심상품</a></li>-->
+                <li><a th:href="@{/my/point(uid=${#authentication.principal.member.uid})}">포인트내역</a></li>
+                <li><a th:href="@{/my/coupon(uid=${#authentication.principal.member.uid})}">쿠폰</a></li>
+                <li><a th:href="@{/my/review(uid=${#authentication.principal.member.uid})}">나의리뷰</a></li>
+                <li><a th:href="@{/my/qna(uid=${#authentication.principal.member.uid})}">문의하기</a></li>
+                <li class="on"><a th:href="@{/my/infoAccessCheck(uid=${#authentication.principal.member.uid})}">나의설정</a></li>            </ul>
+
+            <section>
+                <article> <a th:href="@{#}"><img th:src="@{/my/images/my_banner1.jpg}" alt="패션, 타운 하나로 끝" class="banner"></a>
+                    <h3>비밀번호 재확인</h3>
+                        <form id="formFindPassChange" th:action="@{#}" method="POST">
+                            <input type="hidden" name="uid" th:value="${#authentication.principal.member.uid}"/>
+                            <table>
+                                <tr>
+                                    <th>아이디</th>
+                                    <td>[[${#authentication.principal.member.uid}]]</td>
+                                </tr>
+                                <tr>
+                                    <th><span class="essential">*</span>비밀번호</th>
+                                    <td>
+                                        <input type="password" name="pass1" placeholder="비밀번호 입력"/>
+                                    </td>
+                                </tr>
+                            </table>
+                            <p>
+                                롯데온은 회원님의 개인정보를 신중히 다루며, 회원님의 동의 없이 회원정보를 공개하지 않습니다.<br>
+                                회원님의 개인정보를 안전하게 보호하기 위해 비밀번호를 다시 한 번 입력해주세요.
+                            </p>
+                            <div class="btnArea">
+                                <a th:href="@{/my/}" class="btnAreaCancel">취소</a>
+                                <a th:href="@{/my/info(uid=${#authentication.principal.member.uid})}" class="btnPassCheck">다음</a>
+                            </div>
+                        </form>
+                </article>
+            </section>
+        </div>
+    </div>
+</main>
+</html>

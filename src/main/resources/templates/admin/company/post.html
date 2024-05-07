@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/adminListLayout}">
+<section id="company" layout:fragment="content">
+  <script>
+    // 폼 전송
+    function btnWrite(){
+      const writeForm = document.getElementById('writeForm');
+      writeForm.submit();
+    }
+    // 취소
+    function btnCancel(){
+      location.href = `/lotteon/admin/company/recruit`;
+    }
+    document.addEventListener("DOMContentLoaded", function() {
+      var writeForm = document.getElementById('writeForm');
+
+      writeForm.addEventListener('submit', function(event) {
+        // 글 등록 후 알림 창 표시
+        alert('글이 성공적으로 등록되었습니다.');
+
+        // 이벤트 기본 동작 중단하지 않고 폼 제출
+        writeForm.submit();
+      });
+    });
+  </script>
+  <div class="companyWrite">
+    <section class="write">
+      <article>
+        <form id="writeForm" th:action="@{/admin/company/post}" method="POST">
+          <table>
+            <tr>
+              <td>제목</td>
+              <td>
+                <input type="text" name="title" placeholder="제목을 입력하세요."/>
+              </td>
+            </tr>
+            <tr>
+              <td>직군</td>
+              <td>
+                <input type="text" name="occupation"/>
+              </td>
+            </tr>
+            <tr>
+              <td>경력</td>
+              <td>
+                <input type="text" name="experience"/>
+              </td>
+            </tr>
+            <tr>
+              <td>고용형태</td>
+              <td>
+                <select name="employment" id="employment" class="form-select" required>
+                  <option value="0">정규직</option>
+                  <option value="1">계약직</option>
+                  <option value="2">인턴</option>
+                  <option value="3">아르바이트</option>
+                  <option value="4">프리랜서</option>
+                  <option value="5">파견직</option>
+                  <option value="6">일용직</option>
+                  <option value="7">교육생</option>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td>내용</td>
+              <td>
+                <textarea name="content" placeholder="내용을 입력하세요."></textarea>
+              </td>
+            </tr>
+          </table>
+          <div class="btnDiv">
+            <button type="button" class="btn btn-secondary" onclick="btnWrite()">글쓰기</button>
+            <button type="button" class="btn btn-secondary" onclick="btnCancel()">취소</button>
+          </div>
+        </form>
+      </article>
+    </section>
+  </div>
+</section>

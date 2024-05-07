@@ -11,13 +11,10 @@ import kr.co.lotteon.dto.member.CouponDTO;
 import kr.co.lotteon.dto.member.MemberDTO;
 import kr.co.lotteon.dto.member.MyInfoDTO;
 import kr.co.lotteon.dto.member.point.PointDTO;
-import kr.co.lotteon.dto.product.PageRequestDTO;
-import kr.co.lotteon.dto.product.PageResponseDTO;
+import kr.co.lotteon.dto.product.*;
 import kr.co.lotteon.dto.member.point.PointPageRequestDTO;
 import kr.co.lotteon.dto.member.point.PointPageResponseDTO;
 
-import kr.co.lotteon.dto.product.ProductReviewPageRequestDTO;
-import kr.co.lotteon.dto.product.ProductReviewPageResponseDTO;
 import kr.co.lotteon.entity.member.Member;
 import kr.co.lotteon.entity.member.Point;
 import kr.co.lotteon.security.MyUserDetails;
@@ -35,6 +32,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -56,6 +54,7 @@ public class MyController {
     private final MemberService memberService;
     private final MyService myService;
     private final AuthenticationManager authenticationManager;
+    private final PasswordEncoder passwordEncoder;
 
 
     // my - home (마이페이지 메인) 페이지 매핑
@@ -97,7 +96,41 @@ public class MyController {
 
         return "redirect:/index?success=200";
     }
+    @GetMapping("/my/infoAccessCheck")
+    public String infoAccessCheck() {
+        return "/my/infoAccessCheck";
+    }
 
+    @PostMapping("/my/infoAccessCheck")
+    @ResponseBody
+    public boolean infoAccessCheck(@RequestBody Map<String, String> request ) {
+
+        log.info("나의 설정 들어가기");
+        String uid = request.get("uid");
+        log.info("아이디 : "+request.get("uid"));
+
+        String pass = request.get("pass");
+        log.info("입력한 비번 : "+request.get("pass"));
+
+
+        MemberDTO memberDTO = memberService.findByUid(uid);
+        log.info("DB에 저장된 비번 : "+memberDTO.getPass());
+
+        boolean result = passwordEncoder.matches(pass, memberDTO.getPass());
+
+
+        log.info("아이디비번 일치 : "+result);
+
+        return result;
+    }
+
+    // 추가
+    @ResponseBody
+    @PostMapping("/my/formMyinfoPassChange")
+    public String formMyinfoPassChange(@RequestParam String uid, String inputPass) {
+        memberService.updatePass(uid, inputPass);
+        return "success";
+    }
     @ResponseBody
     @PostMapping("/my/withdraw")
     public String withdraw(@RequestParam String uid, String inputPass) {
@@ -111,6 +144,17 @@ public class MyController {
             return "fail";
         }
     }
+    @ResponseBody
+    @PostMapping("/my/withdrawFinal")
+    public String withdrawFinal(@RequestBody MemberDTO memberDTO) {
+        log.info("=========회원정보수정========== : "+memberDTO);
+        memberService.save(memberDTO);
+        return "success";
+    }
+
+
+
+    //추가 끝
 
 
     // my - order (나의 전체 주문내역) 페이지 매핑
