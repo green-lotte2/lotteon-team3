@@ -1011,6 +1011,11 @@ public class AdminService {
         Recruit recruit = modelMapper.map(recruitDTO, Recruit.class);
         recruitRepository.save(recruit);
     }
+    // 관리자 회사소개 채용 삭제
+    public ResponseEntity<?> recruitDelete(int rno){
+        recruitRepository.deleteById(rno);
+        return ResponseEntity.ok().body("delete");
+    }
     // 관리자 회사소개 삭제
     public ResponseEntity<?> deleteArticle(int ano){
         articleRepository.deleteById(ano);
