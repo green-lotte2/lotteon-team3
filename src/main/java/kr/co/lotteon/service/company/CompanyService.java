@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,6 +23,7 @@ public class CompanyService {
 
     private final ArticleRepository articleRepository;
     private final ModelMapper modelMapper;
+
     // 회사소개 - 소식과 이야기 (9개) 리스트
     public StoryPageResponseDTO selectStory(StoryPageRequestDTO storyPageRequestDTO){
         String cate2 = storyPageRequestDTO.getCate2();
@@ -52,4 +54,5 @@ public class CompanyService {
                 .total(total)
                 .build();
     }
+
 }

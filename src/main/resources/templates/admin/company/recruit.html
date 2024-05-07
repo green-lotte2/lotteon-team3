@@ -10,10 +10,12 @@
         }
         // 글삭제
         async function btnDelete(button){
-            const ano = button.dataset.ano;
+            const rno = button.dataset.rno;
 
             if(confirm('삭제하시겠습니까?')){
-                await fetch(`/lotteon/admin/company/delete/${ano}`)
+                await fetch(`/lotteon/admin/recruit/${rno}`, {
+                    method: 'DELETE'
+                })
                     .then(response => {
                         if(response.ok){
                             alert('삭제 완료되었습니다.');
@@ -25,12 +27,23 @@
                     .catch(err => console.log(err));
             }
         }
-        // 글 수정
+        // 모달 띄우기
         function btnModify(button){
-            const rno = button.dataset.rno;
+            const modal = document.querySelector(".modal");
+            const select = button.dataset.select;
+            const formSelect = modal.querySelector('.'+select);
+            console.log(select);
 
-            location.href = `/lotteon/admin/company/put/${rno}`;
+            // 고용형태 span
+            formSelect.style.display = "block";
         }
+        // 모달 끄기
+        function closeModal() {
+            const modal = document.querySelector(".modal");
+            modal.style.display = "none";
+        }
+        // 수정 완료
+
         // 아코디언 상태 변경
         function accordionControl(button){
             // 해당 버튼의 data-bs-target 값을 사용하여 아코디언 컨텐츠 요소 가져오기
@@ -61,7 +74,6 @@
     </nav>
     <article>
     </article>
-    <h4>채용정보</h4>
     <!-- 글 목록 -->
     <table class="table">
         <thead>
@@ -83,23 +95,33 @@
                 <td th:text="${article.occupation}"></td>
                 <td th:text="${article.experience}"></td>
                 <td>
-                    <span th:class="${'statusSpan'+article.employment}" th:if="${article.employment == 0}" style="color: #d10e49" th:data-rno="${article.rno}" onclick="changeStatus(this)">정규직</span>
-                    <span th:class="${'statusSpan'+article.employment}" th:if="${article.employment == 1}" style="color: #e36731" th:data-rno="${article.rno}" onclick="changeStatus(this)">계약직</span>
-                    <span th:class="${'statusSpan'+article.employment}" th:if="${article.employment == 2}" style="color: #e8bf18" th:data-rno="${article.rno}" onclick="changeStatus(this)">인턴</span>
-                    <span th:class="${'statusSpan'+article.employment}" th:if="${article.employment == 3}" style="color: #0ca03c" th:data-rno="${article.rno}" onclick="changeStatus(this)">아르바이트</span>
-                    <span th:class="${'statusSpan'+article.employment}" th:if="${article.employment == 4}" style="color: #1e3fe3" th:data-rno="${article.rno}" onclick="changeStatus(this)">프리랜서</span>
-                    <span th:class="${'statusSpan'+article.employment}" th:if="${article.employment == 5}" style="color: #161875" th:data-rno="${article.rno}" onclick="changeStatus(this)">파견직</span>
-                    <span th:class="${'statusSpan'+article.employment}" th:if="${article.employment == 6}" style="color: #bd0df4" th:data-rno="${article.rno}" onclick="changeStatus(this)">일용직</span>
-                    <span th:class="${'statusSpan'+article.employment}" th:if="${article.employment == 7}" style="color: #bd0df4" th:data-rno="${article.rno}" onclick="changeStatus(this)">교육생</span>
+                    <span th:class="${'empSpan'+article.rno}" th:if="${article.employment == 0}" th:data-select="${'form-select'+article.rno}">정규직</span>
+                    <span th:class="${'empSpan'+article.rno}" th:if="${article.employment == 1}" th:data-select="${'form-select'+article.rno}">계약직</span>
+                    <span th:class="${'empSpan'+article.rno}" th:if="${article.employment == 2}" th:data-select="${'form-select'+article.rno}">인턴</span>
+                    <span th:class="${'empSpan'+article.rno}" th:if="${article.employment == 3}" th:data-select="${'form-select'+article.rno}">아르바이트</span>
+                    <span th:class="${'empSpan'+article.rno}" th:if="${article.employment == 4}" th:data-select="${'form-select'+article.rno}">프리랜서</span>
+                    <span th:class="${'empSpan'+article.rno}" th:if="${article.employment == 5}" th:data-select="${'form-select'+article.rno}">파견직</span>
+                    <span th:class="${'empSpan'+article.rno}" th:if="${article.employment == 6}" th:data-select="${'form-select'+article.rno}">일용직</span>
+                    <span th:class="${'empSpan'+article.rno}" th:if="${article.employment == 7}" th:data-select="${'form-select'+article.rno}">교육생</span>
+                    <select name="employment" th:class="${'form-select'+article.rno}" th:data-rno="${article.rno}" style="display: none" required>
+                        <option value="0">정규직</option>
+                        <option value="1">계약직</option>
+                        <option value="2">인턴</option>
+                        <option value="3">아르바이트</option>
+                        <option value="4">프리랜서</option>
+                        <option value="5">파견직</option>
+                        <option value="6">일용직</option>
+                        <option value="7">교육생</option>
+                    </select>
                 </td>
                 <td>
-                    <span th:class="${'statusSpan'+article.status}" th:if="${article.status == 0}"  th:data-rno="${article.rno}" onclick="changeStatus(this)">모집 중</span>
-                    <span th:class="${'statusSpan'+article.status}" th:if="${article.status == 1}"  th:data-rno="${article.rno}" onclick="changeStatus(this)">상시 채용</span>
+                    <span th:class="${'statusSpan'+article.status}" th:if="${article.status == 0}" style="color: #0ca03c"  th:data-rno="${article.rno}" onclick="changeStatus(this)">모집 중</span>
+                    <span th:class="${'statusSpan'+article.status}" th:if="${article.status == 1}" style="color: #0ca03c"  th:data-rno="${article.rno}" onclick="changeStatus(this)">상시 채용</span>
                     <span th:class="${'statusSpan'+article.status}" th:if="${article.status == 2}"  th:data-rno="${article.rno}" onclick="changeStatus(this)">마감</span>
                 </td>
                 <td>
-                    <button type="button" class="btn btn-danger" onclick="btnDelete(this)" th:data-ano="${article.rno}">삭제</button>
-                    <button type="button" class="btn btn-secondary" onclick="btnModify(this)" th:data-ano="${article.rno}">수정</button>
+                    <button type="button" class="btn btn-danger" onclick="btnDelete(this)" th:data-rno="${article.rno}">삭제</button>
+                    <button type="button" class="btn btn-secondary" onclick="btnModify(this)" th:data-rno="${article.rno}">수정</button>
                 </td>
             </tr>
             <tr>
@@ -108,8 +130,8 @@
                         <div class="accordion-body">
                             <div>
                                 <div class="cartPrice order-3">
-                                    <p class="recruitDetail">내용</p>
-                                    <span class="recruitSpan" th:text="${article.content}"></span>
+                                    <p class="recruitDetail" >내용</p>
+                                    <span class="recruitSpan" th:text="${article.content}"  style="white-space: pre-line;"></span>
                                 </div>
                             </div>
                         </div>
@@ -145,6 +167,22 @@
                 </li>
             </ul>
         </nav>
+    </div>
+    <div class="statusModal modal" id="statusModal">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <div id="btnStatusModal">
+            <div style="margin: 40px 65px;">
+                <span class="btnOrdStatus" onclick="changeOrdStat(this)">배송준비</span>
+                <span class="btnOrdStatus" onclick="changeOrdStat(this)">배송중</span>
+                <span class="btnOrdStatus" onclick="changeOrdStat(this)">배송완료</span>
+            </div>
+            <div style="margin: 40px 25px;">
+                <span class="btnOrdStatus" onclick="changeOrdStat(this)" >주문취소</span>
+                <span class="btnOrdStatus" onclick="changeOrdStat(this)" >교환요청</span>
+                <span class="btnOrdStatus" onclick="changeOrdStat(this)" >환불요청</span>
+                <span class="btnOrdStatus" onclick="changeOrdStat(this)" >처리완료</span>
+            </div>
+        </div>
     </div>
     <button type="button" class="btn btn-secondary btnWrite" onclick="btnWrite(this)">글쓰기</button>
 </section>
