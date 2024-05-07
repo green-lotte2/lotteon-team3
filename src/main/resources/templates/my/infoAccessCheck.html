@@ -24,7 +24,7 @@
                             <table>
                                 <tr>
                                     <th>아이디</th>
-                                    <td>[[${#authentication.principal.member.uid}]]</td>
+                                    <td th:text="${#strings.substring(#authentication.principal.member.uid, 0,#authentication.principal.member.uid.length() -4) +'****'} "></td>
                                 </tr>
                                 <tr>
                                     <th><span class="essential">*</span>비밀번호</th>

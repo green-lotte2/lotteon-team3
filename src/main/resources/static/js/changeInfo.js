@@ -50,51 +50,56 @@ window.onload = function() {
 
         if (inputPass1.value === inputPass2.value) {
             if (!inputPass1.value.match(rePass)) {
-                resultPass.innerText = '비밀번호 형식에 맞지 않습니다.';
-                resultPass.style.color = 'red';
+                alert('비밀번호 형식이 맞지 않습니다.')
                 isPassOk = false;
             } else {
-                resultPass.innerText = '사용 가능한 비밀번호 입니다.';
-                resultPass.style.color = 'green';
+
                 isPassOk = true;
+
+                if(btnComplete) {
+                    btnComplete.addEventListener('click', async function (e) {
+                        console.log("최종 비밀번호"+isPassOk);
+
+                        const uid = document.querySelector('input[name=uid]').value;
+
+                        const jsonData={
+                            "uid":uid,
+                            "pass":inputPass1.value,
+                        };
+
+                        console.log("아이디"+uid);
+                        console.log("비밀번호"+inputPass1.value);
+
+                        await fetch('/lotteon/my/formMyinfoPassChange', {
+                            method: 'POST',
+                            headers: {'Content-Type': 'application/json'},
+                            body: JSON.stringify(jsonData)
+                        })
+                            .then(response => response.text())
+                            .then(data => {
+                                console.log(data);
+                                if (data === "success") {
+                                    alert('비밀번호가 변경되었습니다. \n다시 로그인 해주세요.');
+                                    document.getElementById('popPassChange').closest('.popup').classList.remove('on');
+                                    location.href = '/lotteon/member/logout';
+                                } else {
+                                    alert("비밀번호 변경에 실패했습니다.");
+                                }
+                            })
+                            .catch(error => {
+                                console.log(error)
+                                alert("비밀번호가 올바르지 않습니다.");
+                            });
+                    });
+                }
             }
         } else {
-            resultPass.innerText = '비밀번호가 일치하지 않습니다.';
-            resultPass.style.color = 'red';
+            alert('비밀번호가 일치하지않습니다.')
             isPassOk = false;
         }
+        console.log("비밀번호"+isPassOk);
     });
 
-    if(btnComplete) {
-        btnComplete.addEventListener('click', function (e) {
-            const uid = document.querySelector('input[name=uid]').value;
 
-            if(isPassOk){
-                fetch('/lotteon/my/formMyinfoPassChange', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({uid: uid, pass1: inputPass1})
-                })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('서버와의 통신 중 오류가 발생했습니다.');
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        if (data === "success") {
-                            alert('비밀번호가 변경되었습니다.');
-                            document.getElementById('popPassChange').closest('.popup').classList.remove('on');
-                        } else {
-                            alert("비밀번호 변경에 실패했습니다.");
-                        }
-                    })
-                    .catch(error => {
-                        alert(error.message);
-                    });
-            }
-        });
-    }
+
 }

@@ -127,8 +127,16 @@ public class MyController {
     // 추가
     @ResponseBody
     @PostMapping("/my/formMyinfoPassChange")
-    public String formMyinfoPassChange(@RequestParam String uid, String inputPass) {
-        memberService.updatePass(uid, inputPass);
+    public String formMyinfoPassChange(@RequestBody Map<String, String> request ) {
+        log.info("비밀번호 수정 들어가기");
+        String uid = request.get("uid");
+        log.info("입력된 아이디 : "+uid);
+
+        String pass = request.get("pass");
+        log.info("수정한 비번 : "+pass);
+
+        memberService.updatePass(uid, pass);
+
         return "success";
     }
     @ResponseBody
