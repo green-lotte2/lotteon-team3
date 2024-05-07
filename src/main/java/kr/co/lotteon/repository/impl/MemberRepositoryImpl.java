@@ -17,6 +17,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Repository
@@ -168,4 +169,18 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
         log.info("판매자 목록 (현황) 검색 조회 Impl 3 : " + memberList);
         return new PageImpl<>(memberList, pageable, total);
     }
+
+    // 닉네임 조회
+    @Override
+    public Optional<Member> selectMemberByUidAndNickname(String uid, String nick) {
+        Member member = jpaQueryFactory
+                .select(qMember)
+                .from(qMember)
+                .where(qMember.uid.eq(uid).and(qMember.nick.eq(nick)))
+                .fetchOne();
+
+        return Optional.ofNullable(member);
+    }
+
+
 }
