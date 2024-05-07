@@ -8,6 +8,7 @@ import kr.co.lotteon.entity.product.Product;
 import kr.co.lotteon.entity.product.Review;
 import kr.co.lotteon.mapper.ProductMapper;
 import kr.co.lotteon.repository.product.OptionRepository;
+import kr.co.lotteon.repository.product.OrderRepository;
 import kr.co.lotteon.repository.product.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +28,7 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final OptionRepository optionRepository;
     private final ProductMapper productMapper;
+    private final OrderRepository orderRepository;
     private final ModelMapper modelMapper;
 
     private final SqlSession sqlSession;
@@ -67,7 +69,6 @@ public class ProductService {
     public Map<String, List<String>> selectProdOption(int prodNo){
         return optionRepository.selectProdOption(prodNo);
     }
- 
 
     // 히트 올리기
     public void updateProductHit(int prodNo){
@@ -105,9 +106,13 @@ public class ProductService {
                 .build();
     }
 
+    // 오더 페이지
+    public List<ProductDTO> selectProductList(int prodNo){
+        log.info("오더 조회 서비스 1");
+        return null;
+    }
 
-
-        // ========== 메인페이지 ==========
+    // ========== 메인페이지 ==========
     // 최신상품
     public List<ProductDTO> bestProductMain(){return productRepository.bestProductMain();}
     public List<ProductDTO> recentProductMain(){return productRepository.recentProductMain();}

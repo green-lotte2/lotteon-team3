@@ -6,9 +6,11 @@ import kr.co.lotteon.entity.product.Cart;
 import kr.co.lotteon.repository.product.CartRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.io.Console;
 import java.util.*;
 
 @Service @Slf4j @RequiredArgsConstructor
@@ -85,5 +87,28 @@ public class CartService {
             cartRepository.deleteById(cartNo);
         }
         return  ResponseEntity.ok().body("ok");
+    }
+
+    public ResponseEntity<?> updateCartCount(CartDTO cartDTO){
+        log.info("카트서비스 1" + cartDTO);
+
+        Optional<Cart> result = cartRepository.findById(cartDTO.getCartNo());
+        log.info("카트서비스 2" + result);
+
+        if(result.isPresent()){
+           Cart cart = new Cart();
+           cart.setCartNo(cartDTO.getCartNo());
+           cart.setProdNo(result.get().getProdNo());
+           cart.setUid(result.get().getUid());
+           cart.setCount(cartDTO.getCount());
+           cart.setOpNo(result.get().getOpNo());
+           cart.setUid(result.get().getUid());
+           cart.setRdate(result.get().getRdate());
+           log.info("카트서비스 3" + cart);
+           cartRepository.save(cart);
+           return ResponseEntity.ok().body("ok");
+        }else{
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("NOT FOUND");
+        }
     }
 }
