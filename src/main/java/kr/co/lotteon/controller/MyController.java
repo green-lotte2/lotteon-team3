@@ -126,39 +126,72 @@ public class MyController {
 
     // 추가
     @ResponseBody
-    @PostMapping("/my/formMyinfoPassChange")
+    @GetMapping("/my/formMyinfoPassChange")
     public String formMyinfoPassChange(@RequestBody Map<String, String> request ) {
         log.info("비밀번호 수정 들어가기");
+
         String uid = request.get("uid");
         log.info("입력된 아이디 : "+uid);
 
         String pass = request.get("pass");
         log.info("수정한 비번 : "+pass);
 
-        memberService.updatePass(uid, pass);
+        memberService.updatePass(uid,pass);
+
+
 
         return "success";
     }
-    @ResponseBody
-    @PostMapping("/my/withdraw")
-    public String withdraw(@RequestParam String uid, String inputPass) {
-        Authentication authentication = new UsernamePasswordAuthenticationToken(uid, inputPass);
-        Authentication result = authenticationManager.authenticate(authentication);
 
-        if (result.isAuthenticated()) {
-            memberService.updateWdate(uid);
-            return "success";
-        } else {
+    // 닉네임수정
+    @ResponseBody
+    @PostMapping("/my/formMyinfoNickChange")
+    public String formMyinfoNickChange(@RequestBody Map<String, String> request ) {
+        log.info("닉네임 수정 들어가기");
+
+        String uid = request.get("uid");
+        log.info("입력된 아이디 : "+uid);
+
+        String nick = request.get("nick");
+        log.info("수정한 닉네임 : "+nick);
+
+        Optional<Member> member = memberService.selectMemberByUidAndNickname(uid, nick);
+        log.info(member.toString());
+        if(member.isPresent()){
             return "fail";
+
+        }else{
+
+            memberService.updateNick(uid,nick);
+
+            return "success";
+
         }
+
     }
-    @ResponseBody
-    @PostMapping("/my/withdrawFinal")
-    public String withdrawFinal(@RequestBody MemberDTO memberDTO) {
-        log.info("=========회원정보수정========== : "+memberDTO);
-        memberService.save(memberDTO);
-        return "success";
-    }
+
+
+
+//    @ResponseBody
+//    @PostMapping("/my/withdraw")
+//    public String withdraw(@RequestParam String uid, String inputPass) {
+//        Authentication authentication = new UsernamePasswordAuthenticationToken(uid, inputPass);
+//        Authentication result = authenticationManager.authenticate(authentication);
+//
+//        if (result.isAuthenticated()) {
+//            memberService.updateWdate(uid);
+//            return "success";
+//        } else {
+//            return "fail";
+//        }
+//    }
+//    @ResponseBody
+//    @PostMapping("/my/withdrawFinal")
+//    public String withdrawFinal(@RequestBody MemberDTO memberDTO) {
+//        log.info("=========회원정보수정========== : "+memberDTO);
+//        memberService.save(memberDTO);
+//        return "success";
+//    }
 
 
 

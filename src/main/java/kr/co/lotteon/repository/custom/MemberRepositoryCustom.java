@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface MemberRepositoryCustom {
 
@@ -23,5 +24,10 @@ public interface MemberRepositoryCustom {
 
     // 판매자 목록 검색 조회
     public Page<Member> searchSellerList(AdminPageRequestDTO adminPageRequestDTO, Pageable pageable);
+
+    // 닉네임 조회
+    public Optional<Member> selectMemberByUidAndNickname(String uid, String nick);
+
+
 
 }

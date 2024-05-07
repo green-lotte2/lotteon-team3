@@ -1,8 +1,10 @@
 window.onload = function() {
 
     let isPassOk=false;
+    let isNickOk  = false;
 
     const rePass = /^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\(\\)\-_=+]).{5,16}$/;
+    const reNick  = /^[a-zA-Zㄱ-힣0-9]{2,5}$/;
 
     const btnPassCheck = document.querySelector('.btnPassCheck');
 
@@ -99,6 +101,64 @@ window.onload = function() {
         }
         console.log("비밀번호"+isPassOk);
     });
+
+    const btnNickChange=document.getElementById('btnNickChange');
+    const resultNick=document.getElementById('result_nick');
+    const inputNick = document.querySelector('input[name=nick]');
+
+
+
+    inputNick.addEventListener('focusout',()=>{
+
+        if(!inputNick.value.match(reNick)){
+            resultNick.innerText='닉네임 형식이 맞지 않습니다.';
+            resultNick.style.color='red';
+            isNickOk=false;
+
+        }else {
+            resultNick.innerText='';
+            isNickOk = true;
+
+            if (btnNickChange&&isNickOk) {
+                btnNickChange.addEventListener('click', async function (e) {
+
+
+
+                    const uid = document.querySelector('input[name=uid]').value;
+                    const jsonData={
+                        "uid":uid,
+                        "nick":inputNick.value,
+                    };
+
+                    console.log("아이디"+uid);
+                    console.log("닉네임"+inputNick.value);
+
+                    await fetch('/lotteon/my/formMyinfoNickChange',{
+                        method:'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify(jsonData)
+
+                    })
+                        .then(response => response.text())
+                        .then(data => {
+                            console.log(data);
+                            if (data === "success") {
+                                alert('닉네임이 변경되었습니다.');
+                            } else {
+                                alert('이미 사용중인 닉네임입니다.');
+                            }
+                        })
+                        .catch(error => {
+                            console.log(error)
+                        });
+
+
+                })
+
+
+            }
+        }
+    })
 
 
 
