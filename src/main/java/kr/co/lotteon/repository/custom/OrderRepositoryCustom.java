@@ -14,6 +14,7 @@ public interface OrderRepositoryCustom {
     // 관리자 차트
     public List<Tuple> selectOrderForChart();
 
-
+    // 오더 출력
+    public List<Tuple> selectOrderFromCart(int cartNo);
 
 }
