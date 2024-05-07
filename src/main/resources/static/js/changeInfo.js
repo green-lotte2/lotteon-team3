@@ -63,38 +63,40 @@ window.onload = function() {
             resultPass.style.color = 'red';
             isPassOk = false;
         }
+        console.log("비밀번호"+isPassOk);
     });
 
     if(btnComplete) {
-        btnComplete.addEventListener('click', function (e) {
+        btnComplete.addEventListener('click', async function (e) {
             const uid = document.querySelector('input[name=uid]').value;
 
-            if(isPassOk){
-                fetch('/lotteon/my/formMyinfoPassChange', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({uid: uid, pass1: inputPass1})
+            const jsonData={
+                "uid":uid,
+                "pass":inputPass1.value,
+            };
+
+            console.log("아이디"+uid);
+            console.log("비밀번호"+inputPass1.value);
+
+            await fetch('/lotteon/my/formMyinfoPassChange', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(jsonData)
+            })
+                .then(response => response.text())
+                .then(data => {
+                    console.log(data);
+                    if (data === "success") {
+                        alert('비밀번호가 변경되었습니다.');
+                        document.getElementById('popPassChange').closest('.popup').classList.remove('on');
+                    } else {
+                        alert("비밀번호 변경에 실패했습니다.");
+                    }
                 })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('서버와의 통신 중 오류가 발생했습니다.');
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        if (data === "success") {
-                            alert('비밀번호가 변경되었습니다.');
-                            document.getElementById('popPassChange').closest('.popup').classList.remove('on');
-                        } else {
-                            alert("비밀번호 변경에 실패했습니다.");
-                        }
-                    })
-                    .catch(error => {
-                        alert(error.message);
-                    });
-            }
+                .catch(error => {
+                    console.log(error)
+                    alert("비밀번호가 올바르지 않습니다.");
+                });
         });
     }
 }
