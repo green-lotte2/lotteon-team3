@@ -692,7 +692,8 @@
                       const uid = document.getElementById('userForDirect').value;
                       console.log(uid);
 
-                     fetch(`/lotteon/product/order?uid=${uid},cartNo=${stringValue}`)
+
+                     fetch(`/lotteon/order?uid=${uid}&cartNo=${stringValue}`)
                       .then(response=>response.json())
                       .then(data=> {
                         if(data != null){
@@ -700,10 +701,11 @@
                         }
                       })
                       .catch(
-                      (err)=>{console.log(err)});
+                      (err)=>{location.href=`/lotteon/order?uid=${uid}&cartNo=${stringValue}`});
                     }
                   }
                 }
+
                 // 최상단 이동 (topButton) 함수 //
                 function movePageTop() {
                   window.scrollTo(0, 0);

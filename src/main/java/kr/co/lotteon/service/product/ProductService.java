@@ -19,6 +19,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -133,11 +135,32 @@ public class ProductService {
                 .build();
     }
 
-
     // 오더 페이지
-    public List<ProductDTO> selectProductList(int prodNo){
-        log.info("오더 조회 서비스 1");
-        return null;
+    public List<ProductDTO> selectOrderFromCart(int[] cartNo){
+
+        log.info("오더 조회 서비스 1" + Arrays.toString(cartNo));
+        List<ProductDTO> productDTOS = new ArrayList<>();
+        for(int cartN : cartNo){
+            List<Tuple> result = orderRepository.selectOrderFromCart(cartN);
+            log.info("오더 조회 서비스 2"+result);
+
+            // mappedProductDTOs에 for문 돌린 List 저장
+            List<ProductDTO> mappedProductDTOs = result.stream()
+                    .map(tuple ->{
+                        int count = tuple.get(0, Integer.class);
+                        Product product = tuple.get(1, Product.class);
+
+                        ProductDTO productDTO = modelMapper.map(product, ProductDTO.class);
+                        productDTO.setCount(count);
+                        return productDTO;
+                    })
+                    .collect(Collectors.toList());
+            log.info("오더 조회 서비스 3"+mappedProductDTOs);
+            
+            // 선언해둔 productDTOS에 모두 덮어씌우기
+            productDTOS.addAll(mappedProductDTOs);
+        }
+        return productDTOS;
     }
 
 

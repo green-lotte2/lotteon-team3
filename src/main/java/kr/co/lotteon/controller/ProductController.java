@@ -1,9 +1,12 @@
 package kr.co.lotteon.controller;
 
+import groovy.lang.Tuple;
 import kr.co.lotteon.dto.admin.BannerDTO;
+import kr.co.lotteon.dto.member.MemberDTO;
 import kr.co.lotteon.dto.product.*;
 import kr.co.lotteon.repository.product.Cate1Repository;
 import kr.co.lotteon.service.admin.BannerService;
+import kr.co.lotteon.service.member.MemberService;
 import kr.co.lotteon.service.my.MyService;
 import kr.co.lotteon.service.product.CartService;
 import kr.co.lotteon.service.product.CateService;
@@ -11,13 +14,13 @@ import kr.co.lotteon.service.product.OptionService;
 import kr.co.lotteon.service.product.ProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.Response;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -30,7 +33,7 @@ public class ProductController {
     // 상품 카테고리를 불러오기 위한 cateService
     private final CateService cateService;
     private final OptionService optionService;
-
+    private final MemberService memberService;
 
     // cart 페이지 매핑
     @GetMapping("/product/cart")
@@ -102,16 +105,32 @@ public class ProductController {
         return "/product/list";
     }
 
-    // order 페이지 매핑
-    @GetMapping("/product/order")
-    public String order(@RequestParam Map<String, int[]> cartInfo){
+    // order 페이지 (cart->order)
+    @GetMapping("/order")
+    public String order(@RequestParam String uid, Model model, @RequestParam int[] cartNo){
 
-        log.info("cartInfo: {}", cartInfo);
-        String uid = cartInfo.keySet().toString();
-        int[] cartNo = cartInfo.get(uid);
+        List<ProductDTO> productDTOS = productService.selectOrderFromCart(cartNo);
+        log.info("컨트롤러 : "+productDTOS);
+        MemberDTO memberDTO =memberService.findByUid(uid);
 
-        log.info("uid" + uid);
-        log.info("cartNo" + cartNo);
+        Map<String, List<ProductDTO>> orderProducts = new HashMap<>();
+        for(ProductDTO productDTO : productDTOS){
+            String company = productDTO.getCompany();
+            List<ProductDTO> companyProducts = orderProducts.getOrDefault(company, new ArrayList<>());
+
+            companyProducts.add(productDTO);
+
+            orderProducts.put(company, companyProducts);
+        }
+        model.addAttribute("orderProducts", orderProducts);
+        model.addAttribute("memberDTO", memberDTO);
+
+        log.info("맵:"+orderProducts);
+        return "/product/order";
+    }
+
+   @GetMapping("/product/order")
+    public String order(){
         return "/product/order";
     }
 
