@@ -2,6 +2,8 @@ package kr.co.lotteon.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kr.co.lotteon.dto.admin.*;
+import kr.co.lotteon.dto.company.RecruitDTO;
+import kr.co.lotteon.dto.company.RecruitPageResponseDTO;
 import kr.co.lotteon.dto.cs.BoardCateDTO;
 import kr.co.lotteon.dto.cs.BoardDTO;
 import kr.co.lotteon.dto.cs.BoardTypeDTO;
@@ -378,7 +380,7 @@ public class AdminController {
     // 관리자 채용정보 매핑
     @GetMapping("/admin/company/recruit")
     public String recruitList(Model model, AdminPageRequestDTO adminPageRequestDTO){
-        AdminArticlePageResponseDTO pageResponseDTO = adminService.selectArticle("recruit", adminPageRequestDTO);
+        RecruitPageResponseDTO pageResponseDTO = adminService.selectRecruit(adminPageRequestDTO);
         model.addAttribute("pageResponseDTO", pageResponseDTO);
         return "/admin/company/recruit";
     }
@@ -388,14 +390,26 @@ public class AdminController {
         model.addAttribute("cate1", cate1);
         return "/admin/company/write";
     }
+    // 관리자 회사소개 - 채용 글쓰기 매핑
+    @GetMapping("/admin/company/post")
+    public String companyPost(){
+        return "/admin/company/post";
+    }
 
     // 관리자 회사소개 글쓰기 전송
     @PostMapping("/admin/company/write")
-    public String bannerRegister(@RequestParam("thumb336") MultipartFile thumb336, ArticleDTO articleDTO){
+    public String storyRegister(@RequestParam("thumb336") MultipartFile thumb336, ArticleDTO articleDTO){
         log.info("회사소개 글쓰기 Cont 1 : " + thumb336);
         log.info("회사소개 글쓰기Cont 2 : " + articleDTO);
         adminService.insertArticle(thumb336, articleDTO);
         return "redirect:/admin/company/"+articleDTO.getCate1();
+    }
+    // 관리자 회사소개 - 채용 글쓰기 전송
+    @PostMapping("/admin/company/post")
+    public String recruitPost(RecruitDTO recruitDTO){
+        log.info("회사소개 글쓰기 - 채용 Cont 1 : " + recruitDTO);
+        adminService.recruitPost(recruitDTO);
+        return "redirect:/admin/company/recruit";
     }
 
     // 관리자 회사소개 글 수정 매핑
