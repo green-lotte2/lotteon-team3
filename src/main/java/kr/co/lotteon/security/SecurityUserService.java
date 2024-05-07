@@ -21,23 +21,18 @@ public class SecurityUserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        Optional<Member> result = memberRepository.findById(username);
+        Member member = memberRepository.findById(username)
+                .orElseThrow(()->new UsernameNotFoundException(username + " NotFound"));
 
-        Member members=memberRepository.findById(username).orElseThrow(()->new UsernameNotFoundException(username + " NotFound"));
-
-        if (members.getWdate() != null) {
+        if (member.getWdate() != null) {
             throw new UsernameNotFoundException("탈퇴한 회원입니다.");
         }
 
 
-        UserDetails userDetails = null;
-
-        if(!result.isEmpty()){
-            // 해당하는 사용자가 존재하면 인증 객체 생성
-            Member member = result.get();
-            userDetails = MyUserDetails.builder().member(member).build();
-            log.info(userDetails.toString());
-        }
+        // 사용자 인증객체 생성(세션에 저장)
+        UserDetails userDetails = MyUserDetails.builder()
+                .member(member)
+                .build();
 
 
         // Security ContextHolder 저장

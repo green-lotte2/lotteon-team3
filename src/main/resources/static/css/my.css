@@ -1015,6 +1015,100 @@ footer p > strong {
     margin: 4px 0;
 }
 
+/* my - infoAccessCheck (회원정보 수정 전 비밀번호 재확인) */
+#my > .infoAccessCheck {
+    width: 900px;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+#my > .infoAccessCheck >article {
+    border-bottom: 2px solid #ef2a23;
+}
+#my > .infoAccessCheck > ul > section > nav > h1 {
+    margin-top: 60px;
+    font-size: 24px;
+    margin-bottom: 9px;
+}
+#my > .infoAccessCheck table {
+    margin-top: 10px;
+    border-top: 2px solid #ef2a23 ;
+    position: relative;
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+#my > .infoAccessCheck table th {
+    width: 200px;
+    padding: 20px 20px;
+    vertical-align: top;
+    background: #f4f6f9;
+    font-weight: 500;
+    text-align: right;
+    line-height: 1.4;
+    border-bottom: 1px solid #dfe5ed;
+    word-break: break-word;
+    font-size: 14px;
+}
+#my > .infoAccessCheck table td {
+    position: relative;
+    vertical-align: middle;
+    padding: 10px 20px;
+    text-align: left;
+    line-height: 1.4;
+    border-bottom: 1px solid #dfe5ed;
+    word-break: break-word;
+    font-size: 14px;
+    font-weight: 500;
+}
+#my > .infoAccessCheck .essential {
+    color: #ef3f43;
+    margin-right: 5px;
+}
+#my > .infoAccessCheck table input {
+    padding: 0 8px;
+    height: 31px;
+    font-size: 14px;
+    border: 1px solid #dfe5ed;
+    vertical-align: middle;
+}
+#my #formFindPassChange > p {
+    margin-top: 10px;
+}
+
+#my > .infoAccessCheck .btnArea{
+    margin-top: 45px;
+    padding-left: 326px;
+}
+#my > .infoAccessCheck .btnArea > .btnAreaCancel{
+    float: left;
+    margin-right: 10px;
+    position: relative;
+    display: inline-block;
+    background: #e7e5e5;
+    color: #222;
+    font-size: 18px;
+    box-sizing: border-box;
+    padding: 10px 60px;
+    border-radius: 2px;
+    cursor: pointer;
+    text-align: center;
+}
+#my > .infoAccessCheck .btnArea > .btnPassCheck {
+    float: left;
+    position: relative;
+    display: block;
+    background: #ef3f43;
+    color: #fff;
+    font-size: 18px;
+    padding: 10px 60px;
+    border: 0;
+    outline: 0;
+    border-radius: 2px;
+    cursor: pointer;
+}
+
 #my > .coupon > section > article > .info {
     margin: 16px;
     list-style: square;

@@ -28,26 +28,17 @@
                             <tr>
                                 <td>사용자 ID</td>
                                 <!-- 아이디 뒤 네자리 마스킹 처리 -->
-                                <td th:text="${memberDTO.uid}"></td>
+                                <td th:text="${#strings.substring(memberDTO.uid, 0, memberDTO.uid.length() - 4) + '****'}"></td>
                             </tr>
                             <tr>
-                                <td>새로운 비밀번호</td>
+                                <td>비밀번호</td>
                                 <td>
-                                    <input type="password" name="pass"/>
-                                    <span class="msgPass">영문, 숫자, 특수문자를 조합하여 8~12자까지 설정해 주세요.</span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>비밀번호 확인</td>
-                                <td>
-                                    <input type="password" name="pass2"/>
-                                    <span class="msgPass">비밀번호 재입력</span>
-                                    <div id="result_pass"></div>
+                                    <button id="btnPassChange">비밀번호 변경</button>
                                 </td>
                             </tr>
                             <tr>
                                 <td>이름</td>
-                                <td th:text="${memberDTO.name}"></td>
+                                <td th:text="${#strings.substring(memberDTO.name, 0, 1) + '*' + #strings.substring(memberDTO.name, memberDTO.name.length() - 1)}"></td>
 
                             </tr>
                             <!-- 추가 -->
