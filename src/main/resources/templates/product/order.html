@@ -3,7 +3,39 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{/layout/productLayout}">
 
+        <script>
+            window.onload = function (){
+                console.log("아아아");
+            }
+            document.addEventListener('DOMContentLoaded', function() {
+                // 모든 아코디언 버튼 요소 가져오기
+                var accordionButtons = document.querySelectorAll('.accordion-button');
 
+                document.querySelectorAll('.number')
+                // 각 아코디언 버튼에 대해 이벤트 리스너 추가
+                accordionButtons.forEach(function(button) {
+                    button.addEventListener('click', function() {
+                        // 해당 버튼의 data-bs-target 값을 사용하여 아코디언 컨텐츠 요소 가져오기
+                        var targetId = button.getAttribute('data-bs-target');
+                        var targetContent = document.getElementById(targetId);
+
+                        // 현재 아코디언 상태 확인
+                        var isExpanded = button.getAttribute('aria-expanded') === 'true';
+
+                        // 아코디언 상태 변경
+                        if (isExpanded) {
+                            // 아코디언 닫기
+                            button.setAttribute('aria-expanded', 'false');
+                            targetContent.classList.remove('show');
+                        } else {
+                            // 아코디언 열기
+                            button.setAttribute('aria-expanded', 'true');
+                            targetContent.classList.add('show');
+                        }
+                    });
+                });
+            });
+        </script>
             <!-- 주문 페이지 시작-->
             <section class="order" layout:fragment="content">
               
@@ -16,68 +48,65 @@
               </nav>
 
               <form action="#">
-                <!-- 주문 상품 목록 -->                  
-                <table>
-                  <thead>
-                    <tr>
-                      <th>상품명</th>
-                      <th>총수량</th>
-                      <th>판매가</th>
-                      <th>배송비</th>
-                      <th>소계</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr class="empty">
-                      <td colspan="7">장바구니에 상품이 없습니다.</td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <article>
-                          <a href="#"><img src="https://via.placeholder.com/80x80" alt=""></a>
-                          <div>
-                            <h2><a href="#">상품명</a></h2>
-                            <p>상품설명</p>
+                <!-- 주문 상품 목록 -->
+                <div class="accordion" id="accordionPanelsStayOpenExample" th:each="map : ${orderProducts}">
+                  <div class="accordion-item" th:each="orderProduct, index : ${map.value}">
+                    <h2 class="accordion-header" >
+                      <button th:text="${map.key}" th:id="'accordionButton'" class="accordion-button" type="button" data-bs-toggle="collapse"
+                               th:data-bs-target="'panelsStayOpen-collapse'" aria-expanded="true" th:aria-controls="'panelsStayOpen-collapse'">
+                      </button>
+                    </h2>
+                    <!-- 내용 -->
+                    <div th:id="'panelsStayOpen-collapse'"
+                          class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingOne">
+
+                        <div class="accordion-body">
+                          <div class="cartProduct">
+
+                            <a th:href="@{#}">
+                              <img th:src="@{|/prodImg/${orderProduct.thumb1}|}" style="width: 80px; height: auto;" alt="상품이미지">
+                            </a>
+
+                            <div class="details">
+                              <a th:href="@{#}">
+                                <p class="productDetail"></p>
+                              </a>
+                              <div class="optionDiv"></div>
+                              <p class="productDeliveryInfo"> 4/30(화) 이내 도착 </p>
+                            </div>
+
+                            <p>
+                              <span class="delivery"> </span>
+                              <span class="deliveryFree"> </span>
+
+                            </p>
+
+                            <div class="count">
+                              <button th:class="'decrease'">-</button>
+                              <input type="text" class="number" name="num"/>
+                              <button class="increase">+</button>
+                            </div>
+
+                            <div class="cartPrice order-3">
+                              <p class="originalPrice"><span data-v-15ea7d62=""></span></p>
+                              <span class="discount"></span>
+                              <p class="currentPrice" style="">
+                                <strong></strong><span>원</span>
+                              </p>
+                            </div>
                           </div>
-                        </article>
-                      </td>
-                      <td>1</td>
-                      <td>27,000</td>
-                      <td>무료배송</td>
-                      <td>27,000</td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <article>
-                          <a href="#"><img src="https://via.placeholder.com/80x80" alt=""></a>
-                          <div>
-                            <h2><a href="#">상품명</a></h2>
-                            <p>상품설명</p>
-                          </div>
-                        </article>
-                      </td>
-                      <td>1</td>
-                      <td>27,000</td>
-                      <td>무료배송</td>
-                      <td>27,000</td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <article>
-                          <a href="#"><img src="https://via.placeholder.com/80x80" alt=""></a>
-                          <div>
-                            <h2><a href="#">상품명</a></h2>
-                            <p>상품설명</p>
-                          </div>
-                        </article>
-                      </td>
-                      <td>1</td>
-                      <td>27,000</td>
-                      <td>무료배송</td>
-                      <td>27,000</td>
-                    </tr>                    
-                  </tbody>
-                </table>                 
+                        </div>
+                      </th:block>
+                    </div>
+                    <div class="cartFooter">
+                      <p>
+                        <span class="point">0</span>
+                        <span class="deliverySpan">+ 배송비 0원</span> - <span class="discountSpan">할인 0원</span>
+                        <span > = </span>
+                        <span> <strong class="totalPriceSpan"></strong> </span>
+                    </div>
+                  </div>
+                </div>
                 
                 <!-- 최종 결제 정보 -->
                 <div class="final">
@@ -117,32 +146,32 @@
                   <table>
                     <tr>
                       <td>주문자</td>
-                      <td><input type="text" name="orderer" /></td>
+                      <td><input type="text" th:value="${memberDTO.name}" name="orderer"/></td>
                     </tr>
                     <tr>
                       <td>휴대폰</td>
                       <td>
-                        <input type="text" name="hp" />
+                        <input type="text" th:value="${memberDTO.hp}" name="hp" />
                         <span>- 포함 입력</span>
                       </td>
                     </tr>
                     <tr>
                       <td>우편번호</td>
                       <td>
-                        <input type="text" name="zip"/>
+                        <input type="text" name="zip" th:value="${memberDTO.zip}"/>
                         <input type="button" value="검색"/>
                       </td>
                     </tr>
                     <tr>
                       <td>기본주소</td>
                       <td>
-                        <input type="text" name="addr1"/>
+                        <input type="text" name="addr1" th:value="${memberDTO.addr1}"/>
                       </td>
                     </tr>
                     <tr>
                       <td>상세주소</td>
                       <td>
-                        <input type="text" name="addr2"/>
+                        <input type="text" name="addr2" th:value="${memberDTO.addr2}"/>
                       </td>
                     </tr>
                   </table>
@@ -153,9 +182,9 @@
                   <h1>할인정보</h1>
 
                   <div>
-                    <p>현재 포인트 : <span>7200</span>점</p>
+                    <p>현재 포인트 : <span></span>점</p>
                     <label>
-                        <input type="text" name="point" />점
+                        <input type="text" name="point" th:value="${memberDTO.point}"/>점
                         <input type="button" value="적용"/>
                     </label>
                     <span>포인트 5,000점 이상이면 현금처럼 사용 가능합니다.</span>
@@ -185,7 +214,7 @@
                             <label><input type="radio" name="payment" value="type3"/>휴대폰결제</label>
                             <label>
                                 <input type="radio" name="payment" value="type4"/>카카오페이
-                                <img src="../images/ico_kakaopay.gif" alt="카카오페이"/>
+                                <img th:src="@{images/ico_kakaopay.gif}" alt="카카오페이"/>
                             </label>                                
                         </p>
                     </div>
@@ -213,7 +242,7 @@
             <li><a href="#">전자금융거래약관</a></li>
           </ul>
           <div>
-            <p><img src="../images/footer_logo.png" alt="로고" /></p>
+            <p><img th:src="@{/images/footer_logo.png}" alt="로고" /></p>
             <p>
               <strong>(주)롯데ON</strong><br />
               서울특별시 송파구 올림픽로 300 롯데월드타워 26층 (역삼동 강남파이낸스센터)<br />

@@ -44,6 +44,8 @@ public class ProductDTO {
     private String thumb2;
     private String thumb3;
 
+    // 주문용
+    private int count;
     List<OptionDTO> optionList;
 
     private LocalDateTime rdate;
