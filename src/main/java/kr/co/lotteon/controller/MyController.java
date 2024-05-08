@@ -126,7 +126,7 @@ public class MyController {
 
     // 추가
     @ResponseBody
-    @GetMapping("/my/formMyinfoPassChange")
+    @PostMapping("/my/formMyinfoPassChange")
     public String formMyinfoPassChange(@RequestBody Map<String, String> request ) {
         log.info("비밀번호 수정 들어가기");
 

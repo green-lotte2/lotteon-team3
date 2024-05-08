@@ -5,7 +5,7 @@ window.onload = function() {
 
     const rePass = /^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\(\\)\-_=+]).{5,16}$/;
     const reNick  = /^[a-zA-Zㄱ-힣0-9]{2,5}$/;
-
+    const btnComplete = document.querySelector('.btnComplete');
     const btnPassCheck = document.querySelector('.btnPassCheck');
 
     if(btnPassCheck) {
@@ -43,7 +43,6 @@ window.onload = function() {
         });
     }
 
-    const btnComplete = document.querySelector('.btnComplete');
     const inputPass1 = document.querySelector('input[name=pass1]');
     const inputPass2 = document.querySelector('input[name=pass2]');
     const resultPass = document.getElementById('result_pass');
@@ -127,33 +126,33 @@ window.onload = function() {
 
                     const uid = document.querySelector('input[name=uid]').value;
                     if (isConfirmed) {
-                    const jsonData={
-                        "uid":uid,
-                        "nick":inputNick.value,
-                    };
+                        const jsonData={
+                            "uid":uid,
+                            "nick":inputNick.value,
+                        };
 
-                    console.log("아이디"+uid);
-                    console.log("닉네임"+inputNick.value);
+                        console.log("아이디"+uid);
+                        console.log("닉네임"+inputNick.value);
 
-                    await fetch('/lotteon/my/formMyinfoNickChange',{
-                        method:'POST',
-                        headers: {'Content-Type': 'application/json'},
-                        body: JSON.stringify(jsonData)
+                        await fetch('/lotteon/my/formMyinfoNickChange',{
+                            method:'POST',
+                            headers: {'Content-Type': 'application/json'},
+                            body: JSON.stringify(jsonData)
 
-                    })
-                        .then(response => response.text())
-                        .then(data => {
-                            console.log(data);
-                            if (data === "success") {
-                                alert('닉네임이 변경되었습니다.');
-                                location.href = `/lotteon/my/info?uid=${uid}`;
-                            } else {
-                                alert('이미 사용중인 닉네임입니다.');
-                            }
                         })
-                        .catch(error => {
-                            console.log(error)
-                        });
+                            .then(response => response.text())
+                            .then(data => {
+                                console.log(data);
+                                if (data === "success") {
+                                    alert('닉네임이 변경되었습니다.');
+                                    location.href = `/lotteon/my/info?uid=${uid}`;
+                                } else {
+                                    alert('이미 사용중인 닉네임입니다.');
+                                }
+                            })
+                            .catch(error => {
+                                console.log(error)
+                            });
                     } else {
                         // 사용자가 취소를 선택한 경우
                         alert('닉네임 변경이 취소되었습니다.');
@@ -166,6 +165,9 @@ window.onload = function() {
             }
         }
     })
+
+
+
 
 
 
