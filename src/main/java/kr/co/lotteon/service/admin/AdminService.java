@@ -413,6 +413,29 @@ public class AdminService {
         }
     }
 
+    // 관리자 상품 상태 변경
+    public ResponseEntity<?> prodStatUpdate(int prodNo, int stat){
+        String status = "";
+
+        switch (stat){
+            case 0 :
+                status = "새상품";
+                break;
+            case 1 :
+                status = "품절";
+                break;
+            case 2 :
+                status = "삭제된 상품";
+                break;
+        }
+        ProductDTO productDTO = new ProductDTO();
+        productDTO.setProdNo(prodNo);
+        productDTO.setStatus(status);
+        productMapper.updateStatusByProdNo(prodNo, status);
+
+        return ResponseEntity.ok().body(productDTO);
+    }
+
     // 관리자 상품 삭제
     public ResponseEntity<?> prodDelete(int[] prodNoArray) {
         log.info("관리자 상품 삭제 Serv 1 : " + Arrays.toString(prodNoArray));

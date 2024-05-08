@@ -8,6 +8,9 @@
     <update id="updateProductHit">
         UPDATE product SET hit = hit+1 WHERE prodNo =#{value};
     </update>
+    <update id="updateStatusByProdNo">
+        UPDATE product SET status = #{status} WHERE prodNo =#{prodNo};
+    </update>
     <update id="updateProductByProdNo" parameterType="map">
         UPDATE product
         SET cate1 = #{cate1},

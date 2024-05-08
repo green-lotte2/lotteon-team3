@@ -1,8 +1,9 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{/layout/adminLayout}">
+      layout:decorate="~{/layout/adminListLayout}">
 <section id="admin-product-list" layout:fragment="content">
     <script>
+
         window.onload = function () {
             // 숫자를 3자리마다 콤마를 추가하여 문자열로 반환하는 함수
             function numberWithCommas(x) {
@@ -117,6 +118,56 @@
                     });
             }
         }
+        // 모달 띄우기
+        function btnModify(button){
+            const modal = document.querySelector(".modal");
+            const modalProdNoInput = document.getElementById('modalProdNoInput');
+            const prodNo = button.dataset.prod;
+            console.log(prodNo);
+
+            // 모달에 rno 보내기
+            modalProdNoInput.value = prodNo;
+            modal.style.display = "block";
+        }
+        // 모달 끄기
+        function closeModal() {
+            const modal = document.querySelector(".modal");
+            modal.style.display = "none";
+        }
+
+        // 수정 정보 전송
+        async function modifySubmit(button){
+            // form data
+            const form = document.getElementById('prodModalForm');
+            const prodNo = form.prodNo.value;
+            const statusNum = button.dataset.stat;
+
+            console.log("111 : "+prodNo);
+            console.log("222 : "+statusNum);
+            // table의 emp, status span
+            const statusSpanClass = '.statusSpan' + prodNo;
+            const statusSpan = document.querySelector(statusSpanClass);
+
+            console.log(statusSpan);
+            // table에 변경된 정보 반영
+            switch (statusNum) {
+                case "0" :
+                    statusSpan.innerText = "새상품";
+                    statusSpan.style = "color: #0ca03c";
+                    break;
+                case "1" :
+                    statusSpan.innerText = "품절";
+                    statusSpan.style = "color: #0c2aa0";
+                    break;
+                case "2" :
+                    statusSpan.innerText = "삭제된 상품";
+                    statusSpan.style = "color: #e60822";
+                    break;
+            }
+            // 정보 전송
+            const data = await fetchGet(`/lotteon/admin/product/status/${prodNo}/${statusNum}`);
+            closeModal();
+        }
     </script>
                 <nav>
                     <h3>상품목록</h3>
@@ -126,8 +177,12 @@
                 </nav>
                 <!-- 상품목록 컨텐츠 시작 -->                                
                 <section>
-                    <form th:action="@{/admin/product/list}" method="get" id="searchForm">
-                        <select name="type" onchange="findCate(this.value)">
+                    <!-- 검색 nav -->
+                    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                        <div class="container-fluid" id="recruitSearchDiv">
+                            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <form th:action="@{/admin/product/list}" class="d-flex" method="get" id="searchForm">
+                        <select class="form-select form-select" name="type" onchange="findCate(this.value)">
                             <option value="noselect">검색</option>
                             <option value="all">전체</option>
                             <option value="prodName">상품명</option>
@@ -138,18 +193,20 @@
                         </select>
                         <input type="hidden" name="keyword" placeholder="검색어를 입력하세요" id="keywordInput"/>
                     </form>
+                            </div>
+                        </div>
+                    </nav>
                     <!-- 상품 없을 때 -->
                     <th:block th:if="${adminPageResponseDTO.dtoList.isEmpty()}">
                         <div>
                             <img th:src="@{/admin/images/noproduct.png}" style="width: 900px; height: 460px">
                         </div>
                     </th:block>
-                    <table>
-                        <form id="formCheck" th:action="@{/admin/product/delete}" method="get">
+                    <table class="table">
+                        <thead class="thead">
                             <tr th:if="${!adminPageResponseDTO.dtoList.isEmpty()}">
-                                <th><input type="checkbox" name="all" onclick="totalCheck()"/></th>
-                                <th>이미지</th>
                                 <th>상품코드</th>
+                                <th>이미지</th>
                                 <th>상품명</th>
                                 <th>판매가격</th>
                                 <th>할인율</th>
@@ -157,18 +214,27 @@
                                 <th>재고</th>
                                 <th>제조사</th>
                                 <th>조회</th>
-                                <th>관리</th>
+                                <th>상태</th>
+                                <th class="checkTd">
+                                    <input type="checkbox" class="btn-check prodCheckAll" id="btn-check-5" autocomplete="off">
+                                    <label class="btn prodLabel" for="btn-check-5" onclick="totalCheck()">&#10004;</label>
+                                    <!--<label class="btn btn-outline-secondary" for="checkall">전체선택</label>
+                                    <input type="checkbox" name="all" class="btn-check" id="checkall" onclick="totalCheck()" style="display: none;"/>-->
+                                </th>
                             </tr>
+                        </thead>
+                        <tbody class="tbody">
                             <th:block th:each="product, loop : ${adminPageResponseDTO.dtoList}">
                                 <tr>
-                                    <td><input type="checkbox" name="prodNo" th:value="${product.prodNo}" class="prodCheckBox"/></td>
+                                    <td th:text="${product.prodNo}">상품코드</td>
                                     <td>
                                         <img th:src="@{'/prodImg/'+${product.thumb1}}"
                                              class="thumb"
                                              style="width: 60px; height: 60px;">
                                     </td>
-                                    <td th:text="${product.prodNo}">상품코드</td>
-                                    <td th:text="${product.prodName}">상품명</td>
+                                    <td>
+                                        <a th:href="@{/admin/product/view(prodNo = ${product.prodNo})}">[[${product.prodName}]]</a>
+                                    </td>
                                     <td><span class="price">[[${product.price}]]</span>  <strong> 원</strong></td>
                                     <td th:text="${product.discount}">할인율</td>
                                     <td th:text="${product.point}">적립금</td>
@@ -176,34 +242,64 @@
                                     <td th:text="${product.company}">제조사</td>
                                     <td th:text="${product.hit}">조회</td>
                                     <td>
-                                        <a th:href="@{/admin/product/view(prodNo = ${product.prodNo})}">상세</a>
+                                        <span th:class="${'statusSpan'+product.prodNo}" th:if="${product.status == '새상품'}" style="color: #0ca03c"  th:data-prod="${product.prodNo}" onclick="btnModify(this)">새상품</span>
+                                        <span th:class="${'statusSpan'+product.prodNo}" th:if="${product.status == '품절'}" style="color: #0c2aa0" th:data-prod="${product.prodNo}" onclick="btnModify(this)">품절</span>
+                                        <span th:class="${'statusSpan'+product.prodNo}" th:if="${product.status == '삭제된 상품'}" style="color: #e60822" th:data-prod="${product.prodNo}" onclick="btnModify(this)">삭제된 상품</span>
+                                    </td>
+                                    <td class="checkTd">
+                                        <input type="checkbox" class="btn-check prodCheck" th:id="${'btn-check' + product.prodNo}" th:data-prodNo="${product.prodNo}" autocomplete="off">
+                                        <label class="btn prodLabel" th:for="${'btn-check' + product.prodNo}">&#10004;</label>
                                     </td>
                                 </tr>
                             </th:block>
-                        </form>
+                        </tbody>
                     </table>
-                    <button onclick="prodDelete()">선택삭제</button>
-                    <div class="paging" th:if="${!adminPageResponseDTO.dtoList.isEmpty()}">
-                        <span class="prev">
-                            <a th:if="${adminPageResponseDTO.keyword == null}" class="page-link" th:href="@{/admin/product/list(pg=${adminPageResponseDTO.start - 1})}">&#60;</a>
-                            <a th:if="${adminPageResponseDTO.keyword != null}" class="page-link" th:href="@{/admin/product/list(pg=${adminPageResponseDTO.start - 1}, type=${adminPageResponseDTO.type}, keyword=${adminPageResponseDTO.keyword})}">&#60;</a>
-                        </span>
-                        <span class="num"> <!-- 해당 페이지 class on-->
-                            <th:block th:each="num:${#numbers.sequence(adminPageResponseDTO.start, adminPageResponseDTO.end)}">
-                                <a  th:if="${adminPageResponseDTO.keyword == null}" th:classappend="${adminPageResponseDTO.pg == num} ? 'page-link on' : 'page-link'" th:href="@{/admin/product/list(pg=${num})}">
-                                    [[${num}]]
-                                </a>
-                                <a  th:if="${adminPageResponseDTO.keyword != null}" th:classappend="${adminPageResponseDTO.pg == num} ? 'page-link on' : 'page-link'" th:href="@{/admin/product/list(pg=${num}, type=${adminPageResponseDTO.type}, keyword=${adminPageResponseDTO.keyword})}">
-                                    [[${num}]]
-                                </a>
-                            </th:block>
-                        </span>
-                        <span class="next">
-                            <a th:if="${adminPageResponseDTO.keyword == null}" class="page-link" th:href="@{/admin/product/list(pg=${adminPageResponseDTO.end + 1})}">&#62;</a>
-                            <a th:if="${adminPageResponseDTO.keyword != null}" class="page-link" th:href="@{/admin/product/list(pg=${adminPageResponseDTO.end + 1}, type=${adminPageResponseDTO.type}, keyword=${adminPageResponseDTO.keyword})}">&#62;</a>
-                        </span>
+                    <!-- 페이지 -->
+                    <div class="pageDiv" id="pageDiv" th:if="${!adminPageResponseDTO.dtoList.isEmpty()}">
+                        <nav aria-label="Page navigation example" th:if="${!adminPageResponseDTO.dtoList.isEmpty()}">
+                            <ul class="pagination">
+                                <li class="page-item">
+                                    <a class="page-link" th:href="@{/admin/company/recruit(pg=${adminPageResponseDTO.start - 1})}" aria-label="Previous"  th:if="${adminPageResponseDTO.keyword == null}" >
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                    <a class="page-link" th:href="@{/admin/company/recruit(pg=${adminPageResponseDTO.start - 1}, type=${adminPageResponseDTO.type}, keyword=${adminPageResponseDTO.keyword})}" aria-label="Previous"  th:if="${adminPageResponseDTO.keyword != null}" >
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+                                <th:block th:each="num:${#numbers.sequence(adminPageResponseDTO.start, adminPageResponseDTO.end)}">
+                                    <li class="page-item"><a class="page-link" th:href="@{/admin/company/recruit(pg=${num})}" th:if="${adminPageResponseDTO.keyword == null}">[[${num}]]</a></li>
+                                    <li class="page-item"><a class="page-link" th:href="@{/admin/company/recruit(pg=${num}, type=${adminPageResponseDTO.type}, keyword=${adminPageResponseDTO.keyword})}" th:if="${adminPageResponseDTO.keyword != null}">[[${num}]]</a></li>
+                                </th:block>
+                                <li class="page-item">
+                                    <a th:if="${adminPageResponseDTO.keyword == null}" class="page-link"  th:href="@{/admin/company/recruit(pg=${adminPageResponseDTO.end + 1})}" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                    <a th:if="${adminPageResponseDTO.keyword != null}" class="page-link"  th:href="@{/admin/company/recruit(pg=${adminPageResponseDTO.end + 1}, type=${adminPageResponseDTO.type}, keyword=${adminPageResponseDTO.keyword})}" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
                     </div>
-
+                    <button onclick="prodDelete()">선택삭제</button>
+                    <!-- 모달 -->
+                    <div class="statusModal modal" id="prodStatModal">
+                        <span class="close" onclick="closeModal()" style="font-size: 30px;">&times;</span>
+                        <form id="prodModalForm" th:action="@{/admin/product/}">
+                            <div id="prodStatModalDiv">
+                                <h3>상태</h3>
+                                <div class="statusRadio">
+                                    <input type="hidden" name="prodNo" id="modalProdNoInput">
+                                    <input type="radio" class="btn-check statRadio0" name="status" id="btn-check-1" value="0"  autocomplete="off">
+                                    <label class="btn btn-outline-secondary" for="btn-check-1" onclick="modifySubmit(this)" data-stat="0">새상품</label>
+                                    <input type="radio" class="btn-check statRadio1" name="status" id="btn-check-2" value="1"  autocomplete="off">
+                                    <label class="btn btn-outline-secondary" for="btn-check-2" onclick="modifySubmit(this)" data-stat="1">품절</label>
+                                    <input type="radio" class="btn-check statRadio2" name="status" id="btn-check-3" value="2"  autocomplete="off">
+                                    <label class="btn btn-outline-secondary" for="btn-check-3" onclick="modifySubmit(this)" data-stat="2">삭제</label>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                 </section>                
                 <p class="ico info">
                     <strong>Tip!</strong>

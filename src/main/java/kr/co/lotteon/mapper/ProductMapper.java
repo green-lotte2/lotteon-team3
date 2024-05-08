@@ -8,4 +8,6 @@ public interface ProductMapper {
     public void updateProductHit(int prodNo);
 
     public void updateProductByProdNo(ProductDTO productDTO);
+
+    public void updateStatusByProdNo(int prodNo, String status);
 }
