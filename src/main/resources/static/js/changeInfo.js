@@ -6,10 +6,13 @@ window.onload = function() {
     let isChangeEmailOk=false;
     let isEmailCodeOk = false;
     let isPassCheckOk=false;
+    let isHpOk = false;
+
 
     const rePass = /^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\(\\)\-_=+]).{5,16}$/;
     const reNick = /^[a-zA-Zㄱ-힣0-9]{2,5}$/;
     const reEmail = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
+    const reHp = /^01(?:0|1|[6-9])-(?:\d{4})-\d{4}$/;
 
 
     const btnComplete = document.querySelector('.btnComplete');
@@ -370,8 +373,71 @@ window.onload = function() {
         })
     }
 
+    // 휴대폰 변경
+    const inputHp = document.querySelector('input[name=hp]');
+    const btnHpChange=document.getElementById('btnHpChange');
+    const resultHp=document.getElementById('result_hp')
 
-}
+    inputHp.addEventListener('focusout',()=>{
+
+        if(!inputHp.value.match(reHp)){
+            resultHp.innerText = '휴대폰 형식이 맞지 않습니다.';
+            resultHp.style.color = 'red';
+            isHpOk = false;
+        }else{
+            resultHp.innerText='';
+            isHpOk=true;
+            if(btnHpChange&&isHpOk){
+                btnHpChange.addEventListener('click', async function (e) {
+
+                    const confirmMessage = '휴대폰을 변경하시겠습니까?';
+                    const isConfirmed = confirm(confirmMessage);
+
+                    if (isConfirmed) {
+                        const jsonData = {
+                            "uid": uid,
+                            "hp": inputHp.value,
+                        };
+
+                        console.log("아이디" + uid);
+                        console.log("휴대폰" + inputHp.value);
+
+                        await fetch('/lotteon/my/formMyinfoHpChange', {
+                            method: 'POST',
+                            headers: {'Content-Type': 'application/json'},
+                            body: JSON.stringify(jsonData)
+
+                        })
+                            .then(response => response.text())
+                            .then(data => {
+                                console.log(data);
+                                if (data === "success") {
+                                    alert('휴대폰이 변경되었습니다.');
+                                    location.href = `/lotteon/my/info?uid=${uid}`;
+                                } else {
+                                    alert('이미 사용중인 휴대폰입니다.');
+                                }
+                            })
+                            .catch(error => {
+                                console.log(error)
+                            });
+                    } else {
+                        // 사용자가 취소를 선택한 경우
+                        alert('휴대폰 변경이 취소되었습니다.');
+                    }
+
+
+                })
+
+            }
+        }
+
+    })
+
+
+
+
+}//끝
 
 
 

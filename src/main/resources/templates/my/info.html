@@ -64,11 +64,12 @@
                             <tr>
                                 <td>휴대폰</td>
                                 <td>
-                                    <p class="hp">
-                                        <input type="text" name="hp" maxlength="13" minlength="13" data-type="hp" th:value="${memberDTO.hp}"/>
+                                    <span class="hp">
+                                        <input type="text" name="hp" id="hp" size="50" data-type="hp" th:value="${memberDTO.hp}" />
+                                        <button type="button" id="btnHpChange" data-type="hp">휴대폰 변경</button>
                                         <span class="msgHp"> - 포함 13자리를 입력하세요.</span>
+                                    </span>
                                     <div id="result_hp"></div>
-                                    </p>
                                 </td>
                             </tr>
                             <tr>

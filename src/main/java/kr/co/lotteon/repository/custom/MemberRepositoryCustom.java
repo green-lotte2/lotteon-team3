@@ -31,6 +31,9 @@ public interface MemberRepositoryCustom {
     // 이메일 조회
     public int countByUidAndEmail(String uid, String email);
 
+    // 휴대폰 조회
+    public int countByUidAndHp(String uid,String hp);
+
 
 
 }

@@ -191,5 +191,15 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
                 .fetchCount();
     }
 
+    @Override
+    public int countByUidAndHp(String uid, String hp) {
+        return (int)jpaQueryFactory
+                .select(qMember)
+                .from(qMember)
+                .where(qMember.uid.eq(uid).and(qMember.hp.eq(hp)))
+                .fetchCount();
+
+    }
+
 
 }

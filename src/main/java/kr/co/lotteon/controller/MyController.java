@@ -221,6 +221,30 @@ public class MyController {
         }
 
     }
+    //휴대폰 수정
+    @ResponseBody
+    @PostMapping("/my/formMyinfoHpChange")
+    public String formMyinfoHpChange(@RequestBody Map<String, String> request ) {
+        log.info("휴대폰 수정 들어가기");
+
+        String uid = request.get("uid");
+        log.info("입력된 아이디 : "+uid);
+
+        String hp = request.get("hp");
+        log.info("수정한 휴대폰 : "+hp);
+
+        int count = memberService.countByUidAndHp(uid, hp);
+        log.info("중복된 휴대폰 : "+count);
+        if(count>0){
+            return "fail";
+
+        }else{
+            memberService.updateHp(uid,hp);
+            return "success";
+
+        }
+
+    }
 
     
 

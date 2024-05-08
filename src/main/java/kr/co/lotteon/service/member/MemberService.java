@@ -106,6 +106,20 @@ public class MemberService {
         memberRepository.save(member);
     }
 
+    //myInfo - 휴대폰 중복검사
+    public int countByUidAndHp(String uid,String hp){
+        return memberRepository.countByUidAndHp(uid,hp);
+    }
+
+
+    //myInfo - 휴대폰 수정
+    public void updateHp(String uid,String hp){
+        Member member = memberRepository.findById(uid).get();
+        member.setHp(hp);
+        log.info("휴대폰 변경 완료");
+        memberRepository.save(member);
+    }
+
 
     //이메일 전송
     @Value("${spring.mail.username}")
