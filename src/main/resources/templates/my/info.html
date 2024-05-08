@@ -28,7 +28,7 @@
                             <tr>
                                 <td>사용자 ID</td>
                                 <!-- 아이디 뒤 네자리 마스킹 처리 -->
-                                <td th:text="${#strings.substring(memberDTO.uid, 0, memberDTO.uid.length() - 4) + '****'}"></td>
+                                <td th:text="${memberDTO.uid}"></td>
                             </tr>
                             <tr>
                                 <td>비밀번호</td>
@@ -38,7 +38,7 @@
                             </tr>
                             <tr>
                                 <td>이름</td>
-                                <td th:text="${#strings.substring(memberDTO.name, 0, 1) + '*' + #strings.substring(memberDTO.name, memberDTO.name.length() - 1)}"></td>
+                                <td th:text="${memberDTO.name}"></td>
 
                             </tr>
                             <!-- 추가 -->
@@ -56,31 +56,20 @@
                             </tr>
                             <tr>
                                 <td>E-mail</td>
-                                <td id="newEmail">
-                                    <input id="inputEmail" type="email" name="email" th:value="${memberDTO.email}"/>
-                                    <button class="btnSubmit" type="button" id="btn_email" data-type="email">이메일 인증</button>
-                                    <span id="result_email"></span>
-
-                                    <div id="divEmailCode">
-                                        <input class="form-control" id="inputEmailCode" name="code" type="text"
-                                               placeholder="이메일 인증코드 입력" disabled/>
-
-                                        <button type="button" class="btnSubmit" id="btnCheckEmailCode"
-                                                data-type="email">
-                                            <span class="" role="status">인증코드 확인</span>
-                                        </button>
-                                        <div id="resultEmailCode" class="d-block"></div>
-                                    </div>
+                                <td>
+                                    <button id="btnEmailChange">이메일 변경</button>
                                 </td>
+
                             </tr>
                             <tr>
                                 <td>휴대폰</td>
                                 <td>
-                                    <p class="hp">
-                                        <input type="text" name="hp" maxlength="13" minlength="13" data-type="hp" th:value="${memberDTO.hp}"/>
+                                    <span class="hp">
+                                        <input type="text" name="hp" id="hp" size="50" data-type="hp" th:value="${memberDTO.hp}" />
+                                        <button type="button" id="btnHpChange" data-type="hp">휴대폰 변경</button>
                                         <span class="msgHp"> - 포함 13자리를 입력하세요.</span>
+                                    </span>
                                     <div id="result_hp"></div>
-                                    </p>
                                 </td>
                             </tr>
                             <tr>
@@ -104,4 +93,120 @@
                 </section>
             </div>
         </div>
+    <!-- info - 비밀번호 변경 팝업 -->
+    <div id="popPassChange" class="popup">
+        <div>
+            <nav>
+                <h1>비밀번호 변경</h1>
+                <button class="btnClose">X</button>
+            </nav>
+            <section>
+                <table>
+                    <input type="hidden" name="uid" th:value="${#authentication.principal.member.uid}"/>
+                    <tr>
+                        <th>새 비밀번호</th>
+                        <td>
+                            <input type="password" name="pass1" placeholder="새 비밀번호 입력"/>
+                            <span class="msgPass1"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>새 비밀번호 확인</th>
+                        <td>
+                            <input type="password" name="pass2" placeholder="새 비밀번호 입력 확인"/>
+                            <span class="msgPass2"></span>
+                            <span id="result_pass"></span>
+                        </td>
+                    </tr>
+                </table>
+                <p>
+                    비밀번호를 변경해 주세요.<br>
+                    영문, 숫자, 특수문자를 사용하여 8자 이상 입력해 주세요.
+                </p>
+                <div>
+                    <button class="btnComplete">완료</button>
+                </div>
+            </section>
+        </div>
+    </div>
+    <!-- info - 비밀번호 변경 팝업 끝 -->
+
+    <!-- info - 이메일 변경 팝업 -->
+    <div id="popEmailChange" class="popup">
+        <div>
+            <nav>
+                <h1>이메일 변경</h1>
+                <button class="btnClose">X</button>
+            </nav>
+            <section>
+                <table>
+                    <input type="hidden" name="uid" th:value="${#authentication.principal.member.uid}"/>
+                    <tr>
+                        <th>등록된 이메일</th>
+                        <td>
+                            <span class="originEmail" th:text="${memberDTO.email}"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>등록된 이메일 입력</th>
+                        <td>
+                            <input type="email" name="checkOriginEmail" placeholder="등록된 이메일 입력"/>
+                            <button class="btnCheckOriginEmail">확인</button>
+                            <div><span id="checkOriginEmail_result"></span></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>변경할 이메일 입력</th>
+                        <td>
+                            <input type="email" name="changeEmail" placeholder="변경할 이메일 입력"/>
+                            <button class="btnCheckChangeEmail" type="button" data-type="email">인증</button>
+                            <div><span id="checkChangeEmail_result"></span></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>인증번호</th>
+                        <td>
+                            <input type="text" id="inputEmailCode" name="code" placeholder="인증번호 입력" disabled/>
+                            <button type="button"  id="btnCheckEmailCode" data-type="email">
+                                <span class="" role="status">인증번호 확인</span>
+                            </button>
+                            <div id="resultEmailCode"></div>
+                        </td>
+                    </tr>
+                </table>
+                <div>
+                    <button class="btnEmailComplete">완료</button>
+                </div>
+            </section>
+        </div>
+    </div>
+    <!-- info - 이메일 변경 팝업 끝 -->
+
+    <!-- info - 회원탈퇴 팝업 -->
+    <div id="popWithdraw" class="popup">
+        <div>
+            <nav>
+                <h1>회원 탈퇴</h1>
+                <button class="btnClose">X</button>
+            </nav>
+            <section>
+                <table>
+                    <input type="hidden" name="uid" th:value="${#authentication.principal.member.uid}"/>
+                    <tr>
+                        <th>비밀번호 입력</th>
+                        <td>
+                            <input type="password" name="passCheck" placeholder="비밀번호 입력"/>
+                        </td>
+                    </tr>
+                </table>
+                <p>
+                    회원 탈퇴 후, 계정 복구는 불가합니다.
+                </p>
+                <div>
+                    <button class="btnPopWithdraw">탈퇴하기</button>
+                </div>
+            </section>
+        </div>
+    </div>
+    <!-- info - 회원탈퇴 팝업 끝 -->
 </main>

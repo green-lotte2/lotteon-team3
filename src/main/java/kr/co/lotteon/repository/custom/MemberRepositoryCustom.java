@@ -28,6 +28,12 @@ public interface MemberRepositoryCustom {
     // 닉네임 조회
     public Optional<Member> selectMemberByUidAndNickname(String uid, String nick);
 
+    // 이메일 조회
+    public int countByUidAndEmail(String uid, String email);
+
+    // 휴대폰 조회
+    public int countByUidAndHp(String uid,String hp);
+
 
 
 }
