@@ -190,10 +190,16 @@ public class AdminController {
         return "/admin/product/view";
     }
 
+    // 관리자 상품 상태 변경
+    @ResponseBody
+    @GetMapping("/admin/product/status/{prodNo}/{statusNum}")
+    public ResponseEntity<?> prodStatus(@PathVariable("prodNo")int prodNo, @PathVariable("statusNum")int statusNum){
+        return adminService.prodStatUpdate(prodNo, statusNum);
+    }
     // 관리자 상품 삭제
     @ResponseBody
     @PostMapping("/admin/product/delete")
-    public ResponseEntity prodDelete(@RequestBody Map<String, int[]> requestData){
+    public ResponseEntity<?> prodDelete(@RequestBody Map<String, int[]> requestData){
         int[] prodNoArray = requestData.get("prodNoArray");
         log.info("상품 삭제 Cont 1 : " + requestData);
         return adminService.prodDelete(prodNoArray);
