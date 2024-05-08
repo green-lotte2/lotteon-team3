@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>구매회원 약관</title>
+    <title>약관</title>
     <link rel="stylesheet" th:href="@{https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css}"/>
     <link rel="stylesheet" th:href="@{https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css}"/>
     <link rel="stylesheet" th:href="@{https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.css}"/>
@@ -29,6 +29,7 @@
                     <span>[[${#authentication.principal.member.name}]]님</span>
                     <a th:href="@{/member/logout}">로그아웃</a>
                     <a th:href="@{/my/home(uid=${#authentication.principal.member.uid})}">마이페이지</a>
+
                     <a th:href="@{/product/cart}">
                         <i class="fa fa-shopping-cart" aria-hidden="true"></i>&nbsp;장바구니
                     </a>
@@ -37,7 +38,7 @@
         </div>
         <div class="logo">
             <div>
-                <a th:href="@{/}"><img th:src="@{/images/header_logo.png}" alt="로고" /></a>
+                <a th:href="@{/index}"><img th:src="@{/images/header_logo.png}" alt="로고" /></a>
                 <form action="#">
                     <input type="text" name="search"/>
                     <button><i class="fa fa-search"></i></button>
@@ -47,11 +48,11 @@
         <div class="menu">
             <div>
                 <ul>
-                    <li><a th:href="@{/product/list}">히트상품</a></li>
-                    <li><a th:href="@{/product/list}">추천상품</a></li>
-                    <li><a th:href="@{/product/list}">최신상품</a></li>
-                    <li><a th:href="@{/product/list}">인기상품</a></li>
-                    <li><a th:href="@{/product/list}">할인상품</a></li>
+                    <li><a th:href="@{/product}">히트상품</a></li>
+                    <li><a th:href="@{/product}">추천상품</a></li>
+                    <li><a th:href="@{/product}">최신상품</a></li>
+                    <li><a th:href="@{/product}">인기상품</a></li>
+                    <li><a th:href="@{/product}">할인상품</a></li>
                 </ul>
                 <ul>
                     <li><a th:href="@{/cs/notice/list}">공지사항</a></li>
@@ -62,13 +63,9 @@
             </div>
         </div>
     </header>
-
-    <main layout:fragment="content">
+    <div layout:fragment="content">
         <!-- 내용 -->
-    </main>
-
-
-
+    </div>
     <footer>
         <ul>
             <li><a th:href="@{/company/index}">회사소개</a></li>

@@ -13,6 +13,7 @@ public class PolicyController {
     // buyer (구매 회원 약관) 페이지 매핑
     @GetMapping("/policy/buyer")
     public String buyer(){
+
         return "/policy/buyer";
     }
     // seller (판매 회원 약관) 페이지 매핑
