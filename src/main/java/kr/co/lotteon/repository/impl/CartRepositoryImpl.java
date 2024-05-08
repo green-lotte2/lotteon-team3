@@ -71,8 +71,7 @@ public class CartRepositoryImpl implements CartRepositoryCustom {
                     cartInfoDTO.setCount(tuple.get(0, Integer.class));
                     cartInfoDTO.setOpNo(tuple.get(1, String.class));
                     cartInfoDTO.setCartNo(tuple.get(2, Integer.class));
-                    log.info(" pppppppp : "+product);
-                    log.info(" gggggggg : "+cartInfoDTO);
+
                     return cartInfoDTO;
                 })
                 .toList();
