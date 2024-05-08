@@ -182,5 +182,14 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
         return Optional.ofNullable(member);
     }
 
+    @Override
+    public int countByUidAndEmail(String uid, String email) {
+        return (int)jpaQueryFactory
+                .select(qMember)
+                .from(qMember)
+                .where(qMember.uid.eq(uid).and(qMember.email.eq(email)))
+                .fetchCount();
+    }
+
 
 }

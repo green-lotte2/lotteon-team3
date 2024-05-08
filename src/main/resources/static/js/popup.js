@@ -56,4 +56,10 @@ $(function(){
         $('#popPassChange').addClass('on');
     });
 
+    // info - 이메일 변경 창 띄우기
+    $('#btnEmailChange').click(function(e){
+        e.preventDefault();
+        $('#popEmailChange').addClass('on');
+    });
+
 });

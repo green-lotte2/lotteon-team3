@@ -38,7 +38,7 @@
                                 회원님의 개인정보를 안전하게 보호하기 위해 비밀번호를 다시 한 번 입력해주세요.
                             </p>
                             <div class="btnArea">
-                                <a th:href="@{/my/}" class="btnAreaCancel">취소</a>
+                                <a th:href="@{/my/home(uid=${#authentication.principal.member.uid})}" class="btnAreaCancel">취소</a>
                                 <a th:href="@{/my/info(uid=${#authentication.principal.member.uid})}" class="btnPassCheck">다음</a>
                             </div>
                         </form>

@@ -93,6 +93,19 @@ public class MemberService {
         memberRepository.save(member);
     }
 
+    //myInfo - 이메일 일치여부
+    public int countByUidAndEmail(String uid, String email){
+        return memberRepository.countByUidAndEmail(uid,email);
+    }
+    
+    //myInfo - 이메일 수정
+    public void updateEmail(String uid, String email){
+        Member member = memberRepository.findById(uid).get();
+        member.setEmail(email);
+        log.info("이메일 변경 완료");
+        memberRepository.save(member);
+    }
+
 
     //이메일 전송
     @Value("${spring.mail.username}")
