@@ -1,9 +1,10 @@
 package kr.co.lotteon.repository.impl;
 
 import com.querydsl.core.QueryResults;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.co.lotteon.dto.admin.AdminPageRequestDTO;
-import kr.co.lotteon.entity.admin.Article;
+import kr.co.lotteon.dto.company.RecruitDTO;
 import kr.co.lotteon.entity.admin.QRecruit;
 import kr.co.lotteon.entity.admin.Recruit;
 import kr.co.lotteon.repository.custom.RecruitRepositoryCustom;
@@ -41,10 +42,25 @@ public class RecruitRepositoryImpl implements RecruitRepositoryCustom {
 
     // 관리자 - 회사소개 채용 검색
     @Override
-    public Page<Recruit> searchRecruitForAdmin(AdminPageRequestDTO adminPageRequestDTO, Pageable pageable){
+    public Page<Recruit> searchRecruitForAdmin(AdminPageRequestDTO adminPageRequestDTO, Pageable pageable, RecruitDTO recruitDTO){
+
+        BooleanExpression expression = null;
+
+        // 고용 형태만 검색
+        if(recruitDTO.getEmployment() != 8 && recruitDTO.getStatus() == 8){
+            expression = qRecruit.employment.eq(recruitDTO.getEmployment());
+            // 상태만 검색
+        }else if(recruitDTO.getEmployment() == 8 && recruitDTO.getStatus() != 8){
+            expression = qRecruit.status.eq(recruitDTO.getStatus());
+            // 고용 형태 + 상태 검색
+        }else{
+            expression = qRecruit.status.eq(recruitDTO.getStatus()).and(qRecruit.employment.eq(recruitDTO.getEmployment()));
+        }
+
         QueryResults<Recruit> results = jpaQueryFactory
                 .select(qRecruit)
                 .from(qRecruit)
+                .where(expression)
                 .orderBy(qRecruit.rno.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())

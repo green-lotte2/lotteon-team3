@@ -17,9 +17,10 @@
 
           <!-- 검색결과 그룹박스 -->
           <div class="group">
-            <h3><strong>[[${keyword}]]</strong>검색결과 <em>(총&nbsp;:&nbsp;<span>20</span>&nbsp;건)</em></h3>
-            <form action="#">
-              <input type="text" name="search"/>
+            <h3><strong th:text="${searchPageRequestDTO.searchKeyword}"></strong> 검색결과 <em>(총&nbsp;:&nbsp;<span th:text="${searchPageResponseDTO.total}"></span>&nbsp;건)</em></h3>
+
+            <form action="">
+              <input type="text" name="searchKeyword" placeholder="상품을 검색해보세요"/>
               <input type="submit" value="검색"/>
               <span>
                   <label><input type="checkbox" name="chk" value="상품명">상품명</label>
@@ -44,49 +45,53 @@
               <li><a href="#">최근등록순</a></li>
           </ul>
 
-          <!-- 상품목록 -->
-          <div class="row row-cols-md-2">
-            <div class="card card h-100" style="width: 18rem; margin-right: 10px;">
-              <a th:href="@{#}" class="thumb">
-                <img src="https://via.placeholder.com/120x120" class="card-img-top" style="width: 100%;" alt="상품이미지">
-              </a>
-              <div class="card-body">
-                <a th:href="@{#}" class="thumb">
-                  <h5 class="seller"></h5> <h6></h6>
-                  <p class="card-text"></p>
-                  <p></p>
-                  <ul>
-                    <li><ins class="dis-price"></ins></li>
-                    <li>
-                      <span class="discount"></span>
-                      <del class="org-price"></del>
-                    </li>
-                    <li><span class="free-delivery">무료배송</span></li>
-                  </ul>
-                </a>
-              </div>
-            </div>
-          </div>
+          <!-- 검색목록 -->
+          <table border="0">
+            <tr th:each="product : ${searchPageResponseDTO.dtoList}">
+              <td><a href="#" class="thumb"><img th:src="${product.thumb1}" alt="상품이미지" width="120" height="120"/></a></td>
+              <td>
+                <h3 class="name" th:text="${product.prodName}">상품명</h3>
+                <a href="#" class="desc" th:text="${product.descript}">상품 설명</a>
+              </td>
+              <td>
+                <ul>
+                  <li><ins class="dis-price" th:text="${product.price - (product.price * product.discount / 100)}"></ins></li>
+                  <li>
+                    <del class="org-price" th:text="${product.price}"></del>
+                    <span class="discount" th:text="${product.discount} + '%'"></span>
+                  </li>
+                  <li><span class="free-delivery">무료배송</span></li>
+                </ul>
+              </td>
+              <td>
+                <h4 class="seller"><i class="fas fa-home"></i>&nbsp;<span th:text="${product.seller}">판매자</span></h4>
+                <!-- <h5 class="badge power great" th:text="${product.sellerGrade}">판매자등급</h5> -->
+                <h6 class="rating star3">상품평</h6>
+              </td>
+            </tr>
+          </table>
 
           <!-- 상품목록 페이지번호 -->
-          <div class="paging">
-            <span class="prev">
-              <a href="#"><&nbsp;이전</a>
-            </span>
-            <span class="num">
-              <a href="#" class="on">1</a>
-              <a href="#">2</a>
-              <a href="#">3</a>
-              <a href="#">4</a>
-              <a href="#">5</a>
-              <a href="#">6</a>
-              <a href="#">7</a>
-            </span>
-            <span class="next">
-              <a href="#">다음&nbsp;></a>
-            </span>
+          <div class="paging" th:if="${searchPageResponseDTO.total gt 0}">
+    <span class="prev" th:if="${searchPageResponseDTO.prev}">
+        <a th:href="@{/product/search(searchKeyword=${searchPageRequestDTO.searchKeyword},pg=${searchPageResponseDTO.start - 1})}">&lt;&nbsp;이전</a>
+    </span>
+            <span th:each="num : ${#numbers.sequence(searchPageResponseDTO.start, searchPageResponseDTO.end)}" class="num">
+        <a th:classappend="${searchPageResponseDTO.pg eq num ? 'on' : 'off'}" th:href="@{/product/search(searchKeyword=${searchPageRequestDTO.searchKeyword},pg=${num})}">
+            [[${num}]]
+        </a>
+    </span>
+            <span class="next" th:if="${searchPageResponseDTO.next}">
+        <a th:href="@{/product/search(searchKeyword=${searchPageRequestDTO.searchKeyword},pg=${searchPageResponseDTO.end + 1})}">다음&nbsp;&gt;</a>
+    </span>
           </div>
-          
+
+
+          <!-- 검색결과가 없을 때의 메시지 -->
+          <div th:if="${searchPageResponseDTO.total eq 0}" style="text-align: center;">
+            <p style="color: #d50c0d; font-size: 18px;"><strong>검색 결과가 없습니다.</strong></p>
+          </div>
+
         </section>
         <!-- 상품검색 화면 끝 -->
 

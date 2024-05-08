@@ -788,12 +788,32 @@ public class AdminService {
                     OrderItem orderItem = tuple.get(0, OrderItem.class);
                     Order order         = tuple.get(1, Order.class);
                     Product product     = tuple.get(2, Product.class);
-                    Option option       = tuple.get(3, Option.class);
 
                     // Entity -> DTO
                     OrderItemDTO orderItemDTO   = modelMapper.map(orderItem, OrderItemDTO.class);
                     OrderDTO orderDTO           = modelMapper.map(order, OrderDTO.class);
                     ProductDTO productDTO       = modelMapper.map(product, ProductDTO.class);
+
+                    // opNos
+                    String strOpNos = orderItemDTO.getOpNo();
+                    log.info("strOpNos : " + strOpNos);
+
+                    if(strOpNos != null) {
+
+                        // String -> List<Integer>
+                        List<Integer> opNos = Arrays.stream(strOpNos.split(","))
+                                .map(Integer::parseInt)
+                                .collect(Collectors.toList());
+
+                        // optionList 조회
+                        List<OptionDTO> options = optionRepository.selectOptionByOpNos(opNos)
+                                .stream()
+                                .map(entity -> modelMapper.map(entity, OptionDTO.class))
+                                .toList();
+                        log.info("options : "+ options);
+
+                        orderListDTO.setOpList(options);
+                    }
 
                     // DTO들을 OrderListDTO에 포함
                     orderListDTO.setOrderItemDTO(orderItemDTO);
@@ -805,7 +825,7 @@ public class AdminService {
                 })
                 .toList();
 
-        log.info("판매자 주문 현황 Serv 4 : " + dtoList);
+        log.info("관리자 주문 현황 Serv 4 : " + dtoList);
 
         // total 값
         int total = (int) results.getTotalElements();
@@ -861,7 +881,6 @@ public class AdminService {
                     OrderItem orderItem = tuple.get(0, OrderItem.class);
                     Order order         = tuple.get(1, Order.class);
                     Product product     = tuple.get(2, Product.class);
-                    Option option       = tuple.get(3, Option.class);
 
                     // Entity -> DTO
                     OrderItemDTO orderItemDTO   = modelMapper.map(orderItem, OrderItemDTO.class);
@@ -946,17 +965,17 @@ public class AdminService {
                 .build();
     }
     // 관리자 회사 소개 채용 글 목록
-    public RecruitPageResponseDTO selectRecruit(AdminPageRequestDTO adminPageRequestDTO){
+    public RecruitPageResponseDTO selectRecruit(AdminPageRequestDTO adminPageRequestDTO, RecruitDTO recruitDTO){
         Pageable pageable = adminPageRequestDTO.getPageable("no");
         String keyword = adminPageRequestDTO.getKeyword();
         Page<Recruit> results = null;
-        // 일반 조회일 때
-        if(keyword == null || keyword.equals("") || keyword.equals("all")){
-            results = recruitRepository.selectRecruitForAdmin(adminPageRequestDTO, pageable);
 
-            // 검색 조회일 때
-        }else {
-            results = recruitRepository.searchRecruitForAdmin(adminPageRequestDTO, pageable);
+        // 전체 조회이면
+        if(recruitDTO.getEmployment() == 8 && recruitDTO.getStatus() == 8){
+            results = recruitRepository.selectRecruitForAdmin(adminPageRequestDTO, pageable);
+            // 검색
+        }else{
+            results = recruitRepository.searchRecruitForAdmin(adminPageRequestDTO, pageable, recruitDTO);
         }
 
         List<RecruitDTO> dtoList = results.stream()
@@ -1010,6 +1029,16 @@ public class AdminService {
     public void recruitPost(RecruitDTO recruitDTO){
         Recruit recruit = modelMapper.map(recruitDTO, Recruit.class);
         recruitRepository.save(recruit);
+        log.info("글쓰기 후 recruit : "+ recruit.getRno());
+    }
+    // 관리자 회사소개 채용 수정
+    @Transactional
+    public ResponseEntity<?> recruitUpdate(RecruitDTO recruitDTO){
+        Recruit recruit = recruitRepository.findById(recruitDTO.getRno()).get();
+        recruit.setEmployment(recruitDTO.getEmployment());
+        recruit.setStatus(recruitDTO.getStatus());
+        recruitRepository.save(recruit);
+        return ResponseEntity.ok().body(recruit);
     }
     // 관리자 회사소개 채용 삭제
     public ResponseEntity<?> recruitDelete(int rno){

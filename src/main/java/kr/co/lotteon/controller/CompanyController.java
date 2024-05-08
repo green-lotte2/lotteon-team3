@@ -1,7 +1,10 @@
 package kr.co.lotteon.controller;
 
 
+import kr.co.lotteon.dto.admin.AdminPageRequestDTO;
 import kr.co.lotteon.dto.admin.ArticleDTO;
+import kr.co.lotteon.dto.company.RecruitDTO;
+import kr.co.lotteon.dto.company.RecruitPageResponseDTO;
 import kr.co.lotteon.dto.company.StoryPageRequestDTO;
 import kr.co.lotteon.dto.company.StoryPageResponseDTO;
 import kr.co.lotteon.service.company.CompanyService;
@@ -34,7 +37,10 @@ public class CompanyController {
     }
     // 채용 매핑
     @GetMapping(value = {"/company/recruit"})
-    public String recruit() {
+    public String recruit(Model model, AdminPageRequestDTO adminPageRequestDTO, RecruitDTO recruitDTO){
+        RecruitPageResponseDTO pageResponseDTO = companyService.selectRecruit(adminPageRequestDTO, recruitDTO);
+        model.addAttribute("pageResponseDTO", pageResponseDTO);
+        model.addAttribute("recruitDTO", recruitDTO);
         return "/company/recruit";
     }
     // 미디어 매핑

@@ -1,11 +1,16 @@
 package kr.co.lotteon.service.company;
 
+import kr.co.lotteon.dto.admin.AdminPageRequestDTO;
 import kr.co.lotteon.dto.admin.AdminProductPageResponseDTO;
 import kr.co.lotteon.dto.admin.ArticleDTO;
+import kr.co.lotteon.dto.company.RecruitDTO;
+import kr.co.lotteon.dto.company.RecruitPageResponseDTO;
 import kr.co.lotteon.dto.company.StoryPageRequestDTO;
 import kr.co.lotteon.dto.company.StoryPageResponseDTO;
 import kr.co.lotteon.entity.admin.Article;
+import kr.co.lotteon.entity.admin.Recruit;
 import kr.co.lotteon.repository.ArticleRepository;
+import kr.co.lotteon.repository.RecruitRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -22,6 +27,7 @@ import java.util.List;
 public class CompanyService {
 
     private final ArticleRepository articleRepository;
+    private final RecruitRepository recruitRepository;
     private final ModelMapper modelMapper;
 
     // 회사소개 - 소식과 이야기 (9개) 리스트
@@ -54,5 +60,31 @@ public class CompanyService {
                 .total(total)
                 .build();
     }
+    // 관리자 회사 소개 채용 글 목록
+    public RecruitPageResponseDTO selectRecruit(AdminPageRequestDTO adminPageRequestDTO, RecruitDTO recruitDTO){
+        Pageable pageable = adminPageRequestDTO.getPageable("no");
+        String keyword = adminPageRequestDTO.getKeyword();
+        Page<Recruit> results = null;
+        // 전체 조회이면
+        if(recruitDTO.getEmployment() == 8 && recruitDTO.getStatus() == 8){
+            results = recruitRepository.selectRecruitForAdmin(adminPageRequestDTO, pageable);
+            // 검색
+        }else{
+            results = recruitRepository.searchRecruitForAdmin(adminPageRequestDTO, pageable, recruitDTO);
+        }
 
+        List<RecruitDTO> dtoList = results.stream()
+                .map(result -> modelMapper.map(result, RecruitDTO.class))
+                .toList();
+
+        // total 값
+        int total = (int) results.getTotalElements();
+
+        // List<OrderListDTO>와 page 정보 리턴
+        return RecruitPageResponseDTO.builder()
+                .adminPageRequestDTO(adminPageRequestDTO)
+                .dtoList(dtoList)
+                .total(total)
+                .build();
+    }
 }
