@@ -8,7 +8,7 @@
 }
 #termsPolicy > section > nav {
   width: 100%;
-  height: auto;
+  height: 100px;
   overflow: hidden;
   margin-top: 40px;
   margin-bottom: 40px;
@@ -54,6 +54,7 @@
 
 #termsPolicy > section > article > h2 {
   font-size: 14px;
+  margin-bottom: 20px;
   font-family: '돋움';
   font-weight: bold;
   color: #222;
@@ -65,11 +66,13 @@
 }
 #termsPolicy > section > article > p > .tit {
   display: block;
+  margin-bottom: 10px;
   font-size: 13px;
   font-family: '돋움';
   font-weight: bold;
 }
 #termsPolicy > section > article > p > .content {
   font-family: '돋움';
+  line-height: 29px;
   color: #888;
 }
