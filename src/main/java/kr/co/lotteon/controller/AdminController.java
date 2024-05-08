@@ -390,12 +390,17 @@ public class AdminController {
         model.addAttribute("cate1", cate1);
         return "/admin/company/write";
     }
+    // 채용 삭제
+    @DeleteMapping(value = {"/admin/recruit/{rno}"})
+    @ResponseBody
+    public ResponseEntity<?> recruitDelete(@PathVariable("rno") int rno) {
+        return adminService.recruitDelete(rno);
+    }
     // 관리자 회사소개 - 채용 글쓰기 매핑
     @GetMapping("/admin/company/post")
     public String companyPost(){
         return "/admin/company/post";
     }
-
     // 관리자 회사소개 글쓰기 전송
     @PostMapping("/admin/company/write")
     public String storyRegister(@RequestParam("thumb336") MultipartFile thumb336, ArticleDTO articleDTO){

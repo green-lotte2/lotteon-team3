@@ -73,6 +73,7 @@ public class MemberService {
         Optional<Member> member=memberRepository.findById(uid);
         return modelMapper.map(member, MemberDTO.class);
     }
+
     //회원탈퇴
     public void updateWdate(String uid) {
         Member member = memberRepository.findById(uid).get();
@@ -80,6 +81,44 @@ public class MemberService {
         memberRepository.save(member);
     }
 
+    //myInfo - 닉네임 조회
+    public Optional<Member> selectMemberByUidAndNickname(String uid, String nick) {
+        return memberRepository.selectMemberByUidAndNickname(uid,nick);
+    }
+    //myInfo - 닉네임 저장
+    public void updateNick(String uid, String nick) {
+        Member member = memberRepository.findById(uid).get();
+        member.setNick(nick);
+        log.info("닉네임 변경완료");
+        memberRepository.save(member);
+    }
+
+    //myInfo - 이메일 일치여부
+    public int countByUidAndEmail(String uid, String email){
+        return memberRepository.countByUidAndEmail(uid,email);
+    }
+    
+    //myInfo - 이메일 수정
+    public void updateEmail(String uid, String email){
+        Member member = memberRepository.findById(uid).get();
+        member.setEmail(email);
+        log.info("이메일 변경 완료");
+        memberRepository.save(member);
+    }
+
+    //myInfo - 휴대폰 중복검사
+    public int countByUidAndHp(String uid,String hp){
+        return memberRepository.countByUidAndHp(uid,hp);
+    }
+
+
+    //myInfo - 휴대폰 수정
+    public void updateHp(String uid,String hp){
+        Member member = memberRepository.findById(uid).get();
+        member.setHp(hp);
+        log.info("휴대폰 변경 완료");
+        memberRepository.save(member);
+    }
 
 
     //이메일 전송

@@ -84,17 +84,24 @@ function updatePagination(data) {
     page.innerHTML = '';
 
     if (data.prev) {
-        page.innerHTML += `<a href="#" class="prev" onclick="tableReload(${data.start - 1}); return false;">이전</a>`;
+        page.innerHTML += `<span class="prev">
+                                <a href="#" onclick="tableReload(${data.start - 1}); return false;">이전</a>
+                            </span>`;
     }
 
     for (let i = data.start; i <= data.end; i++) {
-        page.innerHTML += `<a href="#" class="num ${data.pg == i ? 'on' : ''}" onclick="tableReload(${i}); return false;">${i}</a>`;
+        page.innerHTML += `<span>
+                                <a href="#" class="num ${data.pg == i ? 'on' : ''}" onclick="tableReload(${i}); return false;">${i}</a>
+                            </span>`;
     }
 
     if (data.next) {
-        page.innerHTML += `<a href="#" class="next" onclick="tableReload(${data.end + 1}); return false;">다음</a>`;
+        page.innerHTML += `<span class="next">
+                                <a href="#" onclick="tableReload(${data.end + 1}); return false;">다음</a>
+                            </span>`;
     }
 }
+
 
 // 리스트 업데이트 함수
 function updatePointList(data) {

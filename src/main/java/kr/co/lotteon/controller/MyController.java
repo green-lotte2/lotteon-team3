@@ -127,30 +127,153 @@ public class MyController {
     // 추가
     @ResponseBody
     @PostMapping("/my/formMyinfoPassChange")
-    public String formMyinfoPassChange(@RequestParam String uid, String inputPass) {
-        memberService.updatePass(uid, inputPass);
+    public String formMyinfoPassChange(@RequestBody Map<String, String> request ) {
+        log.info("비밀번호 수정 들어가기");
+
+        String uid = request.get("uid");
+        log.info("입력된 아이디 : "+uid);
+
+        String pass = request.get("pass");
+        log.info("수정한 비번 : "+pass);
+
+        memberService.updatePass(uid,pass);
+
+
+
         return "success";
     }
-    @ResponseBody
-    @PostMapping("/my/withdraw")
-    public String withdraw(@RequestParam String uid, String inputPass) {
-        Authentication authentication = new UsernamePasswordAuthenticationToken(uid, inputPass);
-        Authentication result = authenticationManager.authenticate(authentication);
 
-        if (result.isAuthenticated()) {
-            memberService.updateWdate(uid);
+    // 닉네임수정
+    @ResponseBody
+    @PostMapping("/my/formMyinfoNickChange")
+    public String formMyinfoNickChange(@RequestBody Map<String, String> request ) {
+        log.info("닉네임 수정 들어가기");
+
+        String uid = request.get("uid");
+        log.info("입력된 아이디 : "+uid);
+
+        String nick = request.get("nick");
+        log.info("수정한 닉네임 : "+nick);
+
+        Optional<Member> member = memberService.selectMemberByUidAndNickname(uid, nick);
+        log.info(member.toString());
+        if(member.isPresent()){
+            return "fail";
+
+        }else{
+
+            memberService.updateNick(uid,nick);
+
             return "success";
-        } else {
+
+        }
+
+    }
+
+    // 이메일 일치 검사
+    @ResponseBody
+    @PostMapping("/my/checkOriginEmail")
+    public String checkOriginEmail(@RequestBody Map<String, String> request ) {
+        log.info("이메일 일치검사 들어가기");
+
+        String uid = request.get("uid");
+        log.info("입력된 아이디 : "+uid);
+
+        String email = request.get("email");
+        log.info("입력된 이메일 : "+email);
+
+        int count = memberService.countByUidAndEmail(uid, email);
+        log.info("일치하는 행의 수 : "+count);
+
+        // 이메일 일치인 경우 success
+        if(count>0){ 
+            return "success";
+        }else{
             return "fail";
         }
+
     }
+
+    //이메일 수정
     @ResponseBody
-    @PostMapping("/my/withdrawFinal")
-    public String withdrawFinal(@RequestBody MemberDTO memberDTO) {
-        log.info("=========회원정보수정========== : "+memberDTO);
-        memberService.save(memberDTO);
-        return "success";
+    @PostMapping("/my/formMyinfoEmailChange")
+    public String formMyinfoEmailChange(@RequestBody Map<String, String> request ) {
+        log.info("이메일 수정 들어가기");
+
+        String uid = request.get("uid");
+        log.info("입력된 아이디 : "+uid);
+
+        String email = request.get("email");
+        log.info("수정한 이메일 : "+email);
+
+        int count = memberService.countByUidAndEmail(uid, email);
+        log.info("마지막 일치하는 행의 수 : "+count);
+
+        // 중복되는 이메일이 없어야함
+        if(count>0){
+
+            return "fail";
+
+        }else{
+            memberService.updateEmail(uid,email);
+
+            return "success";
+        }
+
     }
+    //휴대폰 수정
+    @ResponseBody
+    @PostMapping("/my/formMyinfoHpChange")
+    public String formMyinfoHpChange(@RequestBody Map<String, String> request ) {
+        log.info("휴대폰 수정 들어가기");
+
+        String uid = request.get("uid");
+        log.info("입력된 아이디 : "+uid);
+
+        String hp = request.get("hp");
+        log.info("수정한 휴대폰 : "+hp);
+
+        int count = memberService.countByUidAndHp(uid, hp);
+        log.info("중복된 휴대폰 : "+count);
+        if(count>0){
+            return "fail";
+
+        }else{
+            memberService.updateHp(uid,hp);
+            return "success";
+
+        }
+
+    }
+
+    
+
+
+
+
+
+
+
+//    @ResponseBody
+//    @PostMapping("/my/withdraw")
+//    public String withdraw(@RequestParam String uid, String inputPass) {
+//        Authentication authentication = new UsernamePasswordAuthenticationToken(uid, inputPass);
+//        Authentication result = authenticationManager.authenticate(authentication);
+//
+//        if (result.isAuthenticated()) {
+//            memberService.updateWdate(uid);
+//            return "success";
+//        } else {
+//            return "fail";
+//        }
+//    }
+//    @ResponseBody
+//    @PostMapping("/my/withdrawFinal")
+//    public String withdrawFinal(@RequestBody MemberDTO memberDTO) {
+//        log.info("=========회원정보수정========== : "+memberDTO);
+//        memberService.save(memberDTO);
+//        return "success";
+//    }
 
 
 

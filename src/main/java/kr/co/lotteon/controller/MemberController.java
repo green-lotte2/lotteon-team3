@@ -146,6 +146,8 @@ public class MemberController {
         String sessionCode = (String) session.getAttribute("code");
 
         Map<String, Object> resultMap = new HashMap<>();
+        
+        log.info("이메일 인증코드 검사 : "+sessionCode.equals(code));
 
         if (sessionCode.equals(code)) {
             resultMap.put("result", true);

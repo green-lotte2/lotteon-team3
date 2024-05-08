@@ -57,4 +57,7 @@ public interface ProductRepositoryCustom {
 
     // 상품리뷰 조회
     Page<Tuple> selectProductReview(int prodNo, ProductReviewPageRequestDTO productReviewPageRequestDTO, Pageable pageable);
+
+    // 메인 검색창
+    public Page<Tuple> searchProducts(PageRequestDTO pageRequestDTO, Pageable pageable);
 }

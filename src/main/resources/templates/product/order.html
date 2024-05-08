@@ -1,9 +1,189 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{/layout/productLayout}">
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <title>롯데ON::3조</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <link rel="shortcut icon" type="image/x-icon" href="../images/favicon.ico" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://kit.fontawesome.com/20962f3e4b.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.min.js"></script>
+    <link rel="stylesheet" th:href="@{https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css}">
+    <link rel="stylesheet" th:href="@{https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css}"/>
+    <link rel="stylesheet" th:href="@{https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.css}">
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <link rel="stylesheet" th:href="@{/css/common.css}"/>
+    <script th:src="@{/product/js/util.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/product.css}">
+
+</head>
+<body>
+<div id="wrapper">
+    <header>
+        <div class="top">
+            <div>
+                <th:block sec:authorize="isAnonymous()">
+                    <a th:href="@{/member/login}">로그인</a>
+                    <a th:href="@{/member/join}">회원가입</a>
+                </th:block>
+                <th:block sec:authorize="isAuthenticated()">
+                    <span>[[${#authentication.principal.member.name}]]님 </span>
+                    <a sec:authorize="hasRole('ROLE_6')" th:href="@{/admin}">관리자</a>
+                    <a sec:authorize="hasRole('ROLE_7')" th:href="@{/admin}">관리자</a>
+                    <a sec:authorize="hasRole('ROLE_5')" th:href="@{/seller}">판매자</a>
+                    <a th:href="@{/member/logout}">로그아웃</a>
+                    <a th:href="@{/my/home(uid=${#authentication.principal.member.uid})}">마이페이지</a>
+                    <a th:href="@{/product/cart}">
+                        <i class="fa fa-shopping-cart" aria-hidden="true"></i>&nbsp;장바구니
+                    </a>
+                </th:block>
+            </div>
+        </div>
+        <div class="logo">
+            <div>
+                <a th:href="@{/}"><img th:src="@{/images/header_logo.png}" alt="로고" /></a>
+                <form th:action="@{#}">
+                    <input type="text" name="search"/>
+                    <button><i class="fa fa-search"></i></button>
+                </form>
+            </div>
+
+        </div>
+        <div class="menu">
+            <div>
+                <ul>
+                    <li><a th:href="@{/product/list}">히트상품</a></li>
+                    <li><a th:href="@{/product/list}">추천상품</a></li>
+                    <li><a th:href="@{/product/list}">최신상품</a></li>
+                    <li><a th:href="@{/product/list}">인기상품</a></li>
+                    <li><a th:href="@{/product/list}">할인상품</a></li>
+                </ul>
+                <ul>
+                    <li><a th:href="@{#}">쿠폰존</a></li>
+                    <li><a th:href="@{#}">사용후기</a></li>
+                    <li><a th:href="@{#}">개인결제</a></li>
+                    <li><a th:href="@{#}">고객센터</a></li>
+                    <li><a th:href="@{#}">FAQ</a></li>
+                </ul>
+            </div>
+        </div>
+    </header>
+    <main id="product">
+        <script>
+            window.onload = function (){
+                //우편번호 검색
+                function postcode() {
+                    new daum.Postcode({
+                        oncomplete: function (data) {
+                            // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
+
+                            // 각 주소의 노출 규칙에 따라 주소를 조합한다.
+                            // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+                            var addr = ''; // 주소 변수
+                            var extraAddr = ''; // 참고항목 변수
+
+                            //사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
+                            if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
+                                addr = data.roadAddress;
+                            } else { // 사용자가 지번 주소를 선택했을 경우(J)
+                                addr = data.jibunAddress;
+                            }
+                            console.log(addr);
+                            // 우편번호와 주소 정보를 해당 필드에 넣는다.
+                            document.getElementById('inputZip').value = data.zonecode;
+                            document.getElementById("inputAddr1").value = addr;
+                            // 커서를 상세주소 필드로 이동한다.
+                            document.getElementById("inputAddr2").focus();
+                        }
+                    }).open();
+                }
+                const findZip = document.getElementById('findZip');
+                findZip.onclick = function () {
+                    postcode();
+                }
+
+                // 숫자를 3자리마다 콤마를 추가하여 문자열로 반환하는 함수
+                function numberWithCommas(x) {
+                    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                }
+
+                // 토탈 정보 출력
+                const totalCount = document.getElementById('totalCount');
+                const totalOrg = document.getElementById('totalOrg');
+                const totalDis = document.getElementById('totalDis');
+                const totalDel = document.getElementById('totalDel');
+                const totalPoint = document.getElementById('totalPoint');
+                const totalPrice = document.getElementById('totalPrice');
+                var totalValue =0;
+
+                // 상품 원가격
+                document.querySelectorAll('#prodOrgPrice').forEach(function (price){
+                    const priceValue = parseInt(price.value);
+                    totalValue += priceValue;
+
+                });
+                totalOrg.innerHTML = "";
+                totalOrg.textContent = numberWithCommas(totalValue)
 
 
+                // 포인트 사용하기
+                const btnPoint = document.getElementById('btnPoint');
+                btnPoint.onclick = function (e){
+                    e.preventDefault();
+                    const usePoint = parseInt(document.getElementById('usePoint').value);
+                    const myPointSpan = document.getElementById('myPoint');
+                    const myPoint = parseInt(document.getElementById('myPoint').innerText.replace(/,/g, ''));
+                    let totalPrice = parseInt(totalPoint.textContent.replace(/,/g, '')); // 현재 총 포인트 값 가져오기
+
+                    if(usePoint>=5000 && usePoint<=myPoint){
+                        totalPrice += usePoint;
+                        totalPoint.innerHTML = "";
+                        totalPoint.textContent = numberWithCommas(totalPrice);
+
+                        myPointSpan.innerHTML = "";
+                        myPointSpan.textContent = numberWithCommas(myPoint-usePoint);
+                    }else if(usePoint<5000){
+                        alert('5000포인트 이상 사용 가능합니다.');
+                    }else if(usePoint>=myPoint){
+                        alert('보유 포인트 이상 사용할 수 없습니다.');
+                    }
+                }
+
+                // 상품 총 가격
+                totalValue =0;
+                document.querySelectorAll('#prodDisPrice').forEach(function (price){
+
+                    const priceValue = parseInt(price.value.split('.')[0]);
+                    totalValue += priceValue;
+
+                });
+                totalPrice.innerHTML = "";
+                totalPrice.textContent = numberWithCommas(totalValue);
+
+                // 할인 가격
+                let total =parseInt(totalPrice.textContent.replace(/,/g, ''));
+                let org = parseInt(totalOrg.textContent.replace(/,/g, ''));
+                console.log(total)
+                totalDis.innerHTML = "";
+                totalDis.textContent = numberWithCommas(org-total);
+
+                const myPointSpan = document.getElementById('myPoint');
+                const myPoint = parseInt(document.getElementById('myPoint').innerText);
+                myPointSpan.textContent = numberWithCommas(myPoint);
+
+                // 상품 건수
+                var productList = document.querySelectorAll('.prd-wrap .orderImg li');
+                var productCount = productList.length;
+
+                totalCount.innerHTML = "";
+                totalCount.textContent = productCount+'건';
+            }
+        </script>
             <!-- 주문 페이지 시작-->
             <section class="order" layout:fragment="content">
               
@@ -16,68 +196,24 @@
               </nav>
 
               <form action="#">
-                <!-- 주문 상품 목록 -->                  
-                <table>
-                  <thead>
-                    <tr>
-                      <th>상품명</th>
-                      <th>총수량</th>
-                      <th>판매가</th>
-                      <th>배송비</th>
-                      <th>소계</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr class="empty">
-                      <td colspan="7">장바구니에 상품이 없습니다.</td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <article>
-                          <a href="#"><img src="https://via.placeholder.com/80x80" alt=""></a>
-                          <div>
-                            <h2><a href="#">상품명</a></h2>
-                            <p>상품설명</p>
-                          </div>
-                        </article>
-                      </td>
-                      <td>1</td>
-                      <td>27,000</td>
-                      <td>무료배송</td>
-                      <td>27,000</td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <article>
-                          <a href="#"><img src="https://via.placeholder.com/80x80" alt=""></a>
-                          <div>
-                            <h2><a href="#">상품명</a></h2>
-                            <p>상품설명</p>
-                          </div>
-                        </article>
-                      </td>
-                      <td>1</td>
-                      <td>27,000</td>
-                      <td>무료배송</td>
-                      <td>27,000</td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <article>
-                          <a href="#"><img src="https://via.placeholder.com/80x80" alt=""></a>
-                          <div>
-                            <h2><a href="#">상품명</a></h2>
-                            <p>상품설명</p>
-                          </div>
-                        </article>
-                      </td>
-                      <td>1</td>
-                      <td>27,000</td>
-                      <td>무료배송</td>
-                      <td>27,000</td>
-                    </tr>                    
-                  </tbody>
-                </table>                 
+                <!-- 주문 상품 목록 -->
+                  <div class="prd-wrap">
+                      <h3 class="h4">주문상품 <i class="txt-num">1</i></h3>
+                      <div class="orderImg">
+                          <ul th:each="productDTO : ${productDTOS}">
+                              <li>
+                                  <img th:src="@{|/prodImg/${productDTO.thumb3}|}" th:alt="${productDTO.descript}">
+                                  <div class="hover-ly">
+                                      <p>[[${productDTO.descript}]]</p>
+                                      <span>수량:[[${productDTO.count}]]</span>
+                                      <input type="hidden" id="prodOrgPrice" name="price" th:value="${productDTO.price}">
+                                      <input type="hidden" id="prodDisPrice" name="disPrice" th:value="${((100-productDTO.discount)/100.0)*productDTO.price}">
+                                  </div>
+                              </li>
+                          </ul>
+                      </div>
+
+                  </div>
                 
                 <!-- 최종 결제 정보 -->
                 <div class="final">
@@ -85,27 +221,27 @@
                   <table border="0">
                     <tr>
                       <td>총</td>
-                      <td>2 건</td>
+                      <td id="totalCount"> 건</td>
                     </tr>
                     <tr>
                       <td>상품금액</td>
-                      <td>27,000</td>
+                      <td id="totalOrg">0</td>
                     </tr>
                     <tr>
                       <td>할인금액</td>
-                      <td>-1,000</td>
+                      <td id="totalDis">0</td>
                     </tr>
                     <tr>
                       <td>배송비</td>
-                      <td>0</td>
+                      <td id="totalDel">0</td>
                     </tr>
                     <tr>
                       <td>포인트 할인</td>
-                      <td>-1000</td>
+                      <td id="totalPoint">0</td>
                     </tr>
                     <tr>
                       <td>전체주문금액</td>
-                      <td>25,000</td>
+                      <td id="totalPrice">0</td>
                     </tr>                            
                   </table>
                   <input type="button" name="" value="결제하기">              
@@ -117,32 +253,32 @@
                   <table>
                     <tr>
                       <td>주문자</td>
-                      <td><input type="text" name="orderer" /></td>
+                      <td><input type="text" th:value="${memberDTO.name}" name="orderer"/></td>
                     </tr>
                     <tr>
                       <td>휴대폰</td>
                       <td>
-                        <input type="text" name="hp" />
+                        <input type="text" th:value="${memberDTO.hp}" name="hp" />
                         <span>- 포함 입력</span>
                       </td>
                     </tr>
                     <tr>
                       <td>우편번호</td>
                       <td>
-                        <input type="text" name="zip"/>
-                        <input type="button" value="검색"/>
+                        <input type="text" name="zip" id="inputZip" th:value="${memberDTO.zip}"/>
+                        <input type="button" id="findZip" value="검색"/>
                       </td>
                     </tr>
                     <tr>
                       <td>기본주소</td>
                       <td>
-                        <input type="text" name="addr1"/>
+                        <input type="text" name="addr1" id="inputAddr1" th:value="${memberDTO.addr1}"/>
                       </td>
                     </tr>
                     <tr>
                       <td>상세주소</td>
                       <td>
-                        <input type="text" name="addr2"/>
+                        <input type="text" name="addr2" id="inputAddr2" th:value="${memberDTO.addr2}"/>
                       </td>
                     </tr>
                   </table>
@@ -153,10 +289,10 @@
                   <h1>할인정보</h1>
 
                   <div>
-                    <p>현재 포인트 : <span>7200</span>점</p>
+                    <p>현재 포인트 : <span id="myPoint">[[${memberDTO.point}]]</span>점</p>
                     <label>
-                        <input type="text" name="point" />점
-                        <input type="button" value="적용"/>
+                        <input type="text" id="usePoint" name="point"/>점
+                        <input type="button" id="btnPoint" value="적용"/>
                     </label>
                     <span>포인트 5,000점 이상이면 현금처럼 사용 가능합니다.</span>
                   </div>
@@ -185,7 +321,7 @@
                             <label><input type="radio" name="payment" value="type3"/>휴대폰결제</label>
                             <label>
                                 <input type="radio" name="payment" value="type4"/>카카오페이
-                                <img src="../images/ico_kakaopay.gif" alt="카카오페이"/>
+                                <img th:src="@{images/ico_kakaopay.gif}" alt="카카오페이"/>
                             </label>                                
                         </p>
                     </div>
@@ -205,31 +341,35 @@
             </section>
             <!-- 주문 페이지 끝-->
         </main>
-        <footer>
-          <ul>
-            <li><a href="#">회사소개</a></li>
-            <li><a href="#">서비스이용약관</a></li>
-            <li><a href="#">개인정보처리방침</a></li>
-            <li><a href="#">전자금융거래약관</a></li>
-          </ul>
-          <div>
-            <p><img src="../images/footer_logo.png" alt="로고" /></p>
+    <footer>
+        <ul>
+            <li><a th:href="@{company/index}">회사소개</a></li>
+            <li><a th:href="@{policy/seller}">서비스이용약관</a></li>
+            <li><a th:href="@{policy/privacy}">개인정보처리방침</a></li>
+            <li><a th:href="@{policy/finance}">전자금융거래약관</a></li>
+        </ul>
+        <div>
+            <p><img th:src="@{/images/footer_logo.png}" alt="로고" /></p>
             <p>
-              <strong>(주)롯데ON</strong><br />
-              서울특별시 송파구 올림픽로 300 롯데월드타워 26층 (역삼동 강남파이낸스센터)<br />
-              대표이사 : 김사무엘상현, 정준호, 강성현<br />
-              사업자등록번호 : 529-85-00774(롯데쇼핑(주) e커머스사업부)<br />
-              통신판매업 신고 : 서울송파 제0158호<br>
-              호스팅 서비스사업자 : 롯데쇼핑(주) e커머스사업부
+                <strong>(주)롯데ON</strong><br />
+                서울특별시 송파구 올림픽로 300 롯데월드타워 26층 (역삼동 강남파이낸스센터)<br />
+                대표이사 : 김사무엘상현, 정준호, 강성현<br />
+                사업자등록번호 : 529-85-00774(롯데쇼핑(주) e커머스사업부)<br />
+                통신판매업 신고 : 서울송파 제0158호<br>
+                호스팅 서비스사업자 : 롯데쇼핑(주) e커머스사업부
             </p>
             <p>
-              <strong>고객센터</strong><br />
-              Tel : 1899-7000(유료) (평일 09:00~18:00)<br />
-              Fax : 051-123-4567 | E-mail : lotteon@lotte.net<br />
+                <strong>고객센터</strong><br />
+                Tel : 1899-7000(유료) (평일 09:00~18:00)<br />
+                Fax : 051-123-4567 | E-mail : lotteon@lotte.net<br />
             </p>
-          </div>
-        </footer>
-        <button type="button" id="top">상단이동</button>
-    </div>    
+            <p>
+                <strong>[[${appInfo.name}]]-[[${appInfo.version}]]</strong>
+            </p>
+        </div>
+    </footer>
+    <button type="button" id="top" onclick="movePageTop()">상단이동</button>
+</div>
 </body>
+
 </html>
