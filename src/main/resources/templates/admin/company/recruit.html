@@ -3,10 +3,17 @@
       layout:decorate="~{/layout/adminListLayout}">
 <section id="admin-index" layout:fragment="content">
     <script>
+        // 검색용 전역 변수
+        let employment = 8;
+        let status = 8;
+        // 검색 전송
+        function formSubmit(){
+            const searchForm = document.getElementById('searchForm');
+            searchForm.submit();
+        }
         // 글쓰기 이동
         function btnWrite() {
             location.href = `/lotteon/admin/company/post`;
-
         }
         // 글삭제
         async function btnDelete(button){
@@ -30,20 +37,97 @@
         // 모달 띄우기
         function btnModify(button){
             const modal = document.querySelector(".modal");
-            const select = button.dataset.select;
-            const formSelect = modal.querySelector('.'+select);
-            console.log(select);
+            const modalRnoInput = document.getElementById('modalRnoInput');
+            const rno = button.dataset.rno;
+            const emp = button.dataset.emp;
+            const empClass = '.empRadio'+ emp;
+            const stat = button.dataset.stat;
+            const statClass = '.statRadio'+ stat;
+            console.log(rno);
+            console.log(empClass);
+            console.log(statClass);
 
-            // 고용형태 span
-            formSelect.style.display = "block";
+            // 현재 emp,status 선택해놓기
+            const nowEmp = modal.querySelector(empClass);
+            nowEmp.checked = true;
+            const nowStat = modal.querySelector(statClass);
+            nowStat.checked = true;
+            // 모달에 rno 보내기
+            modalRnoInput.value = rno;
+            modal.style.display = "block";
+        }
+        // 수정 정보 전송
+        async function modifySubmit(e){
+            e.preventDefault();
+            // form data
+            const form = document.getElementById('recruitModalForm');
+            const rno = form.rno.value;
+            const employment = form.employment.value;
+            const status = form.status.value;
+
+            // table의 emp, status span
+            const empSpanClass = '.empSpan' + rno;
+            const statusSpanClass = '.statusSpan' + rno;
+            const empSpan = document.querySelector(empSpanClass);
+            const statusSpan = document.querySelector(statusSpanClass);
+
+            const jsonData = {
+                "rno": rno,
+                "employment": employment,
+                "status": status
+            };
+
+            // 정보 전송
+            const data = await fetchPost('/lotteon/admin/company/recruit', jsonData);
+
+            // table에 변경된 정보 반영
+            switch (data.employment) {
+                case 0 :
+                    empSpan.innerText = "정규직";
+                    break;
+                case 1 :
+                    empSpan.innerText = "계약직";
+                    break;
+                case 2 :
+                    empSpan.innerText = "인턴";
+                    break;
+                case 3 :
+                    empSpan.innerText = "아르바이트";
+                    break;
+                case 4 :
+                    empSpan.innerText = "프리랜서";
+                    break;
+                case 5 :
+                    empSpan.innerText = "파견직";
+                    break;
+                case 6 :
+                    empSpan.innerText = "일용직";
+                    break;
+                case 7 :
+                    empSpan.innerText = "교육생";
+                    break;
+            }
+            switch (data.status) {
+                case 0 :
+                    statusSpan.innerText = "모집 중";
+                    statusSpan.style = "color: #0ca03c";
+                    break;
+                case 1 :
+                    statusSpan.innerText = "상시 채용";
+                    statusSpan.style = "color: #0ca03c";
+                    break;
+                case 2 :
+                    statusSpan.innerText = "마감";
+                    statusSpan.style = "color: #000000";
+                    break;
+            }
+            closeModal();
         }
         // 모달 끄기
         function closeModal() {
             const modal = document.querySelector(".modal");
             modal.style.display = "none";
         }
-        // 수정 완료
-
         // 아코디언 상태 변경
         function accordionControl(button){
             // 해당 버튼의 data-bs-target 값을 사용하여 아코디언 컨텐츠 요소 가져오기
@@ -74,6 +158,32 @@
     </nav>
     <article>
     </article>
+    <!-- 검색 nav -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid" id="recruitSearchDiv">
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <form th:action="@{/admin/company/recruit}" method="get" class="d-flex" id="searchForm">
+                    <select class="form-select form-select" name="employment" aria-label=".form-select-sm example" onchange="formSubmit()">
+                        <option th:selected="${recruitDTO.employment == 8}" value="8">전체 채용 형태</option>
+                        <option th:selected="${recruitDTO.employment == 0}" value="0">정규직</option>
+                        <option th:selected="${recruitDTO.employment == 1}" value="1">계약직</option>
+                        <option th:selected="${recruitDTO.employment == 2}" value="2">인턴</option>
+                        <option th:selected="${recruitDTO.employment == 3}" value="3">아르바이트</option>
+                        <option th:selected="${recruitDTO.employment == 4}" value="4">프리랜서</option>
+                        <option th:selected="${recruitDTO.employment == 5}" value="5">파견직</option>
+                        <option th:selected="${recruitDTO.employment == 6}" value="6">일용직</option>
+                        <option th:selected="${recruitDTO.employment == 7}" value="7">교육생</option>
+                    </select>
+                    <select class="form-select form-select" name="status" aria-label=".form-select-sm example" onchange="formSubmit()">
+                        <option th:selected="${recruitDTO.status == 8}" value="8">전체 상태</option>
+                        <option th:selected="${recruitDTO.status == 0}" value="0">모집 중</option>
+                        <option th:selected="${recruitDTO.status == 1}" value="1">상시 채용</option>
+                        <option th:selected="${recruitDTO.status == 2}" value="2">마감</option>
+                    </select>
+                </form>
+            </div>
+        </div>
+    </nav>
     <!-- 글 목록 -->
     <table class="table">
         <thead>
@@ -95,33 +205,23 @@
                 <td th:text="${article.occupation}"></td>
                 <td th:text="${article.experience}"></td>
                 <td>
-                    <span th:class="${'empSpan'+article.rno}" th:if="${article.employment == 0}" th:data-select="${'form-select'+article.rno}">정규직</span>
-                    <span th:class="${'empSpan'+article.rno}" th:if="${article.employment == 1}" th:data-select="${'form-select'+article.rno}">계약직</span>
-                    <span th:class="${'empSpan'+article.rno}" th:if="${article.employment == 2}" th:data-select="${'form-select'+article.rno}">인턴</span>
-                    <span th:class="${'empSpan'+article.rno}" th:if="${article.employment == 3}" th:data-select="${'form-select'+article.rno}">아르바이트</span>
-                    <span th:class="${'empSpan'+article.rno}" th:if="${article.employment == 4}" th:data-select="${'form-select'+article.rno}">프리랜서</span>
-                    <span th:class="${'empSpan'+article.rno}" th:if="${article.employment == 5}" th:data-select="${'form-select'+article.rno}">파견직</span>
-                    <span th:class="${'empSpan'+article.rno}" th:if="${article.employment == 6}" th:data-select="${'form-select'+article.rno}">일용직</span>
-                    <span th:class="${'empSpan'+article.rno}" th:if="${article.employment == 7}" th:data-select="${'form-select'+article.rno}">교육생</span>
-                    <select name="employment" th:class="${'form-select'+article.rno}" th:data-rno="${article.rno}" style="display: none" required>
-                        <option value="0">정규직</option>
-                        <option value="1">계약직</option>
-                        <option value="2">인턴</option>
-                        <option value="3">아르바이트</option>
-                        <option value="4">프리랜서</option>
-                        <option value="5">파견직</option>
-                        <option value="6">일용직</option>
-                        <option value="7">교육생</option>
-                    </select>
+                    <span th:class="${'empSpan'+article.rno}" th:if="${article.employment == 0}">정규직</span>
+                    <span th:class="${'empSpan'+article.rno}" th:if="${article.employment == 1}">계약직</span>
+                    <span th:class="${'empSpan'+article.rno}" th:if="${article.employment == 2}">인턴</span>
+                    <span th:class="${'empSpan'+article.rno}" th:if="${article.employment == 3}">아르바이트</span>
+                    <span th:class="${'empSpan'+article.rno}" th:if="${article.employment == 4}">프리랜서</span>
+                    <span th:class="${'empSpan'+article.rno}" th:if="${article.employment == 5}">파견직</span>
+                    <span th:class="${'empSpan'+article.rno}" th:if="${article.employment == 6}">일용직</span>
+                    <span th:class="${'empSpan'+article.rno}" th:if="${article.employment == 7}">교육생</span>
                 </td>
                 <td>
-                    <span th:class="${'statusSpan'+article.status}" th:if="${article.status == 0}" style="color: #0ca03c"  th:data-rno="${article.rno}" onclick="changeStatus(this)">모집 중</span>
-                    <span th:class="${'statusSpan'+article.status}" th:if="${article.status == 1}" style="color: #0ca03c"  th:data-rno="${article.rno}" onclick="changeStatus(this)">상시 채용</span>
-                    <span th:class="${'statusSpan'+article.status}" th:if="${article.status == 2}"  th:data-rno="${article.rno}" onclick="changeStatus(this)">마감</span>
+                    <span th:class="${'statusSpan'+article.rno}" th:if="${article.status == 0}" style="color: #0ca03c"  th:data-rno="${article.rno}" onclick="changeStatus(this)">모집 중</span>
+                    <span th:class="${'statusSpan'+article.rno}" th:if="${article.status == 1}" style="color: #0ca03c"  th:data-rno="${article.rno}" onclick="changeStatus(this)">상시 채용</span>
+                    <span th:class="${'statusSpan'+article.rno}" th:if="${article.status == 2}"  th:data-rno="${article.rno}" onclick="changeStatus(this)">마감</span>
                 </td>
                 <td>
                     <button type="button" class="btn btn-danger" onclick="btnDelete(this)" th:data-rno="${article.rno}">삭제</button>
-                    <button type="button" class="btn btn-secondary" onclick="btnModify(this)" th:data-rno="${article.rno}">수정</button>
+                    <button type="button" class="btn btn-secondary" onclick="btnModify(this)" th:data-rno="${article.rno}" th:data-emp="${article.employment}" th:data-stat="${article.status}">수정</button>
                 </td>
             </tr>
             <tr>
@@ -168,21 +268,44 @@
             </ul>
         </nav>
     </div>
-    <div class="statusModal modal" id="statusModal">
-        <span class="close" onclick="closeModal()">&times;</span>
-        <div id="btnStatusModal">
-            <div style="margin: 40px 65px;">
-                <span class="btnOrdStatus" onclick="changeOrdStat(this)">배송준비</span>
-                <span class="btnOrdStatus" onclick="changeOrdStat(this)">배송중</span>
-                <span class="btnOrdStatus" onclick="changeOrdStat(this)">배송완료</span>
+    <div class="statusModal modal" id="recruitModal">
+        <span class="close" onclick="closeModal()" style="font-size: 30px;">&times;</span>
+        <form id="recruitModalForm" th:action="@{/admin/company/recruit}" method="POST">
+        <div id="recruitModalDiv">
+            <h3>고용형태</h3>
+            <div class="employmentRadio">
+                <input type="hidden" name="rno" id="modalRnoInput">
+                <input type="radio" class="btn-check empRadio0" name="employment" id="btn-check-1-outlined" value="0" autocomplete="off">
+                <label class="btn btn-outline-secondary" for="btn-check-1-outlined">정규직</label>
+                <input type="radio" class="btn-check empRadio1" name="employment" id="btn-check-2-outlined" value="1" autocomplete="off">
+                <label class="btn btn-outline-secondary" for="btn-check-2-outlined">계약직</label>
+                <input type="radio" class="btn-check empRadio2" name="employment" id="btn-check-3-outlined" value="2" autocomplete="off">
+                <label class="btn btn-outline-secondary" for="btn-check-3-outlined">인턴</label>
+                <input type="radio" class="btn-check empRadio3" name="employment" id="btn-check-4-outlined" value="3" autocomplete="off">
+                <label class="btn btn-outline-secondary" for="btn-check-4-outlined">아르바이트</label>
+                <input type="radio" class="btn-check empRadio4" name="employment" id="btn-check-5-outlined" value="4" autocomplete="off">
+                <label class="btn btn-outline-secondary" for="btn-check-5-outlined">프리랜서</label>
+                <input type="radio" class="btn-check empRadio5" name="employment" id="btn-check-6-outlined" value="5" autocomplete="off">
+                <label class="btn btn-outline-secondary" for="btn-check-6-outlined">파견직</label>
+                <input type="radio" class="btn-check empRadio6" name="employment" id="btn-check-7-outlined" value="6" autocomplete="off">
+                <label class="btn btn-outline-secondary" for="btn-check-7-outlined">일용직</label>
+                <input type="radio" class="btn-check empRadio7" name="employment" id="btn-check-8-outlined" value="7" autocomplete="off">
+                <label class="btn btn-outline-secondary" for="btn-check-8-outlined">교육생</label>
             </div>
-            <div style="margin: 40px 25px;">
-                <span class="btnOrdStatus" onclick="changeOrdStat(this)" >주문취소</span>
-                <span class="btnOrdStatus" onclick="changeOrdStat(this)" >교환요청</span>
-                <span class="btnOrdStatus" onclick="changeOrdStat(this)" >환불요청</span>
-                <span class="btnOrdStatus" onclick="changeOrdStat(this)" >처리완료</span>
+            <h3>상태</h3>
+            <div class="statusRadio">
+                <input type="radio" class="btn-check statRadio0" name="status" id="btn-check-1" value="0"  autocomplete="off">
+                <label class="btn btn-outline-secondary" for="btn-check-1">모집 중</label>
+                <input type="radio" class="btn-check statRadio1" name="status" id="btn-check-2" value="1"  autocomplete="off">
+                <label class="btn btn-outline-secondary" for="btn-check-2">상시채용</label>
+                <input type="radio" class="btn-check statRadio2" name="status" id="btn-check-3" value="2"  autocomplete="off">
+                <label class="btn btn-outline-secondary" for="btn-check-3">마감</label>
             </div>
         </div>
+        <div class="recruitBtn">
+            <button type="button" class="btn btn-primary" onclick="modifySubmit(event)">수정</button>
+        </div>
+        </form>
     </div>
     <button type="button" class="btn btn-secondary btnWrite" onclick="btnWrite(this)">글쓰기</button>
 </section>

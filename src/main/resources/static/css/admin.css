@@ -1326,10 +1326,6 @@ col {
     width: 30px;
     height: 30px;
 }
-#keywordInput {
-    margin-bottom: 3px;
-    height: 33px;
-}
 /* 배너관리 config-banner */
 #admin-config-banner {}
 #admin-config-banner > article > section {
@@ -2077,9 +2073,34 @@ col {
     background-color: #454c5f;
 }
 /* 검색 searchForm */
-#searchForm {
-    margin-bottom: 8px;
+.navbar {
+    margin: 0;
 }
+#recruitSearchDiv select {
+    width: 150px;
+    margin-left: 3px;
+}
+#recruitSearchDiv option {
+    margin-bottom: 5px;
+    font-size: 13px;
+}
+#searchForm {
+    margin-bottom: 3px;
+}
+#keywordInput {
+    width: 200px;
+    margin-left: 5px;
+    height: 33px;
+}
+.btnSearch{
+    margin-top: 3px;
+}
+
+.btnSearch:hover{
+    background-color: #242238;
+    color: #F0F4F9;
+}
+
 /* 주문 현황 아코디언 */
 .sellerOrderTh th {
     padding: 10px 0;
@@ -2221,4 +2242,69 @@ col {
     color: #333030;
     font-family: "Noto Sans KR", sans-serif;
     font-size: 14px;
+}
+/* 채용정보 수정 모달 */
+#recruitModal {
+    position: fixed;
+    left: 40%;
+    top: 30%;
+    display: none;
+    padding: 0px;
+    border: 2px solid #242238;
+    width: 550px !important;
+    height: 350px !important;
+    background-color: #ffffff;
+    z-index: 1000;
+    border-radius: 10px;
+}
+.employmentRadio {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: auto auto;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+.employmentRadio label {
+    display: block;
+    text-align: center;
+    padding: 5px;
+}
+.statusRadio {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: auto auto;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+.statusRadio label {
+    display: block;
+    text-align: center;
+    padding: 5px;
+}
+
+#recruitModalDiv {
+    position: absolute;
+    top: 10%;
+    left: 10px;
+    width: 550px !important;
+    height: 400px;
+    float: none !important;
+    padding: 10px;
+}
+#recruitModalDiv > h3 {
+    margin-bottom: 10px;
+}
+#recruitModalDiv .btn-outline-secondary {
+    padding: 7px;
+    font-family: "Noto Sans KR", sans-serif;
+    font-size: 13px;
+}
+.recruitBtn {
+    position: absolute;
+    bottom: 10%;
+    left: 45%;
+}
+.recruitBtn > button {
+    font-size: 14px;
+    padding: 5px 13px;
 }

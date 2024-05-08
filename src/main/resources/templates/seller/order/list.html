@@ -268,7 +268,7 @@
                                     <option value="ordStatus">주문상태</option>
                                 </select>
                                 <input class="form-control me-2" type="search" name="keyword" id="keywordInput" placeholder="Search" aria-label="Search">
-                                <button class="btn btn-outline-success" type="submit">Search</button>
+                                <button class="btn btnSearch" type="submit">Search</button>
                             </form>
                         </div>
                     </div>
@@ -380,6 +380,33 @@
                         </td>
                     </tr>
                 </table>
+                <!-- 페이지 -->
+                <div class="pageDiv">
+                    <nav aria-label="Page navigation example" th:if="${!pageResponseDTO.dtoList.isEmpty()}">
+                        <ul class="pagination">
+                            <li class="page-item">
+                                <a class="page-link" th:href="@{/seller/order/list(pg=${pageResponseDTO.start - 1})}" aria-label="Previous"  th:if="${pageResponseDTO.keyword == null}" >
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                                <a class="page-link" th:href="@{/seller/order/list(pg=${pageResponseDTO.start - 1}, type=${pageResponseDTO.type}, keyword=${pageResponseDTO.keyword})}" aria-label="Previous"  th:if="${pageResponseDTO.keyword != null}" >
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                            <th:block th:each="num:${#numbers.sequence(pageResponseDTO.start, pageResponseDTO.end)}">
+                                <li class="page-item"><a class="page-link" th:href="@{/seller/order/list(pg=${num})}" th:if="${pageResponseDTO.keyword == null}">[[${num}]]</a></li>
+                                <li class="page-item"><a class="page-link" th:href="@{/seller/order/list(pg=${num}, type=${pageResponseDTO.type}, keyword=${pageResponseDTO.keyword})}" th:if="${pageResponseDTO.keyword != null}">[[${num}]]</a></li>
+                            </th:block>
+                            <li class="page-item">
+                                <a th:if="${pageResponseDTO.keyword == null}" class="page-link"  th:href="@{/seller/order/list(pg=${pageResponseDTO.end + 1})}" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                                <a th:if="${pageResponseDTO.keyword != null}" class="page-link"  th:href="@{/seller/order/list(pg=${pageResponseDTO.end + 1}, type=${pageResponseDTO.type}, keyword=${pageResponseDTO.keyword})}" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
                 <div class="paging" th:if="${!pageResponseDTO.dtoList.isEmpty()}">
                         <span class="prev">
                             <a th:if="${pageResponseDTO.keyword == null}" class="page-link" th:href="@{/seller/order/list(pg=${pageResponseDTO.start - 1})}">&#60;</a>
