@@ -9,13 +9,14 @@ import kr.co.lotteon.service.product.ProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
 
-@Slf4j @Controller @RequiredArgsConstructor
+@Slf4j @Controller @RequiredArgsConstructor @EnableCaching
 public class MainController {
 
     private final CateService cateService;

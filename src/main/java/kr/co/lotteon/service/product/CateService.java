@@ -12,8 +12,10 @@ import kr.co.lotteon.repository.product.Cate3Repository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,15 +50,17 @@ public class CateService {
     }
 
     // cate1 리스트 불러오기
+    //@Cacheable("cateCache")
     public List<Cate1DTO> getCate1List(){
 
         List<Cate1> result = cate1Repository.findAll();
-        
+
         return result.stream()
                 .map(cate1 -> modelMapper.map(cate1, Cate1DTO.class))
                 .collect(Collectors.toList());
     }
     // cate2 리스트 불러오기
+    //@Cacheable("cateCache")
     public List<Cate2DTO> getCate2List(){
 
         List<Cate2> result = cate2Repository.findAll();
@@ -66,6 +70,7 @@ public class CateService {
                 .collect(Collectors.toList());
     }
     // cate3 리스트 불러오기
+    //@Cacheable("cateCache")
     public List<Cate3DTO> getCate3List(){
 
         List<Cate3> result = cate3Repository.findAll();
