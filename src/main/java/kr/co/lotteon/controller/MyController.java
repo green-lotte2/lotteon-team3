@@ -245,6 +245,29 @@ public class MyController {
         }
 
     }
+    
+    // 주소 수정
+    @ResponseBody
+    @PostMapping("/my/formMyinfoAddrChange")
+    public String formMyinfoAddrChange(@RequestBody MemberDTO memberDTO){
+        log.info("주소 수정 들어가기");
+
+        String uid=memberDTO.getUid();
+        log.info("아이디 : "+uid);
+        
+        String zip = memberDTO.getZip();
+        log.info("우편번호 : "+zip);
+
+        String addr1 = memberDTO.getAddr1();
+        log.info("주소 : "+addr1);
+
+        String addr2 = memberDTO.getAddr2();
+        log.info("상세주소 : "+addr2);
+
+        memberService.updateAddr(uid,zip,addr1,addr2);
+
+        return "success";
+    }
 
     
 

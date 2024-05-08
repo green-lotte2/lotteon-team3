@@ -75,16 +75,18 @@
                             <tr>
                                 <td>주소</td>
                                 <td>
-                                    <input type="text" name="zip" id="inputZip" th:value="${memberDTO.zip}"/>
-                                    <button type="button" id="findZip">주소검색</button>
+                                    <input type="text" name="zip" id="findZip" th:value="${memberDTO.zip}"/>
+                                    <button type="button" id="btnAddrChange">주소 변경</button>
                                     <p class="address">
                                         <input type="text" name="addr1" id="inputAddr1" size="50" th:value="${memberDTO.addr1}"/>
                                         <input type="text" name="addr2" id="inputAddr2" size="50" th:value="${memberDTO.addr2}"/>
+
                                     </p>
+
+
                                 </td>
                             </tr>
                         </table>
-                            <input type="submit" class="btnInfoChange" value="수정하기"/>
                         </form>
                         <div id="btnContainer">
                                     <button id="btnWithdraw">탈퇴하기</button>
