@@ -113,7 +113,7 @@ public class ProductController {
         log.info("컨트롤러 : "+productDTOS);
         MemberDTO memberDTO =memberService.findByUid(uid);
 
-        Map<String, List<ProductDTO>> orderProducts = new HashMap<>();
+       /* Map<String, List<ProductDTO>> orderProducts = new HashMap<>();
         for(ProductDTO productDTO : productDTOS){
             String company = productDTO.getCompany();
             List<ProductDTO> companyProducts = orderProducts.getOrDefault(company, new ArrayList<>());
@@ -121,11 +121,11 @@ public class ProductController {
             companyProducts.add(productDTO);
 
             orderProducts.put(company, companyProducts);
-        }
-        model.addAttribute("orderProducts", orderProducts);
+        }*/
+        model.addAttribute("productDTOS", productDTOS);
         model.addAttribute("memberDTO", memberDTO);
 
-        log.info("맵:"+orderProducts);
+        //log.info("맵:"+orderProducts);
         return "/product/order";
     }
 

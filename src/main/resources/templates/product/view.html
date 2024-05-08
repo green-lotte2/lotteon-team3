@@ -155,6 +155,23 @@
                                                     }
 
                                                 }
+
+                                                const order = document.getElementsByClassName('order')[0];
+
+                                                order.onclick = function (e){
+                                                    e.preventDefault();
+                                                    if (uidValue == null) {
+                                                        location.href = `/lotteon/member/login`;
+                                                    }else if (confirm("바로 구매하시겠습니까?")) {
+                                                        fetch()
+                                                        .then()
+                                                        .then()
+                                                        .catch((err)=>{
+                                                        console.log(err)})
+                                                    }
+
+                                                }
+
                                             });
 
                                         })
@@ -267,14 +284,22 @@
                             uidValue = null;
                         }
                         console.log(uidValue);
-                    }
 
+
+
+
+
+
+
+
+                    }
                     // 최상단 이동 (topButton) 함수 //
                     function movePageTop() {
                         window.scrollTo(0, 0);
                     }
 
                 </script>
+
                 <!-- 제목, 페이지 네비게이션 -->
                 <nav>
                     <h1>상품보기</h1>
@@ -357,7 +382,7 @@
 
                         <div class="button">
                             <input type="button" class="cart"  value="장바구니"/>
-                            <input type="button" class="order" value="구매하기"/>
+                            <input type="button" class="order" value="바로구매하기"/>
                         </div>
                     </div>
                 </article>
