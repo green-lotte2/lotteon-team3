@@ -144,7 +144,7 @@
                     <tr>
                         <th>등록된 이메일</th>
                         <td>
-                            <span class="originEmail" th:text="${memberDTO.email}"></span>
+                            <span class="originEmail" th:text="${#strings.substring(memberDTO.email, 0, memberDTO.email.indexOf('@') - 4) + '****' + memberDTO.email.substring(memberDTO.email.indexOf('@'))}"></span>
                         </td>
                     </tr>
                     <tr>
