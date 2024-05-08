@@ -1210,15 +1210,8 @@ col {
     background-color: #242238;
     border-color: #242238;
 }
-.prodCheckAll + .prodLabel {
-    color: #F0F4F9 !important;
-    background-color: #242238 !important;
-    border-color: #242238;
-}
-.prodCheckAll:checked + .prodLabel {
-    color: #242238 !important;
-    background-color: #F0F4F9 !important;
-    border-color: #F0F4F9;
+.prodCheckAll {
+
 }
 /*
 #admin-product-list > section > table  {
@@ -1358,7 +1351,7 @@ col {
     height: 100%;
 }
 #pageDiv{
-    display: block;
+    height: 40px;
 }
 .btnWrite{
     float: right;
