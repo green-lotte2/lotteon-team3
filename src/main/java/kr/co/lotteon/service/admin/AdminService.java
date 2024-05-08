@@ -1011,6 +1011,15 @@ public class AdminService {
         Recruit recruit = modelMapper.map(recruitDTO, Recruit.class);
         recruitRepository.save(recruit);
     }
+    // 관리자 회사소개 채용 수정
+    @Transactional
+    public ResponseEntity<?> recruitUpdate(RecruitDTO recruitDTO){
+        Recruit recruit = recruitRepository.findById(recruitDTO.getRno()).get();
+        recruit.setEmployment(recruitDTO.getEmployment());
+        recruit.setStatus(recruitDTO.getStatus());
+        recruitRepository.save(recruit);
+        return ResponseEntity.ok().body(recruit);
+    }
     // 관리자 회사소개 채용 삭제
     public ResponseEntity<?> recruitDelete(int rno){
         recruitRepository.deleteById(rno);

@@ -401,6 +401,13 @@ public class AdminController {
     public String companyPost(){
         return "/admin/company/post";
     }
+    // 관리자 회사소개 - 채용 수정
+    @PostMapping("/admin/company/recruit")
+    @ResponseBody
+    public ResponseEntity<?> recruitModify(@RequestBody RecruitDTO recruitDTO){
+        log.info("채용 수정 1 " + recruitDTO);
+        return adminService.recruitUpdate(recruitDTO);
+    }
     // 관리자 회사소개 글쓰기 전송
     @PostMapping("/admin/company/write")
     public String storyRegister(@RequestParam("thumb336") MultipartFile thumb336, ArticleDTO articleDTO){

@@ -2222,3 +2222,68 @@ col {
     font-family: "Noto Sans KR", sans-serif;
     font-size: 14px;
 }
+/* 채용정보 수정 모달 */
+#recruitModal {
+    position: fixed;
+    left: 40%;
+    top: 30%;
+    display: none;
+    padding: 0px;
+    border: 2px solid #242238;
+    width: 550px !important;
+    height: 350px !important;
+    background-color: #ffffff;
+    z-index: 1000;
+    border-radius: 10px;
+}
+.employmentRadio {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: auto auto;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+.employmentRadio label {
+    display: block;
+    text-align: center;
+    padding: 5px;
+}
+.statusRadio {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: auto auto;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+.statusRadio label {
+    display: block;
+    text-align: center;
+    padding: 5px;
+}
+
+#recruitModalDiv {
+    position: absolute;
+    top: 10%;
+    left: 10px;
+    width: 550px !important;
+    height: 400px;
+    float: none !important;
+    padding: 10px;
+}
+#recruitModalDiv > h3 {
+    margin-bottom: 10px;
+}
+#recruitModalDiv .btn-outline-secondary {
+    padding: 7px;
+    font-family: "Noto Sans KR", sans-serif;
+    font-size: 13px;
+}
+.recruitBtn {
+    position: absolute;
+    bottom: 10%;
+    left: 45%;
+}
+.recruitBtn > button {
+    font-size: 14px;
+    padding: 5px 13px;
+}
