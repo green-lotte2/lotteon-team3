@@ -61,5 +61,11 @@ $(function(){
         e.preventDefault();
         $('#popEmailChange').addClass('on');
     });
+    
+    // info - 회원 탈퇴 창 띄우기
+    $('#btnWithdraw').click(function(e){
+        e.preventDefault();
+        $('#popWithdraw').addClass('on');
+    });
 
 });

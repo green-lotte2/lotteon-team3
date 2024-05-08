@@ -269,39 +269,27 @@ public class MyController {
         return "success";
     }
 
-    
+    @ResponseBody
+    @PostMapping("/my/withdraw")
+    public String withdraw(@RequestBody MemberDTO memberDTO) {
+        
+        log.info("탈퇴하기");
+        String uid = memberDTO.getUid();
 
+        String pass = memberDTO.getPass();
 
+        Authentication authentication = new UsernamePasswordAuthenticationToken(uid, pass);
 
+        Authentication result = authenticationManager.authenticate(authentication);
 
+        if (result.isAuthenticated()) {
+            memberService.updateWdate(uid);
 
-
-
-//    @ResponseBody
-//    @PostMapping("/my/withdraw")
-//    public String withdraw(@RequestParam String uid, String inputPass) {
-//        Authentication authentication = new UsernamePasswordAuthenticationToken(uid, inputPass);
-//        Authentication result = authenticationManager.authenticate(authentication);
-//
-//        if (result.isAuthenticated()) {
-//            memberService.updateWdate(uid);
-//            return "success";
-//        } else {
-//            return "fail";
-//        }
-//    }
-//    @ResponseBody
-//    @PostMapping("/my/withdrawFinal")
-//    public String withdrawFinal(@RequestBody MemberDTO memberDTO) {
-//        log.info("=========회원정보수정========== : "+memberDTO);
-//        memberService.save(memberDTO);
-//        return "success";
-//    }
-
-
-
-    //추가 끝
-
+            return "success";
+        } else {
+            return "fail";
+        }
+    }
 
     // my - order (나의 전체 주문내역) 페이지 매핑
     @GetMapping("/my/order")
