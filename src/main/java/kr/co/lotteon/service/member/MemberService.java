@@ -120,6 +120,16 @@ public class MemberService {
         memberRepository.save(member);
     }
 
+    //myInfo - 주소 수정
+    public void updateAddr(String uid,String zip,String addr1, String addr2){
+        Member member = memberRepository.findById(uid).get();
+        member.setZip(zip);
+        member.setAddr1(addr1);
+        member.setAddr2(addr2);
+        log.info("주소 변경 완료");
+        memberRepository.save(member);
+    }
+
 
     //이메일 전송
     @Value("${spring.mail.username}")

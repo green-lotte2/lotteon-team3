@@ -245,40 +245,51 @@ public class MyController {
         }
 
     }
-
     
+    // 주소 수정
+    @ResponseBody
+    @PostMapping("/my/formMyinfoAddrChange")
+    public String formMyinfoAddrChange(@RequestBody MemberDTO memberDTO){
+        log.info("주소 수정 들어가기");
 
+        String uid=memberDTO.getUid();
+        log.info("아이디 : "+uid);
+        
+        String zip = memberDTO.getZip();
+        log.info("우편번호 : "+zip);
 
+        String addr1 = memberDTO.getAddr1();
+        log.info("주소 : "+addr1);
 
+        String addr2 = memberDTO.getAddr2();
+        log.info("상세주소 : "+addr2);
 
+        memberService.updateAddr(uid,zip,addr1,addr2);
 
+        return "success";
+    }
 
+    @ResponseBody
+    @PostMapping("/my/withdraw")
+    public String withdraw(@RequestBody MemberDTO memberDTO) {
+        
+        log.info("탈퇴하기");
+        String uid = memberDTO.getUid();
 
-//    @ResponseBody
-//    @PostMapping("/my/withdraw")
-//    public String withdraw(@RequestParam String uid, String inputPass) {
-//        Authentication authentication = new UsernamePasswordAuthenticationToken(uid, inputPass);
-//        Authentication result = authenticationManager.authenticate(authentication);
-//
-//        if (result.isAuthenticated()) {
-//            memberService.updateWdate(uid);
-//            return "success";
-//        } else {
-//            return "fail";
-//        }
-//    }
-//    @ResponseBody
-//    @PostMapping("/my/withdrawFinal")
-//    public String withdrawFinal(@RequestBody MemberDTO memberDTO) {
-//        log.info("=========회원정보수정========== : "+memberDTO);
-//        memberService.save(memberDTO);
-//        return "success";
-//    }
+        String pass = memberDTO.getPass();
 
+        Authentication authentication = new UsernamePasswordAuthenticationToken(uid, pass);
 
+        Authentication result = authenticationManager.authenticate(authentication);
 
-    //추가 끝
+        if (result.isAuthenticated()) {
+            memberService.updateWdate(uid);
 
+            return "success";
+        } else {
+            return "fail";
+        }
+    }
 
     // my - order (나의 전체 주문내역) 페이지 매핑
     @GetMapping("/my/order")
