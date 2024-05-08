@@ -108,32 +108,33 @@ public class ProductService {
                 .build();
     }
 
-    public PageResponseDTO searchProducts(PageRequestDTO pageRequestDTO){
-
-        Pageable pageable = pageRequestDTO.getPageable();
-        Page<Tuple> pageProduct = productRepository.searchProducts(pageRequestDTO, pageable);
+    public SearchPageResponseDTO searchProducts(SearchPageRequestDTO searchPageRequestDTO) {
+        Page<Tuple> pageProduct = productRepository.searchProducts(searchPageRequestDTO, searchPageRequestDTO.getPageable());
 
         List<ProductDTO> dtoList = pageProduct.getContent().stream()
-                .map(tuple ->
-                        {
-                            log.info("tuple : " + tuple);
-                            Product product = tuple.get(0, Product.class);
+                .map(tuple -> {
+                    // Tuple에서 필요한 데이터를 추출하여 ProductDTO 객체를 생성
+                    ProductDTO productDTO = new ProductDTO();
+                    productDTO.setProdNo(tuple.get(0, Integer.class)); // 상품 번호
+                    productDTO.setProdName(tuple.get(1, String.class)); // 상품명
+                    productDTO.setDiscount(tuple.get(2, Integer.class)); // 상품할인율
+                    productDTO.setPrice(tuple.get(3, Integer.class)); // 상품가격
+                    productDTO.setSeller(tuple.get(4, String.class)); // 상품판매자
+                    // 나머지 필드도 마찬가지로 설정
 
-                            log.info("product : " + product);
-
-                            return modelMapper.map(product, ProductDTO.class);
-                        }
-                )
-                .toList();
+                    return productDTO;
+                })
+                .collect(Collectors.toList());
 
         int total = (int) pageProduct.getTotalElements();
 
-        return PageResponseDTO.builder()
-                .pageRequestDTO(pageRequestDTO)
+        return SearchPageResponseDTO.builder()
+                .searchPageRequestDTO(searchPageRequestDTO)
                 .dtoList(dtoList)
                 .total(total)
                 .build();
     }
+
 
     // 오더 페이지
     public List<ProductDTO> selectOrderFromCart(int[] cartNo){

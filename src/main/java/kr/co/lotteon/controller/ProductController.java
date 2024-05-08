@@ -20,6 +20,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.Console;
 import java.util.*;
 
 @Slf4j
@@ -61,14 +62,15 @@ public class ProductController {
 
     // list (상품 목록) 페이지 매핑
     @GetMapping("/product/list")
-    public String list(Model model, PageRequestDTO pageRequestDTO){
+    public String list(Model model, PageRequestDTO pageRequestDTO, SearchPageRequestDTO searchPageRequestDTO){
 
         // 상품 목록 조회
         PageResponseDTO pageResponseDTO = null;
+        SearchPageResponseDTO searchPageResponseDTO = null;
 
-        if (pageRequestDTO.getSearchKeyword() != null) {
+        if (searchPageRequestDTO.getSearchKeyword() != null) {
             // 검색 글 목록 조회
-            pageResponseDTO = productService.searchProducts(pageRequestDTO);
+            searchPageResponseDTO = productService.searchProducts(searchPageRequestDTO);
 
         }else {
             pageResponseDTO = productService.productList(pageRequestDTO);
@@ -136,28 +138,20 @@ public class ProductController {
 
     // search (상품 검색) 페이지 매핑
     @GetMapping("/product/search")
-    public String search(Model model,String keyword, PageRequestDTO pageRequestDTO)
-    {
-        PageResponseDTO pageResponseDTO = null;
+    public String search(Model model, SearchPageRequestDTO searchPageRequestDTO) {
 
-        if (pageRequestDTO.getSearchKeyword() != null) {
-            // 검색 글 목록 조회
-            pageResponseDTO = productService.searchProducts(pageRequestDTO);
+        String searchKeyword = searchPageRequestDTO.getSearchKeyword();
+        log.info("검색 컨트롤러" + searchKeyword);
 
-            model.addAttribute("pageResponseDTO", pageResponseDTO);
-            log.info("pageResponseDTO : " + pageResponseDTO);
+        if (searchKeyword != null && !searchKeyword.isEmpty()) {
+            // 검색어가 존재하는 경우 상품 검색 실행
+            SearchPageResponseDTO searchPageResponseDTO = productService.searchProducts(searchPageRequestDTO);
+            model.addAttribute("searchPageResponseDTO", searchPageResponseDTO);
+            log.info("searchPageResponseDTO : " + searchPageResponseDTO);
         }
-
-        if (keyword != null) {
-            // 키워드가 입력된 경우 로그 출력
-            log.info("keyword : " + keyword);
-        }
-
-        model.addAttribute("keyword", keyword);
 
         return "/product/search";
     }
-
 
     // view (상품 상세 보기) 페이지 매핑
     @GetMapping("/product/view")

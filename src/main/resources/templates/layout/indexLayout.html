@@ -113,9 +113,8 @@
         <div class="logo">
             <div>
                 <a th:href="@{/index}"><img th:src="@{/images/header_logo.png}" alt="로고" /></a>
-                <form th:action="@{/product/search}">
-
-                    <input type="text" name="keyword" />
+                <form th:action="@{/product/search}" method="get">
+                    <input type="text" name="searchKeyword" placeholder="상품을 검색해보세요"/>
                     <button><i class="fa fa-search"></i></button>
                 </form>
             </div>

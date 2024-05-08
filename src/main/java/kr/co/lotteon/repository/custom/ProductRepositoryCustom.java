@@ -3,10 +3,7 @@ package kr.co.lotteon.repository.custom;
 import com.querydsl.core.Tuple;
 import kr.co.lotteon.dto.admin.AdminProductPageRequestDTO;
 import kr.co.lotteon.dto.cs.CsPageRequestDTO;
-import kr.co.lotteon.dto.product.PageRequestDTO;
-import kr.co.lotteon.dto.product.ProductDTO;
-import kr.co.lotteon.dto.product.ProductReviewPageRequestDTO;
-import kr.co.lotteon.dto.product.ReviewDTO;
+import kr.co.lotteon.dto.product.*;
 import kr.co.lotteon.entity.cs.BoardEntity;
 import kr.co.lotteon.entity.product.Option;
 import kr.co.lotteon.entity.product.Product;
@@ -59,5 +56,5 @@ public interface ProductRepositoryCustom {
     Page<Tuple> selectProductReview(int prodNo, ProductReviewPageRequestDTO productReviewPageRequestDTO, Pageable pageable);
 
     // 메인 검색창
-    public Page<Tuple> searchProducts(PageRequestDTO pageRequestDTO, Pageable pageable);
+    Page<Tuple> searchProducts(SearchPageRequestDTO searchPageRequestDTO, Pageable pageable);
 }
