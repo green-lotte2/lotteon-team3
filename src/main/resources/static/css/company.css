@@ -195,14 +195,18 @@ p.desc {
   }
 }
 
-/* ì„œë¸Œê³µí†µ */
+/* 헤더 공통 */
 #wrapper {}
 #wrapper > header {
   border-bottom: 1px solid rgb(255 255 255 / 10%);
 }
 
 #wrapper > header a {
+  text-decoration: none;
   color: #fff;
+}
+#wrapper > header a:hover {
+  color: #df0901 !important;
 }
 #mainBanner {
   background-color: #413F3F;
@@ -377,57 +381,61 @@ main > .content > p {
   font-weight: 600;
   text-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
 }
+#culture .cultureSub {
+  margin-bottom: 70px;
+}
 #culture .cultureContentP {
   margin-top: 0;
   margin-bottom: .9rem;
   color: #000000;
+  font-family: "Noto Sans KR", sans-serif;
   font-size: 25px;
   font-weight: 400;
-  line-height: 1.4em;
+  line-height: 1.6em;
 }
-#culture .elementor-widget-container {
-  transition: background .3s, border .3s, border-radius .3s, box-shadow .3s, transform var(--e-transform-transition-duration, .4s);
-  box-sizing: border-box;
-  margin-bottom: 80px;
-  color: #000000;
-  font-size: 17px;
-  font-weight: 400;
-}
-#culture .elementor-section .elementor-container {
+#culture .cultureCard {
+  max-width: 80%;
   display: flex;
   margin-right: auto;
   margin-left: auto;
+  margin-bottom: 70px;
   position: relative;
+  border-radius: 10px; /* 모서리를 둥글게 만듭니다 */
+  overflow: hidden; /* 내용이 모서리를 넘어갈 경우 잘립니다 */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 약간의 그림자 추가 */
 }
-#culture .elementor-714 .elementor-element.elementor-element-255535d {
-  width: 49.998%;
+#culture .cardContent {
+  width: 50%; /* 이미지와 텍스트를 동일한 너비로 만듭니다 */
 }
-#culture .elementor-widget-wrap {
-  position: relative;
+
+#culture .contentImg {
+  overflow: hidden;
   width: 100%;
-  flex-wrap: wrap;
-  align-content: flex-start;
+  height: auto;
 }
-#culture .elementor-widget-wrap>.elementor-element {
+#culture .contentText1{
+  padding: 50px;
   width: 100%;
   text-align: left;
   color: #090808;
   font-size: 25px;
   font-weight: 500;
+  margin-bottom: 20px; /* 텍스트 사이의 간격을 만듭니다 */
 }
-#culture .content .elementor-container.elementor-column-gap-default {
-  display: flex;
-  margin-right: auto;
-  margin-left: auto;
-  position: relative;
+
+#culture .contentTextH {
+  margin-bottom: 10px;
+  color: #000000;
+  font-family: "Noto Sans KR", sans-serif;
+  font-size: 23px;
+  font-weight: 400;
 }
-#culture .elementor-714 .elementor-element.elementor-element-255535d {
-  width: 49.998%;
-}
-#culture .elementor-714 .elementor-element.elementor-element-fbc8225 img {
-  width: 100%;
-  height: 347px;
-  border-radius: 10px 0px 0px 10px;
+#culture .contentTextP {
+  margin: 0;
+  color: #535658;
+  font-family: "Noto Sans KR", sans-serif;
+  font-size: 20px;
+  font-weight: 400;
 }
 /* 소식과 이야기 */
 #story > .cover {
@@ -579,4 +587,48 @@ main > .content > p {
 #culture > .content > ul > li > p {
   width: 200px;
   margin: 0 auto;
+}
+/* 채용 정보 */
+.pageDiv {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.recruitDetail{
+  color: #0b0a0a;
+  font-family: "Noto Sans KR", sans-serif;
+  font-size: 16px;
+}
+.accordion-body .recruitSpan{
+  color: #333030;
+  font-family: "Noto Sans KR", sans-serif;
+  font-size: 14px;
+}
+/* 검색 searchForm */
+.navbar {
+  margin: 0;
+}
+#recruitSearchDiv select {
+  width: 180px;
+  margin-left: 3px;
+}
+#recruitSearchDiv option {
+  margin-bottom: 5px;
+  font-size: 13px;
+}
+#searchForm {
+  margin-bottom: 3px;
+}
+#keywordInput {
+  width: 200px;
+  margin-left: 5px;
+  height: 33px;
+}
+.btnSearch{
+  margin-top: 3px;
+}
+
+.btnSearch:hover{
+  background-color: #242238;
+  color: #F0F4F9;
 }

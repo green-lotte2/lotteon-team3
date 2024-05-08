@@ -2,6 +2,37 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{/layout/companyLayout}">
     <main id="recruit" layout:fragment="content">
+        <script>
+            // 검색용 전역 변수
+            let employment = 8;
+            let status = 8;
+            // 검색 전송
+            function formSubmit(){
+                const searchForm = document.getElementById('searchForm');
+                searchForm.submit();
+            }
+            // 아코디언 상태 변경
+            function accordionControl(button){
+                // 해당 버튼의 data-bs-target 값을 사용하여 아코디언 컨텐츠 요소 가져오기
+                const targetId = button.getAttribute('data-bs-target');
+                const targetContent = document.getElementById(targetId);
+                const targetTd = targetContent.closest('td');
+                // 현재 아코디언 상태 확인
+                const isExpanded = button.getAttribute('aria-expanded') === 'true';
+
+                if (isExpanded) {
+                    // 아코디언 닫기
+                    button.setAttribute('aria-expanded', 'false');
+                    targetContent.classList.remove('show');
+                    targetTd.style.display = 'none';
+                } else {
+                    // 아코디언 열기
+                    button.setAttribute('aria-expanded', 'true');
+                    targetContent.classList.add('show');
+                    targetTd.style.display = 'table-cell';
+                }
+            }
+        </script>
         <div class="cover">
             <div>
                 <h1>쇼핑을 새롭게, 세상을 이롭게 이끌 <br>
@@ -15,52 +46,109 @@
             </div>
         </div>
         <section class="content">
+            <!-- 검색 nav -->
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <div class="container-fluid" id="recruitSearchDiv">
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <form th:action="@{/company/recruit}" method="get" class="d-flex" id="searchForm">
+                            <select class="form-select form-select" name="employment" aria-label=".form-select-sm example" onchange="formSubmit()">
+                                <option th:selected="${recruitDTO.employment == 8}" value="8">전체 채용 형태</option>
+                                <option th:selected="${recruitDTO.employment == 0}" value="0">정규직</option>
+                                <option th:selected="${recruitDTO.employment == 1}" value="1">계약직</option>
+                                <option th:selected="${recruitDTO.employment == 2}" value="2">인턴</option>
+                                <option th:selected="${recruitDTO.employment == 3}" value="3">아르바이트</option>
+                                <option th:selected="${recruitDTO.employment == 4}" value="4">프리랜서</option>
+                                <option th:selected="${recruitDTO.employment == 5}" value="5">파견직</option>
+                                <option th:selected="${recruitDTO.employment == 6}" value="6">일용직</option>
+                                <option th:selected="${recruitDTO.employment == 7}" value="7">교육생</option>
+                            </select>
+                            <select class="form-select form-select" name="status" aria-label=".form-select-sm example" onchange="formSubmit()">
+                                <option th:selected="${recruitDTO.status == 8}" value="8">전체 상태</option>
+                                <option th:selected="${recruitDTO.status == 0}" value="0">모집 중</option>
+                                <option th:selected="${recruitDTO.status == 1}" value="1">상시 채용</option>
+                                <option th:selected="${recruitDTO.status == 2}" value="2">마감</option>
+                            </select>
+                        </form>
+                    </div>
+                </div>
+            </nav>
             <!-- 채용정보 리스트 출력 -->
             <table class="table">
                 <thead>
                 <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">First</th>
-                    <th scope="col">Last</th>
-                    <th scope="col">Handle</th>
-                    <th scope="col">Handle</th>
-                    <th scope="col">Handle</th>
+                    <th scope="col">글번호</th>
+                    <th scope="col">제목</th>
+                    <th scope="col">직군</th>
+                    <th scope="col">경력</th>
+                    <th scope="col">고용형태</th>
+                    <th scope="col">상태</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <th scope="row">2</th>
-                    <td>광고사업</td>
-                    <td>경력 4 ~ 15년</td>
-                    <td>정규직</td>
-                    <td>광고 플랫폼 기획</td>
-                    <td>모집 중</td>
-                </tr>
-                <tr>
-                    <th scope="row">2</th>
-                    <td>광고사업</td>
-                    <td>경력 4 ~ 15년</td>
-                    <td>정규직</td>
-                    <td>광고 플랫폼 기획</td>
-                    <td>모집 중</td>
-                </tr>
-                <tr>
-                    <th scope="row">2</th>
-                    <td>광고사업</td>
-                    <td>경력 4 ~ 15년</td>
-                    <td>정규직</td>
-                    <td>광고 플랫폼 기획</td>
-                    <td>모집 중</td>
-                </tr>
-                <tr>
-                    <th scope="row">2</th>
-                    <td>광고사업</td>
-                    <td>경력 4 ~ 15년</td>
-                    <td>정규직</td>
-                    <td>광고 플랫폼 기획</td>
-                    <td>모집 중</td>
-                </tr>
+                <th:block th:each="article, loop : ${pageResponseDTO.dtoList}">
+                    <tr th:data-bs-target="'panel'+${loop}" onclick="accordionControl(this)">
+                        <td th:text="${article.rno}"></td>
+                        <td th:text="${article.title}"></td>
+                        <td th:text="${article.occupation}"></td>
+                        <td th:text="${article.experience}"></td>
+                        <td>
+                            <span th:class="${'empSpan'+article.rno}" th:if="${article.employment == 0}">정규직</span>
+                            <span th:class="${'empSpan'+article.rno}" th:if="${article.employment == 1}">계약직</span>
+                            <span th:class="${'empSpan'+article.rno}" th:if="${article.employment == 2}">인턴</span>
+                            <span th:class="${'empSpan'+article.rno}" th:if="${article.employment == 3}">아르바이트</span>
+                            <span th:class="${'empSpan'+article.rno}" th:if="${article.employment == 4}">프리랜서</span>
+                            <span th:class="${'empSpan'+article.rno}" th:if="${article.employment == 5}">파견직</span>
+                            <span th:class="${'empSpan'+article.rno}" th:if="${article.employment == 6}">일용직</span>
+                            <span th:class="${'empSpan'+article.rno}" th:if="${article.employment == 7}">교육생</span>
+                        </td>
+                        <td>
+                            <span th:class="${'statusSpan'+article.rno}" th:if="${article.status == 0}" style="color: #0ca03c"  th:data-rno="${article.rno}" onclick="changeStatus(this)">모집 중</span>
+                            <span th:class="${'statusSpan'+article.rno}" th:if="${article.status == 1}" style="color: #0ca03c"  th:data-rno="${article.rno}" onclick="changeStatus(this)">상시 채용</span>
+                            <span th:class="${'statusSpan'+article.rno}" th:if="${article.status == 2}"  th:data-rno="${article.rno}" onclick="changeStatus(this)">마감</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="7" style="display: none" class="accordion-td">
+                            <div th:id="'panel'+${loop}" class="accordion-collapse collapse">
+                                <div class="accordion-body">
+                                    <div>
+                                        <div class="cartPrice order-3">
+                                            <span class="recruitSpan" th:text="${article.content}"  style="white-space: pre-line;"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </th:block>
                 </tbody>
             </table>
+            <!-- 페이지 -->
+            <div class="pageDiv">
+                <nav aria-label="Page navigation example" th:if="${!pageResponseDTO.dtoList.isEmpty()}">
+                    <ul class="pagination">
+                        <li class="page-item">
+                            <a class="page-link" th:href="@{/company/recruit(pg=${pageResponseDTO.start - 1})}" aria-label="Previous"  th:if="${pageResponseDTO.keyword == null}" >
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                            <a class="page-link" th:href="@{/company/recruit(pg=${pageResponseDTO.start - 1}, type=${pageResponseDTO.type}, keyword=${pageResponseDTO.keyword})}" aria-label="Previous"  th:if="${pageResponseDTO.keyword != null}" >
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        <th:block th:each="num:${#numbers.sequence(pageResponseDTO.start, pageResponseDTO.end)}">
+                            <li class="page-item"><a class="page-link" th:href="@{/company/recruit(pg=${num})}" th:if="${pageResponseDTO.keyword == null}">[[${num}]]</a></li>
+                            <li class="page-item"><a class="page-link" th:href="@{/company/recruit(pg=${num}, type=${pageResponseDTO.type}, keyword=${pageResponseDTO.keyword})}" th:if="${pageResponseDTO.keyword != null}">[[${num}]]</a></li>
+                        </th:block>
+                        <li class="page-item">
+                            <a th:if="${pageResponseDTO.keyword == null}" class="page-link"  th:href="@{/company/recruit(pg=${pageResponseDTO.end + 1})}" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                            <a th:if="${pageResponseDTO.keyword != null}" class="page-link"  th:href="@{/company/recruit(pg=${pageResponseDTO.end + 1}, type=${pageResponseDTO.type}, keyword=${pageResponseDTO.keyword})}" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
         </section>
     </main>

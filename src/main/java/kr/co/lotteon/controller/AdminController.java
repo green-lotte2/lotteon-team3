@@ -379,9 +379,11 @@ public class AdminController {
     }
     // 관리자 채용정보 매핑
     @GetMapping("/admin/company/recruit")
-    public String recruitList(Model model, AdminPageRequestDTO adminPageRequestDTO){
-        RecruitPageResponseDTO pageResponseDTO = adminService.selectRecruit(adminPageRequestDTO);
+    public String recruitList(Model model, AdminPageRequestDTO adminPageRequestDTO, RecruitDTO recruitDTO){
+        log.info("recruitDTO : " +recruitDTO);
+        RecruitPageResponseDTO pageResponseDTO = adminService.selectRecruit(adminPageRequestDTO, recruitDTO);
         model.addAttribute("pageResponseDTO", pageResponseDTO);
+        model.addAttribute("recruitDTO", recruitDTO);
         return "/admin/company/recruit";
     }
     // 관리자 회사소개 글쓰기 매핑

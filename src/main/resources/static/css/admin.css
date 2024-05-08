@@ -1326,10 +1326,6 @@ col {
     width: 30px;
     height: 30px;
 }
-#keywordInput {
-    margin-bottom: 3px;
-    height: 33px;
-}
 /* 배너관리 config-banner */
 #admin-config-banner {}
 #admin-config-banner > article > section {
@@ -2077,9 +2073,34 @@ col {
     background-color: #454c5f;
 }
 /* 검색 searchForm */
-#searchForm {
-    margin-bottom: 8px;
+.navbar {
+    margin: 0;
 }
+#recruitSearchDiv select {
+    width: 150px;
+    margin-left: 3px;
+}
+#recruitSearchDiv option {
+    margin-bottom: 5px;
+    font-size: 13px;
+}
+#searchForm {
+    margin-bottom: 3px;
+}
+#keywordInput {
+    width: 200px;
+    margin-left: 5px;
+    height: 33px;
+}
+.btnSearch{
+    margin-top: 3px;
+}
+
+.btnSearch:hover{
+    background-color: #242238;
+    color: #F0F4F9;
+}
+
 /* 주문 현황 아코디언 */
 .sellerOrderTh th {
     padding: 10px 0;

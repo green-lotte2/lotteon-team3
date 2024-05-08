@@ -596,7 +596,7 @@ public class SellerService {
         log.info("판매자 주문 현황 Serv 2 : "+prodNos);
 
 
-        // order, orderItem, product, option 정보 DB 조회
+        // order, orderItem, product 정보 DB 조회
         Page<Tuple> results = orderItemRepository.selectOrderList(adminPageRequestDTO, pageable, prodNos);
         log.info("판매자 주문 현황 Serv 3 : " + results.getContent().size());
 

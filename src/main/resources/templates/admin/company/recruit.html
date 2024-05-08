@@ -3,10 +3,17 @@
       layout:decorate="~{/layout/adminListLayout}">
 <section id="admin-index" layout:fragment="content">
     <script>
+        // 검색용 전역 변수
+        let employment = 8;
+        let status = 8;
+        // 검색 전송
+        function formSubmit(){
+            const searchForm = document.getElementById('searchForm');
+            searchForm.submit();
+        }
         // 글쓰기 이동
         function btnWrite() {
             location.href = `/lotteon/admin/company/post`;
-
         }
         // 글삭제
         async function btnDelete(button){
@@ -121,8 +128,6 @@
             const modal = document.querySelector(".modal");
             modal.style.display = "none";
         }
-        // 수정 완료
-
         // 아코디언 상태 변경
         function accordionControl(button){
             // 해당 버튼의 data-bs-target 값을 사용하여 아코디언 컨텐츠 요소 가져오기
@@ -153,6 +158,32 @@
     </nav>
     <article>
     </article>
+    <!-- 검색 nav -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid" id="recruitSearchDiv">
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <form th:action="@{/admin/company/recruit}" method="get" class="d-flex" id="searchForm">
+                    <select class="form-select form-select" name="employment" aria-label=".form-select-sm example" onchange="formSubmit()">
+                        <option th:selected="${recruitDTO.employment == 8}" value="8">전체 채용 형태</option>
+                        <option th:selected="${recruitDTO.employment == 0}" value="0">정규직</option>
+                        <option th:selected="${recruitDTO.employment == 1}" value="1">계약직</option>
+                        <option th:selected="${recruitDTO.employment == 2}" value="2">인턴</option>
+                        <option th:selected="${recruitDTO.employment == 3}" value="3">아르바이트</option>
+                        <option th:selected="${recruitDTO.employment == 4}" value="4">프리랜서</option>
+                        <option th:selected="${recruitDTO.employment == 5}" value="5">파견직</option>
+                        <option th:selected="${recruitDTO.employment == 6}" value="6">일용직</option>
+                        <option th:selected="${recruitDTO.employment == 7}" value="7">교육생</option>
+                    </select>
+                    <select class="form-select form-select" name="status" aria-label=".form-select-sm example" onchange="formSubmit()">
+                        <option th:selected="${recruitDTO.status == 8}" value="8">전체 상태</option>
+                        <option th:selected="${recruitDTO.status == 0}" value="0">모집 중</option>
+                        <option th:selected="${recruitDTO.status == 1}" value="1">상시 채용</option>
+                        <option th:selected="${recruitDTO.status == 2}" value="2">마감</option>
+                    </select>
+                </form>
+            </div>
+        </div>
+    </nav>
     <!-- 글 목록 -->
     <table class="table">
         <thead>

@@ -289,7 +289,7 @@
                                     <option value="ordStatus">주문상태</option>
                                 </select>
                                 <input class="form-control me-2" type="search" name="keyword" id="keywordInput" placeholder="Search" aria-label="Search">
-                                <button class="btn btn-outline-success" type="submit">Search</button>
+                                <button class="btn btnSearch" type="submit">Search</button>
                             </form>
                         </div>
                     </div>
@@ -299,17 +299,6 @@
                         <img th:src="@{/admin/images/noproduct.png}" style="width: 900px; height: 460px">
                     </div>
                 </th:block>
-                <!--<table class="sellerOrderTh">
-                    <tbody>
-                    <tr th:if="${!pageResponseDTO.dtoList.isEmpty()}">
-                        <th>gg</th>
-                        <th>gg</th>
-                        <th>gg</th>
-                        <th>gg</th>
-                        <th>gg</th>
-                    </tr>
-                    </tbody>
-                </table>-->
                 <table class="orderList">
                     <tr th:each="OrderListDTO, loop : ${pageResponseDTO.dtoList}">
                         <td class="orderListTd">
@@ -333,26 +322,26 @@
                                     <div th:id="'panel'+${loop}" class="accordion-collapse collapse">
                                         <div class="accordion-body">
                                             <div>
-                                                <div class="details" th:if="${OrderListDTO.optionDTO != null}">
-                                                        <p class="productDetail">옵션</p>
-                                                    <div class="optionDiv">
+                                                <div class="details" th:if="${OrderListDTO.opList != null}">
+                                                    <p class="productDetail">옵션</p>
+                                                    <div class="optionDiv" th:each="option : ${OrderListDTO.opList}">
                                                         <ul class="list-group">
                                                             <li class="list-group-item">
                                                                 <span>옵션번호</span>
-                                                                <span th:text="${OrderListDTO.optionDTO.opNo}"></span>
+                                                                <span th:text="${option.opNo}"></span>
                                                             </li>
                                                             <li class="list-group-item">
                                                                 <span>옵션이름</span>
-                                                                <span th:text="${OrderListDTO.optionDTO.opName}"></span>
+                                                                <span th:text="${option.opName}"></span>
                                                             </li>
                                                             <li class="list-group-item">
                                                                 <span>옵션값</span>
-                                                                <span th:text="${OrderListDTO.optionDTO.opValue}"></span>
+                                                                <span th:text="${option.opValue}"></span>
                                                             </li>
                                                         </ul>
                                                     </div>
                                                 </div>
-                                                <div class="details" th:if="${OrderListDTO.optionDTO == null}">
+                                                <div class="details" th:if="${OrderListDTO.opList == null}">
                                                     <p class="productDetail">옵션</p>
                                                     <img th:src="@{/admin/images/Empty-cuate.png}" style="width: auto; height: 200px">
                                                 </div>
@@ -361,11 +350,11 @@
                                                     <ul class="list-group">
                                                         <li class="list-group-item">
                                                             <span>가격</span>
-                                                            <span class="price1">[[${OrderListDTO.productDTO.price}]]</span> <strong> 원</strong>
+                                                            <span>[[${OrderListDTO.productDTO.price}]] 원</span>
                                                         </li>
                                                         <li class="list-group-item">
                                                             <span>총 가격</span>
-                                                            <span class="price2">[[${OrderListDTO.orderItemDTO.count * OrderListDTO.productDTO.price}]]</span> <strong> 원</strong>
+                                                            <span>[[${OrderListDTO.orderItemDTO.count * OrderListDTO.productDTO.price}]] 원</span>
                                                         </li>
                                                         <li class="list-group-item">
                                                             <span>배송받는 분</span>
@@ -401,25 +390,32 @@
                         </td>
                     </tr>
                 </table>
-                <div class="paging" th:if="${!pageResponseDTO.dtoList.isEmpty()}">
-                        <span class="prev">
-                            <a th:if="${pageResponseDTO.keyword == null}" class="page-link" th:href="@{/seller/order/list(pg=${pageResponseDTO.start - 1})}">&#60;</a>
-                            <a th:if="${pageResponseDTO.keyword != null}" class="page-link" th:href="@{/seller/order/list(pg=${pageResponseDTO.start - 1}, type=${pageResponseDTO.type}, keyword=${pageResponseDTO.keyword})}">&#60;</a>
-                        </span>
-                    <span class="num">
+                <!-- 페이지 -->
+                <div class="pageDiv">
+                    <nav aria-label="Page navigation example" th:if="${!pageResponseDTO.dtoList.isEmpty()}">
+                        <ul class="pagination">
+                            <li class="page-item">
+                                <a class="page-link" th:href="@{/admin/order/list(pg=${pageResponseDTO.start - 1})}" aria-label="Previous"  th:if="${pageResponseDTO.keyword == null}" >
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                                <a class="page-link" th:href="@{/admin/order/list(pg=${pageResponseDTO.start - 1}, type=${pageResponseDTO.type}, keyword=${pageResponseDTO.keyword})}" aria-label="Previous"  th:if="${pageResponseDTO.keyword != null}" >
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
                             <th:block th:each="num:${#numbers.sequence(pageResponseDTO.start, pageResponseDTO.end)}">
-                                <a  th:if="${pageResponseDTO.keyword == null}" th:classappend="${pageResponseDTO.pg == num} ? 'page-link on' : 'page-link'" th:href="@{/seller/order/list(pg=${num})}">
-                                    [[${num}]]
-                                </a>
-                                <a  th:if="${pageResponseDTO.keyword != null}" th:classappend="${pageResponseDTO.pg == num} ? 'page-link on' : 'page-link'" th:href="@{/seller/order/list(pg=${num}, type=${pageResponseDTO.type}, keyword=${pageResponseDTO.keyword})}">
-                                    [[${num}]]
-                                </a>
+                                <li class="page-item"><a class="page-link" th:href="@{/admin/order/list(pg=${num})}" th:if="${pageResponseDTO.keyword == null}">[[${num}]]</a></li>
+                                <li class="page-item"><a class="page-link" th:href="@{/admin/order/list(pg=${num}, type=${pageResponseDTO.type}, keyword=${pageResponseDTO.keyword})}" th:if="${pageResponseDTO.keyword != null}">[[${num}]]</a></li>
                             </th:block>
-                        </span>
-                    <span class="next">
-                            <a th:if="${pageResponseDTO.keyword == null}" class="page-link" th:href="@{/seller/order/list(pg=${pageResponseDTO.end + 1})}">&#62;</a>
-                            <a th:if="${pageResponseDTO.keyword != null}" class="page-link" th:href="@{/seller/order/list(pg=${pageResponseDTO.end + 1}, type=${pageResponseDTO.type}, keyword=${pageResponseDTO.keyword})}">&#62;</a>
-                        </span>
+                            <li class="page-item">
+                                <a th:if="${pageResponseDTO.keyword == null}" class="page-link"  th:href="@{/admin/order/list(pg=${pageResponseDTO.end + 1})}" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                                <a th:if="${pageResponseDTO.keyword != null}" class="page-link"  th:href="@{/admin/order/list(pg=${pageResponseDTO.end + 1}, type=${pageResponseDTO.type}, keyword=${pageResponseDTO.keyword})}" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
                 </div>
                 <div class="statusModal modal" id="statusModal">
                     <span class="close" onclick="closeModal()">&times;</span>

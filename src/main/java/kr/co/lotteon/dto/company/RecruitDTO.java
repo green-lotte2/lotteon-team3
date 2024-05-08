@@ -14,7 +14,9 @@ public class RecruitDTO {
     private String title;
     private String content;
     private String experience;
-    private int employment;
+    @Builder.Default
+    private int employment = 8;
     private String occupation;
-    private int status;
+    @Builder.Default
+    private int status = 8;
 }
