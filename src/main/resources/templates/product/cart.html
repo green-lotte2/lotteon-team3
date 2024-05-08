@@ -70,7 +70,6 @@
 
                     orgPriceElement.innerText = numberWithCommas(orgPrice*value)+'원';
 
-
                     // 수량 증가 버튼
                     increase.addEventListener('click', function(inbutton){
                       inbutton.preventDefault();
@@ -171,6 +170,10 @@
                           }
                         });
 
+                        updateFooterDel();
+                        updateFooterOrg();
+                        updateFooterTotal();
+                        updateFooterDiscount();
 
                       });
 
@@ -231,7 +234,6 @@
                               cartCount.textContent = cartTotalCount;
                             }
 
-
                           });
 
                           const cartTotal = document.getElementById('prodTotalPrice');
@@ -250,7 +252,6 @@
 
                           const cartOrg = document.getElementById('prodOrgPrice');
                           let orgTotal = 0;
-                          let calc;
 
                           // 선택된 상품 중 수량 감소 버튼을 누른 상품의 원 가격을 찾아서 빼기
                           document.querySelectorAll('.originalPrice span').forEach(price => {
@@ -282,7 +283,10 @@
                           });
                         }
 
-
+                        updateFooterDel();
+                        updateFooterOrg();
+                        updateFooterTotal();
+                        updateFooterDiscount();
                       });
 
                     });
@@ -519,11 +523,7 @@
                      cartDel.textContent = numberWithCommas(footerDelivery);
 
                    });
-                   if (checkedBoxes.length === 0) {
 
-                     cartDel.innerHTML = "";
-                     cartDel.textContent = 0;
-                   }
                  }
                  // 회사별 푸터 원가격
                  function updateFooterOrg(){
@@ -533,13 +533,17 @@
                    var num;
 
                    checkedBoxes.forEach(function (checkbox) {
+                     console.log(checkbox.closest('.accordion-item').querySelector('.cartFooter'));
                      company = checkbox.getAttribute('data-company');
                      num = checkbox.getAttribute('data-num');
+                   });
+
+                   if(company !=null){
                      // 해당하는 회사의 푸터
                      var footer = document.querySelector('#cartTotalPrice'+company);
                      // 해당하는 회사의 푸터 원가격
                      var footerOrg = footer.querySelector('.point');
-
+                     console.log(footer);
                      // 체크된, 해당하는 회사
                      const priceInfo = document.querySelector('#cartPrice'+company+num);
                      // 원 가격
@@ -549,18 +553,9 @@
                      // 체크된 원가격 표시하기
                      footerOrg.innerHTML = "";
                      footerOrg.textContent = numberWithCommas(totalOrg)+'원';
-
-                   });
-
-                   // 해당하는 회사의 푸터
-                   var footer = document.querySelector('#cartTotalPrice'+company);
-                   // 해당하는 회사의 푸터 원가격
-                   var footerOrg = footer.querySelector('.point');
-
-                   if (checkedBoxes.length === 0) {
-                     footerOrg.innerHTML = "";
-                     footerOrg.textContent = 0+'원';
                    }
+
+
                  }
 
                   // 회사별 푸터 총가격
@@ -573,8 +568,12 @@
                     checkedBoxes.forEach(function (checkbox) {
                       company = checkbox.getAttribute('data-company');
                       num = checkbox.getAttribute('data-num');
+
+                    });
+                    if(company != null){
                       // 해당하는 회사의 푸터
                       var footer = document.querySelector('#cartTotalPrice'+company);
+
                       // 해당하는 회사의 푸터 할인 후 가격
                       var footerTotal = footer.querySelector('.totalPriceSpan');
                       // 해당하는 회사의 배송비
@@ -588,7 +587,14 @@
                       // 체크된 원가격 표시하기
                       footerTotal.innerHTML = "";
                       footerTotal.textContent = numberWithCommas(totalOrg)+'원';
-                    });
+                    }
+
+
+                    if(!company){
+                      // 체크된 원가격 표시하기
+                      footerTotal.innerHTML = "";
+                      footerTotal.textContent = 0 + '원';
+                    }
                   }
 
                   // 회사별 푸터 할인가격

@@ -19,10 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service @RequiredArgsConstructor @Slf4j
@@ -164,6 +161,11 @@ public class ProductService {
         return productDTOS;
     }
 
+    public ProductDTO prodToOrder(int prodNo){
+        Product result = productRepository.findById(prodNo).get();
+
+        return modelMapper.map(result, ProductDTO.class);
+    }
 
     // ========== 메인페이지 ==========
     // 최신상품

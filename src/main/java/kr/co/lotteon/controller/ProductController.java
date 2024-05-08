@@ -1,9 +1,11 @@
 package kr.co.lotteon.controller;
 
 import groovy.lang.Tuple;
+import jakarta.servlet.http.HttpSession;
 import kr.co.lotteon.dto.admin.BannerDTO;
 import kr.co.lotteon.dto.member.MemberDTO;
 import kr.co.lotteon.dto.product.*;
+import kr.co.lotteon.entity.product.Product;
 import kr.co.lotteon.repository.product.Cate1Repository;
 import kr.co.lotteon.service.admin.BannerService;
 import kr.co.lotteon.service.member.MemberService;
@@ -132,7 +134,22 @@ public class ProductController {
     }
 
    @GetMapping("/product/order")
-    public String order(){
+    public String order(@RequestParam String uid, int prodNo, int count, String opNo, Model model){
+
+
+       log.info("컨트롤러1"+uid);
+       log.info("컨트롤러2"+prodNo);
+
+       ProductDTO productDTOS = productService.prodToOrder(prodNo);
+       productDTOS.setCount(count);
+       productDTOS.setOpNo(opNo);
+
+       log.info("아아아3" + productDTOS);
+
+       MemberDTO memberDTO =memberService.findByUid(uid);
+       model.addAttribute("productDTOS", productDTOS);
+       model.addAttribute("memberDTO", memberDTO);
+
         return "/product/order";
     }
 
