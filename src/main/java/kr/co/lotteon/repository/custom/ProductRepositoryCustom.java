@@ -66,4 +66,7 @@ public interface ProductRepositoryCustom {
 
     // 금액대설정 검색창
     Page<Tuple> searchProductsPrice(SearchPageRequestDTO searchPageRequestDTO, Pageable pageable, int min, int max);
+
+    // 마이페이지 home 리뷰내역 최신순 5개 조회
+    public List<Tuple> selectReviewByRdate(String uid);
 }

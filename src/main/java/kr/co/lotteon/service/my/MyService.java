@@ -201,9 +201,9 @@ public class MyService {
     
     // 문의내역 최신순 5개 출력
     public List<BoardDTO>selectReviewsByUidAndRdate(String uid){
-        List<Tuple> reviews = boardRepository.selectReviewsByUidAndRdate(uid);
+        List<Tuple> boards = boardRepository.selectReviewsByUidAndRdate(uid);
         List<BoardDTO> boardDTOS=new ArrayList<>();
-        reviews.forEach(tuple -> {
+        boards.forEach(tuple -> {
             BoardEntity board=tuple.get(0,BoardEntity.class);
             String cateName=tuple.get(1,String.class);
 
@@ -213,7 +213,26 @@ public class MyService {
         });
         return boardDTOS;
     }
+    
+    // 리뷰내역 최신순 5개 출력
+    public List<ReviewDTO>selectReviewByRdate(String uid){
+        List<Tuple> reviews=productRepository.selectReviewByRdate(uid);
+        List<ReviewDTO> reviewDTOS=new ArrayList<>();
+        reviews.forEach(tuple -> {
+            Review review=tuple.get(0,Review.class);
+            String prodName=tuple.get(1,String.class);
+            int cate1=tuple.get(2,Integer.class);
+            int cate2=tuple.get(3,Integer.class);
 
+            ReviewDTO reviewDTO=modelMapper.map(review,ReviewDTO.class);
+            reviewDTO.setProdName(prodName);
+            reviewDTO.setCate1(cate1);
+            reviewDTO.setCate2(cate2);
+            reviewDTOS.add(reviewDTO);
+
+        });
+        return reviewDTOS;
+    }
 
 
 

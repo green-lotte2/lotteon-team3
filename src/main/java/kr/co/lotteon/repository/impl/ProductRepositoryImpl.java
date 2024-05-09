@@ -461,7 +461,19 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
         return new PageImpl<>(content, pageable, total);
     }
 
+    @Override
+    public List<Tuple> selectReviewByRdate(String uid) {
+        QueryResults<Tuple> results = jpaQueryFactory
+                .select(qReview, qProduct.prodName, qProduct.cate1, qProduct.cate2)
+                .from(qReview)
+                .where(qReview.uid.eq(uid))
+                .join(qProduct).on(qReview.prodNo.eq(qProduct.prodNo))
+                .orderBy(qReview.rdate.desc())// rdate를 기준으로 내림차순으로 정렬
+                .limit(5)
+                .fetchResults();
 
+        return results.getResults();
+    }
 
 
 }

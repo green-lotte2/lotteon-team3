@@ -73,12 +73,13 @@ public class MyController {
         model.addAttribute("pointDTOS",pointDTOS);
 
         //리뷰 출력
-        List<BoardDTO> boardDTOS = myService.selectReviewsByUidAndRdate(uid);
-        model.addAttribute("boardDTOS",boardDTOS);
+        List<ReviewDTO> reviewDTOS = myService.selectReviewByRdate(uid);
+        model.addAttribute("reviewDTOS",reviewDTOS);
 
 
         //문의내역 출력
-
+        List<BoardDTO> boardDTOS = myService.selectReviewsByUidAndRdate(uid);
+        model.addAttribute("boardDTOS",boardDTOS);
 
         //확인해주세요 출력
         MemberDTO memberDTO = memberService.findByUid(uid);
