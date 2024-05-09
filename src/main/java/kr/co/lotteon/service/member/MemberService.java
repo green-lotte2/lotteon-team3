@@ -9,8 +9,10 @@ import kr.co.lotteon.dto.member.CouponDTO;
 import kr.co.lotteon.dto.member.MemberDTO;
 import kr.co.lotteon.entity.member.Coupon;
 import kr.co.lotteon.entity.member.Member;
+import kr.co.lotteon.entity.member.Terms;
 import kr.co.lotteon.mapper.MemberMapper;
 import kr.co.lotteon.repository.member.MemberRepository;
+import kr.co.lotteon.repository.member.TermsRepository;
 import kr.co.lotteon.repository.my.CouponRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,6 +38,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final MemberMapper memberMapper;
     private final JavaMailSender javaMailSender;
+    private final TermsRepository termsRepository;
 
     // 회원 가입 - DB 입력
     public void save(MemberDTO memberDTO){
@@ -128,6 +131,11 @@ public class MemberService {
         member.setAddr2(addr2);
         log.info("주소 변경 완료");
         memberRepository.save(member);
+    }
+
+    // 약관 출력
+    public Terms findByTerms(){
+        return termsRepository.findById(1).get();
     }
 
 

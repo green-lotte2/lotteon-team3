@@ -1,4 +1,4 @@
-<html xmlns:th="http://www.thymeleaf.org"
+<html id="policy" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
@@ -15,6 +15,109 @@
     <script th:src="@{https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js}"></script>
     <script th:src="@{https://kit.fontawesome.com/20962f3e4b.js}" crossorigin="anonymous"></script>
     <script th:src="@{https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.min.js}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            let termsType = "[[${termsType}]]"; // 변수 정의와 초기화
+            console.log(termsType);
+
+            let data;
+            let title;
+            switch (termsType) {
+                case 'buyer':
+                    data = `[[${terms.terms}]]`;
+                    title = '구매회원 이용약관';
+                    break;
+                case 'privacy':
+                    document.querySelectorAll("li[id^='terms']").forEach(element => element.classList.remove('on'));
+                    document.getElementById('terms5').classList.add('on');
+                    data = `[[${terms.privacy}]]`;
+                    title = '개인정보수집 이용약관';
+                    break;
+                case 'finance':
+                    document.querySelectorAll("li[id^='terms']").forEach(element => element.classList.remove('on'));
+                    document.getElementById('terms3').classList.add('on');
+                    data = `[[${terms.finance}]]`;
+                    title = '전자금융거래 이용약관';
+                    break;
+                default:
+                    break;
+            }
+            document.querySelector('.termsContent').innerHTML = `<h2 class="termsTitle">${title}</h2>`;
+            let termsList = data;
+            let termsItems = termsList.split(/\n{3,}/);
+            termsItems.forEach(function (termsItem) {
+                let lines = termsItem.split('\n');
+                let contents = lines.slice(1).join('<br>');
+                let termsElement = document.createElement('p');
+                termsElement.classList.add('termsElement');
+                let tit = document.createElement('span');
+                tit.classList.add('tit');
+                tit.textContent = lines[0];
+                let content = document.createElement('span');
+                content.classList.add('content');
+                content.innerHTML = contents;
+                termsElement.appendChild(tit);
+                termsElement.appendChild(content);
+                document.querySelector('.termsContent').appendChild(termsElement);
+            });
+
+            document.querySelectorAll("li[id^='terms']").forEach(function (element) {
+                element.addEventListener('click', function () {
+                    // 클래스 'on' 설정 및 클릭된 ID 가져오기
+                    document.querySelectorAll("li[id^='terms']").forEach(element => element.classList.remove('on'));
+                    this.classList.add('on');
+                    let clickedId = this.id;
+
+                    let data;
+                    let title;
+                    switch (clickedId) {
+                        case 'terms1':
+                            data = `[[${terms.terms}]]`;
+                            title = '구매회원 이용약관';
+                            break;
+                        case 'terms2':
+                            data = `[[${terms.tax}]]`;
+                            title = '판매회원 이용약관';
+                            break;
+                        case 'terms3':
+                            data = `[[${terms.finance}]]`;
+                            title = '전자금융거래 이용약관';
+                            break;
+                        case 'terms4':
+                            data = `[[${terms.location}]]`;
+                            title = '위치정보이용 이용약관';
+                            break;
+                        case 'terms5':
+                            data = `[[${terms.privacy}]]`;
+                            title = '개인정보수집 이용약관';
+                            break;
+                        default:
+                            break;
+                    }
+
+                    document.querySelector('.termsContent').innerHTML = `<h2 class="termsTitle">${title}</h2>`;
+                    let termsList = data;
+                    let termsItems = termsList.split(/\n{3,}/);
+                    termsItems.forEach(function (termsItem) {
+                        let lines = termsItem.split('\n');
+                        let contents = lines.slice(1).join('<br>');
+                        let termsElement = document.createElement('p');
+                        termsElement.classList.add('termsElement');
+                        let tit = document.createElement('span');
+                        tit.classList.add('tit');
+                        tit.textContent = lines[0];
+                        let content = document.createElement('span');
+                        content.classList.add('content');
+                        content.innerHTML = contents;
+                        termsElement.appendChild(tit);
+                        termsElement.appendChild(content);
+                        document.querySelector('.termsContent').appendChild(termsElement);
+                    });
+                });
+            });
+        });
+    </script>
 </head>
 <body>
 <div id="wrapper">
@@ -68,10 +171,10 @@
     </div>
     <footer>
         <ul>
-            <li><a th:href="@{/company/index}">회사소개</a></li>
-            <li><a th:href="@{/policy/seller}">서비스이용약관</a></li>
-            <li><a th:href="@{/policy/privacy}">개인정보처리방침</a></li>
-            <li><a th:href="@{/policy/finance}">전자금융거래약관</a></li>
+            <li><a th:href="@{/company}">회사소개</a></li>
+            <li><a th:href="@{/policy/terms(termsType=buyer)}">서비스이용약관</a></li>
+            <li><a th:href="@{/policy/terms(termsType=privacy)}">개인정보처리방침</a></li>
+            <li><a th:href="@{/policy/terms(termsType=finance)}">전자금융거래약관</a></li>
         </ul>
         <div>
             <p><img th:src="@{/images/footer_logo.png}" alt="로고" /></p>
@@ -92,4 +195,5 @@
     </footer>
 </div>
 </body>
+
 </html>
