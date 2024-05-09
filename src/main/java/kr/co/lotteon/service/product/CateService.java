@@ -15,6 +15,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+import javax.inject.Qualifier;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -50,8 +51,9 @@ public class CateService {
     }
 
     // cate1 리스트 불러오기
-    //@Cacheable("cateCache")
+    @Cacheable(cacheNames = "cate1Cache", cacheManager = "cacheManager1")
     public List<Cate1DTO> getCate1List(){
+        log.info("getCate1List...");
 
         List<Cate1> result = cate1Repository.findAll();
 
@@ -60,9 +62,9 @@ public class CateService {
                 .collect(Collectors.toList());
     }
     // cate2 리스트 불러오기
-    //@Cacheable("cateCache")
+    @Cacheable(cacheNames = "cate2Cache", cacheManager = "cacheManager2")
     public List<Cate2DTO> getCate2List(){
-
+        log.info("getCate2List...");
         List<Cate2> result = cate2Repository.findAll();
 
         return result.stream()
@@ -70,9 +72,9 @@ public class CateService {
                 .collect(Collectors.toList());
     }
     // cate3 리스트 불러오기
-    //@Cacheable("cateCache")
+    @Cacheable(cacheNames = "cate3Cache", cacheManager = "cacheManager3")
     public List<Cate3DTO> getCate3List(){
-
+        log.info("getCate3List...");
         List<Cate3> result = cate3Repository.findAll();
 
         return result.stream()

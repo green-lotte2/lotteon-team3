@@ -146,10 +146,12 @@ public class ProductService {
             List<ProductDTO> mappedProductDTOs = result.stream()
                     .map(tuple ->{
                         int count = tuple.get(0, Integer.class);
-                        Product product = tuple.get(1, Product.class);
+                        String opNo = tuple.get(1,String.class);
+                        Product product = tuple.get(2, Product.class);
 
                         ProductDTO productDTO = modelMapper.map(product, ProductDTO.class);
                         productDTO.setCount(count);
+                        productDTO.setOpNo(opNo);
                         return productDTO;
                     })
                     .collect(Collectors.toList());
