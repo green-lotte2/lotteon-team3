@@ -57,4 +57,13 @@ public interface ProductRepositoryCustom {
 
     // 메인 검색창
     Page<Tuple> searchProducts(SearchPageRequestDTO searchPageRequestDTO, Pageable pageable);
+
+    // 상품명 검색창
+    Page<Tuple> searchProductsProdName(SearchPageRequestDTO searchPageRequestDTO, Pageable pageable);
+
+    // 상품설명 검색창
+    Page<Tuple> searchProductsDescript(SearchPageRequestDTO searchPageRequestDTO, Pageable pageable);
+
+    // 금액대설정 검색창
+    Page<Tuple> searchProductsPrice(SearchPageRequestDTO searchPageRequestDTO, Pageable pageable, int min, int max);
 }

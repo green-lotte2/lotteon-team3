@@ -32,6 +32,9 @@ public class SearchPageRequestDTO {
     @Builder.Default
     private String sort = "sold";
 
+    private int min;
+    private int max;
+
     private String searchType;
     private String searchKeyword;
 

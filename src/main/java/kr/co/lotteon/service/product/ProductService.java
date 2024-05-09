@@ -105,6 +105,7 @@ public class ProductService {
                 .build();
     }
 
+    // 메인 검색(회사명, 상품명, 상품설명)
     public SearchPageResponseDTO searchProducts(SearchPageRequestDTO searchPageRequestDTO) {
         Page<Tuple> pageProduct = productRepository.searchProducts(searchPageRequestDTO, searchPageRequestDTO.getPageable());
 
@@ -132,6 +133,105 @@ public class ProductService {
                 .build();
     }
 
+    // 타입 검색(상품명)
+    public SearchPageResponseDTO searchProductsProdName(SearchPageRequestDTO searchPageRequestDTO) {
+        Page<Tuple> pageProduct = productRepository.searchProductsProdName(searchPageRequestDTO, searchPageRequestDTO.getPageable());
+
+        List<ProductDTO> dtoList = pageProduct.getContent().stream()
+                .map(tuple -> {
+                    // Tuple에서 필요한 데이터를 추출하여 ProductDTO 객체를 생성
+                    ProductDTO productDTO = new ProductDTO();
+                    productDTO.setProdNo(tuple.get(0, Integer.class)); // 상품 번호
+                    productDTO.setProdName(tuple.get(1, String.class)); // 상품명
+                    productDTO.setDiscount(tuple.get(2, Integer.class)); // 상품할인율
+                    productDTO.setPrice(tuple.get(3, Integer.class)); // 상품가격
+                    productDTO.setSeller(tuple.get(4, String.class)); // 상품판매자
+                    // 나머지 필드도 마찬가지로 설정
+
+                    return productDTO;
+                })
+                .collect(Collectors.toList());
+
+        int total = (int) pageProduct.getTotalElements();
+
+        return SearchPageResponseDTO.builder()
+                .searchPageRequestDTO(searchPageRequestDTO)
+                .dtoList(dtoList)
+                .total(total)
+                .build();
+    }
+
+    // 타입 검색(상품설명)
+    public SearchPageResponseDTO searchProductsDescript(SearchPageRequestDTO searchPageRequestDTO) {
+        Page<Tuple> pageProduct = productRepository.searchProductsDescript(searchPageRequestDTO, searchPageRequestDTO.getPageable());
+
+        List<ProductDTO> dtoList = pageProduct.getContent().stream()
+                .map(tuple -> {
+                    // Tuple에서 필요한 데이터를 추출하여 ProductDTO 객체를 생성
+                    ProductDTO productDTO = new ProductDTO();
+                    productDTO.setProdNo(tuple.get(0, Integer.class)); // 상품 번호
+                    productDTO.setProdName(tuple.get(1, String.class)); // 상품명
+                    productDTO.setDiscount(tuple.get(2, Integer.class)); // 상품할인율
+                    productDTO.setPrice(tuple.get(3, Integer.class)); // 상품가격
+                    productDTO.setSeller(tuple.get(4, String.class)); // 상품판매자
+                    // 나머지 필드도 마찬가지로 설정
+
+                    return productDTO;
+                })
+                .collect(Collectors.toList());
+
+        int total = (int) pageProduct.getTotalElements();
+
+        return SearchPageResponseDTO.builder()
+                .searchPageRequestDTO(searchPageRequestDTO)
+                .dtoList(dtoList)
+                .total(total)
+                .build();
+    }
+
+    // 타입 검색(상품 가격대)
+    public SearchPageResponseDTO searchProductsPrice(SearchPageRequestDTO searchPageRequestDTO, int min, int max) {
+        log.info("서비스...1" + min);
+        log.info("서비스...1" + max);
+        log.info("서비스...1" + searchPageRequestDTO.getSearchType());
+
+        Page<Tuple> pageProduct = productRepository.searchProductsPrice(searchPageRequestDTO, searchPageRequestDTO.getPageable(), min, max);
+
+        log.info("서비스...2"+pageProduct);
+
+        List<ProductDTO> dtoList = pageProduct.getContent().stream()
+                .map(tuple -> {
+                    // Tuple에서 필요한 데이터를 추출하여 ProductDTO 객체를 생성
+                    ProductDTO productDTO = new ProductDTO();
+                    productDTO.setProdNo(tuple.get(0, Integer.class)); // 상품 번호
+                    productDTO.setProdName(tuple.get(1, String.class)); // 상품명
+                    productDTO.setDiscount(tuple.get(2, Integer.class)); // 상품할인율
+                    productDTO.setPrice(tuple.get(3, Integer.class)); // 상품가격
+                    productDTO.setSeller(tuple.get(4, String.class)); // 상품판매자
+                    // 나머지 필드도 마찬가지로 설정
+
+                    log.info("서비스...3"+productDTO);
+                    return productDTO;
+                })
+                .collect(Collectors.toList());
+
+        int total = (int) pageProduct.getTotalElements();
+
+        log.info("서비스...4"+total);
+
+        SearchPageResponseDTO resultt = SearchPageResponseDTO.builder()
+                .searchPageRequestDTO(searchPageRequestDTO)
+                .dtoList(dtoList)
+                .total(total)
+                .build();
+        log.info("서비스...5"+resultt);
+
+        return SearchPageResponseDTO.builder()
+                .searchPageRequestDTO(searchPageRequestDTO)
+                .dtoList(dtoList)
+                .total(total)
+                .build();
+    }
 
     // 오더 페이지
     public List<ProductDTO> selectOrderFromCart(int[] cartNo){

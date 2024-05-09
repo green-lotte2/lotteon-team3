@@ -19,6 +19,24 @@
     <link rel="stylesheet" th:href="@{/css/common.css}"/>
     <script th:src="@{/product/js/util.js}"></script>
     <link rel="stylesheet" th:href="@{/css/product.css}">
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 검색 양식 선택
+            var searchForm = document.querySelector('form');
+            // 검색 양식 제출 이벤트
+            searchForm.addEventListener('submit', function(event) {
+                // 입력된 검색어 확인
+                var searchKeyword = searchForm.elements['searchKeyword'].value.trim();
+                // 검색어가 비어 있는 경우
+                if (searchKeyword === '') {
+                    // 경고창 표시
+                    alert('검색어를 입력하세요.');
+                    // 이벤트 기본 동작(페이지 이동) 중단
+                    event.preventDefault();
+                }
+            });
+        });
+    </script>
 
 </head>
 <body>
@@ -48,13 +66,12 @@
         </div>
         <div class="logo">
             <div>
-                <a th:href="@{/}"><img th:src="@{/images/header_logo.png}" alt="로고" /></a>
-                <form th:action="@{#}">
-                    <input type="text" name="search"/>
+                <a th:href="@{/index}"><img th:src="@{/images/header_logo.png}" alt="로고" /></a>
+                <form th:action="@{/product/search}" method="get">
+                    <input type="text" name="searchKeyword" placeholder="상품을 검색해보세요"/>
                     <button><i class="fa fa-search"></i></button>
                 </form>
             </div>
-
         </div>
         <div class="menu">
             <div>
