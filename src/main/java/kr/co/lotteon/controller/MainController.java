@@ -26,7 +26,7 @@ public class MainController {
     // 메인페이지 매핑
     @GetMapping(value = {"/","/index"})
     public String index(Model model){
-
+        log.info("index...");
         List<Cate1DTO> cate1DTOS = cateService.getCate1List();
         List<Cate2DTO> cate2DTOS = cateService.getCate2List();
         List<Cate3DTO> cate3DTOS = cateService.getCate3List();
