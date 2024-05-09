@@ -5,14 +5,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import kr.co.lotteon.dto.admin.*;
 import kr.co.lotteon.dto.cs.BoardCateDTO;
 import kr.co.lotteon.dto.cs.BoardDTO;
-import kr.co.lotteon.dto.cs.BoardTypeDTO;
 import kr.co.lotteon.dto.cs.CommentDTO;
 import kr.co.lotteon.dto.product.*;
 import kr.co.lotteon.entity.cs.Comment;
-import kr.co.lotteon.entity.member.Terms;
 import kr.co.lotteon.security.MyUserDetails;
-import kr.co.lotteon.service.admin.CommentService;
+import kr.co.lotteon.service.admin.cs.CommentService;
 import kr.co.lotteon.service.admin.SellerService;
+import kr.co.lotteon.service.admin.product.CateService;
 import kr.co.lotteon.service.product.ProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +36,7 @@ public class SellerController {
     private final SellerService sellerService;
     private final CommentService commentService;
     private final ProductService productService;
+    private final CateService cateService;
 
     private final ObjectMapper objectMapper;
 
@@ -91,7 +91,7 @@ public class SellerController {
     @GetMapping("/seller/product/register")
     public String register(Model model){
         // Cate1 전체 조회
-        List<Cate1DTO> cate1List = sellerService.findAllCate1();
+        List<Cate1DTO> cate1List = cateService.findAllCate1();
         log.info("판매자 상품 등록 Cont : "+cate1List);
         model.addAttribute("cate1List", cate1List);
         return "/seller/product/register";
@@ -105,15 +105,15 @@ public class SellerController {
         log.info("판매자 상품 수정 Cont 1 : "+product);
 
         // Cate1 전체 조회
-        List<Cate1DTO> cate1List = sellerService.findAllCate1();
+        List<Cate1DTO> cate1List = cateService.findAllCate1();
         log.info("판매자 상품 수정 Cont 2 : "+cate1List);
 
         // Cate2 조회
-        List<Cate2DTO> cate2List = (List<Cate2DTO>) sellerService.findAllCate2ByCate1(product.getCate1()).getBody();
+        List<Cate2DTO> cate2List = (List<Cate2DTO>) cateService.findAllCate2ByCate1(product.getCate1()).getBody();
         log.info("판매자 상품 수정 Cont 3 : "+cate2List);
 
         // Cate3 조회
-        List<Cate3DTO> cate3List = (List<Cate3DTO>) sellerService.findAllCate3ByCate2(product.getCate2()).getBody();
+        List<Cate3DTO> cate3List = (List<Cate3DTO>) cateService.findAllCate3ByCate2(product.getCate2()).getBody();
         log.info("판매자 상품 수정 Cont 4 : "+cate3List);
 
         // optionList 조회
@@ -139,13 +139,13 @@ public class SellerController {
     @GetMapping("/seller/product/register/{cate1}")
     @ResponseBody
     public ResponseEntity<?> registerCate2(@PathVariable int cate1){
-        return sellerService.findAllCate2ByCate1(cate1);
+        return cateService.findAllCate2ByCate1(cate1);
     }
     // 판매자 상품 등록 - cate2 선택 시 cate3 조회
     @GetMapping("/seller/product/cate3/{cate2}")
     @ResponseBody
     public ResponseEntity<?> registerCate3(@PathVariable int cate2){
-        return sellerService.findAllCate3ByCate2(cate2);
+        return cateService.findAllCate3ByCate2(cate2);
     }
     // 판매자 상품 등록 - DB insert
     @RequestMapping(value = "/seller/product/register", produces = "application/json;charset=UTF-8", method = RequestMethod.POST)

@@ -4,24 +4,19 @@ import jakarta.servlet.http.HttpServletRequest;
 import kr.co.lotteon.dto.cs.*;
 
 import kr.co.lotteon.entity.cs.BoardCateEntity;
-import kr.co.lotteon.entity.cs.BoardFileEntity;
-import kr.co.lotteon.entity.cs.BoardTypeEntity;
 import kr.co.lotteon.entity.cs.Comment;
 import kr.co.lotteon.repository.cs.BoardRepository;
-import kr.co.lotteon.service.admin.CommentService;
+import kr.co.lotteon.service.admin.cs.CommentService;
 import kr.co.lotteon.service.cs.CsCateService;
 import kr.co.lotteon.service.cs.CsService;
 import kr.co.lotteon.service.cs.FileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
