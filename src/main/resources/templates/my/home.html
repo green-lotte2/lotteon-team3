@@ -16,7 +16,7 @@
             const formattedDate = year + month + day;
             console.log(formattedDate)
 
-            document.querySelectorAll('#ordNo').forEach(function (order){
+            document.querySelectorAll('.ordNo').forEach(function (order){
 
                 const ordNo = order.innerText;
 
@@ -94,18 +94,18 @@
                                 <th>상태</th>
                                 <th>확인/신청</th>
                             </tr>
-                            <tr>
-                                <td class="date">2022-12-13</td>
+                            <tr th:each="order : ${orderItemDTOS}">
+                                <td class="date">[[${#temporals.format(order.ordDate, 'yyyy-MM-dd')}]]</td>
                                 <td class="info">
-                                    <a th:href="@{#}" class="thumb"><img src="https://via.placeholder.com/80x80" alt=""></a>
+                                    <a th:href="@{#}" class="thumb"><img th:src="@{'/prodImg/'+${order.thumb3}}" alt="" style="width: 80px; height: 80px;"></a>
                                     <ul>
-                                        <li class="company"><a th:href="@{#}">상호명</a></li>
-                                        <li class="prodName"><a th:href="@{#}">상품명</a></li>
-                                        <li class="orderNo">수량 : <span class="prodCount">1</span>개 / 주문번호 : <a th:href="@{#}">1012211341</a></li>
-                                        <li class="prodPrice">34,000</li>
+                                        <li class="company"><a th:href="@{#}">[[${order.company}]]</a></li>
+                                        <li class="prodName"><a th:href="@{#}">[[${order.prodName}]]</a></li>
+                                        <li class="orderNo">수량 : <span class="prodCount">[[${order.count}]]</span>개 / <span class="ordNo">주문번호 : <a th:href="@{#}">1012211341</a></span></li>
+                                        <li class="prodPrice" th:text="${#numbers.formatInteger(order.totalPricePerProduct, 3, 'COMMA')}"></li>
                                     </ul>
                                 </td>
-                                <td class="status">배송완료</td>
+                                <td class="status">[[${order.ordStatus}]]</td>
                                 <td class="confirm">
                                     <a th:href="@{#}" class="receive">수취확인</a>
                                     <a th:href="@{#}" class="review">상품평</a>
@@ -131,7 +131,7 @@
                             <tr id="point" th:each="point:${pointDTOS}">
                                 <td id="currentDate">[[${#temporals.format(point.currentDate, 'yyyy-MM-dd')}]]</td>
                                 <td id="state"></td>
-                                <td id="ordNo">[[${point.ordNo}]]</td>
+                                <td class="ordNo">[[${point.ordNo}]]</td>
                                 <td>[[${point.point}]]</td>
                                 <td>[[${point.usecase}]]</td>
                                 <td id="pointDate">[[${#temporals.format(point.pointDate, 'yyyy-MM-dd')}]]</td>

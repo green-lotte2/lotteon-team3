@@ -14,6 +14,8 @@ import kr.co.lotteon.entity.cs.BoardEntity;
 import kr.co.lotteon.entity.member.Coupon;
 import kr.co.lotteon.entity.member.Point;
 
+import kr.co.lotteon.entity.product.Order;
+import kr.co.lotteon.entity.product.OrderItem;
 import kr.co.lotteon.entity.product.Review;
 import kr.co.lotteon.repository.cs.BoardRepository;
 import kr.co.lotteon.repository.my.CouponRepository;
@@ -232,6 +234,42 @@ public class MyService {
 
         });
         return reviewDTOS;
+    }
+
+    // 최근 주문내역 최신순 5개 출력
+    public List<OrderItemDTO>selectOrdersByUid(String uid){
+        List<Tuple> orderItems = orderItemRepository.selectOrdersByUid(uid);
+        List<OrderItemDTO> orderItemDTOS=new ArrayList<>();
+        orderItems.forEach(tuple -> {
+            OrderItem orderItem=tuple.get(0,OrderItem.class);
+            String company=tuple.get(1,String.class);
+            String prodName=tuple.get(2,String.class);
+            int price=tuple.get(3,Integer.class); // 상품 개당 가격
+            int discount=tuple.get(4,Integer.class);
+            String thumb3=tuple.get(5,String.class);
+
+            OrderItemDTO orderItemDTO=modelMapper.map(orderItem,OrderItemDTO.class);
+            orderItemDTO.setCompany(company);
+            orderItemDTO.setProdName(prodName);
+            orderItemDTO.setPrice(price);
+            orderItemDTO.setDiscount(discount);
+            orderItemDTO.setThumb3(thumb3);
+
+            // 상품 개별 총 가격(할인적용가) = (count * price) - discount
+            int count=orderItemDTO.getCount();
+            log.info("상품 개수 : "+count);
+            int totalPricePerProduct=(count*price)-discount;
+            log.info("상품 개별 가격(할인 적용 전) : "+count*price);
+            log.info("상품 개별 총 가격(할인 적용 후) : "+totalPricePerProduct);
+
+            orderItemDTO.setTotalPricePerProduct(totalPricePerProduct);
+
+            orderItemDTOS.add(orderItemDTO);
+
+        });
+
+
+        return orderItemDTOS;
     }
 
 

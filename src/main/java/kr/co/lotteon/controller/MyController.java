@@ -67,6 +67,8 @@ public class MyController {
         model.addAttribute("myPageBanners",myPageBanners);
 
         //최근 주문내역 출력
+        List<OrderItemDTO> orderItemDTOS = myService.selectOrdersByUid(uid);
+        model.addAttribute("orderItemDTOS",orderItemDTOS);
 
         //포인트 출력
         List<PointDTO> pointDTOS = myService.selectByUidAndDate(uid);

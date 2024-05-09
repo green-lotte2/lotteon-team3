@@ -69,4 +69,5 @@ public interface ProductRepositoryCustom {
 
     // 마이페이지 home 리뷰내역 최신순 5개 조회
     public List<Tuple> selectReviewByRdate(String uid);
+
 }
