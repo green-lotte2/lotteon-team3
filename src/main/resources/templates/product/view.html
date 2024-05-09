@@ -160,14 +160,28 @@
 
                                                 order.onclick = function (e){
                                                     e.preventDefault();
+
+                                                    const jsonData = {
+                                                        "uid" : uidValue,
+                                                        "prodNo" : prodNo,
+                                                        "count" : countValueText,
+                                                        "opNo": stringValue
+                                                    };
+                                                    console.log(jsonData);
                                                     if (uidValue == null) {
                                                         location.href = `/lotteon/member/login`;
-                                                    }else if (confirm("바로 구매하시겠습니까?")) {
-                                                        fetch()
-                                                        .then()
-                                                        .then()
+
+                                                    }else if (confirm("바로 구매 하시겠습니까?")) {
+                                                        fetch(`/lotteon/product/order?uid=${uidValue}&prodNo=${prodNo}&count=${countValueText}&opNo=${stringValue}`)
+                                                        .then(response=>response.json())
+                                                        .then(data=>{
+                                                            if (data!=null){
+                                                                console.log(data);
+
+                                                            }
+                                                        })
                                                         .catch((err)=>{
-                                                        console.log(err)})
+                                                            location.href=`/lotteon/product/order?uid=${uidValue}&prodNo=${prodNo}&count=${countValueText}&opNo=${stringValue}`})
                                                     }
 
                                                 }
@@ -220,6 +234,35 @@
                                         console.log(err);
                                         alert("등록에 실패했습니다.");
                                     });
+                            }
+
+                        }
+
+                        const order = document.getElementsByClassName('order')[0];
+
+                        order.onclick = function (e){
+                            e.preventDefault();
+
+                            const jsonData = {
+                                "uid" : uidValue,
+                                "prodNo" : prodNo,
+                                "count" : countValueText
+                            };
+                            console.log(jsonData);
+                            if (uidValue == null) {
+                                location.href = `/lotteon/member/login`;
+
+                            }else if (confirm("바로 구매 하시겠습니까?")) {
+                                fetch(`/lotteon/product/order?uid=${uidValue}&prodNo=${prodNo}&count=${countValueText}`)
+                                    .then(response=>response.json())
+                                    .then(data=>{
+                                        if (data!=null){
+                                            console.log(data);
+
+                                        }
+                                    })
+                                    .catch((err)=>{
+                                        location.href=`/lotteon/product/order?uid=${uidValue}&prodNo=${prodNo}&count=${countValueText}`})
                             }
 
                         }

@@ -4,24 +4,19 @@ import jakarta.servlet.http.HttpServletRequest;
 import kr.co.lotteon.dto.cs.*;
 
 import kr.co.lotteon.entity.cs.BoardCateEntity;
-import kr.co.lotteon.entity.cs.BoardFileEntity;
-import kr.co.lotteon.entity.cs.BoardTypeEntity;
 import kr.co.lotteon.entity.cs.Comment;
 import kr.co.lotteon.repository.cs.BoardRepository;
-import kr.co.lotteon.service.admin.CommentService;
+import kr.co.lotteon.service.admin.cs.AdminCommentService;
 import kr.co.lotteon.service.cs.CsCateService;
 import kr.co.lotteon.service.cs.CsService;
 import kr.co.lotteon.service.cs.FileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +29,7 @@ public class CsController {
     private final CsCateService csCateService;
     private final BoardRepository boardRepository;
     private final FileService fileService;
-    private final CommentService commentService;
+    private final AdminCommentService adminCommentService;
 
     // cs index
     @GetMapping(value = {"/cs","/cs/index"})
@@ -71,7 +66,7 @@ public class CsController {
         BoardDTO boardDTO = csService.findByBnoForBoard(bno);
 
         // 관리자 답변 조회
-        List<CommentDTO> comments = commentService.commentList(bno);
+        List<CommentDTO> comments = adminCommentService.commentList(bno);
 
         // 조회수 증가 로직 추가
         boardDTO.setHit(boardDTO.getHit() + 1);
@@ -188,7 +183,7 @@ public class CsController {
         BoardDTO boardDTO = csService.findByBnoForBoard(bno);
 
         // 관리자 답변 조회
-        List<CommentDTO> comments = commentService.commentList(bno);
+        List<CommentDTO> comments = adminCommentService.commentList(bno);
 
         // 조회수 증가 로직 추가
         boardDTO.setHit(boardDTO.getHit() + 1);
@@ -264,7 +259,7 @@ public class CsController {
         BoardDTO boardDTO = csService.findByBnoForBoard(bno);
 
         // 관리자 답변 조회
-        List<CommentDTO> comments = commentService.commentList(bno);
+        List<CommentDTO> comments = adminCommentService.commentList(bno);
 
         // 조회수 증가 로직 추가
         boardDTO.setHit(boardDTO.getHit() + 1);

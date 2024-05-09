@@ -355,9 +355,9 @@ window.onload = function() {
                     .then(data => {
                         console.log(data);
                         if (data === "success") {
-                            alert('이메일이 변경되었습니다. \n다시 로그인 해주세요.');
+                            alert('이메일이 변경되었습니다.');
                             document.getElementById('popEmailChange').closest('.popup').classList.remove('on');
-                            location.href = '/lotteon/member/logout';
+                            location.href = `/lotteon/my/info?uid=${uid}`;
 
                         } else {
                             alert("이메일을 확인해주세요.");
@@ -433,6 +433,139 @@ window.onload = function() {
         }
 
     })
+
+
+    const inputZip=document.getElementsByName('zip')[0];
+    const inputAddr1=document.getElementById("inputAddr1");
+    const inputAddr2= document.getElementById("inputAddr2");
+    const btnAddrChange=document.getElementById('btnAddrChange');
+
+    //우편번호 검색
+    function postcode() {
+        new daum.Postcode({
+            oncomplete: function (data) {
+                // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
+
+                // 각 주소의 노출 규칙에 따라 주소를 조합한다.
+                // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+                var addr = ''; // 주소 변수
+                var extraAddr = ''; // 참고항목 변수
+
+                //사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
+                if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
+                    addr = data.roadAddress;
+                } else { // 사용자가 지번 주소를 선택했을 경우(J)
+                    addr = data.jibunAddress;
+                }
+
+                // 우편번호와 주소 정보를 해당 필드에 넣는다.
+                inputZip.value = data.zonecode;
+                inputAddr1.value = addr;
+                // 커서를 상세주소 필드로 이동한다.
+                inputAddr2.value = "";
+                inputAddr2.focus();
+            }
+        }).open();
+    }
+
+    findZip.onclick = function () {
+        postcode();
+    }
+
+    // 주소 수정
+    if(btnAddrChange){
+
+        btnAddrChange.addEventListener('click',async function(e){
+            const confirmMessage = '주소를 변경하시겠습니까?';
+            const isConfirmed = confirm(confirmMessage);
+
+            console.log("우편번호 : "+inputZip.value);
+            console.log("주소 : "+inputAddr1.value);
+            console.log("상세주소 : "+inputAddr2.value);
+
+            if (isConfirmed) {
+
+                const jsonData = {
+
+                    "uid": uid,
+                    "zip": inputZip.value,
+                    "addr1": inputAddr1.value,
+                    "addr2": inputAddr2.value,
+                };
+
+                console.log(jsonData);
+
+                await fetch('/lotteon/my/formMyinfoAddrChange', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(jsonData)
+                })
+                    .then(response => response.text())
+                    .then(data => {
+                        console.log(data);
+                        if (data === "success") {
+                            alert('주소 수정이 완료되었습니다.');
+                            location.href = `/lotteon/my/info?uid=${uid}`;
+                        }
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                    });
+            }else{
+                alert('주소 변경이 취소되었습니다.');
+            }
+
+
+            })
+
+    }
+
+    //탈퇴하기
+    const btnWithdraw=document.getElementById('btnWithdraw'); // 탈퇴 버튼
+    const btnPopWithdraw=document.querySelector('.btnPopWithdraw');
+
+    if(btnWithdraw){
+        btnWithdraw.addEventListener('click' ,function(e){
+
+            let result=confirm("탈퇴를 희망하시는게 맞나요?")
+            if(result){
+                document.getElementById('popWithdraw').classList.add('on');
+                btnPopWithdraw.addEventListener('click',async function (e) {
+
+                    const inputPass = document.querySelector('input[name=passCheck]');
+
+                    const jsonData={
+                        "uid":uid,
+                        "pass":inputPass.value
+                    }
+
+
+                    await fetch('/lotteon/my/withdraw', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify(jsonData)
+                    }).then(response => response.text())
+                        .then(data => {
+                            console.log(data);
+                            if (data === "success") {
+                                alert('탈퇴가 완료되었습니다.');
+                                location.href = "/lotteon/member/logout";
+                            }else{
+                                alert('비밀번호가 일치하지 않습니다.');
+                            }
+                        })
+                        .catch((err) => {
+                            console.log(err);
+                        });
+                })
+            }else{
+                alert('탈퇴가 취소되었습니다.');
+            }
+
+
+        })
+    }
+
 
 
 

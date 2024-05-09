@@ -17,6 +17,7 @@ public class CartInfoDTO {
     private ProductDTO productDTO;
 
     // product
+    private String uid;
     private int prodNo;
     private int cate1;
     private int cate2;
@@ -53,6 +54,7 @@ public class CartInfoDTO {
     private String opName;
     private String opValue;
     private int cartNo;
+
     //cart
     private int count;
     private String opNo;

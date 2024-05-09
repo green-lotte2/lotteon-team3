@@ -41,6 +41,9 @@
                     <a th:href="@{/product/cart}">
                         <i class="fa fa-shopping-cart" aria-hidden="true"></i>&nbsp;장바구니
                     </a>
+                    <a th:href="@{/my/wish}">
+                        나의 찜
+                    </a>
                 </th:block>
             </div>
         </div>
@@ -130,30 +133,6 @@
                 totalOrg.innerHTML = "";
                 totalOrg.textContent = numberWithCommas(totalValue)
 
-
-                // 포인트 사용하기
-                const btnPoint = document.getElementById('btnPoint');
-                btnPoint.onclick = function (e){
-                    e.preventDefault();
-                    const usePoint = parseInt(document.getElementById('usePoint').value);
-                    const myPointSpan = document.getElementById('myPoint');
-                    const myPoint = parseInt(document.getElementById('myPoint').innerText.replace(/,/g, ''));
-                    let totalPrice = parseInt(totalPoint.textContent.replace(/,/g, '')); // 현재 총 포인트 값 가져오기
-
-                    if(usePoint>=5000 && usePoint<=myPoint){
-                        totalPrice += usePoint;
-                        totalPoint.innerHTML = "";
-                        totalPoint.textContent = numberWithCommas(totalPrice);
-
-                        myPointSpan.innerHTML = "";
-                        myPointSpan.textContent = numberWithCommas(myPoint-usePoint);
-                    }else if(usePoint<5000){
-                        alert('5000포인트 이상 사용 가능합니다.');
-                    }else if(usePoint>=myPoint){
-                        alert('보유 포인트 이상 사용할 수 없습니다.');
-                    }
-                }
-
                 // 상품 총 가격
                 totalValue =0;
                 document.querySelectorAll('#prodDisPrice').forEach(function (price){
@@ -164,6 +143,36 @@
                 });
                 totalPrice.innerHTML = "";
                 totalPrice.textContent = numberWithCommas(totalValue);
+
+                // 포인트 사용하기
+                const btnPoint = document.getElementById('btnPoint');
+                btnPoint.onclick = function (e){
+                    e.preventDefault();
+
+                    // 상품 전체 가격
+                    const priceValue = parseInt(document.getElementById('totalPrice').innerText.replace(/,/g, ''));
+                    let usePoint = parseInt(document.getElementById('usePoint').value);
+
+                    const myPointSpan = document.getElementById('myPoint');
+                    const myPoint = parseInt(document.getElementById('myPoint').innerText.replace(/,/g, ''));
+                    let pointTotal = parseInt(totalPoint.textContent.replace(/,/g, '')); // 현재 총 포인트 값 가져오기
+
+                    if(usePoint>=5000 && usePoint<=myPoint){
+                        pointTotal += usePoint;
+                        totalPoint.innerHTML = "";
+                        totalPoint.textContent = numberWithCommas(pointTotal);
+
+                        myPointSpan.innerHTML = "";
+                        myPointSpan.textContent = numberWithCommas(myPoint-pointTotal);
+
+                        totalPrice.innerHTML = "";
+                        totalPrice.textContent = numberWithCommas(priceValue-pointTotal);
+                    }else if(usePoint<5000){
+                        alert('5000포인트 이상 사용 가능합니다.');
+                    }else if(usePoint>=myPoint){
+                        alert('보유 포인트 이상 사용할 수 없습니다.');
+                    }
+                }
 
                 // 할인 가격
                 let total =parseInt(totalPrice.textContent.replace(/,/g, ''));
@@ -182,6 +191,49 @@
 
                 totalCount.innerHTML = "";
                 totalCount.textContent = productCount+'건';
+
+                // 결제하기
+                const btnOrder = document.getElementById('btnOrder');
+                btnOrder.onclick = function (e){
+                    e.preventDefault();
+
+                    // 입력란 비어있는지 확인
+                    const orderUser = document.getElementById('orderUser').value;
+                    const orderHp = document.getElementById('orderHp').value;
+                    const orderZip = document.getElementById('orderZip').value;
+                    const orderAddr1 = document.getElementById('orderAddr1').value;
+                    const orderAddr2 = document.getElementById('orderAddr2').value;
+
+                    if(!orderUser || !orderHp || !orderZip || !orderAddr1 || !orderAddr2){
+                        alert('주문자 정보를 입력해주세요');
+                        return;
+                    }
+                    // 결제방법
+                    const selectPayment = document.querySelectorAll('input[name="payment"]');
+
+                    let paymentChecked = false;
+                    for(const checked of selectPayment){
+                        if(checked.checked){
+                            paymentChecked = true;
+                            break;
+                        }
+                    }
+
+
+                    if (!paymentChecked){
+                        alert('결제 방법을 선택해주세요.');
+                        return;
+                    }
+
+                    if(confirm('상품을 결제하시겠습니까?')){
+                        //
+
+                    }
+
+                }
+
+
+
             }
         </script>
             <!-- 주문 페이지 시작-->
@@ -206,6 +258,7 @@
                                   <div class="hover-ly">
                                       <p>[[${productDTO.descript}]]</p>
                                       <span>수량:[[${productDTO.count}]]</span>
+                                      <input type="text" id="opNo" name="options" th:value="${productDTO.opNo}">
                                       <input type="hidden" id="prodOrgPrice" name="price" th:value="${productDTO.price}">
                                       <input type="hidden" id="prodDisPrice" name="disPrice" th:value="${((100-productDTO.discount)/100.0)*productDTO.price}">
                                   </div>
@@ -244,7 +297,7 @@
                       <td id="totalPrice">0</td>
                     </tr>                            
                   </table>
-                  <input type="button" name="" value="결제하기">              
+                  <input id="btnOrder" type="button" name="" value="결제하기">
                 </div>
                   
                 <!-- 배송정보 -->
@@ -253,32 +306,32 @@
                   <table>
                     <tr>
                       <td>주문자</td>
-                      <td><input type="text" th:value="${memberDTO.name}" name="orderer"/></td>
+                      <td><input id="orderUser" type="text" th:value="${memberDTO.name}" name="orderer"/></td>
                     </tr>
                     <tr>
                       <td>휴대폰</td>
                       <td>
-                        <input type="text" th:value="${memberDTO.hp}" name="hp" />
+                        <input id="orderHp" type="text" th:value="${memberDTO.hp}" name="hp" />
                         <span>- 포함 입력</span>
                       </td>
                     </tr>
                     <tr>
                       <td>우편번호</td>
                       <td>
-                        <input type="text" name="zip" id="inputZip" th:value="${memberDTO.zip}"/>
+                        <input id="orderZip" type="text" name="zip" th:value="${memberDTO.zip}"/>
                         <input type="button" id="findZip" value="검색"/>
                       </td>
                     </tr>
                     <tr>
                       <td>기본주소</td>
                       <td>
-                        <input type="text" name="addr1" id="inputAddr1" th:value="${memberDTO.addr1}"/>
+                        <input id="orderAddr1" type="text" name="addr1" th:value="${memberDTO.addr1}"/>
                       </td>
                     </tr>
                     <tr>
                       <td>상세주소</td>
                       <td>
-                        <input type="text" name="addr2" id="inputAddr2" th:value="${memberDTO.addr2}"/>
+                        <input id="orderAddr2" type="text" name="addr2" th:value="${memberDTO.addr2}"/>
                       </td>
                     </tr>
                   </table>
@@ -304,23 +357,23 @@
                     <div>
                         <span>신용카드</span>
                         <p>
-                            <label><input type="radio" name="payment" value="type1"/>신용카드 결제</label>
-                            <label><input type="radio" name="payment" value="type2"/>체크카드 결제</label>                                
+                            <label><input type="radio" name="payment" value="신용카드결제"/>신용카드 결제</label>
+                            <label><input type="radio" name="payment" value="체크카드결제"/>체크카드 결제</label>
                         </p>
                     </div>
                     <div>
                         <span>계좌이체</span>
                         <p>
-                            <label><input type="radio" name="payment" value="type3"/>실시간 계좌이체</label>
-                            <label><input type="radio" name="payment" value="type4"/>무통장 입금</label>                                
+                            <label><input type="radio" name="payment" value="계좌이체"/>실시간 계좌이체</label>
+                            <label><input type="radio" name="payment" value="무통장입금 "/>무통장 입금</label>
                         </p>
                     </div>
                     <div>
                         <span>기타</span>
                         <p>
-                            <label><input type="radio" name="payment" value="type3"/>휴대폰결제</label>
+                            <label><input type="radio" name="payment" value="휴대폰결제"/>휴대폰결제</label>
                             <label>
-                                <input type="radio" name="payment" value="type4"/>카카오페이
+                                <input type="radio" name="payment" value="카카오페이"/>카카오페이
                                 <img th:src="@{images/ico_kakaopay.gif}" alt="카카오페이"/>
                             </label>                                
                         </p>

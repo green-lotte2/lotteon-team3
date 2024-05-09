@@ -524,6 +524,9 @@ footer p > strong {
     margin-top: 16px;
     line-height: 18px;
 }
+#my > .home > section > .myinfo > div > div > p>span {
+    line-height: 1.3;
+}
 
 /* my - ordered(전체주문내역) */
 #my > .ordered {}
@@ -1338,6 +1341,7 @@ footer p > strong {
     border-left: none;
     background-color: #f7f7f7;
 }
+
 #my > .info > section > article > .changeForm > table input {
     padding: 2px;
     box-sizing: border-box;
@@ -1376,6 +1380,9 @@ footer p > strong {
     border: 1px solid #c84f3c;
     color: #fff;
     cursor: pointer;
+    float: right;
+    margin-top: 30px;
+    margin-right: 20px;
 }
 
 #my .btnInfoChange {

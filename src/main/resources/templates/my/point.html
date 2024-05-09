@@ -57,7 +57,7 @@
                         </tr>
                         </tbody>
                     </table>
-                    <div class="page">
+                    <div th:unless="${#lists.isEmpty(pointPageResponseDTO.dtoList)}" class="page">
                         <span th:if="${pointPageResponseDTO.prev}" class="prev">
                             <a th:href="@{/my/point(uid=${#authentication.principal.member.uid}, pg=${pointPageResponseDTO.start - 1})}">이전</a>
                         </span>
@@ -68,6 +68,9 @@
                         <span th:if="${pointPageResponseDTO.next}" class="next">
                             <a th:href="@{/my/point(uid=${#authentication.principal.member.uid}, pg=${pointPageResponseDTO.end + 1})}">다음</a>
                         </span>
+                    </div>
+                    <div th:if="${#lists.isEmpty(pointPageResponseDTO.dtoList)}">
+                        <p style="text-align: center; margin-top: 20px;">조회된 포인트 내역이 없습니다.</p>
                     </div>
                 </article>
             </section>

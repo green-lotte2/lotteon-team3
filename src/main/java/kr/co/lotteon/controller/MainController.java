@@ -9,13 +9,14 @@ import kr.co.lotteon.service.product.ProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
 
-@Slf4j @Controller @RequiredArgsConstructor
+@Slf4j @Controller @RequiredArgsConstructor @EnableCaching
 public class MainController {
 
     private final CateService cateService;
@@ -25,7 +26,7 @@ public class MainController {
     // 메인페이지 매핑
     @GetMapping(value = {"/","/index"})
     public String index(Model model){
-
+        log.info("index...");
         List<Cate1DTO> cate1DTOS = cateService.getCate1List();
         List<Cate2DTO> cate2DTOS = cateService.getCate2List();
         List<Cate3DTO> cate3DTOS = cateService.getCate3List();

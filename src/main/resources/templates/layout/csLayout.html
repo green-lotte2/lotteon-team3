@@ -42,6 +42,9 @@
                         <a th:href="@{/product/cart(uid=${#authentication.principal.member.uid})}">
                             <i class="fa fa-shopping-cart" aria-hidden="true"></i>&nbsp;장바구니
                         </a>
+                        <a th:href="@{/my/wish}">
+                            나의 찜
+                        </a>
                     </th:block>
                 </p>
             </div>
@@ -61,10 +64,10 @@
 
     <footer>
         <ul>
-            <li><a th:href="@{#}">회사소개</a></li>
-            <li><a th:href="@{#}">서비스이용약관</a></li>
-            <li><a th:href="@{#}">개인정보처리방침</a></li>
-            <li><a th:href="@{#}">전자금융거래약관</a></li>
+            <li><a th:href="@{/company}">회사소개</a></li>
+            <li><a th:href="@{/policy/terms(termsType=buyer)}">서비스이용약관</a></li>
+            <li><a th:href="@{/policy/terms(termsType=privacy)}">개인정보처리방침</a></li>
+            <li><a th:href="@{/policy/terms(termsType=finance)}">전자금융거래약관</a></li>
         </ul>
         <div>
             <p><img th:src="@{/images/footer_logo.png}" alt="로고" /></p>

@@ -63,9 +63,12 @@
                 <a sec:authorize="hasRole('ROLE_7')" th:href="@{/admin}">관리자</a>
                 <a sec:authorize="hasRole('ROLE_5')" th:href="@{/seller}">판매자</a>
                 <a th:href="@{/member/logout}">로그아웃</a>
-                <a th:href="@{/my/home}">마이페이지</a>
-                <a th:href="@{/product/cart}">
+                <a th:href="@{/my/home(uid=${#authentication.principal.member.uid})}">마이페이지</a>
+                <a th:href="@{/product/cart(uid=${#authentication.principal.member.uid})}">
                   <i class="fa fa-shopping-cart" aria-hidden="true"></i>&nbsp;장바구니
+                </a>
+                <a th:href="@{/my/wish}">
+                  나의 찜
                 </a>
               </th:block>
             </p>

@@ -77,6 +77,24 @@
             window.scrollTo(0, 0);
         }
     </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 검색 양식 선택
+            var searchForm = document.querySelector('form');
+            // 검색 양식 제출 이벤트
+            searchForm.addEventListener('submit', function(event) {
+                // 입력된 검색어 확인
+                var searchKeyword = searchForm.elements['searchKeyword'].value.trim();
+                // 검색어가 비어 있는 경우
+                if (searchKeyword === '') {
+                    // 경고창 표시
+                    alert('검색어를 입력하세요.');
+                    // 이벤트 기본 동작(페이지 이동) 중단
+                    event.preventDefault();
+                }
+            });
+        });
+    </script>
 </head>
 <body>
 <div id="bannerTop" class="on" th:style="${topBanners.size() > 0 ? 'background: ' + topBanners[0].backcolor + ';' : ''}">
@@ -107,6 +125,9 @@
                     <a th:href="@{/product/cart(uid=${#authentication.principal.member.uid})}">
                         <i class="fa fa-shopping-cart" aria-hidden="true"></i>&nbsp;장바구니
                     </a>
+                    <a th:href="@{/my/wish}">
+                        나의 찜
+                    </a>
                 </th:block>
             </div>
         </div>
@@ -114,7 +135,7 @@
             <div>
                 <a th:href="@{/index}"><img th:src="@{/images/header_logo.png}" alt="로고" /></a>
                 <form th:action="@{/product/search}" method="get">
-                    <input type="text" name="searchKeyword" placeholder="상품을 검색해보세요"/>
+                    <input type="text" name="searchKeyword" placeholder="검색"/>
                     <button><i class="fa fa-search"></i></button>
                 </form>
             </div>
@@ -215,9 +236,9 @@
     <footer>
         <ul>
             <li><a th:href="@{/company}">회사소개</a></li>
-            <li><a th:href="@{/company}">서비스이용약관</a></li>
-            <li><a th:href="@{/company}">개인정보처리방침</a></li>
-            <li><a th:href="@{/company}">전자금융거래약관</a></li>
+            <li><a th:href="@{/policy/terms(termsType=buyer)}">서비스이용약관</a></li>
+            <li><a th:href="@{/policy/terms(termsType=privacy)}">개인정보처리방침</a></li>
+            <li><a th:href="@{/policy/terms(termsType=finance)}">전자금융거래약관</a></li>
         </ul>
         <div>
             <p><img th:src="@{/images/footer_logo.png}" alt="로고" /></p>

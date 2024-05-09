@@ -48,7 +48,6 @@ public class MyService {
     private final BoardRepository boardRepository;
     private final PointRepository pointRepository;
     private final ProductRepository productRepository;
-
     public List<CouponDTO> findCouponsByUid(String uid){
         log.info("내 쿠폰"+couponRepository.findCouponsByUid(uid));
         List<Coupon> result=couponRepository.findCouponsByUid(uid);
@@ -196,6 +195,12 @@ public class MyService {
 
     }
 
+    public List<PointDTO> selectByUidAndDate(String uid){
+        List<Point> points = pointRepository.selectByUidAndDate(uid);
+        log.info("포인트 : "+points);
+        return points.stream().map(point -> modelMapper.map(point,PointDTO.class))
+                .collect(Collectors.toList());
+    }
 
 
 

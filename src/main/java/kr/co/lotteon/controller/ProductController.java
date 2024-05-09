@@ -1,9 +1,11 @@
 package kr.co.lotteon.controller;
 
 import groovy.lang.Tuple;
+import jakarta.servlet.http.HttpSession;
 import kr.co.lotteon.dto.admin.BannerDTO;
 import kr.co.lotteon.dto.member.MemberDTO;
 import kr.co.lotteon.dto.product.*;
+import kr.co.lotteon.entity.product.Product;
 import kr.co.lotteon.repository.product.Cate1Repository;
 import kr.co.lotteon.service.admin.BannerService;
 import kr.co.lotteon.service.member.MemberService;
@@ -132,7 +134,22 @@ public class ProductController {
     }
 
    @GetMapping("/product/order")
-    public String order(){
+    public String order(@RequestParam String uid, int prodNo, int count, String opNo, Model model){
+
+
+       log.info("컨트롤러1"+uid);
+       log.info("컨트롤러2"+prodNo);
+
+       ProductDTO productDTOS = productService.prodToOrder(prodNo);
+       productDTOS.setCount(count);
+       productDTOS.setOpNo(opNo);
+
+       log.info("아아아3" + productDTOS);
+
+       MemberDTO memberDTO =memberService.findByUid(uid);
+       model.addAttribute("productDTOS", productDTOS);
+       model.addAttribute("memberDTO", memberDTO);
+
         return "/product/order";
     }
 
@@ -141,17 +158,43 @@ public class ProductController {
     public String search(Model model, SearchPageRequestDTO searchPageRequestDTO) {
 
         String searchKeyword = searchPageRequestDTO.getSearchKeyword();
-        log.info("검색 컨트롤러" + searchKeyword);
+        String searchType = searchPageRequestDTO.getSearchType();
+        
+        log.info("컨트롤러 검색 키워드...1" + searchKeyword);
+        log.info("컨트롤러 검색 타입...1" + searchType);
 
-        if (searchKeyword != null && !searchKeyword.isEmpty()) {
+        // 상품가격 조회
+        if(!(searchPageRequestDTO.getMin() ==0) || !(searchPageRequestDTO.getMax()==0)){
+            log.info("컨트롤러 금액 최소"+searchPageRequestDTO.getMin());
+            log.info("컨트롤러 금액 최대"+searchPageRequestDTO.getMax());
+            SearchPageResponseDTO searchPageResponseDTO = productService.searchProductsPrice(searchPageRequestDTO, searchPageRequestDTO.getMin(), searchPageRequestDTO.getMax());
+            model.addAttribute("searchPageResponseDTO", searchPageResponseDTO);
+            log.info("가격검색 컨트롤러 : " + searchPageResponseDTO);
+        }
+        // 상품명 조회
+        if (searchKeyword != null && !searchKeyword.isEmpty() && "name".equals(searchType)) {
             // 검색어가 존재하는 경우 상품 검색 실행
             SearchPageResponseDTO searchPageResponseDTO = productService.searchProducts(searchPageRequestDTO);
             model.addAttribute("searchPageResponseDTO", searchPageResponseDTO);
-            log.info("searchPageResponseDTO : " + searchPageResponseDTO);
+            log.info("가격없음 컨트롤러 : " + searchPageResponseDTO);
         }
-
+        // 상품설명 조회
+        if (searchKeyword != null && !searchKeyword.isEmpty() && "descript".equals(searchType)) {
+            // 검색어가 존재하는 경우 상품 검색 실행
+            SearchPageResponseDTO searchPageResponseDTO = productService.searchProducts(searchPageRequestDTO);
+            model.addAttribute("searchPageResponseDTO", searchPageResponseDTO);
+            log.info("가격없음 컨트롤러 : " + searchPageResponseDTO);
+        }
+        // 메인 검색(상품명, 상품설명, 회사명)
+        if (searchKeyword != null && !searchKeyword.isEmpty() && searchType == null) {
+            // 검색어가 존재하는 경우 상품 검색 실행
+            SearchPageResponseDTO searchPageResponseDTO = productService.searchProducts(searchPageRequestDTO);
+            model.addAttribute("searchPageResponseDTO", searchPageResponseDTO);
+            log.info("가격없음 컨트롤러 : " + searchPageResponseDTO);
+        }
         return "/product/search";
     }
+
 
     // view (상품 상세 보기) 페이지 매핑
     @GetMapping("/product/view")
