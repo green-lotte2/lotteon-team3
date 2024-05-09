@@ -18,7 +18,7 @@ public class PointRepositoryImpl implements PointRepositoryCustom {
     private final QPoint qPoint = QPoint.point1;
 
     @Override
-    public List<Point> selectByUidAndDate(String uid) {
+    public List<Point> selectPointByUidAndDate(String uid) {
 
         return jpaQueryFactory
                 .select(qPoint)

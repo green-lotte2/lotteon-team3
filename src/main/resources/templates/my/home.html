@@ -3,6 +3,7 @@
       layout:decorate="~{/layout/myLayout}">
 <main id="myLayout" layout:fragment="content">
     <script th:src="@{/js/myInfo.js}"></script>
+
     <script>
         window.onload = function (){
             // JavaScript를 사용하여 현재 날짜를 가져옴
@@ -85,7 +86,7 @@
                     </div>
                     <article class="latest">
                         <h3>최근주문내역</h3>
-                        <a th:href="@{#}" class="more">더보기</a>
+                        <a th:href="@{/my/order(uid=${#authentication.principal.member.uid})}" class="more">더보기</a>
                         <table border="0">
                             <tr>
                                 <th>날짜</th>
@@ -117,7 +118,7 @@
 
                     <article class="point">
                         <h3>포인트적립내역</h3>
-                        <a th:href="@{#}" class="more">더보기</a>
+                        <a th:href="@{/my/point(uid=${#authentication.principal.member.uid})}" class="more">더보기</a>
                         <table border="0">
                             <tr>
                                 <th>적립날짜</th>
@@ -139,7 +140,7 @@
                     </article>
                     <article class="review">
                         <h3>상품평</h3>
-                        <a th:href="@{#}" class="more">더보기</a>
+                        <a th:href="@{/my/review(uid=${#authentication.principal.member.uid})}" class="more">더보기</a>
                         <table border="0">
                             <tr>
                                 <th>번호</th>
@@ -188,39 +189,21 @@
 
                     <article class="qna">
                         <h3>문의내역</h3>
-                        <a th:href="@{#}" class="more">더보기</a>
+                        <a th:href="@{/my/qna(uid=${#authentication.principal.member.uid})}" class="more">더보기</a>
                         <table border="0">
                             <tr>
                                 <th>번호</th>
-                                <th>문의채널</th>
-                                <th>문의유형</th>                                
+                                <th>문의유형</th>
                                 <th>제목</th>
                                 <th>작성일</th>
                                 <th>상태</th>
                             </tr>
-                            <tr>
+                            <tr th:each="board : ${boardDTOS}">
                                 <td>5</td>
-                                <td>고객센터</td>
-                                <td>주문/결제</td>                                
-                                <td>신용카드 결제 중 오류가 난 경우 어떻게 하나요?</td>
-                                <td>2024-12-12</td>
-                                <td><span class="notAnswerYet">검토중</span></td>
-                            </tr>
-                            <tr>
-                                <td>4</td>
-                                <td>고객센터</td>
-                                <td>주문/결제</td>                                
-                                <td>신용카드 결제 중 오류가 난 경우 어떻게 하나요?</td>
-                                <td>2024-12-12</td>
-                                <td><span class="answered">답변완료</span></td>
-                            </tr>
-                            <tr>
-                                <td>3</td>
-                                <td>판매자게시판</td>
-                                <td>배송</td>                                
-                                <td>배송기간이 보통 얼마나 걸리나요?</td>
-                                <td>2024-12-12</td>
-                                <td><span class="answered">답변완료</span></td>
+                                <td>[[${board.cateName}]]</td>
+                                <td>[[${board.title}]]</td>
+                                <td>[[${#temporals.format(board.rdate, 'yyyy-MM-dd')}]]</td>
+                                <td><span class="notAnswerYet" th:style="${board.status == '답변완료'} ? 'font-weight: bold;color:black;' : 'color: #999'">[[${board.status}]]</span></td>
                             </tr>
                         </table>
                     </article>

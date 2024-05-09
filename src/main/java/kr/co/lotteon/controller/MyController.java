@@ -73,6 +73,8 @@ public class MyController {
         model.addAttribute("pointDTOS",pointDTOS);
 
         //리뷰 출력
+        List<BoardDTO> boardDTOS = myService.selectReviewsByUidAndRdate(uid);
+        model.addAttribute("boardDTOS",boardDTOS);
 
 
         //문의내역 출력
