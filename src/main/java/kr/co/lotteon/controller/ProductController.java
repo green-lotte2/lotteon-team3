@@ -1,12 +1,17 @@
 package kr.co.lotteon.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import groovy.lang.Tuple;
 import jakarta.servlet.http.HttpSession;
 import kr.co.lotteon.dto.admin.BannerDTO;
 import kr.co.lotteon.dto.member.MemberDTO;
 import kr.co.lotteon.dto.product.*;
+import kr.co.lotteon.entity.member.Member;
+import kr.co.lotteon.entity.product.OrderItem;
 import kr.co.lotteon.entity.product.Product;
 import kr.co.lotteon.repository.product.Cate1Repository;
+import kr.co.lotteon.security.MyUserDetails;
 import kr.co.lotteon.service.admin.BannerService;
 import kr.co.lotteon.service.member.MemberService;
 import kr.co.lotteon.service.my.MyService;
@@ -15,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -56,7 +62,7 @@ public class ProductController {
 
     // complete(주문 완료) 페이지 매핑
     @GetMapping("/product/complete")
-    public String complete(){
+    public String complete(int ordNo){
         return "/product/complete";
     }
 
@@ -77,7 +83,7 @@ public class ProductController {
         }
 
         model.addAttribute("pageResponseDTO", pageResponseDTO);
-
+        log.info("아아아" + pageResponseDTO);
         // 카테고리 불러오기
         String c1Name = cateService.getc1Name(pageRequestDTO.getCate1());
         String c2Name = cateService.getc2Name(pageRequestDTO.getCate1(), pageRequestDTO.getCate2());
@@ -151,6 +157,30 @@ public class ProductController {
         return "/product/order";
     }
 
+    @ResponseBody
+    @PostMapping("/product/order")
+    public ResponseEntity<?> order(@RequestBody OrderDTO orderDTO){
+        log.info("오더 서비스 : "+orderDTO);
+        return productService.saveOrder(orderDTO);
+    }
+
+    @ResponseBody
+    @PostMapping("/product/orderItem")
+    public int orderItem(@RequestBody List<OrderItemDTO> orderItemDTOS,
+                                       @AuthenticationPrincipal Object principal) throws JsonProcessingException {
+        Member member = ((MyUserDetails) principal).getMember();
+        String uid = member.getUid();
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        for (OrderItemDTO orderItemDTO : orderItemDTOS) {
+            log.info("prodNo : " + orderItemDTO.getProdNo());
+            log.info("count : " + orderItemDTO.getCount());
+            log.info("cartNo : " + orderItemDTO.getOpNo());
+            //productService.saveOrderItem(orderItemDTOS, uid);
+        }
+
+        return 12;
+    }
     // search (상품 검색) 페이지 매핑
     @GetMapping("/product/search")
     public String search(Model model, SearchPageRequestDTO searchPageRequestDTO) {

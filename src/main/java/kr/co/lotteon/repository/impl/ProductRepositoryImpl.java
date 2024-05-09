@@ -1,9 +1,9 @@
 package kr.co.lotteon.repository.impl;
 
 
-import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.co.lotteon.dto.admin.AdminProductPageRequestDTO;
@@ -220,8 +220,33 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
             predicate = predicate.and(qProduct.cate3.eq(pageRequestDTO.getCate3()));
         }
 
+        // 정렬 방식을 지정하는 Order 객체 생성
+        com.querydsl.core.types.Order order;
+        if ("DESC".equals(pageRequestDTO.getHow())) {
+            order = com.querydsl.core.types.Order.DESC;
+        }else {
+            order = com.querydsl.core.types.Order.ASC;
+        }
+
+        // 정렬 기준에 따라 쿼리 정렬 방식 변경
+        OrderSpecifier<?> orderSpecifier;
+        if (pageRequestDTO.getSort().equals("sold")) {
+            orderSpecifier = new OrderSpecifier<>(order, qProduct.sold);
+        } else if (pageRequestDTO.getSort().equals("price")) {
+            orderSpecifier = new OrderSpecifier<>(order, qProduct.price);
+        } else if (pageRequestDTO.getSort().equals("score")) {
+            orderSpecifier = new OrderSpecifier<>(order, qProduct.score);
+        }else if (pageRequestDTO.getSort().equals("review")) {
+            orderSpecifier = new OrderSpecifier<>(order, qProduct.review);
+        }else if (pageRequestDTO.getSort().equals("rdate")) {
+            orderSpecifier = new OrderSpecifier<>(order, qProduct.rdate);
+        } else {
+            // 기본적으로 prodNo로 정렬
+            orderSpecifier = qProduct.prodNo.desc();
+        }
+
         QueryResults<Product> results = jpaQueryFactory.selectFrom(qProduct)
-                .orderBy(qProduct.prodNo.desc())
+                .orderBy(orderSpecifier)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .where(predicate.and(qProduct.status.eq("새상품")))
