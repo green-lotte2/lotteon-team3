@@ -1,4 +1,4 @@
-package kr.co.lotteon.service.admin;
+package kr.co.lotteon.service.admin.cs;
 
 import com.querydsl.core.Tuple;
 import kr.co.lotteon.dto.cs.CommentDTO;

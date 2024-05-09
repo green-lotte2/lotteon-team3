@@ -213,34 +213,6 @@ public class SellerService {
         log.info("월별 주문 count 조회 Serv 3: " + jsonResult);
         return jsonResult;
     }
-    // 판매자 상품 등록 cate1 조회
-    public List<Cate1DTO> findAllCate1() {
-        List<Cate1> cate1s = cate1Repository.findAll();
-        log.info("판매자 상품 등록 Serv : " + cate1s);
-        // 조회된 Entity List -> DTO List
-        return cate1s.stream().map(cate1 -> modelMapper.map(cate1, Cate1DTO.class))
-                .collect(Collectors.toList());
-    }
-
-    // 판매자 상품 등록 cate2 조회
-    public ResponseEntity<?> findAllCate2ByCate1(int cate1) {
-        // 조회된 Entity List -> DTO List
-        List<Cate2DTO> cate2List = cate2Repository.findByCate1(cate1).stream()
-                .map(cate2 -> modelMapper.map(cate2, Cate2DTO.class))
-                .collect(Collectors.toList());
-
-        return ResponseEntity.ok().body(cate2List);
-    }
-
-    // 판매자 상품 등록 cate3 조회
-    public ResponseEntity<?> findAllCate3ByCate2(int cate2) {
-        // 조회된 Entity List -> DTO List
-        List<Cate3DTO> cate3List = cate3Repository.findByCate2(cate2).stream()
-                .map(cate3 -> modelMapper.map(cate3, Cate3DTO.class))
-                .collect(Collectors.toList());
-
-        return ResponseEntity.ok().body(cate3List);
-    }
 
     // 판매자 상품 기본 목록 조회
     public AdminProductPageResponseDTO sellerSelectProducts(AdminProductPageRequestDTO adminProductPageRequestDTO) {
