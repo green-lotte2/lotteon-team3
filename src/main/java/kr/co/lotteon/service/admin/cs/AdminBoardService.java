@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class BoardService {
+public class AdminBoardService {
 
     private final BoardRepository boardRepository;
     private final BoardCateRepository boardCateRepository;

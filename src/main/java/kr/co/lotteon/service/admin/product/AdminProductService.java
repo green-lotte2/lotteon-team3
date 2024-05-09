@@ -34,7 +34,7 @@ import java.util.UUID;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class ProductService {
+public class AdminProductService {
 
     private final ProductRepository productRepository;
     private final Cate1Repository cate1Repository;
