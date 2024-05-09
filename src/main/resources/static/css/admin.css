@@ -2114,6 +2114,9 @@ col {
 .navbar {
     margin: 0;
 }
+.form-select{
+    margin-right: 3px;
+}
 #recruitSearchDiv select {
     width: 150px;
     margin-left: 3px;

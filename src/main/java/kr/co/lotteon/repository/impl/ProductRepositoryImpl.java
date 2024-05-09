@@ -83,6 +83,20 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
             expression = qProduct.company.contains(keyword);
             log.info("company 검색 : " + expression);
 
+        } else if (type.equals("status")) {
+            switch (keyword) {
+                case "0" :
+                    expression = qProduct.status.contains("새상품");
+                    break;
+                case "1" :
+                    expression = qProduct.status.contains("품절");
+                    break;
+                case "2" :
+                    expression = qProduct.status.contains("삭제된 상품");
+                    break;
+            }
+            log.info("status 검색 : " + expression);
+
         } else if (type.equals("seller")) {
             expression = qProduct.seller.contains(keyword);
             log.info("seller 검색 : " + expression);
@@ -144,6 +158,20 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
             int prodNo = Integer.parseInt(keyword);
             expression = qProduct.prodNo.eq(prodNo).and(qProduct.seller.eq(sellerId));
             log.info("prodNo 검색 : " + expression);
+
+        } else if (type.equals("status")) {
+            switch (keyword) {
+                case "0" :
+                    expression = qProduct.status.contains("새상품").and(qProduct.seller.eq(sellerId));
+                    break;
+                case "1" :
+                    expression = qProduct.status.contains("품절").and(qProduct.seller.eq(sellerId));
+                    break;
+                case "2" :
+                    expression = qProduct.status.contains("삭제된 상품").and(qProduct.seller.eq(sellerId));
+                    break;
+            }
+            log.info("status 검색 : " + expression);
 
         } else if (type.equals("cate1")) {
             int cate1 = Integer.parseInt(keyword);
