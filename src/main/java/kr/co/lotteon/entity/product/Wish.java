@@ -16,11 +16,7 @@ public class Wish {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int wishNo;
-    @ManyToOne
-    @JoinColumn(name = "uid")
-    private Member member;
+    private String uid;
 
-    @ManyToOne
-    @JoinColumn(name = "prodNo")
-    private Product product;
+    private int prodNo;
 }

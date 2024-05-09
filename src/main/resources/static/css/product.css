@@ -620,6 +620,16 @@
     margin-bottom: 12px;
     overflow: hidden;
 }
+#product > .view > .info > .summary > nav > .wishImg {
+    float: right;
+    clear: both;
+    width: 32px; /* 이미지의 가로 크기 */
+    height: 32px; /* 이미지의 세로 크기 */
+    display: inline-block;
+}
+#product > .view > .info > .summary > nav > .wishImg > .hidden {
+    display: none;
+}
 #product > .view > .info > .summary > nav > h1 {
     float: left;
     color: #0231a6;
