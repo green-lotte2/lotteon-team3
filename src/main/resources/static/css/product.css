@@ -1788,3 +1788,7 @@
   color: #fe434c;
   font-weight: bold;
 }
+
+.discount > div > .coupon {
+    width: 100%;
+}

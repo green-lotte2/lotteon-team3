@@ -1,11 +1,9 @@
 package kr.co.lotteon.service.product;
 
 import com.querydsl.core.Tuple;
+import jakarta.transaction.Transactional;
 import kr.co.lotteon.dto.product.*;
-import kr.co.lotteon.entity.product.Cart;
-import kr.co.lotteon.entity.product.Option;
-import kr.co.lotteon.entity.product.Product;
-import kr.co.lotteon.entity.product.Review;
+import kr.co.lotteon.entity.product.*;
 import kr.co.lotteon.mapper.ProductMapper;
 import kr.co.lotteon.repository.product.OptionRepository;
 import kr.co.lotteon.repository.product.OrderRepository;
@@ -18,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -39,7 +38,10 @@ public class ProductService {
         Pageable pageable = pageRequestDTO.getPageable();
 
         Page<Product> productsPage = productRepository.productList(pageRequestDTO, pageable);
-        log.info("기본 상품 목록 조회 2" + productsPage);
+
+        Optional<Integer> cate1 = Optional.ofNullable(pageRequestDTO.getCate1());
+        Optional<Integer> cate2 = Optional.ofNullable(pageRequestDTO.getCate2());
+        Optional<Integer> cate3 = Optional.ofNullable(pageRequestDTO.getCate3());
 
         // Page<Product>를 List<ProductDTO>로 변환
         List<ProductDTO> productDTOS = productsPage.getContent().stream()
@@ -267,6 +269,22 @@ public class ProductService {
         Product result = productRepository.findById(prodNo).get();
 
         return modelMapper.map(result, ProductDTO.class);
+    }
+
+    @Transactional
+    public ResponseEntity<?> saveOrder (OrderDTO orderDTO){
+
+        // product_order에 넣기
+        Order order = modelMapper.map(orderDTO, Order.class);
+
+        Order saveOrder = orderRepository.save(order);
+
+        OrderDTO savedOrderDTO = modelMapper.map(saveOrder, OrderDTO.class);
+
+        // 포인트 감소는~ orderItem에서
+        int usePoint = orderDTO.getUsedPoint();
+
+        return ResponseEntity.ok(savedOrderDTO);
     }
 
     // ========== 메인페이지 ==========
