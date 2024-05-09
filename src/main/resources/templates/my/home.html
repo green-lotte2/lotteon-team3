@@ -28,50 +28,37 @@
                 order.textContent=finalOrdNo; //채우기
             });
 
-            var strDateC;
-            var strpDateP;
-            var dateC;
+            var strDateP;
             var dateP;
 
 
             document.querySelectorAll('#point').forEach(function (point){
 
-                point.querySelectorAll('#currentDate').forEach(function (date){
-                    strDateC=date.innerText
-                    dateC=new Date(strDateC);
-                })
-                console.log("계산전 적립 날짜"+dateC)
-
                point.querySelectorAll('#pointDate').forEach(function (date){
-                   strpDateP=date.innerText;
-                   dateP=new Date(strpDateP);
+                   strDateP=date.innerText;
+                   dateP=new Date(strDateP);
 
                })
                 console.log("계산전 만료 날짜"+dateP)
+                console.log("현재날짜"+currentDate);
 
-                const timeDiff = dateC.getTime() - dateP.getTime();
+                const timeDiff = currentDate.getTime() - dateP.getTime();
                 const diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
 
-                console.log('두 날짜 사이의 차이(일):', diffDays);
+                console.log('현재날짜와 소멸날짜의 차이:', diffDays);
 
                 point.querySelectorAll('#state').forEach(function (pointState){
 
-                    if(diffDays<0){
-                        pointState.innerHTML='';
-                        pointState.innerText='소멸';
-                    }else if(diffDays>=0){
+                    if(diffDays>=0){
                         pointState.innerHTML='';
                         pointState.innerText='적립';
+                    }else if(diffDays<0){
+                        pointState.innerHTML='';
+                        pointState.innerText='소멸';
+                        pointState.style.color = '#999'
                     }
                 })
-                console.log('상태'+state);
             })
-
-
-
-
-
-
         }
     </script>
         <div id="my">
@@ -133,7 +120,7 @@
                         <a th:href="@{#}" class="more">더보기</a>
                         <table border="0">
                             <tr>
-                                <th>날짜</th>
+                                <th>적립날짜</th>
                                 <th>구분</th>
                                 <th>주문번호</th>
                                 <th>적립금액</th>                                

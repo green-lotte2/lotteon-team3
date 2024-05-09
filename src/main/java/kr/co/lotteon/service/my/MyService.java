@@ -195,12 +195,15 @@ public class MyService {
 
     }
 
+    // 포인트 적립날짜 최신순 5개 출력
     public List<PointDTO> selectByUidAndDate(String uid){
         List<Point> points = pointRepository.selectByUidAndDate(uid);
         log.info("포인트 : "+points);
         return points.stream().map(point -> modelMapper.map(point,PointDTO.class))
                 .collect(Collectors.toList());
     }
+    
+    // 문의내역
 
 
 
