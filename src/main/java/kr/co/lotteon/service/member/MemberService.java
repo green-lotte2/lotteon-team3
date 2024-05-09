@@ -5,13 +5,12 @@ import jakarta.mail.Message;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.servlet.http.HttpSession;
-import kr.co.lotteon.dto.member.CouponDTO;
 import kr.co.lotteon.dto.member.MemberDTO;
-import kr.co.lotteon.entity.member.Coupon;
 import kr.co.lotteon.entity.member.Member;
+import kr.co.lotteon.entity.member.Terms;
 import kr.co.lotteon.mapper.MemberMapper;
 import kr.co.lotteon.repository.member.MemberRepository;
-import kr.co.lotteon.repository.my.CouponRepository;
+import kr.co.lotteon.repository.member.TermsRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -21,10 +20,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -36,6 +33,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final MemberMapper memberMapper;
     private final JavaMailSender javaMailSender;
+    private final TermsRepository termsRepository;
 
     // 회원 가입 - DB 입력
     public void save(MemberDTO memberDTO){
@@ -130,6 +128,10 @@ public class MemberService {
         memberRepository.save(member);
     }
 
+    // 약관 출력
+    public Terms findByTerms(){
+        return termsRepository.findById(1).get();
+    }
 
     //이메일 전송
     @Value("${spring.mail.username}")

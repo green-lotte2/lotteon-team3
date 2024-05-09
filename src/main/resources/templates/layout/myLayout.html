@@ -6,7 +6,7 @@
     <title>롯데ON::대한민국 1등 온라인 쇼핑몰</title>
     <link rel="shortcut icon" type="image/x-icon" th:href="@{/images/favicon.ico}" />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"/>
-    <link rel="stylesheet" th:href="@{/css/my_star-rating-svg}">
+    <link rel="stylesheet" th:href="@{/css/my_star-rating-svg.css}">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
     <script src="https://kit.fontawesome.com/20962f3e4b.js" crossorigin="anonymous"></script>
@@ -70,10 +70,10 @@
 
     <footer>
         <ul>
-            <li><a th:href="@{/company/index}">회사소개</a></li>
-            <li><a th:href="@{/policy/seller}">서비스이용약관</a></li>
-            <li><a th:href="@{/policy/privacy}">개인정보처리방침</a></li>
-            <li><a th:href="@{/policy/finance}">전자금융거래약관</a></li>
+            <li><a th:href="@{/company}">회사소개</a></li>
+            <li><a th:href="@{/policy/terms(termsType=buyer)}">서비스이용약관</a></li>
+            <li><a th:href="@{/policy/terms(termsType=privacy)}">개인정보처리방침</a></li>
+            <li><a th:href="@{/policy/terms(termsType=finance)}">전자금융거래약관</a></li>
         </ul>
         <div>
             <p><img th:src="@{/images/footer_logo.png}" alt="로고" /></p>

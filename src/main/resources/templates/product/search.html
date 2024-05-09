@@ -2,125 +2,171 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{/layout/productLayout}">
-<html>
+<head>
+    <script>
+        window.onload = function (){
 
-        <!-- 상품검색 화면 시작 -->
-        <section class="search" layout:fragment="content">
+            // 상품가격 체크박스
+            const priceCheckbox = document.querySelector('input[name="searchType"][value="price"]');
+            // 최소 가격 입력 필드
+            const minPriceInput = document.querySelector('input[name="min"]');
+            // 최대 가격 입력 필드
+            const maxPriceInput = document.querySelector('input[name="max"]');
+            // 검색 버튼
+            const searchButton = document.querySelector('input[type="submit"]');
 
-          <!-- 제목, 페이지 네비게이션 -->
-          <nav>
-            <h1>상품 검색 결과</h1>
-            <p>
-              HOME > <span>상품검색</span> > <strong>검색키워드</strong>
-            </p>
-          </nav>
+            // 초기에는 입력 필드 비활성화 및 검색 버튼 비활성화
+            minPriceInput.disabled = true;
+            maxPriceInput.disabled = true;
+            searchButton.disabled = true;
 
-          <!-- 검색결과 그룹박스 -->
-          <div class="group">
-            <h3><strong th:text="${searchPageRequestDTO.searchKeyword}"></strong> 검색결과 <em>(총&nbsp;:&nbsp;<span th:text="${searchPageResponseDTO.total}"></span>&nbsp;건)</em></h3>
+            // 상품가격 체크박스의 변화 감지
+            priceCheckbox.addEventListener('change', function () {
+                if (priceCheckbox.checked) {
+                    // 체크된 경우 입력 필드 활성화
+                    minPriceInput.disabled = false;
+                    maxPriceInput.disabled = false;
+                } else {
+                    // 체크되지 않은 경우 입력 필드 비활성화 및 검색 버튼 비활성화
+                    minPriceInput.disabled = true;
+                    maxPriceInput.disabled = true;
+                    searchButton.disabled = true;
+                }
+            });
 
-            <form action="">
-              <input type="text" name="searchKeyword" placeholder="상품을 검색해보세요"/>
-              <input type="submit" value="검색"/>
-              <span>
-                  <label><input type="checkbox" name="chk" value="상품명">상품명</label>
-                  <label><input type="checkbox" name="chk" value="상품설명">상품설명</label>
-                  <label><input type="checkbox" name="chk" value="상품가격">상품가격</label>
-                  <input type="text" name="min"/>원&nbsp;~&nbsp;<input type="text" name="max"/>원
-              </span>
-            </form>
-            <p class="info">
-              상세검색을 선택하지 않거나, 상품가격을 입력하지 않으면 현재 결과내에서 검색합니다.<br>
-              검색어는 최대 10글자까지, 여러개의 검색어를 공백으로 구분하여 입력 할수 있습니다.
-            </p>
-          </div>
+            // 가격 입력 필드의 입력 감지
+            minPriceInput.addEventListener('input', toggleSearchButton);
+            maxPriceInput.addEventListener('input', toggleSearchButton);
 
-          <!-- 정렬 메뉴 -->
-          <ul class="sort">
-              <li><a href="#">판매많은순</a></li>
-              <li><a href="#">낮은가격순</a></li>
-              <li><a href="#">높은가격순</a></li>
-              <li><a href="#">평점높은순</a></li>
-              <li><a href="#">후기많은순</a></li>
-              <li><a href="#">최근등록순</a></li>
-          </ul>
+            // 검색 버튼 활성화/비활성화 함수
+            function toggleSearchButton() {
+                // 최소 가격과 최대 가격 모두 입력되었을 때만 검색 버튼을 활성화
+                if (minPriceInput.value.trim() !== '' && maxPriceInput.value.trim() !== '') {
+                    searchButton.disabled = false;
+                } else {
+                    searchButton.disabled = true;
+                }
+            }
+        }
+    </script>
 
-          <!-- 검색목록 -->
-          <table border="0">
-            <tr th:each="product : ${searchPageResponseDTO.dtoList}">
-              <td><a href="#" class="thumb"><img th:src="${product.thumb1}" alt="상품이미지" width="120" height="120"/></a></td>
-              <td>
+</head>
+<body>
+<!-- 상품검색 화면 시작 -->
+<section class="search" layout:fragment="content">
+
+    <!-- 제목, 페이지 네비게이션 -->
+    <nav>
+        <h1>상품 검색 결과</h1>
+        <p>
+            HOME > <span>상품검색</span> > <strong>검색키워드</strong>
+        </p>
+    </nav>
+
+    <!-- 검색결과 그룹박스 -->
+    <div class="group">
+        <h3><strong th:text="${searchPageRequestDTO.searchKeyword}"></strong> 검색결과 <em>(총&nbsp;:&nbsp;<span th:text="${searchPageResponseDTO.total}"></span>&nbsp;건)</em></h3>
+
+        <form th:action="@{/product/search}" method="get">
+            <input type="text" name="searchKeyword" th:value="${searchPageRequestDTO.searchKeyword}" />
+
+            <input type="submit" value="검색"/>
+            <span>
+              <label><input type="checkbox" name="searchType" value="name">상품명</label>
+              <label><input type="checkbox" name="searchType" value="descript">상품설명</label>
+              <label><input type="checkbox" name="searchType" value="price">상품가격</label>
+              <input type="text" name="min"/>원&nbsp;~&nbsp;<input type="text" name="max"/>원
+          </span>
+        </form>
+        <p class="info">
+            상세검색을 선택하지 않거나, 상품가격을 입력하지 않으면 현재 결과내에서 검색합니다.<br>
+            검색어는 최대 10글자까지, 여러개의 검색어를 공백으로 구분하여 입력 할수 있습니다.
+        </p>
+    </div>
+
+    <!-- 정렬 메뉴 -->
+    <ul class="sort">
+        <li><a href="#">판매많은순</a></li>
+        <li><a href="#">낮은가격순</a></li>
+        <li><a href="#">높은가격순</a></li>
+        <li><a href="#">평점높은순</a></li>
+        <li><a href="#">후기많은순</a></li>
+        <li><a href="#">최근등록순</a></li>
+    </ul>
+
+    <!-- 검색목록 -->
+    <table border="0">
+        <tr th:each="product : ${searchPageResponseDTO.dtoList}">
+            <td><a href="#" class="thumb"><img th:src="${product.thumb1}" alt="상품이미지" width="120" height="120"/></a></td>
+            <td>
                 <h3 class="name" th:text="${product.prodName}">상품명</h3>
                 <a href="#" class="desc" th:text="${product.descript}">상품 설명</a>
-              </td>
-              <td>
+            </td>
+            <td>
                 <ul>
-                  <li><ins class="dis-price" th:text="${product.price - (product.price * product.discount / 100)}"></ins></li>
-                  <li>
-                    <del class="org-price" th:text="${product.price}"></del>
-                    <span class="discount" th:text="${product.discount} + '%'"></span>
-                  </li>
-                  <li><span class="free-delivery">무료배송</span></li>
+                    <li><ins class="dis-price" th:text="${product.price - (product.price * product.discount / 100)}"></ins></li>
+                    <li>
+                        <del class="org-price" th:text="${product.price}"></del>
+                        <span class="discount" th:text="${product.discount} + '%'"></span>
+                    </li>
+                    <li><span class="free-delivery">무료배송</span></li>
                 </ul>
-              </td>
-              <td>
+            </td>
+            <td>
                 <h4 class="seller"><i class="fas fa-home"></i>&nbsp;<span th:text="${product.seller}">판매자</span></h4>
                 <!-- <h5 class="badge power great" th:text="${product.sellerGrade}">판매자등급</h5> -->
                 <h6 class="rating star3">상품평</h6>
-              </td>
-            </tr>
-          </table>
+            </td>
+        </tr>
+    </table>
 
-          <!-- 상품목록 페이지번호 -->
-          <div class="paging" th:if="${searchPageResponseDTO.total gt 0}">
-    <span class="prev" th:if="${searchPageResponseDTO.prev}">
-        <a th:href="@{/product/search(searchKeyword=${searchPageRequestDTO.searchKeyword},pg=${searchPageResponseDTO.start - 1})}">&lt;&nbsp;이전</a>
-    </span>
-            <span th:each="num : ${#numbers.sequence(searchPageResponseDTO.start, searchPageResponseDTO.end)}" class="num">
-        <a th:classappend="${searchPageResponseDTO.pg eq num ? 'on' : 'off'}" th:href="@{/product/search(searchKeyword=${searchPageRequestDTO.searchKeyword},pg=${num})}">
+    <!-- 상품목록 페이지번호 -->
+    <div class="paging" th:if="${searchPageResponseDTO.total gt 0}">
+        <span class="prev" th:if="${searchPageResponseDTO.prev}">
+          <a th:href="@{/product/search(searchKeyword=${searchPageRequestDTO.searchKeyword},pg=${searchPageResponseDTO.start - 1})}">&lt;&nbsp;이전</a>
+        </span>
+        <span th:each="num : ${#numbers.sequence(searchPageResponseDTO.start, searchPageResponseDTO.end)}" class="num">
+          <a th:classappend="${searchPageResponseDTO.pg eq num ? 'on' : 'off'}" th:href="@{/product/search(searchKeyword=${searchPageRequestDTO.searchKeyword},pg=${num})}">
             [[${num}]]
-        </a>
-    </span>
-            <span class="next" th:if="${searchPageResponseDTO.next}">
-        <a th:href="@{/product/search(searchKeyword=${searchPageRequestDTO.searchKeyword},pg=${searchPageResponseDTO.end + 1})}">다음&nbsp;&gt;</a>
-    </span>
-          </div>
+          </a>
+        </span>
+        <span class="next" th:if="${searchPageResponseDTO.next}">
+          <a th:href="@{/product/search(searchKeyword=${searchPageRequestDTO.searchKeyword},pg=${searchPageResponseDTO.end + 1})}">다음&nbsp;&gt;</a>
+        </span>
+    </div>
 
+    <!-- 검색결과가 없을 때의 메시지 -->
+    <div th:if="${searchPageResponseDTO.total eq 0}" style="text-align: center;">
+        <p style="color: #d50c0d; font-size: 18px;"><strong>검색 결과가 없습니다.</strong></p>
+    </div>
 
-          <!-- 검색결과가 없을 때의 메시지 -->
-          <div th:if="${searchPageResponseDTO.total eq 0}" style="text-align: center;">
-            <p style="color: #d50c0d; font-size: 18px;"><strong>검색 결과가 없습니다.</strong></p>
-          </div>
+</section>
+<!-- 상품검색 화면 끝 -->
 
-        </section>
-        <!-- 상품검색 화면 끝 -->
-
-      </main>
-      <footer>
-        <ul>
-          <li><a href="#">회사소개</a></li>
-          <li><a href="#">서비스이용약관</a></li>
-          <li><a href="#">개인정보처리방침</a></li>
-          <li><a href="#">전자금융거래약관</a></li>
-        </ul>
-        <div>
-          <p><img src="../images/footer_logo.png" alt="로고" /></p>
-          <p>
+<footer>
+    <ul>
+        <li><a href="#">회사소개</a></li>
+        <li><a href="#">서비스이용약관</a></li>
+        <li><a href="#">개인정보처리방침</a></li>
+        <li><a href="#">전자금융거래약관</a></li>
+    </ul>
+    <div>
+        <p><img src="../images/footer_logo.png" alt="로고" /></p>
+        <p>
             <strong>(주)롯데ON</strong><br />
             서울특별시 송파구 올림픽로 300 롯데월드타워 26층 (역삼동 강남파이낸스센터)<br />
             대표이사 : 김사무엘상현, 정준호, 강성현<br />
             사업자등록번호 : 529-85-00774(롯데쇼핑(주) e커머스사업부)<br />
             통신판매업 신고 : 서울송파 제0158호<br>
             호스팅 서비스사업자 : 롯데쇼핑(주) e커머스사업부
-          </p>
-          <p>
+        </p>
+        <p>
             <strong>고객센터</strong><br />
             Tel : 1899-7000(유료) (평일 09:00~18:00)<br />
             Fax : 051-123-4567 | E-mail : lotteon@lotte.net<br />
-          </p>
-        </div>
-      </footer>
-      <button type="button" id="top">상단이동</button>
+        </p>
     </div>
-  </body>
+</footer>
+<button type="button" id="top">상단이동</button>
+</body>
 </html>

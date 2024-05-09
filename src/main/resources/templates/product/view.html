@@ -238,6 +238,35 @@
 
                         }
 
+                        const order = document.getElementsByClassName('order')[0];
+
+                        order.onclick = function (e){
+                            e.preventDefault();
+
+                            const jsonData = {
+                                "uid" : uidValue,
+                                "prodNo" : prodNo,
+                                "count" : countValueText
+                            };
+                            console.log(jsonData);
+                            if (uidValue == null) {
+                                location.href = `/lotteon/member/login`;
+
+                            }else if (confirm("바로 구매 하시겠습니까?")) {
+                                fetch(`/lotteon/product/order?uid=${uidValue}&prodNo=${prodNo}&count=${countValueText}`)
+                                    .then(response=>response.json())
+                                    .then(data=>{
+                                        if (data!=null){
+                                            console.log(data);
+
+                                        }
+                                    })
+                                    .catch((err)=>{
+                                        location.href=`/lotteon/product/order?uid=${uidValue}&prodNo=${prodNo}&count=${countValueText}`})
+                            }
+
+                        }
+
                         const countDiv = document.getElementsByClassName('count')[0];
 
                         // 상품수량 감소 버튼
@@ -298,18 +327,40 @@
                             uidValue = null;
                         }
                         console.log(uidValue);
-
-
-
-
-
-
-
-
                     }
                     // 최상단 이동 (topButton) 함수 //
                     function movePageTop() {
                         window.scrollTo(0, 0);
+                    }
+
+                    let wish = [[${wish}]];
+                    let prodNo = [[${productDTO.prodNo}]];
+                    // wish 클릭
+                    async function changeWish(span){
+                        const noWishImg = span.querySelector('.noWish');
+                        const wishImg = span.querySelector('.wish');
+
+                        console.log('wish : '+wish );
+
+                        if(wish == 0){
+                            // 찜 상태로 변경
+                            noWishImg.classList.add('hidden');
+                            wishImg.classList.remove('hidden');
+                            wish += 1;
+
+                            // 서버 전달
+                            await fetchGet(`/lotteon/wish/${prodNo}/${wish}`)
+
+                        }else{
+                            // no 찜 상태로 변경
+                            wishImg.classList.add('hidden');
+                            noWishImg.classList.remove('hidden');
+                            wish -= 1;
+
+                            // 서버 전달
+                            await fetchGet(`/lotteon/wish/${prodNo}/${wish}`)
+
+                        }
                     }
 
                 </script>
@@ -334,6 +385,10 @@
                         <nav>
                             <h1>[[${productDTO.company}]]</h1>
                             <h2>상품번호&nbsp;:&nbsp;<span>[[${productDTO.prodNo}]]</span></h2>
+                            <span class="wishImg" onclick="changeWish(this)">
+                                <img th:class="${(wish == 0) ? 'noWish' : 'noWish hidden'}" th:src="@{/images/heart_32.png}">
+                                <img th:class="${(wish == 1) ? 'wish' : 'wish hidden'}" th:src="@{/images/heart_full32.png}">
+                            </span>
                         </nav>
                         <nav>
                             <h3>[[${productDTO.prodName}]]</h3>

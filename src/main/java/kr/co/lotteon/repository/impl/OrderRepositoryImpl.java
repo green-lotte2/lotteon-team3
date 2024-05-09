@@ -42,7 +42,7 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
     // 장바구니에서 오더
     @Override
     public List<Tuple> selectOrderFromCart(int cartNo) {
-        return jpaQueryFactory.select(qCart.count, qProduct)
+        return jpaQueryFactory.select(qCart.count,qCart.opNo, qProduct)
                 .from(qCart)
                 .join(qProduct)
                 .on(qCart.prodNo.eq(qProduct.prodNo))

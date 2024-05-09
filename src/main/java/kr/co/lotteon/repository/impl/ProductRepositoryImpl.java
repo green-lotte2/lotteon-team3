@@ -3,6 +3,7 @@ package kr.co.lotteon.repository.impl;
 
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.co.lotteon.dto.admin.AdminProductPageRequestDTO;
@@ -219,8 +220,33 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
             predicate = predicate.and(qProduct.cate3.eq(pageRequestDTO.getCate3()));
         }
 
+        // 정렬 방식을 지정하는 Order 객체 생성
+        com.querydsl.core.types.Order order;
+        if ("DESC".equals(pageRequestDTO.getHow())) {
+            order = com.querydsl.core.types.Order.DESC;
+        }else {
+            order = com.querydsl.core.types.Order.ASC;
+        }
+
+        // 정렬 기준에 따라 쿼리 정렬 방식 변경
+        OrderSpecifier<?> orderSpecifier;
+        if (pageRequestDTO.getSort().equals("sold")) {
+            orderSpecifier = new OrderSpecifier<>(order, qProduct.sold);
+        } else if (pageRequestDTO.getSort().equals("price")) {
+            orderSpecifier = new OrderSpecifier<>(order, qProduct.price);
+        } else if (pageRequestDTO.getSort().equals("score")) {
+            orderSpecifier = new OrderSpecifier<>(order, qProduct.score);
+        }else if (pageRequestDTO.getSort().equals("review")) {
+            orderSpecifier = new OrderSpecifier<>(order, qProduct.review);
+        }else if (pageRequestDTO.getSort().equals("rdate")) {
+            orderSpecifier = new OrderSpecifier<>(order, qProduct.rdate);
+        } else {
+            // 기본적으로 prodNo로 정렬
+            orderSpecifier = qProduct.prodNo.desc();
+        }
+
         QueryResults<Product> results = jpaQueryFactory.selectFrom(qProduct)
-                .orderBy(qProduct.prodNo.desc())
+                .orderBy(orderSpecifier)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .where(predicate.and(qProduct.status.eq("새상품")))
@@ -363,7 +389,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
 
     }
 
-
+    // 상품 - 전체옵션으로 조회
     @Override
     public Page<Tuple> searchProducts(SearchPageRequestDTO searchPageRequestDTO, Pageable pageable) {
         String searchKeyword = searchPageRequestDTO.getSearchKeyword();
@@ -385,6 +411,93 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
         List<Tuple> content = results.getResults();
 
         return new PageImpl<>(content, pageable, total);
+    }
+
+    // 상품 - 상품이름으로 조회
+    @Override
+    public Page<Tuple> searchProductsProdName(SearchPageRequestDTO searchPageRequestDTO, Pageable pageable) {
+        String searchKeyword = searchPageRequestDTO.getSearchKeyword();
+
+        BooleanExpression expression = qProduct.prodName.containsIgnoreCase(searchKeyword);
+
+        QueryResults<Tuple> results = jpaQueryFactory
+                .select(qProduct.prodNo, qProduct.prodName, qProduct.discount, qProduct.price, qProduct.seller)
+                .from(qProduct)
+                .where(expression)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .orderBy(qProduct.prodNo.desc())
+                .fetchResults();
+
+        long total = results.getTotal();
+        List<Tuple> content = results.getResults();
+
+        return new PageImpl<>(content, pageable, total);
+    }
+
+    // 상품 - 상품설명으로 조회
+    @Override
+    public Page<Tuple> searchProductsDescript(SearchPageRequestDTO searchPageRequestDTO, Pageable pageable) {
+        String searchKeyword = searchPageRequestDTO.getSearchKeyword();
+
+        BooleanExpression expression = qProduct.descript.containsIgnoreCase(searchKeyword);
+
+        QueryResults<Tuple> results = jpaQueryFactory
+                .select(qProduct.prodNo, qProduct.prodName, qProduct.discount, qProduct.price, qProduct.seller)
+                .from(qProduct)
+                .where(expression)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .orderBy(qProduct.prodNo.desc())
+                .fetchResults();
+
+        long total = results.getTotal();
+        List<Tuple> content = results.getResults();
+
+        return new PageImpl<>(content, pageable, total);
+    }
+
+    // 상품 - 상품가격(할인된 가격임)으로 조회
+    @Override
+    public Page<Tuple> searchProductsPrice(SearchPageRequestDTO searchPageRequestDTO, Pageable pageable, int min, int max) {
+        String searchKeyword = searchPageRequestDTO.getSearchKeyword();
+
+        // 할인된 가격 범위를 기준으로 검색하는 표현식 생성
+        BooleanExpression expression = qProduct.company.containsIgnoreCase(searchKeyword)
+                .or(qProduct.prodName.containsIgnoreCase(searchKeyword))
+                .or(qProduct.descript.containsIgnoreCase(searchKeyword))
+                .and(qProduct.price.subtract(qProduct.price.multiply(qProduct.discount).divide(100)).between(min, max));
+
+        log.info("임플...1" + min);
+        log.info("임플...1" + max);
+
+        QueryResults<Tuple> results = jpaQueryFactory
+                .select(qProduct.prodNo, qProduct.prodName, qProduct.discount, qProduct.price, qProduct.seller)
+                .from(qProduct)
+                .where(expression)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .orderBy(qProduct.prodNo.desc())
+                .fetchResults();
+        log.info("임플...2" + results);
+        long total = results.getTotal();
+        List<Tuple> content = results.getResults();
+
+        return new PageImpl<>(content, pageable, total);
+    }
+
+    @Override
+    public List<Tuple> selectReviewByRdate(String uid) {
+        QueryResults<Tuple> results = jpaQueryFactory
+                .select(qReview, qProduct.prodName, qProduct.cate1, qProduct.cate2)
+                .from(qReview)
+                .where(qReview.uid.eq(uid))
+                .join(qProduct).on(qReview.prodNo.eq(qProduct.prodNo))
+                .orderBy(qReview.rdate.desc())// rdate를 기준으로 내림차순으로 정렬
+                .limit(5)
+                .fetchResults();
+
+        return results.getResults();
     }
 
 
