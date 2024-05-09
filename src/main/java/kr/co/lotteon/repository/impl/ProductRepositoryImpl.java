@@ -1,6 +1,7 @@
 package kr.co.lotteon.repository.impl;
 
 
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -335,7 +336,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
 
     }
 
-
+    // 상품 - 전체옵션으로 조회
     @Override
     public Page<Tuple> searchProducts(SearchPageRequestDTO searchPageRequestDTO, Pageable pageable) {
         String searchKeyword = searchPageRequestDTO.getSearchKeyword();
@@ -358,6 +359,81 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
 
         return new PageImpl<>(content, pageable, total);
     }
+
+    // 상품 - 상품이름으로 조회
+    @Override
+    public Page<Tuple> searchProductsProdName(SearchPageRequestDTO searchPageRequestDTO, Pageable pageable) {
+        String searchKeyword = searchPageRequestDTO.getSearchKeyword();
+
+        BooleanExpression expression = qProduct.prodName.containsIgnoreCase(searchKeyword);
+
+        QueryResults<Tuple> results = jpaQueryFactory
+                .select(qProduct.prodNo, qProduct.prodName, qProduct.discount, qProduct.price, qProduct.seller)
+                .from(qProduct)
+                .where(expression)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .orderBy(qProduct.prodNo.desc())
+                .fetchResults();
+
+        long total = results.getTotal();
+        List<Tuple> content = results.getResults();
+
+        return new PageImpl<>(content, pageable, total);
+    }
+
+    // 상품 - 상품설명으로 조회
+    @Override
+    public Page<Tuple> searchProductsDescript(SearchPageRequestDTO searchPageRequestDTO, Pageable pageable) {
+        String searchKeyword = searchPageRequestDTO.getSearchKeyword();
+
+        BooleanExpression expression = qProduct.descript.containsIgnoreCase(searchKeyword);
+
+        QueryResults<Tuple> results = jpaQueryFactory
+                .select(qProduct.prodNo, qProduct.prodName, qProduct.discount, qProduct.price, qProduct.seller)
+                .from(qProduct)
+                .where(expression)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .orderBy(qProduct.prodNo.desc())
+                .fetchResults();
+
+        long total = results.getTotal();
+        List<Tuple> content = results.getResults();
+
+        return new PageImpl<>(content, pageable, total);
+    }
+
+    // 상품 - 상품가격(할인된 가격임)으로 조회
+    @Override
+    public Page<Tuple> searchProductsPrice(SearchPageRequestDTO searchPageRequestDTO, Pageable pageable, int min, int max) {
+        String searchKeyword = searchPageRequestDTO.getSearchKeyword();
+
+        // 할인된 가격 범위를 기준으로 검색하는 표현식 생성
+        BooleanExpression expression = qProduct.company.containsIgnoreCase(searchKeyword)
+                .or(qProduct.prodName.containsIgnoreCase(searchKeyword))
+                .or(qProduct.descript.containsIgnoreCase(searchKeyword))
+                .and(qProduct.price.subtract(qProduct.price.multiply(qProduct.discount).divide(100)).between(min, max));
+
+        log.info("임플...1" + min);
+        log.info("임플...1" + max);
+
+        QueryResults<Tuple> results = jpaQueryFactory
+                .select(qProduct.prodNo, qProduct.prodName, qProduct.discount, qProduct.price, qProduct.seller)
+                .from(qProduct)
+                .where(expression)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .orderBy(qProduct.prodNo.desc())
+                .fetchResults();
+        log.info("임플...2" + results);
+        long total = results.getTotal();
+        List<Tuple> content = results.getResults();
+
+        return new PageImpl<>(content, pageable, total);
+    }
+
+
 
 
 }
