@@ -13,14 +13,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.beans.Transient;
 import java.util.List;
 import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class CommentService {
+public class AdminCommentService {
 
     private final CommentRepository commentRepository;
     private final BoardRepository boardRepository;

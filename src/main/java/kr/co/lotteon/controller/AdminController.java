@@ -13,12 +13,13 @@ import kr.co.lotteon.entity.cs.Comment;
 import kr.co.lotteon.entity.member.Terms;
 import kr.co.lotteon.service.admin.AdminService;
 import kr.co.lotteon.service.admin.BannerService;
-import kr.co.lotteon.service.admin.cs.BoardService;
-import kr.co.lotteon.service.admin.cs.CommentService;
+import kr.co.lotteon.service.admin.company.AdminCompanyService;
+import kr.co.lotteon.service.admin.cs.AdminBoardService;
+import kr.co.lotteon.service.admin.cs.AdminCommentService;
 import kr.co.lotteon.service.admin.SellerService;
-import kr.co.lotteon.service.admin.member.MemberService;
-import kr.co.lotteon.service.admin.product.CateService;
-import kr.co.lotteon.service.admin.product.ProductService;
+import kr.co.lotteon.service.admin.member.AdminMemberService;
+import kr.co.lotteon.service.admin.product.AdminCateService;
+import kr.co.lotteon.service.admin.product.AdminProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -38,12 +39,13 @@ public class AdminController {
 
     private final AdminService adminService;
     private final BannerService bannerService;
-    private final CommentService commentService;
-    private final ProductService productService;
+    private final AdminCommentService adminCommentService;
+    private final AdminProductService adminProductService;
     private final SellerService sellerService;
-    private final CateService cateService;
-    private final BoardService boardService;
-    private final MemberService memberService;
+    private final AdminCateService adminCateService;
+    private final AdminBoardService adminBoardService;
+    private final AdminMemberService adminMemberService;
+    private final AdminCompanyService adminCompanyService;
 
     private final ObjectMapper objectMapper;
 
@@ -149,11 +151,11 @@ public class AdminController {
         AdminProductPageResponseDTO adminPageResponseDTO = null;
         if(adminProductPageRequestDTO.getKeyword() == null) {
             // 일반 상품 목록 조회
-            adminPageResponseDTO = productService.adminSelectProducts(adminProductPageRequestDTO);
+            adminPageResponseDTO = adminProductService.adminSelectProducts(adminProductPageRequestDTO);
         }else {
             // 검색 상품 목록 조회
             log.info("키워드 검색 Cont" + adminProductPageRequestDTO.getKeyword());
-            adminPageResponseDTO = productService.adminSearchProducts(adminProductPageRequestDTO);
+            adminPageResponseDTO = adminProductService.adminSearchProducts(adminProductPageRequestDTO);
         }
         log.info("관리자 상품 목록 Cont 2 : " + adminPageResponseDTO);
         model.addAttribute("adminPageResponseDTO", adminPageResponseDTO);
@@ -164,26 +166,26 @@ public class AdminController {
     @GetMapping("/admin/findCate1")
     @ResponseBody
     public ResponseEntity<?> findCate1s(){
-        return productService.findCate1s();
+        return adminProductService.findCate1s();
     }
     // 등록된 상품 보기
     @GetMapping("/admin/product/view")
     public String prodView(Model model, int prodNo){
 
         // 상품 상세 조회
-        ProductDTO product = productService.selectByprodNo(prodNo);
+        ProductDTO product = adminProductService.selectByprodNo(prodNo);
         log.info("판매자 상품 수정 Cont 1 : "+product);
 
         // Cate1 전체 조회
-        List<Cate1DTO> cate1List = cateService.findAllCate1();
+        List<Cate1DTO> cate1List = adminCateService.findAllCate1();
         log.info("판매자 상품 수정 Cont 2 : "+cate1List);
 
         // Cate2 조회
-        List<Cate2DTO> cate2List = (List<Cate2DTO>) cateService.findAllCate2ByCate1(product.getCate1()).getBody();
+        List<Cate2DTO> cate2List = (List<Cate2DTO>) adminCateService.findAllCate2ByCate1(product.getCate1()).getBody();
         log.info("판매자 상품 수정 Cont 3 : "+cate2List);
 
         // Cate3 조회
-        List<Cate3DTO> cate3List = (List<Cate3DTO>) cateService.findAllCate3ByCate2(product.getCate2()).getBody();
+        List<Cate3DTO> cate3List = (List<Cate3DTO>) adminCateService.findAllCate3ByCate2(product.getCate2()).getBody();
         log.info("판매자 상품 수정 Cont 4 : "+cate3List);
 
         // optionList 조회
@@ -202,7 +204,7 @@ public class AdminController {
     @ResponseBody
     @GetMapping("/admin/product/status/{prodNo}/{statusNum}")
     public ResponseEntity<?> prodStatus(@PathVariable("prodNo")int prodNo, @PathVariable("statusNum")int statusNum){
-        return productService.prodStatUpdate(prodNo, statusNum);
+        return adminProductService.prodStatUpdate(prodNo, statusNum);
     }
     // 관리자 상품 삭제
     @ResponseBody
@@ -210,7 +212,7 @@ public class AdminController {
     public ResponseEntity<?> prodDelete(@RequestBody Map<String, int[]> requestData){
         int[] prodNoArray = requestData.get("prodNoArray");
         log.info("상품 삭제 Cont 1 : " + requestData);
-        return productService.prodDelete(prodNoArray);
+        return adminProductService.prodDelete(prodNoArray);
     }
     ////////////////  cs  ///////////////////////////////////////////////////
     // 관리자 게시판 목록 페이지 매핑
@@ -220,11 +222,11 @@ public class AdminController {
 
         log.info("관리자 게시판 목록 Cont 1 : " + cate);
         // 게시글 조회
-        AdminBoardPageResponseDTO adminBoardPageResponseDTO = boardService.findBoardByGroup(cate, adminBoardPageRequestDTO);
+        AdminBoardPageResponseDTO adminBoardPageResponseDTO = adminBoardService.findBoardByGroup(cate, adminBoardPageRequestDTO);
         log.info("관리자 게시판 목록 Cont 2 : " +adminBoardPageResponseDTO);
 
         // 검색용 cate 조회
-        List<BoardCateDTO> cates = boardService.findBoardCate();
+        List<BoardCateDTO> cates = adminBoardService.findBoardCate();
 
         model.addAttribute(adminBoardPageResponseDTO);
         model.addAttribute("group", group);
@@ -236,7 +238,7 @@ public class AdminController {
     public String boardDelete(Model model, @RequestParam("group") String group){
         log.info("관리자 게시글 등록 Cont 1 : " + group);
         // cate 조회
-        List<BoardCateDTO> cates = boardService.findBoardCate();
+        List<BoardCateDTO> cates = adminBoardService.findBoardCate();
         model.addAttribute("group", group);
         model.addAttribute("cates", cates);
         return "/admin/cs/write";
@@ -246,21 +248,21 @@ public class AdminController {
     @ResponseBody
     public ResponseEntity<?> findTypes(@PathVariable("cate") String cate) {
         log.info("관리자 게시글 Type 조회 1 : " + cate);
-        return boardService.findBoardType(cate);
+        return adminBoardService.findBoardType(cate);
     }
     // 관리자 게시글 등록 POST
     @PostMapping("/admin/cs/write")
     public String adminBoardWrite(BoardDTO boardDTO){
         log.info("관리자 게시글 등록 Cont 1 : " +boardDTO);
 
-        boardService.adminBoardWrite(boardDTO);
+        adminBoardService.adminBoardWrite(boardDTO);
         return "redirect:/admin/cs/list?group="+boardDTO.getGroup();
     }
     // 관리자 게시글 삭제
     @GetMapping("/admin/cs/delete")
     public String boardDelete(int bno, AdminBoardPageRequestDTO adminBoardPageRequestDTO){
         log.info("관리자 게시글 삭제 Cont 1 : " + bno);
-        boardService.boardDelete(bno);
+        adminBoardService.boardDelete(bno);
         return "redirect:/admin/cs/list?group=" + adminBoardPageRequestDTO.getGroup() + "&pg=" + adminBoardPageRequestDTO.getPg();
     }
     // 관리자 게시판 보기 페이지 매핑
@@ -269,9 +271,9 @@ public class AdminController {
         log.info("관리자 게시판 보기 Cont 1 : " + adminBoardPageRequestDTO);
 
         // 글 내용 조회
-        BoardDTO board = boardService.selectBoard(bno);
+        BoardDTO board = adminBoardService.selectBoard(bno);
         // 답변 조회
-        List<CommentDTO> comments = commentService.commentList(bno);
+        List<CommentDTO> comments = adminCommentService.commentList(bno);
 
         log.info("관리자 게시판 보기 Cont 2 : " + board);
 
@@ -293,14 +295,14 @@ public class AdminController {
         log.info("관리자 게시판 글 수정 Cont 1 : " + adminBoardPageRequestDTO);
         log.info("관리자 게시판 글 수정 Cont 2 : " + bno);
 
-        BoardDTO board = boardService.selectBoard(bno);
+        BoardDTO board = adminBoardService.selectBoard(bno);
         log.info("관리자 게시판 글 수정 Cont 3 : " + board);
 
         // cate 조회
-        List<BoardCateDTO> cates = boardService.findBoardCate();
+        List<BoardCateDTO> cates = adminBoardService.findBoardCate();
 
         // type 조회
-        ResponseEntity<?> respType = boardService.findBoardType(board.getCate());
+        ResponseEntity<?> respType = adminBoardService.findBoardType(board.getCate());
         List<BoardTypeDTO> typeList = (List<BoardTypeDTO>) respType.getBody();
 
         // pg, type, keyword 값
@@ -321,7 +323,7 @@ public class AdminController {
     public String adminBoardModify(BoardDTO boardDTO){
         log.info("관리자 게시글 수정 Cont 1 : " +boardDTO);
 
-        boardService.adminBoardModify(boardDTO);
+        adminBoardService.adminBoardModify(boardDTO);
         return "redirect:/admin/cs/list?group="+boardDTO.getGroup();
     }
     ////////////////  comment  ///////////////////////////////////////////////////
@@ -330,7 +332,7 @@ public class AdminController {
     public ResponseEntity<Comment> commentWrite(@RequestBody CommentDTO commentDTO) {
         log.info("commentWrite : " + commentDTO);
 
-        ResponseEntity<Comment> commentResponseEntity = commentService.insertComment(commentDTO);
+        ResponseEntity<Comment> commentResponseEntity = adminCommentService.insertComment(commentDTO);
         log.info("commentWrite ...2 : ");
         log.info(commentResponseEntity.getBody().toString());
         return commentResponseEntity;
@@ -339,33 +341,33 @@ public class AdminController {
     // 관리자 글 보기 답변 삭제
     @DeleteMapping("/comment/{cno}")
     public ResponseEntity<?> deleteComment(@PathVariable("cno") int cno){
-        return commentService.deleteComment(cno);
+        return adminCommentService.deleteComment(cno);
     }
     // 관리자 글 보기 답변 수정
     @PutMapping("/comment")
     public ResponseEntity<?> modifyComment(@RequestBody CommentDTO commentDTO){
         log.info("modifyComment : " +commentDTO.toString());
-        return commentService.updateComment(commentDTO);
+        return adminCommentService.updateComment(commentDTO);
     }
     ////////////////  member  ///////////////////////////////////////////////////
     // 관리자 회원 현황 매핑
     @GetMapping("/admin/member/list")
     public String memberList(Model model, AdminPageRequestDTO adminPageRequestDTO){
-        AdminMemberPageResponseDTO adminMemberPageResponseDTO = memberService.selectMembers(adminPageRequestDTO);
+        AdminMemberPageResponseDTO adminMemberPageResponseDTO = adminMemberService.selectMembers(adminPageRequestDTO);
         model.addAttribute("pageResponseDTO", adminMemberPageResponseDTO);
         return "/admin/member/list";
     }
     // 관리자 판매자 현황 매핑
     @GetMapping("/admin/member/seller")
     public String sellerList(Model model, AdminPageRequestDTO adminPageRequestDTO){
-        AdminMemberPageResponseDTO adminMemberPageResponseDTO = memberService.selectSellers(adminPageRequestDTO);
+        AdminMemberPageResponseDTO adminMemberPageResponseDTO = adminMemberService.selectSellers(adminPageRequestDTO);
         model.addAttribute("pageResponseDTO", adminMemberPageResponseDTO);
         return "/admin/member/seller";
     }
     // 관리자 회원 삭제
     @GetMapping("/admin/member/delete/{uid}")
     public ResponseEntity<?> memberDelete(@PathVariable("uid") String uid){
-        return memberService.deleteMember(uid);
+        return adminMemberService.deleteMember(uid);
     }
     ////////////////  order  ///////////////////////////////////////////////////
     // 관리자 주문 현황 매핑
@@ -410,7 +412,7 @@ public class AdminController {
     @DeleteMapping(value = {"/admin/recruit/{rno}"})
     @ResponseBody
     public ResponseEntity<?> recruitDelete(@PathVariable("rno") int rno) {
-        return adminService.recruitDelete(rno);
+        return adminCompanyService.recruitDelete(rno);
     }
     // 관리자 회사소개 - 채용 글쓰기 매핑
     @GetMapping("/admin/company/post")
@@ -422,7 +424,7 @@ public class AdminController {
     @ResponseBody
     public ResponseEntity<?> recruitModify(@RequestBody RecruitDTO recruitDTO){
         log.info("채용 수정 1 " + recruitDTO);
-        return adminService.recruitUpdate(recruitDTO);
+        return adminCompanyService.recruitUpdate(recruitDTO);
     }
     // 관리자 회사소개 글쓰기 전송
     @PostMapping("/admin/company/write")
@@ -436,14 +438,14 @@ public class AdminController {
     @PostMapping("/admin/company/post")
     public String recruitPost(RecruitDTO recruitDTO){
         log.info("회사소개 글쓰기 - 채용 Cont 1 : " + recruitDTO);
-        adminService.recruitPost(recruitDTO);
+        adminCompanyService.recruitPost(recruitDTO);
         return "redirect:/admin/company/recruit";
     }
 
     // 관리자 회사소개 글 수정 매핑
     @GetMapping("/admin/company/modify/{ano}")
     public String companyWrite(Model model, @PathVariable("ano") int ano){
-        ArticleDTO article = adminService.selectArticle(ano);
+        ArticleDTO article = adminCompanyService.selectArticle(ano);
         model.addAttribute("article", article);
         return "/admin/company/modify";
     }
@@ -453,6 +455,6 @@ public class AdminController {
     @ResponseBody
     public ResponseEntity<?> deleteArticle(@PathVariable("ano") int ano){
 
-        return adminService.deleteArticle(ano);
+        return adminCompanyService.deleteArticle(ano);
     }
 }

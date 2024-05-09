@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class CateService {
+public class AdminCateService {
 
     private final Cate1Repository cate1Repository;
     private final Cate2Repository cate2Repository;

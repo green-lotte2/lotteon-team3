@@ -18,7 +18,7 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class MemberService {
+public class AdminMemberService {
 
     private final MemberRepository memberRepository;
     private final ModelMapper modelMapper;

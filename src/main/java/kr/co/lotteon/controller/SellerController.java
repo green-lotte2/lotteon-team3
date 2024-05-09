@@ -9,9 +9,9 @@ import kr.co.lotteon.dto.cs.CommentDTO;
 import kr.co.lotteon.dto.product.*;
 import kr.co.lotteon.entity.cs.Comment;
 import kr.co.lotteon.security.MyUserDetails;
-import kr.co.lotteon.service.admin.cs.CommentService;
+import kr.co.lotteon.service.admin.cs.AdminCommentService;
 import kr.co.lotteon.service.admin.SellerService;
-import kr.co.lotteon.service.admin.product.CateService;
+import kr.co.lotteon.service.admin.product.AdminCateService;
 import kr.co.lotteon.service.product.ProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,9 +34,9 @@ import java.util.Map;
 public class SellerController {
 
     private final SellerService sellerService;
-    private final CommentService commentService;
+    private final AdminCommentService adminCommentService;
     private final ProductService productService;
-    private final CateService cateService;
+    private final AdminCateService adminCateService;
 
     private final ObjectMapper objectMapper;
 
@@ -91,7 +91,7 @@ public class SellerController {
     @GetMapping("/seller/product/register")
     public String register(Model model){
         // Cate1 전체 조회
-        List<Cate1DTO> cate1List = cateService.findAllCate1();
+        List<Cate1DTO> cate1List = adminCateService.findAllCate1();
         log.info("판매자 상품 등록 Cont : "+cate1List);
         model.addAttribute("cate1List", cate1List);
         return "/seller/product/register";
@@ -105,15 +105,15 @@ public class SellerController {
         log.info("판매자 상품 수정 Cont 1 : "+product);
 
         // Cate1 전체 조회
-        List<Cate1DTO> cate1List = cateService.findAllCate1();
+        List<Cate1DTO> cate1List = adminCateService.findAllCate1();
         log.info("판매자 상품 수정 Cont 2 : "+cate1List);
 
         // Cate2 조회
-        List<Cate2DTO> cate2List = (List<Cate2DTO>) cateService.findAllCate2ByCate1(product.getCate1()).getBody();
+        List<Cate2DTO> cate2List = (List<Cate2DTO>) adminCateService.findAllCate2ByCate1(product.getCate1()).getBody();
         log.info("판매자 상품 수정 Cont 3 : "+cate2List);
 
         // Cate3 조회
-        List<Cate3DTO> cate3List = (List<Cate3DTO>) cateService.findAllCate3ByCate2(product.getCate2()).getBody();
+        List<Cate3DTO> cate3List = (List<Cate3DTO>) adminCateService.findAllCate3ByCate2(product.getCate2()).getBody();
         log.info("판매자 상품 수정 Cont 4 : "+cate3List);
 
         // optionList 조회
@@ -139,13 +139,13 @@ public class SellerController {
     @GetMapping("/seller/product/register/{cate1}")
     @ResponseBody
     public ResponseEntity<?> registerCate2(@PathVariable int cate1){
-        return cateService.findAllCate2ByCate1(cate1);
+        return adminCateService.findAllCate2ByCate1(cate1);
     }
     // 판매자 상품 등록 - cate2 선택 시 cate3 조회
     @GetMapping("/seller/product/cate3/{cate2}")
     @ResponseBody
     public ResponseEntity<?> registerCate3(@PathVariable int cate2){
-        return cateService.findAllCate3ByCate2(cate2);
+        return adminCateService.findAllCate3ByCate2(cate2);
     }
     // 판매자 상품 등록 - DB insert
     @RequestMapping(value = "/seller/product/register", produces = "application/json;charset=UTF-8", method = RequestMethod.POST)
@@ -313,7 +313,7 @@ public class SellerController {
         // 글 내용 조회
         BoardDTO board = sellerService.selectBoard(bno);
         // 답변 조회
-        List<CommentDTO> comments = commentService.commentList(bno);
+        List<CommentDTO> comments = adminCommentService.commentList(bno);
 
         log.info("판매자 게시판 보기 Cont 2 : " + board);
 
@@ -334,7 +334,7 @@ public class SellerController {
     public ResponseEntity<Comment> commentWrite(@RequestBody CommentDTO commentDTO) {
         log.info("commentWrite : " + commentDTO);
 
-        ResponseEntity<Comment> commentResponseEntity = commentService.insertComment(commentDTO);
+        ResponseEntity<Comment> commentResponseEntity = adminCommentService.insertComment(commentDTO);
         log.info("commentWrite ...2 : ");
         log.info(commentResponseEntity.getBody().toString());
         return commentResponseEntity;
@@ -343,12 +343,12 @@ public class SellerController {
     // 판매자 글 보기 답변 삭제
     @DeleteMapping("/seller/comment/{cno}")
     public ResponseEntity<?> deleteComment(@PathVariable("cno") int cno){
-        return commentService.deleteComment(cno);
+        return adminCommentService.deleteComment(cno);
     }
     // 판매자 글 보기 답변 수정
     @PutMapping("/seller/comment")
     public ResponseEntity<?> modifyComment(@RequestBody CommentDTO commentDTO){
         log.info("modifyComment : " +commentDTO.toString());
-        return commentService.updateComment(commentDTO);
+        return adminCommentService.updateComment(commentDTO);
     }
 }
