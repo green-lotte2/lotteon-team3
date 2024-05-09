@@ -59,4 +59,6 @@ public class CartInfoDTO {
     private int count;
     private String opNo;
 
+    // option
+    private List<OptionDTO> dtoList;
 }
