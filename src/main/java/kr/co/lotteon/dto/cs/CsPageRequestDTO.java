@@ -23,6 +23,7 @@ public class CsPageRequestDTO {
 
     private String cate;
     // 카테고리 문자열
+    @Builder.Default
     private String group = "notice";    // 그룹 문자열
 
     private int type;                   // 게시글의 유형

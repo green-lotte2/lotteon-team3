@@ -10,10 +10,7 @@ import kr.co.lotteon.repository.product.Cate1Repository;
 import kr.co.lotteon.service.admin.BannerService;
 import kr.co.lotteon.service.member.MemberService;
 import kr.co.lotteon.service.my.MyService;
-import kr.co.lotteon.service.product.CartService;
-import kr.co.lotteon.service.product.CateService;
-import kr.co.lotteon.service.product.OptionService;
-import kr.co.lotteon.service.product.ProductService;
+import kr.co.lotteon.service.product.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.Response;
@@ -37,6 +34,7 @@ public class ProductController {
     private final CateService cateService;
     private final OptionService optionService;
     private final MemberService memberService;
+    private final WishService wishService;
 
     // cart 페이지 매핑
     @GetMapping("/product/cart")
@@ -253,7 +251,9 @@ public class ProductController {
         log.info("선택한 상품의 리뷰들 "+productReviewPageResponseDTO);
         model.addAttribute("productReviewPageResponseDTO",productReviewPageResponseDTO);
 
-
+        // 찜 여부 가져오기
+        int wish = wishService.existsWish(productDTO.getProdNo());
+        model.addAttribute("wish" ,wish);
         return "/product/view";
     }
 }
