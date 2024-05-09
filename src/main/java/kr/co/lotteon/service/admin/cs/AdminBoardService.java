@@ -39,10 +39,8 @@ public class AdminBoardService {
 
     private final ModelMapper modelMapper;
 
-
     @Value("${img.upload.path}")
     private String imgUploadPath;
-
 
     // 관리자 게시판 관리 - 기본 게시글 목록 출력
     public AdminBoardPageResponseDTO findBoardByGroup(String cate, AdminBoardPageRequestDTO adminBoardPageRequestDTO) {

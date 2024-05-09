@@ -278,17 +278,6 @@
                         <img th:src="@{/admin/images/noproduct.png}" style="width: 900px; height: 460px">
                     </div>
                 </th:block>
-                <!--<table class="sellerOrderTh">
-                    <tbody>
-                    <tr th:if="${!pageResponseDTO.dtoList.isEmpty()}">
-                        <th>gg</th>
-                        <th>gg</th>
-                        <th>gg</th>
-                        <th>gg</th>
-                        <th>gg</th>
-                    </tr>
-                    </tbody>
-                </table>-->
                 <table class="orderList">
                     <tr th:each="OrderListDTO, loop : ${pageResponseDTO.dtoList}">
                         <td class="orderListTd">
@@ -407,26 +396,7 @@
                         </ul>
                     </nav>
                 </div>
-                <div class="paging" th:if="${!pageResponseDTO.dtoList.isEmpty()}">
-                        <span class="prev">
-                            <a th:if="${pageResponseDTO.keyword == null}" class="page-link" th:href="@{/seller/order/list(pg=${pageResponseDTO.start - 1})}">&#60;</a>
-                            <a th:if="${pageResponseDTO.keyword != null}" class="page-link" th:href="@{/seller/order/list(pg=${pageResponseDTO.start - 1}, type=${pageResponseDTO.type}, keyword=${pageResponseDTO.keyword})}">&#60;</a>
-                        </span>
-                    <span class="num">
-                            <th:block th:each="num:${#numbers.sequence(pageResponseDTO.start, pageResponseDTO.end)}">
-                                <a  th:if="${pageResponseDTO.keyword == null}" th:classappend="${pageResponseDTO.pg == num} ? 'page-link on' : 'page-link'" th:href="@{/seller/order/list(pg=${num})}">
-                                    [[${num}]]
-                                </a>
-                                <a  th:if="${pageResponseDTO.keyword != null}" th:classappend="${pageResponseDTO.pg == num} ? 'page-link on' : 'page-link'" th:href="@{/seller/order/list(pg=${num}, type=${pageResponseDTO.type}, keyword=${pageResponseDTO.keyword})}">
-                                    [[${num}]]
-                                </a>
-                            </th:block>
-                        </span>
-                    <span class="next">
-                            <a th:if="${pageResponseDTO.keyword == null}" class="page-link" th:href="@{/seller/order/list(pg=${pageResponseDTO.end + 1})}">&#62;</a>
-                            <a th:if="${pageResponseDTO.keyword != null}" class="page-link" th:href="@{/seller/order/list(pg=${pageResponseDTO.end + 1}, type=${pageResponseDTO.type}, keyword=${pageResponseDTO.keyword})}">&#62;</a>
-                        </span>
-                </div>
+                <!-- 모달 -->
                 <div class="statusModal modal" id="statusModal">
                     <span class="close" onclick="closeModal()">&times;</span>
                     <div id="btnStatusModal">

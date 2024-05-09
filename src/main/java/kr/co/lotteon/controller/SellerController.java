@@ -12,6 +12,7 @@ import kr.co.lotteon.security.MyUserDetails;
 import kr.co.lotteon.service.admin.cs.AdminCommentService;
 import kr.co.lotteon.service.admin.SellerService;
 import kr.co.lotteon.service.admin.product.AdminCateService;
+import kr.co.lotteon.service.admin.product.AdminProductService;
 import kr.co.lotteon.service.product.ProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,6 +37,7 @@ public class SellerController {
     private final SellerService sellerService;
     private final AdminCommentService adminCommentService;
     private final ProductService productService;
+    private final AdminProductService adminProductService;
     private final AdminCateService adminCateService;
 
     private final ObjectMapper objectMapper;
@@ -77,11 +79,11 @@ public class SellerController {
         AdminProductPageResponseDTO adminPageResponseDTO = null;
         if(adminProductPageRequestDTO.getKeyword() == null) {
             // 일반 상품 목록 조회
-            adminPageResponseDTO = sellerService.sellerSelectProducts(adminProductPageRequestDTO);
+            adminPageResponseDTO = adminProductService.sellerSelectProducts(adminProductPageRequestDTO);
         }else {
             // 검색 상품 목록 조회
             log.info("키워드 검색 Cont" + adminProductPageRequestDTO.getKeyword());
-            adminPageResponseDTO = sellerService.sellerSearchProducts(adminProductPageRequestDTO);
+            adminPageResponseDTO = adminProductService.sellerSearchProducts(adminProductPageRequestDTO);
         }
         log.info("판매자 상품 목록 Cont 2 : " + adminPageResponseDTO);
         model.addAttribute("adminPageResponseDTO", adminPageResponseDTO);
@@ -117,7 +119,7 @@ public class SellerController {
         log.info("판매자 상품 수정 Cont 4 : "+cate3List);
 
         // optionList 조회
-        Map<String, List<Map<String, String>>> optionMap = sellerService.selectProdOption(prodNo);
+        Map<String, List<Map<String, String>>> optionMap = adminProductService.selectProdOption(prodNo);
         log.info("optionList Map : "+optionMap);
 
         model.addAttribute("product", product);
@@ -132,7 +134,7 @@ public class SellerController {
     @GetMapping("/seller/findCate1")
     @ResponseBody
     public ResponseEntity<?> findCate1s(){
-        return sellerService.findCate1s();
+        return adminProductService.findCate1s();
     }
 
     // 판매자 상품 등록 - cate1 선택 시 cate2 조회
@@ -170,7 +172,7 @@ public class SellerController {
 
         log.info("판매자 상품 등록 Cont 3 " + productDTO);
 
-        ProductDTO saveProd = sellerService.insertProduct(productDTO, thumb190, thumb230, thumb456, detail860);
+        ProductDTO saveProd = adminProductService.insertProduct(productDTO, thumb190, thumb230, thumb456, detail860);
         int prodNo = saveProd.getProdNo();
 
         return "redirect:/seller/product/view?prodNo="+prodNo;
@@ -188,10 +190,10 @@ public class SellerController {
         log.info("판매자 상품 수정 Cont 2 opNoList " + opNoList);
 
         // 수정 정보 저장
-        sellerService.modifyProduct(productDTO, thumb190, thumb230, thumb456, detail860);
+        adminProductService.modifyProduct(productDTO, thumb190, thumb230, thumb456, detail860);
 
         // 옵션 삭제
-        sellerService.deleteOptions(opNoList);
+        adminProductService.deleteOptions(opNoList);
         return "redirect:/seller/product/list";
     }
 
@@ -199,7 +201,7 @@ public class SellerController {
     // 등록된 상품 보기
     @GetMapping("/seller/product/view")
     public String prodView(Model model, @RequestParam("prodNo") int prodNo){
-        ProductDTO productDTO = sellerService.prodView(prodNo);
+        ProductDTO productDTO = adminProductService.prodView(prodNo);
         model.addAttribute("productDTO", productDTO);
         return "/seller/product/view";
     }
@@ -208,16 +210,7 @@ public class SellerController {
     @RequestMapping(value = "/seller/option", produces = "application/json;charset=UTF-8", method = RequestMethod.POST)
     public ResponseEntity<?> optionAdd(@RequestBody List<OptionDTO> optionDTOS) {
         log.info("상품 커스텀 옵션 추가 Cont 1 : " + optionDTOS);
-        return sellerService.optionAdd(optionDTOS);
-    }
-
-    // 상품 삭제
-    @ResponseBody
-    @PostMapping("/seller/product/delete")
-    public ResponseEntity prodDelete(@RequestBody Map<String, int[]> requestData){
-        int[] prodNoArray = requestData.get("prodNoArray");
-        log.info("상품 삭제 Cont 1 : " + requestData);
-        return sellerService.prodDelete(prodNoArray);
+        return adminProductService.optionAdd(optionDTOS);
     }
     ////////////////  order  /////////////////////////////////////////////////
     // 주문 현황 페이지 매핑

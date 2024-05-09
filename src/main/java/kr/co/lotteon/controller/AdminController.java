@@ -18,6 +18,7 @@ import kr.co.lotteon.service.admin.cs.AdminBoardService;
 import kr.co.lotteon.service.admin.cs.AdminCommentService;
 import kr.co.lotteon.service.admin.SellerService;
 import kr.co.lotteon.service.admin.member.AdminMemberService;
+import kr.co.lotteon.service.admin.order.AdminOrderService;
 import kr.co.lotteon.service.admin.product.AdminCateService;
 import kr.co.lotteon.service.admin.product.AdminProductService;
 import lombok.RequiredArgsConstructor;
@@ -46,9 +47,9 @@ public class AdminController {
     private final AdminBoardService adminBoardService;
     private final AdminMemberService adminMemberService;
     private final AdminCompanyService adminCompanyService;
+    private final AdminOrderService adminOrderService;
 
     private final ObjectMapper objectMapper;
-
 
     ////////////////  index  ///////////////////////////////////////////////////
     // admin index 페이지 매핑 + seller index 페이지 매핑 (return에 if하면 새로고침...?)
@@ -189,7 +190,7 @@ public class AdminController {
         log.info("판매자 상품 수정 Cont 4 : "+cate3List);
 
         // optionList 조회
-        Map<String, List<Map<String, String>>> optionMap = sellerService.selectProdOption(prodNo);
+        Map<String, List<Map<String, String>>> optionMap = adminProductService.selectProdOption(prodNo);
         log.info("optionList Map : "+optionMap);
 
         model.addAttribute("product", product);
@@ -209,10 +210,9 @@ public class AdminController {
     // 관리자 상품 삭제
     @ResponseBody
     @PostMapping("/admin/product/delete")
-    public ResponseEntity<?> prodDelete(@RequestBody Map<String, int[]> requestData){
-        int[] prodNoArray = requestData.get("prodNoArray");
-        log.info("상품 삭제 Cont 1 : " + requestData);
-        return adminProductService.prodDelete(prodNoArray);
+    public ResponseEntity<?> prodDelete(@RequestBody List<Integer> prodNoList){
+        log.info("상품 삭제 Cont 1 : " + prodNoList);
+        return  adminProductService.prodDelete(prodNoList);
     }
     ////////////////  cs  ///////////////////////////////////////////////////
     // 관리자 게시판 목록 페이지 매핑
@@ -376,11 +376,11 @@ public class AdminController {
         SellerOrderPageResponseDTO sellerOrderPageResponseDTO = null;
         if(adminPageRequestDTO.getKeyword() == null) {
             // 일반 주문 목록 조회
-            sellerOrderPageResponseDTO = adminService.selectOrderList(adminPageRequestDTO);
+            sellerOrderPageResponseDTO = adminOrderService.selectOrderList(adminPageRequestDTO);
         }else {
             // 검색 주문 목록 조회 //////
             log.info("키워드 검색 Cont" + adminPageRequestDTO.getKeyword());
-            sellerOrderPageResponseDTO = adminService.searchOrderList(adminPageRequestDTO);
+            sellerOrderPageResponseDTO = adminOrderService.searchOrderList(adminPageRequestDTO);
         }
         model.addAttribute("pageResponseDTO", sellerOrderPageResponseDTO);
         return "/admin/order/list";
@@ -389,7 +389,7 @@ public class AdminController {
     // 관리자 스토리 매핑
     @GetMapping("/admin/company/story")
     public String storyList(Model model, AdminPageRequestDTO adminPageRequestDTO){
-        AdminArticlePageResponseDTO pageResponseDTO = adminService.selectArticle("story", adminPageRequestDTO);
+        AdminArticlePageResponseDTO pageResponseDTO = adminCompanyService.selectArticle("story", adminPageRequestDTO);
         model.addAttribute("pageResponseDTO", pageResponseDTO);
         return "/admin/company/story";
     }
@@ -397,7 +397,7 @@ public class AdminController {
     @GetMapping("/admin/company/recruit")
     public String recruitList(Model model, AdminPageRequestDTO adminPageRequestDTO, RecruitDTO recruitDTO){
         log.info("recruitDTO : " +recruitDTO);
-        RecruitPageResponseDTO pageResponseDTO = adminService.selectRecruit(adminPageRequestDTO, recruitDTO);
+        RecruitPageResponseDTO pageResponseDTO = adminCompanyService.selectRecruit(adminPageRequestDTO, recruitDTO);
         model.addAttribute("pageResponseDTO", pageResponseDTO);
         model.addAttribute("recruitDTO", recruitDTO);
         return "/admin/company/recruit";
@@ -431,7 +431,7 @@ public class AdminController {
     public String storyRegister(@RequestParam("thumb336") MultipartFile thumb336, ArticleDTO articleDTO){
         log.info("회사소개 글쓰기 Cont 1 : " + thumb336);
         log.info("회사소개 글쓰기Cont 2 : " + articleDTO);
-        adminService.insertArticle(thumb336, articleDTO);
+        adminCompanyService.insertArticle(thumb336, articleDTO);
         return "redirect:/admin/company/"+articleDTO.getCate1();
     }
     // 관리자 회사소개 - 채용 글쓰기 전송

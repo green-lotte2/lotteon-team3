@@ -3,59 +3,64 @@
       layout:decorate="~{/layout/myLayout}">
 <main id="myLayout" layout:fragment="content">
     <script th:src="@{/js/myInfo.js}"></script>
-        <div id="my">
+    <div id="my">
 
 
-            <div class="review">
-                <ul>
-                    <span class="menu_else"></span>
-                    <li><a th:href="@{/my/order(uid=${#authentication.principal.member.uid})}">전체주문내역</a></li>
-                    <!--<li><a href="./favorite.html">관심상품</a></li>-->
-                    <li><a th:href="@{/my/point(uid=${#authentication.principal.member.uid})}">포인트내역</a></li>
-                    <li><a th:href="@{/my/coupon(uid=${#authentication.principal.member.uid})}">쿠폰</a></li>
-                    <li class="on"><a th:href="@{/my/review(uid=${#authentication.principal.member.uid})}">나의리뷰</a></li>
-                    <li><a th:href="@{/my/qna(uid=${#authentication.principal.member.uid})}">문의하기</a></li>
-                    <li><a th:href="@{/my/infoAccessCheck(uid=${#authentication.principal.member.uid})}">나의설정</a></li>                </ul>
+        <div class="review">
+            <ul>
+                <span class="menu_else"></span>
+                <li><a th:href="@{/my/order(uid=${#authentication.principal.member.uid})}">전체주문내역</a></li>
+                <!--<li><a href="./favorite.html">관심상품</a></li>-->
+                <li><a th:href="@{/my/point(uid=${#authentication.principal.member.uid})}">포인트내역</a></li>
+                <li><a th:href="@{/my/coupon(uid=${#authentication.principal.member.uid})}">쿠폰</a></li>
+                <li class="on"><a th:href="@{/my/review(uid=${#authentication.principal.member.uid})}">나의리뷰</a></li>
+                <li><a th:href="@{/my/qna(uid=${#authentication.principal.member.uid})}">문의하기</a></li>
+                <li><a th:href="@{/my/infoAccessCheck(uid=${#authentication.principal.member.uid})}">나의설정</a></li>
+            </ul>
 
-                <section>
-                    <a th:href="@{#}"><img th:src="@{/my/images/my_banner1.jpg}" alt="패션, 타운 하나로 끝" class="banner"></a>
-                    <article>
-                        <h3>나의리뷰</h3>
+            <section>
+                <a th:href="@{#}"><img th:src="@{/my/images/my_banner1.jpg}" alt="패션, 타운 하나로 끝" class="banner"></a>
+                <article>
+                    <h3>나의리뷰</h3>
 
-                        <table border="0">
-                            <tr>
-                                <th>번호</th>
-                                <th>상품명</th>
-                                <th>내용</th>                                
-                                <th>평점</th>
-                                <th>작성일</th>
-                            </tr>
-                            <tr th:each="review, index:${productReviewPageResponseDTO.dtoList}">
-                                <td class="no">[[${index.index + 1}]]</td>
-                                <td class="prodName"><a th:href="@{/product/view(prodNo=${review.prodNo},cate1=${review.cate1},cate2=${review.cate2})}">[[${review.prodName}]]</a></td>
-                                <td class="content">[[${review.content}]]</td>
-                                <td class="score"><span th:class="'rating star' + ${review.rating}"></span></td>
-                                <td class="date">[[${#temporals.format(review.rdate, 'yyyy-MM-dd')}]]</td>
-                            </tr>
+                    <table border="0">
+                        <tr>
+                            <th>번호</th>
+                            <th>상품명</th>
+                            <th>내용</th>
+                            <th>평점</th>
+                            <th>작성일</th>
+                        </tr>
+                        <tr th:each="review, index:${productReviewPageResponseDTO.dtoList}">
+                            <td class="no">[[${index.index + 1}]]</td>
+                            <td class="prodName"><a
+                                    th:href="@{/product/view(prodNo=${review.prodNo},cate1=${review.cate1},cate2=${review.cate2})}">[[${review.prodName}]]</a>
+                            </td>
+                            <td class="content">[[${review.content}]]</td>
+                            <td class="score"><span th:class="'rating star' + ${review.rating}"></span></td>
+                            <td class="date">[[${#temporals.format(review.rdate, 'yyyy-MM-dd')}]]</td>
+                        </tr>
 
-                        </table>
+                    </table>
 
-                        <div class="page">
+                    <div class="page">
                 <span class="prev" th:if="${productReviewPageResponseDTO.prev}">
                   <a th:href="@{/my/review(pg=${productReviewPageResponseDTO.start - 1},uid=${#authentication.principal.member.uid})}"><&nbsp;이전</a>
                 </span>
-                            <span th:each="num : ${#numbers.sequence(productReviewPageResponseDTO.start, productReviewPageResponseDTO.end)}" class="num">
+                        <span th:each="num : ${#numbers.sequence(productReviewPageResponseDTO.start, productReviewPageResponseDTO.end)}"
+                              class="num">
                   <a th:href="@{/my/review(pg=${num},uid=${#authentication.principal.member.uid})}">
                       [[${num}]]
                   </a>
                 </span>
-                            <span class="next" th:if="${productReviewPageResponseDTO.next}">
+                        <span class="next" th:if="${productReviewPageResponseDTO.next}">
                   <a th:href="@{/my/review(pg=${productReviewPageResponseDTO.end + 1},uid=${#authentication.principal.member.uid})}">다음&nbsp;></a>
                 </span>
-                        </div>
-                    </article>
-                </section>
+                    </div>
+                </article>
+            </section>
 
-            </div>
-        </div>        
-</main>>
+        </div>
+    </div>
+</main>
+>

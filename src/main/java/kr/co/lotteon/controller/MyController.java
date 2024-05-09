@@ -393,4 +393,11 @@ public class MyController {
 
         return "/my/review";
     }
+
+
+    // wish 페이지 매핑
+    @GetMapping("/my/wish")
+    public String wishList(){
+        return "/my/wish";
+    }
 }
