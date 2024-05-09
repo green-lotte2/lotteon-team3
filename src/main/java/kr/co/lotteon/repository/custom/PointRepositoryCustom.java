@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface PointRepositoryCustom {
 
-    public List<Point> selectByUidAndDate(String uid);
+    public List<Point> selectPointByUidAndDate(String uid);
 }

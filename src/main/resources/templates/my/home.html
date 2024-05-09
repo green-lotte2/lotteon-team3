@@ -3,6 +3,7 @@
       layout:decorate="~{/layout/myLayout}">
 <main id="myLayout" layout:fragment="content">
     <script th:src="@{/js/myInfo.js}"></script>
+
     <script>
         window.onload = function (){
             // JavaScript를 사용하여 현재 날짜를 가져옴
@@ -15,7 +16,8 @@
             const formattedDate = year + month + day;
             console.log(formattedDate)
 
-            document.querySelectorAll('#ordNo').forEach(function (order){
+            // 주문번호
+            document.querySelectorAll('.ordNo').forEach(function (order){
 
                 const ordNo = order.innerText;
 
@@ -31,7 +33,7 @@
             var strDateP;
             var dateP;
 
-
+            //포인트 적립 및 소멸 구분
             document.querySelectorAll('#point').forEach(function (point){
 
                point.querySelectorAll('#pointDate').forEach(function (date){
@@ -85,7 +87,7 @@
                     </div>
                     <article class="latest">
                         <h3>최근주문내역</h3>
-                        <a th:href="@{#}" class="more">더보기</a>
+                        <a th:href="@{/my/order(uid=${#authentication.principal.member.uid})}" class="more">더보기</a>
                         <table border="0">
                             <tr>
                                 <th>날짜</th>
@@ -93,18 +95,18 @@
                                 <th>상태</th>
                                 <th>확인/신청</th>
                             </tr>
-                            <tr>
-                                <td class="date">2022-12-13</td>
+                            <tr th:each="order : ${orderItemDTOS}">
+                                <td class="date">[[${#temporals.format(order.ordDate, 'yyyy-MM-dd')}]]</td>
                                 <td class="info">
-                                    <a th:href="@{#}" class="thumb"><img src="https://via.placeholder.com/80x80" alt=""></a>
+                                    <a th:href="@{#}" class="thumb"><img th:src="@{'/prodImg/'+${order.thumb3}}" alt="" style="width: 80px; height: 80px;"></a>
                                     <ul>
-                                        <li class="company"><a th:href="@{#}">상호명</a></li>
-                                        <li class="prodName"><a th:href="@{#}">상품명</a></li>
-                                        <li class="orderNo">수량 : <span class="prodCount">1</span>개 / 주문번호 : <a th:href="@{#}">1012211341</a></li>
-                                        <li class="prodPrice">34,000</li>
+                                        <li class="company"><a th:href="@{#}">[[${order.company}]]</a></li>
+                                        <li class="prodName"><a th:href="@{#}">[[${order.prodName}]]</a></li>
+                                        <li class="orderNo">수량 : <span class="prodCount">[[${order.count}]]</span>개 / <span class="ordNo">주문번호 : <a th:href="@{#}">1012211341</a></span></li>
+                                        <li class="prodPrice" th:text="${#numbers.formatInteger(order.totalPricePerProduct, 3, 'COMMA')}"></li>
                                     </ul>
                                 </td>
-                                <td class="status">배송완료</td>
+                                <td class="status">[[${order.ordStatus}]]</td>
                                 <td class="confirm">
                                     <a th:href="@{#}" class="receive">수취확인</a>
                                     <a th:href="@{#}" class="review">상품평</a>
@@ -117,7 +119,7 @@
 
                     <article class="point">
                         <h3>포인트적립내역</h3>
-                        <a th:href="@{#}" class="more">더보기</a>
+                        <a th:href="@{/my/point(uid=${#authentication.principal.member.uid})}" class="more">더보기</a>
                         <table border="0">
                             <tr>
                                 <th>적립날짜</th>
@@ -130,7 +132,7 @@
                             <tr id="point" th:each="point:${pointDTOS}">
                                 <td id="currentDate">[[${#temporals.format(point.currentDate, 'yyyy-MM-dd')}]]</td>
                                 <td id="state"></td>
-                                <td id="ordNo">[[${point.ordNo}]]</td>
+                                <td class="ordNo">[[${point.ordNo}]]</td>
                                 <td>[[${point.point}]]</td>
                                 <td>[[${point.usecase}]]</td>
                                 <td id="pointDate">[[${#temporals.format(point.pointDate, 'yyyy-MM-dd')}]]</td>
@@ -139,7 +141,7 @@
                     </article>
                     <article class="review">
                         <h3>상품평</h3>
-                        <a th:href="@{#}" class="more">더보기</a>
+                        <a th:href="@{/my/review(uid=${#authentication.principal.member.uid})}" class="more">더보기</a>
                         <table border="0">
                             <tr>
                                 <th>번호</th>
@@ -148,79 +150,33 @@
                                 <th>평점</th>
                                 <th>작성일</th>
                             </tr>
-                            <tr>
-                                <td>1</td>
-                                <td>상품명</td>
-                                <td>배송이 빠릅니다. 잘 사용하겠습니다.</td>
-                                <td><span class="rating star1">상품평</span></td>
-                                <td>2022-12-10</td>
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                                <td>상품명</td>
-                                <td>배송이 빠릅니다. 잘 사용하겠습니다.</td>
-                                <td><span class="rating star2">상품평</span></td>
-                                <td>2022-12-10</td>
-                            </tr>
-                            <tr>
-                                <td>3</td>
-                                <td>상품명</td>
-                                <td>배송이 빠릅니다. 잘 사용하겠습니다.</td>
-                                <td><span class="rating star3">상품평</span></td>
-                                <td>2022-12-10</td>
-                            </tr>
-                            <tr>
-                                <td>4</td>
-                                <td>상품명</td>
-                                <td>배송이 빠릅니다. 잘 사용하겠습니다.</td>
-                                <td><span class="rating star4">상품평</span></td>
-                                <td>2022-12-10</td>
-                            </tr>
-                            <tr>
-                                <td>5</td>
-                                <td>상품명</td>
-                                <td>배송이 빠릅니다. 잘 사용하겠습니다.</td>
-                                <td><span class="rating star5">상품평</span></td>
-                                <td>2022-12-10</td>
+                            <tr th:each="review,index :${reviewDTOS}">
+                                <td>[[${index.index + 1}]]</td>
+                                <td>[[${review.prodName}]]</td>
+                                <td>[[${review.content}]]</td>
+                                <td><span th:class="'rating star' + ${review.rating}"></span></td>
+                                <td>[[${#temporals.format(review.rdate, 'yyyy-MM-dd')}]]</td>
                             </tr>
                         </table>
                     </article>
 
                     <article class="qna">
                         <h3>문의내역</h3>
-                        <a th:href="@{#}" class="more">더보기</a>
+                        <a th:href="@{/my/qna(uid=${#authentication.principal.member.uid})}" class="more">더보기</a>
                         <table border="0">
                             <tr>
                                 <th>번호</th>
-                                <th>문의채널</th>
-                                <th>문의유형</th>                                
+                                <th>문의유형</th>
                                 <th>제목</th>
                                 <th>작성일</th>
                                 <th>상태</th>
                             </tr>
-                            <tr>
-                                <td>5</td>
-                                <td>고객센터</td>
-                                <td>주문/결제</td>                                
-                                <td>신용카드 결제 중 오류가 난 경우 어떻게 하나요?</td>
-                                <td>2024-12-12</td>
-                                <td><span class="notAnswerYet">검토중</span></td>
-                            </tr>
-                            <tr>
-                                <td>4</td>
-                                <td>고객센터</td>
-                                <td>주문/결제</td>                                
-                                <td>신용카드 결제 중 오류가 난 경우 어떻게 하나요?</td>
-                                <td>2024-12-12</td>
-                                <td><span class="answered">답변완료</span></td>
-                            </tr>
-                            <tr>
-                                <td>3</td>
-                                <td>판매자게시판</td>
-                                <td>배송</td>                                
-                                <td>배송기간이 보통 얼마나 걸리나요?</td>
-                                <td>2024-12-12</td>
-                                <td><span class="answered">답변완료</span></td>
+                            <tr th:each="board,index : ${boardDTOS}">
+                                <td>[[${index.index + 1}]]</td>
+                                <td>[[${board.cateName}]]</td>
+                                <td>[[${board.title}]]</td>
+                                <td>[[${#temporals.format(board.rdate, 'yyyy-MM-dd')}]]</td>
+                                <td><span class="notAnswerYet" th:style="${board.status == '답변완료'} ? 'font-weight: bold;color:black;' : 'color: #999'">[[${board.status}]]</span></td>
                             </tr>
                         </table>
                     </article>

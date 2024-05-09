@@ -5,15 +5,11 @@ import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.co.lotteon.dto.admin.AdminBoardPageRequestDTO;
-import kr.co.lotteon.dto.admin.AdminProductPageRequestDTO;
 import kr.co.lotteon.dto.cs.CsPageRequestDTO;
-import kr.co.lotteon.entity.cs.BoardEntity;
 import kr.co.lotteon.entity.cs.QBoardCateEntity;
 import kr.co.lotteon.entity.cs.QBoardEntity;
 import kr.co.lotteon.entity.cs.QBoardTypeEntity;
-import kr.co.lotteon.entity.member.Member;
 import kr.co.lotteon.entity.member.QMember;
-import kr.co.lotteon.entity.product.Product;
 import kr.co.lotteon.repository.custom.BoardRepositoryCustom;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -264,8 +260,8 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
                         qBoardEntity.group.eq("qna"))
                 .join(qCateEntity).on(qCateEntity.cate.eq(qBoardEntity.cate))
                 .orderBy(
-                        qBoardEntity.status.desc(), // 상태값을 기준으로 내림차순으로 정렬
-                        qBoardEntity.rdate.desc() // rdate를 기준으로 내림차순으로 정렬
+                        qBoardEntity.rdate.desc(), // rdate를 기준으로 내림차순으로 정렬
+                        qBoardEntity.status.desc() // 상태값을 기준으로 내림차순으로 정렬
                 )
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -281,5 +277,25 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
         return new PageImpl<>(content, pageable, total);
     }
 
+    // 마이페이지 home 문의하기 최신순 5개출력
+    @Override
+    public List<Tuple> selectReviewsByUidAndRdate(String uid) {
+        QueryResults<Tuple> results = jpaQueryFactory
+                .select(qBoardEntity, qCateEntity.cateName)
+                .from(qBoardEntity)
+                .where(qBoardEntity.uid.eq(uid),
+                        qBoardEntity.group.eq("qna"))
+                .join(qCateEntity).on(qCateEntity.cate.eq(qBoardEntity.cate))
+                .orderBy(
+                        qBoardEntity.rdate.desc() // rdate를 기준으로 내림차순으로 정렬
+                )
+                .limit(5)
+                .fetchResults();
+        return results.getResults();
 
-}
+
+
+    }
+    }
+
+

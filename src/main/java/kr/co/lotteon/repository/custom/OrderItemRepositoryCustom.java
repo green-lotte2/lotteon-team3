@@ -36,4 +36,6 @@ public interface OrderItemRepositoryCustom {
    // seller 매출 차트
    public List<Tuple> selectSales(String sellerId);
 
+    // 마이페이지 home 최근주문내역 최신순 5개 조회
+    public List<Tuple> selectOrdersByUid(String uid);
 }
