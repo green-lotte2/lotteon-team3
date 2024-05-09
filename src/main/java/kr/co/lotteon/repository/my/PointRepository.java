@@ -2,6 +2,7 @@ package kr.co.lotteon.repository.my;
 
 import kr.co.lotteon.dto.member.point.PointDTO;
 import kr.co.lotteon.entity.member.Point;
+import kr.co.lotteon.repository.custom.PointRepositoryCustom;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,7 +13,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
-public interface PointRepository extends JpaRepository<Point, Integer> {
+public interface PointRepository extends JpaRepository<Point, Integer>, PointRepositoryCustom {
     // point
     Page<Point> findByUidOrderByCurrentDateDesc(String uid, Pageable pageable);
     // point 조회

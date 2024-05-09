@@ -64,8 +64,24 @@ public class MyController {
 
         // 마이페이지 배너
         List<BannerDTO> myPageBanners = bannerService.selectBanners("myPage");
-
         model.addAttribute("myPageBanners",myPageBanners);
+
+        //최근 주문내역 출력
+
+        //포인트 출력
+        List<PointDTO> pointDTOS = myService.selectByUidAndDate(uid);
+        model.addAttribute("pointDTOS",pointDTOS);
+
+        //리뷰 출력
+
+        //문의내역 출력
+
+
+        //확인해주세요 출력
+        MemberDTO memberDTO = memberService.findByUid(uid);
+        model.addAttribute("memberDTO",memberDTO);
+
+
         return "/my/home";
     }
 

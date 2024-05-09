@@ -3,6 +3,77 @@
       layout:decorate="~{/layout/myLayout}">
 <main id="myLayout" layout:fragment="content">
     <script th:src="@{/js/myInfo.js}"></script>
+    <script>
+        window.onload = function (){
+            // JavaScript를 사용하여 현재 날짜를 가져옴
+            const currentDate = new Date();
+            // 년도, 월, 일을 가져와서 문자열로 만듦
+            const year = currentDate.getFullYear().toString().slice(-2);
+            const month = ('0' + (currentDate.getMonth() + 1)).slice(-2); // 두 자리수로 만들고 0 삽입
+            const day = ('0' + currentDate.getDate()).slice(-2); // 두 자리수로 만들고 0 삽입 '-' + currentDate.getDate();
+
+            const formattedDate = year + month + day;
+            console.log(formattedDate)
+
+            document.querySelectorAll('#ordNo').forEach(function (order){
+
+                const ordNo = order.innerText;
+
+                // 주문 번호를 최대 4자리의 숫자로 만듦
+                const paddedOrdNo = ('000' + ordNo).slice(-4);
+
+                const finalOrdNo = formattedDate + paddedOrdNo;
+
+                order.innerHTML=""; // html 요소 비우기
+                order.textContent=finalOrdNo; //채우기
+            });
+
+            var strDateC;
+            var strpDateP;
+            var dateC;
+            var dateP;
+
+
+            document.querySelectorAll('#point').forEach(function (point){
+
+                point.querySelectorAll('#currentDate').forEach(function (date){
+                    strDateC=date.innerText
+                    dateC=new Date(strDateC);
+                })
+                console.log("계산전 적립 날짜"+dateC)
+
+               point.querySelectorAll('#pointDate').forEach(function (date){
+                   strpDateP=date.innerText;
+                   dateP=new Date(strpDateP);
+
+               })
+                console.log("계산전 만료 날짜"+dateP)
+
+                const timeDiff = dateC.getTime() - dateP.getTime();
+                const diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+                console.log('두 날짜 사이의 차이(일):', diffDays);
+
+                point.querySelectorAll('#state').forEach(function (pointState){
+
+                    if(diffDays<0){
+                        pointState.innerHTML='';
+                        pointState.innerText='소멸';
+                    }else if(diffDays>=0){
+                        pointState.innerHTML='';
+                        pointState.innerText='적립';
+                    }
+                })
+                console.log('상태'+state);
+            })
+
+
+
+
+
+
+        }
+    </script>
         <div id="my">
 
 
@@ -71,13 +142,13 @@
                                 <th>비고</th>
                                 <th>유효기간</th>
                             </tr>
-                            <tr>
-                                <td>2022-12-10</td>
-                                <td>적립</td>
-                                <td>2022121001</td>
-                                <td>340</td>
-                                <td>상품 구매확정</td>
-                                <td>2024-12-10</td>
+                            <tr id="point" th:each="point:${pointDTOS}">
+                                <td id="currentDate">[[${#temporals.format(point.currentDate, 'yyyy-MM-dd')}]]</td>
+                                <td id="state"></td>
+                                <td id="ordNo">[[${point.ordNo}]]</td>
+                                <td>[[${point.point}]]</td>
+                                <td>[[${point.usecase}]]</td>
+                                <td id="pointDate">[[${#temporals.format(point.pointDate, 'yyyy-MM-dd')}]]</td>
                             </tr>
                         </table>
                     </article>
@@ -175,22 +246,25 @@
                         <div>
                             <div class="address">
                                 <span>기본 배송지설정</span>
-                                <a th:href="@{#}" class="setting">변경</a>
+                                <a th:href="@{/my/infoAccessCheck(uid=${#authentication.principal.member.uid})}" class="setting">변경</a>
+                                <p>
+                                    <span th:if="${memberDTO.addr1 == null && memberDTO.addr2 == null}">기본배송지가 없습니다.</span>
+                                    <span th:text="${memberDTO.addr1}"></span><br>
+                                    <span th:text="${memberDTO.addr2}"></span>
+                                </p>
                             </div>
                             <div class="email">
                                 <span>email 설정</span>
-                                <a th:href="@{#}" class="setting">변경</a>
+                                <a th:href="@{/my/infoAccessCheck(uid=${#authentication.principal.member.uid})}" class="setting">변경</a>
                                 <p>
-                                    <span>abc123@gmail.com</span><br/>
-                                    (최종수정일 <span>2021-12-10</span>)
+                                    <span th:text="${memberDTO.email}"></span><br/>
                                 </p>
                             </div>
                             <div class="hp">
                                 <span>휴대폰 설정</span>
-                                <a th:href="@{#}" class="setting">변경</a>
+                                <a th:href="@{/my/infoAccessCheck(uid=${#authentication.principal.member.uid})}" class="setting">변경</a>
                                 <p>
-                                    <span>abc123@gmail.com</span><br/>
-                                    (최종수정일 <span>2021-12-10</span>)
+                                    <span th:text="${memberDTO.hp}"></span><br/>
                                 </p>
                             </div>
                         </div>
