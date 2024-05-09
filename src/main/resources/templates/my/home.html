@@ -16,6 +16,7 @@
             const formattedDate = year + month + day;
             console.log(formattedDate)
 
+            // 주문번호
             document.querySelectorAll('.ordNo').forEach(function (order){
 
                 const ordNo = order.innerText;
@@ -32,7 +33,7 @@
             var strDateP;
             var dateP;
 
-
+            //포인트 적립 및 소멸 구분
             document.querySelectorAll('#point').forEach(function (point){
 
                point.querySelectorAll('#pointDate').forEach(function (date){
