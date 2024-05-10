@@ -23,6 +23,7 @@
               <a th:href="@{/product/view(prodNo=${hit.prodNo},cate1=${hit.cate1},cate2=${hit.cate2},cate3=${hit.cate3})}">
                 <div class="thumb">
                   <img th:src="@{'/prodImg/'+ ${hit.thumb2}}" alt="t1" />
+                  <!-- 찜 버튼 -->
                 </div>
                 <h2>[[${hit.prodName}]]</h2>
                 <p>[[${hit.descript}]]</p>

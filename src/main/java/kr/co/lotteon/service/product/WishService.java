@@ -96,7 +96,20 @@ public class WishService {
         }
         return ResponseEntity.ok().body(wishDTO);
     }
+    // 찜 선택 삭제
+    public ResponseEntity<?> wishDelete(List<Integer> wishNoList){
+        log.info("찜 삭제 serv : " + wishNoList);
 
+        for(int wishNo : wishNoList){
+            wishRepository.deleteById(wishNo);
+        }
+        return ResponseEntity.ok().body("ok");
+    }
+    // 개별 삭제
+    public ResponseEntity<?> wishDelete(int wishNo){
+        wishRepository.deleteById(wishNo);
+        return ResponseEntity.ok().body("ok");
+    }
     // 사용자 정보 함수
     public String whoAmI(){
         // 현재 로그인 중인 사용자 정보 불러오기

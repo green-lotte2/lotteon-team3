@@ -8,9 +8,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -32,5 +32,20 @@ public class WishController {
     @ResponseBody
     public ResponseEntity<?> wishChange(@PathVariable("prodNo") int prodNo, @PathVariable("wish") int wish){
         return wishService.changeWish(prodNo, wish);
+    }
+
+    // 선택 삭제
+    @PostMapping("/wish/delete")
+    @ResponseBody
+    public ResponseEntity<?> wishDelete(@RequestBody List<Integer> wishNoList){
+        log.info("찜 삭제 Cont 1 : " + wishNoList);
+        return wishService.wishDelete(wishNoList);
+    }
+    // 개별 삭제
+    @GetMapping("/wish/delete/{wishNo}")
+    @ResponseBody
+    public ResponseEntity<?> wishDelete(@PathVariable("wishNo") int wishNo){
+        log.info("찜 삭제 Cont 1 : " + wishNo);
+        return wishService.wishDelete(wishNo);
     }
 }
