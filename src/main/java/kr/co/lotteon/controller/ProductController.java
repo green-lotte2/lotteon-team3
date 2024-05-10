@@ -24,7 +24,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.Console;
 import java.util.*;
 
@@ -115,7 +115,7 @@ public class ProductController {
 
     // order 페이지 (cart->order)
     @GetMapping("/order")
-    public String order(@RequestParam String uid, Model model, @RequestParam int[] cartNo){
+    public String order(@RequestParam String uid, Model model, @RequestParam int[] cartNo) throws JsonProcessingException {
 
         List<ProductDTO> productDTOS = productService.selectOrderFromCart(cartNo);
         log.info("컨트롤러 : "+productDTOS);
@@ -130,6 +130,10 @@ public class ProductController {
 
             orderProducts.put(company, companyProducts);
         }*/
+        ObjectMapper objectMapper = new ObjectMapper();
+        String productDTOSJSON = objectMapper.writeValueAsString(productDTOS);
+        model.addAttribute("productDTOSJSON", productDTOSJSON);
+
         model.addAttribute("productDTOS", productDTOS);
         model.addAttribute("memberDTO", memberDTO);
 
@@ -138,7 +142,7 @@ public class ProductController {
     }
 
    @GetMapping("/product/order")
-    public String order(@RequestParam String uid, int prodNo, int count, String opNo, Model model){
+    public String order(@RequestParam String uid, int prodNo, int count, String opNo, Model model) throws JsonProcessingException {
 
 
        log.info("컨트롤러1"+uid);
@@ -154,6 +158,10 @@ public class ProductController {
        model.addAttribute("productDTOS", productDTOS);
        model.addAttribute("memberDTO", memberDTO);
 
+       ObjectMapper objectMapper = new ObjectMapper();
+       String productDTOSJSON = objectMapper.writeValueAsString(productDTOS);
+       model.addAttribute("productDTOSJSON", productDTOSJSON);
+
         return "/product/order";
     }
 
@@ -167,19 +175,15 @@ public class ProductController {
     @ResponseBody
     @PostMapping("/product/orderItem")
     public int orderItem(@RequestBody List<OrderItemDTO> orderItemDTOS,
-                                       @AuthenticationPrincipal Object principal) throws JsonProcessingException {
+                         int ordNo,
+                         @AuthenticationPrincipal Object principal) {
         Member member = ((MyUserDetails) principal).getMember();
         String uid = member.getUid();
         ObjectMapper objectMapper = new ObjectMapper();
 
-        for (OrderItemDTO orderItemDTO : orderItemDTOS) {
-            log.info("prodNo : " + orderItemDTO.getProdNo());
-            log.info("count : " + orderItemDTO.getCount());
-            log.info("cartNo : " + orderItemDTO.getOpNo());
-            //productService.saveOrderItem(orderItemDTOS, uid);
-        }
+        log.info("주문번호 : " + ordNo);
 
-        return 12;
+        return productService.saveOrderItem(orderItemDTOS, uid, ordNo);
     }
     // search (상품 검색) 페이지 매핑
     @GetMapping("/product/search")

@@ -6,6 +6,7 @@ import kr.co.lotteon.dto.product.*;
 import kr.co.lotteon.entity.product.*;
 import kr.co.lotteon.mapper.ProductMapper;
 import kr.co.lotteon.repository.product.OptionRepository;
+import kr.co.lotteon.repository.product.OrderItemRepository;
 import kr.co.lotteon.repository.product.OrderRepository;
 import kr.co.lotteon.repository.product.ProductRepository;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,7 @@ public class ProductService {
     private final ProductMapper productMapper;
     private final OrderRepository orderRepository;
     private final ModelMapper modelMapper;
+    private final OrderItemRepository orderItemRepository;
 
     private final SqlSession sqlSession;
 
@@ -274,17 +276,33 @@ public class ProductService {
     @Transactional
     public ResponseEntity<?> saveOrder (OrderDTO orderDTO){
 
+        // 적립될 포인트
+        int point = 0;
+
         // product_order에 넣기
         Order order = modelMapper.map(orderDTO, Order.class);
 
         Order saveOrder = orderRepository.save(order);
 
+        log.info("오더서비스 : " + saveOrder.getOrdNo());
         OrderDTO savedOrderDTO = modelMapper.map(saveOrder, OrderDTO.class);
 
-        // 포인트 감소는~ orderItem에서
-        int usePoint = orderDTO.getUsedPoint();
 
         return ResponseEntity.ok(savedOrderDTO);
+    }
+
+    @Transactional
+    public int saveOrderItem (List<OrderItemDTO> orderItemDTOS, String uid, int ordNo){
+
+        for (OrderItemDTO orderItemDTO : orderItemDTOS) {
+            // 주문 상품 저장
+            OrderItem orderItem = modelMapper.map(orderItemDTO, OrderItem.class);
+            orderItem.setUid(uid);
+            orderItem.setOrdNo(ordNo);
+            orderItemRepository.save(orderItem);
+
+        }
+        return ordNo;
     }
 
     // ========== 메인페이지 ==========
