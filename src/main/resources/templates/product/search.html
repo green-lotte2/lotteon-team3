@@ -6,19 +6,35 @@
     <script>
         window.onload = function (){
 
+            // 상품명, 상품설명 체크박스
+            const nameCheckbox = document.querySelector('input[name="searchType"][value="name"]');
+            const descriptCheckbox = document.querySelector('input[name="searchType"][value="descript"]');
             // 상품가격 체크박스
             const priceCheckbox = document.querySelector('input[name="searchType"][value="price"]');
             // 최소 가격 입력 필드
             const minPriceInput = document.querySelector('input[name="min"]');
             // 최대 가격 입력 필드
             const maxPriceInput = document.querySelector('input[name="max"]');
-            // 검색 버튼
-            const searchButton = document.querySelector('input[type="submit"]');
 
             // 초기에는 입력 필드 비활성화 및 검색 버튼 비활성화
             minPriceInput.disabled = true;
             maxPriceInput.disabled = true;
-            searchButton.disabled = true;
+
+            // 상품명 체크박스의 변화 감지
+            nameCheckbox.addEventListener('change', function () {
+                if (nameCheckbox.checked) {
+                    // 상품명 체크되면 상품설명 체크 해제
+                    descriptCheckbox.checked = false;
+                }
+            });
+
+            // 상품설명 체크박스의 변화 감지
+            descriptCheckbox.addEventListener('change', function () {
+                if (descriptCheckbox.checked) {
+                    // 상품설명 체크되면 상품명 체크 해제
+                    nameCheckbox.checked = false;
+                }
+            });
 
             // 상품가격 체크박스의 변화 감지
             priceCheckbox.addEventListener('change', function () {
@@ -27,28 +43,15 @@
                     minPriceInput.disabled = false;
                     maxPriceInput.disabled = false;
                 } else {
-                    // 체크되지 않은 경우 입력 필드 비활성화 및 검색 버튼 비활성화
+                    // 체크되지 않은 경우 입력 필드 비활성화
                     minPriceInput.disabled = true;
                     maxPriceInput.disabled = true;
-                    searchButton.disabled = true;
                 }
             });
-
-            // 가격 입력 필드의 입력 감지
-            minPriceInput.addEventListener('input', toggleSearchButton);
-            maxPriceInput.addEventListener('input', toggleSearchButton);
-
-            // 검색 버튼 활성화/비활성화 함수
-            function toggleSearchButton() {
-                // 최소 가격과 최대 가격 모두 입력되었을 때만 검색 버튼을 활성화
-                if (minPriceInput.value.trim() !== '' && maxPriceInput.value.trim() !== '') {
-                    searchButton.disabled = false;
-                } else {
-                    searchButton.disabled = true;
-                }
-            }
         }
     </script>
+
+
 
 </head>
 <body>
@@ -86,18 +89,30 @@
 
     <!-- 정렬 메뉴 -->
     <ul class="sort">
-        <li><a href="#">판매많은순</a></li>
-        <li><a href="#">낮은가격순</a></li>
-        <li><a href="#">높은가격순</a></li>
-        <li><a href="#">평점높은순</a></li>
-        <li><a href="#">후기많은순</a></li>
-        <li><a href="#">최근등록순</a></li>
+        <li>
+            <a th:if="${searchPageRequestDTO.searchType} == null" th:href="@{/product/search(searchKeyword=${searchPageRequestDTO.searchKeyword},sort='sold', how='DESC', pg=1 )}">판매많은순</a>
+
+            <a th:if="${searchPageRequestDTO.searchType == 'name' or searchPageRequestDTO.searchType == 'descript'}"
+               th:href="@{/product/search(searchKeyword=${searchPageRequestDTO.searchKeyword},searchType=${searchPageRequestDTO.searchType},sort='sold', how='DESC', pg=1 )}">
+                판매많은순
+            </a>
+
+            <a th:if="${searchPageRequestDTO.searchType == 'name,price' or searchPageRequestDTO.searchType == 'descript,price'}"
+               th:href="@{/product/search(searchKeyword=${searchPageRequestDTO.searchKeyword},searchType=${searchPageRequestDTO.searchType},min=${searchPageRequestDTO.min}, max=${searchPageRequestDTO.max}, sort='sold', how='DESC', pg=1 )}">
+                판매많은순
+            </a>
+        </li>
+        <li><a th:href="@{#}">낮은가격순</a></li>
+        <li><a th:href="@{#}">높은가격순</a></li>
+        <li><a th:href="@{#}">평점높은순</a></li>
+        <li><a th:href="@{#}">후기많은순</a></li>
+        <li><a th:href="@{#}">최근등록순</a></li>
     </ul>
 
     <!-- 검색목록 -->
     <table border="0">
         <tr th:each="product : ${searchPageResponseDTO.dtoList}">
-            <td><a href="#" class="thumb"><img th:src="${product.thumb1}" alt="상품이미지" width="120" height="120"/></a></td>
+            <td><a th:href="@{/product/view(prodNo=${product.prodNo},cate1=${product.cate1},cate2=${product.cate2},cate3=${product.cate3})}" class="thumb"><img th:src="@{'/prodImg/'+${product.thumb1}}" alt="상품이미지" width="120" height="120"/></a></td>
             <td>
                 <h3 class="name" th:text="${product.prodName}">상품명</h3>
                 <a href="#" class="desc" th:text="${product.descript}">상품 설명</a>
@@ -109,7 +124,10 @@
                         <del class="org-price" th:text="${product.price}"></del>
                         <span class="discount" th:text="${product.discount} + '%'"></span>
                     </li>
-                    <li><span class="free-delivery">무료배송</span></li>
+                    <li>
+                        <span th:if="${product.delivery == 0 }" class="free-delivery">무료배송</span>
+                        <span th:if="${product.delivery != 0 }" >배송비 : [[${product.delivery}]]</span>
+                    </li>
                 </ul>
             </td>
             <td>

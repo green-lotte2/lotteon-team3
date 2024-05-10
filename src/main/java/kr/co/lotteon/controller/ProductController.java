@@ -199,8 +199,6 @@ public class ProductController {
 
         // 상품가격 조회
         if(!(searchPageRequestDTO.getMin() ==0) || !(searchPageRequestDTO.getMax()==0)){
-            log.info("컨트롤러 금액 최소"+searchPageRequestDTO.getMin());
-            log.info("컨트롤러 금액 최대"+searchPageRequestDTO.getMax());
             SearchPageResponseDTO searchPageResponseDTO = productService.searchProductsPrice(searchPageRequestDTO, searchPageRequestDTO.getMin(), searchPageRequestDTO.getMax());
             model.addAttribute("searchPageResponseDTO", searchPageResponseDTO);
             log.info("가격검색 컨트롤러 : " + searchPageResponseDTO);
@@ -208,18 +206,18 @@ public class ProductController {
         // 상품명 조회
         if (searchKeyword != null && !searchKeyword.isEmpty() && "name".equals(searchType)) {
             // 검색어가 존재하는 경우 상품 검색 실행
-            SearchPageResponseDTO searchPageResponseDTO = productService.searchProducts(searchPageRequestDTO);
+            SearchPageResponseDTO searchPageResponseDTO = productService.searchProductsProdName(searchPageRequestDTO);
             model.addAttribute("searchPageResponseDTO", searchPageResponseDTO);
             log.info("가격없음 컨트롤러 : " + searchPageResponseDTO);
         }
         // 상품설명 조회
         if (searchKeyword != null && !searchKeyword.isEmpty() && "descript".equals(searchType)) {
             // 검색어가 존재하는 경우 상품 검색 실행
-            SearchPageResponseDTO searchPageResponseDTO = productService.searchProducts(searchPageRequestDTO);
+            SearchPageResponseDTO searchPageResponseDTO = productService.searchProductsDescript(searchPageRequestDTO);
             model.addAttribute("searchPageResponseDTO", searchPageResponseDTO);
             log.info("가격없음 컨트롤러 : " + searchPageResponseDTO);
         }
-        // 메인 검색(상품명, 상품설명, 회사명)
+        // 메인 검색
         if (searchKeyword != null && !searchKeyword.isEmpty() && searchType == null) {
             // 검색어가 존재하는 경우 상품 검색 실행
             SearchPageResponseDTO searchPageResponseDTO = productService.searchProducts(searchPageRequestDTO);

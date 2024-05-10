@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -109,7 +110,7 @@ public class ProductService {
                 .build();
     }
 
-    // 메인 검색(회사명, 상품명, 상품설명)
+    // 메인 검색
     public SearchPageResponseDTO searchProducts(SearchPageRequestDTO searchPageRequestDTO) {
         Page<Tuple> pageProduct = productRepository.searchProducts(searchPageRequestDTO, searchPageRequestDTO.getPageable());
 
@@ -119,10 +120,19 @@ public class ProductService {
                     ProductDTO productDTO = new ProductDTO();
                     productDTO.setProdNo(tuple.get(0, Integer.class)); // 상품 번호
                     productDTO.setProdName(tuple.get(1, String.class)); // 상품명
-                    productDTO.setDiscount(tuple.get(2, Integer.class)); // 상품할인율
-                    productDTO.setPrice(tuple.get(3, Integer.class)); // 상품가격
-                    productDTO.setSeller(tuple.get(4, String.class)); // 상품판매자
-                    // 나머지 필드도 마찬가지로 설정
+                    productDTO.setDescript(tuple.get(2, String.class)); // 상품설명
+                    productDTO.setDiscount(tuple.get(3, Integer.class)); // 상품할인율
+                    productDTO.setPrice(tuple.get(4, Integer.class)); // 상품가격
+                    productDTO.setSeller(tuple.get(5, String.class)); // 상품판매자
+                    productDTO.setDelivery(tuple.get(6, Integer.class)); // 배송
+                    productDTO.setThumb1(tuple.get(7, String.class)); // 썸네일1
+                    productDTO.setSold(tuple.get(8, Integer.class)); // 판매량
+                    productDTO.setScore(tuple.get(9, Integer.class)); // 평점
+                    productDTO.setReview(tuple.get(10, Integer.class)); // 후기
+                    productDTO.setRdate(tuple.get(11, LocalDateTime.class)); // 등록날짜
+                    productDTO.setCate1(tuple.get(12, Integer.class)); // cate1
+                    productDTO.setCate2(tuple.get(13, Integer.class)); // cate2
+                    productDTO.setCate3(tuple.get(14, Integer.class)); // cate3
 
                     return productDTO;
                 })
@@ -147,10 +157,19 @@ public class ProductService {
                     ProductDTO productDTO = new ProductDTO();
                     productDTO.setProdNo(tuple.get(0, Integer.class)); // 상품 번호
                     productDTO.setProdName(tuple.get(1, String.class)); // 상품명
-                    productDTO.setDiscount(tuple.get(2, Integer.class)); // 상품할인율
-                    productDTO.setPrice(tuple.get(3, Integer.class)); // 상품가격
-                    productDTO.setSeller(tuple.get(4, String.class)); // 상품판매자
-                    // 나머지 필드도 마찬가지로 설정
+                    productDTO.setDescript(tuple.get(2, String.class)); // 상품설명
+                    productDTO.setDiscount(tuple.get(3, Integer.class)); // 상품할인율
+                    productDTO.setPrice(tuple.get(4, Integer.class)); // 상품가격
+                    productDTO.setSeller(tuple.get(5, String.class)); // 상품판매자
+                    productDTO.setDelivery(tuple.get(6, Integer.class)); // 배송
+                    productDTO.setThumb1(tuple.get(7, String.class)); // 썸네일1
+                    productDTO.setSold(tuple.get(8, Integer.class)); // 판매량
+                    productDTO.setScore(tuple.get(9, Integer.class)); // 평점
+                    productDTO.setReview(tuple.get(10, Integer.class)); // 후기
+                    productDTO.setRdate(tuple.get(11, LocalDateTime.class)); // 등록날짜
+                    productDTO.setCate1(tuple.get(12, Integer.class)); // cate1
+                    productDTO.setCate2(tuple.get(13, Integer.class)); // cate2
+                    productDTO.setCate3(tuple.get(14, Integer.class)); // cate3
 
                     return productDTO;
                 })
@@ -175,10 +194,19 @@ public class ProductService {
                     ProductDTO productDTO = new ProductDTO();
                     productDTO.setProdNo(tuple.get(0, Integer.class)); // 상품 번호
                     productDTO.setProdName(tuple.get(1, String.class)); // 상품명
-                    productDTO.setDiscount(tuple.get(2, Integer.class)); // 상품할인율
-                    productDTO.setPrice(tuple.get(3, Integer.class)); // 상품가격
-                    productDTO.setSeller(tuple.get(4, String.class)); // 상품판매자
-                    // 나머지 필드도 마찬가지로 설정
+                    productDTO.setDescript(tuple.get(2, String.class)); // 상품설명
+                    productDTO.setDiscount(tuple.get(3, Integer.class)); // 상품할인율
+                    productDTO.setPrice(tuple.get(4, Integer.class)); // 상품가격
+                    productDTO.setSeller(tuple.get(5, String.class)); // 상품판매자
+                    productDTO.setDelivery(tuple.get(6, Integer.class)); // 배송
+                    productDTO.setThumb1(tuple.get(7, String.class)); // 썸네일1
+                    productDTO.setSold(tuple.get(8, Integer.class)); // 판매량
+                    productDTO.setScore(tuple.get(9, Integer.class)); // 평점
+                    productDTO.setReview(tuple.get(10, Integer.class)); // 후기
+                    productDTO.setRdate(tuple.get(11, LocalDateTime.class)); // 등록날짜
+                    productDTO.setCate1(tuple.get(12, Integer.class)); // cate1
+                    productDTO.setCate2(tuple.get(13, Integer.class)); // cate2
+                    productDTO.setCate3(tuple.get(14, Integer.class)); // cate3
 
                     return productDTO;
                 })
@@ -195,13 +223,8 @@ public class ProductService {
 
     // 타입 검색(상품 가격대)
     public SearchPageResponseDTO searchProductsPrice(SearchPageRequestDTO searchPageRequestDTO, int min, int max) {
-        log.info("서비스...1" + min);
-        log.info("서비스...1" + max);
-        log.info("서비스...1" + searchPageRequestDTO.getSearchType());
 
         Page<Tuple> pageProduct = productRepository.searchProductsPrice(searchPageRequestDTO, searchPageRequestDTO.getPageable(), min, max);
-
-        log.info("서비스...2"+pageProduct);
 
         List<ProductDTO> dtoList = pageProduct.getContent().stream()
                 .map(tuple -> {
@@ -209,26 +232,25 @@ public class ProductService {
                     ProductDTO productDTO = new ProductDTO();
                     productDTO.setProdNo(tuple.get(0, Integer.class)); // 상품 번호
                     productDTO.setProdName(tuple.get(1, String.class)); // 상품명
-                    productDTO.setDiscount(tuple.get(2, Integer.class)); // 상품할인율
-                    productDTO.setPrice(tuple.get(3, Integer.class)); // 상품가격
-                    productDTO.setSeller(tuple.get(4, String.class)); // 상품판매자
-                    // 나머지 필드도 마찬가지로 설정
+                    productDTO.setDescript(tuple.get(2, String.class)); // 상품설명
+                    productDTO.setDiscount(tuple.get(3, Integer.class)); // 상품할인율
+                    productDTO.setPrice(tuple.get(4, Integer.class)); // 상품가격
+                    productDTO.setSeller(tuple.get(5, String.class)); // 상품판매자
+                    productDTO.setDelivery(tuple.get(6, Integer.class)); // 배송
+                    productDTO.setThumb1(tuple.get(7, String.class)); // 썸네일1
+                    productDTO.setSold(tuple.get(8, Integer.class)); // 판매량
+                    productDTO.setScore(tuple.get(9, Integer.class)); // 평점
+                    productDTO.setReview(tuple.get(10, Integer.class)); // 후기
+                    productDTO.setRdate(tuple.get(11, LocalDateTime.class)); // 등록날짜
+                    productDTO.setCate1(tuple.get(12, Integer.class)); // cate1
+                    productDTO.setCate2(tuple.get(13, Integer.class)); // cate2
+                    productDTO.setCate3(tuple.get(14, Integer.class)); // cate3
 
-                    log.info("서비스...3"+productDTO);
                     return productDTO;
                 })
                 .collect(Collectors.toList());
 
         int total = (int) pageProduct.getTotalElements();
-
-        log.info("서비스...4"+total);
-
-        SearchPageResponseDTO resultt = SearchPageResponseDTO.builder()
-                .searchPageRequestDTO(searchPageRequestDTO)
-                .dtoList(dtoList)
-                .total(total)
-                .build();
-        log.info("서비스...5"+resultt);
 
         return SearchPageResponseDTO.builder()
                 .searchPageRequestDTO(searchPageRequestDTO)

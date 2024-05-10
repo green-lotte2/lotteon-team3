@@ -43,9 +43,9 @@
         </div>
         <div class="logo">
             <div>
-                <a th:href="@{/index}"><img th:src="@{/images/header_logo.png}" alt="로고"/></a>
-                <form th:action="@{#}">
-                    <input type="text" name="search"/>
+                <a th:href="@{/index}"><img th:src="@{/images/header_logo.png}" alt="로고" /></a>
+                <form th:action="@{/product/search}" method="get">
+                    <input type="text" name="searchKeyword" placeholder="검색"/>
                     <button><i class="fa fa-search"></i></button>
                 </form>
             </div>
