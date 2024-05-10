@@ -57,4 +57,5 @@ public class ProductDTO {
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime rdate;
+
 }

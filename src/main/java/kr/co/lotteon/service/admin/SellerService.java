@@ -431,6 +431,9 @@ public class SellerService {
                 case "complete":
                     adminPageRequestDTO.setKeyword("처리완료");
                     break;
+                case "done":
+                    adminPageRequestDTO.setKeyword("구매확정");
+                    break;
             }
         }
         // 현재 로그인 중인 사용자 정보 불러오기

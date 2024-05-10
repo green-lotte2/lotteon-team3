@@ -125,6 +125,22 @@ thumb1 : 장바구니, 상품 목록에 출력<br>
 thumb2 : index 페이지 상품 목록에 출력<br>
 thumb3 : 상품 보기 - 상품 썸네일에 출력<br>
 detail    : 상품 보기 - 상품 설명에 출력<br><br>
+
+[product- status] <br>
+새상품 <br>
+품절 <br>
+삭제된 상품 <br>
+
+[orderItem - ordStatus]<br>
+배송준비 <br>
+배송중 <br>
+배송완료 <br>
+주문취소 <br>
+교환요청 <br>
+환불요청 <br>
+처리완료 <br>
+구매완료 <br>
+
 [cs_board]<br>
 group   : 공지사항, 자주묻는 질문 등 최상위 카테고리<br>
 cate     : 공지사항 - 고객서비스, 안전거래 등 하위 카테고리 FK<br>

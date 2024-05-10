@@ -20,7 +20,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -285,9 +287,21 @@ public class ProductController {
         log.info("선택한 상품의 리뷰들 "+productReviewPageResponseDTO);
         model.addAttribute("productReviewPageResponseDTO",productReviewPageResponseDTO);
 
-        // 찜 여부 가져오기
-        int wish = wishService.existsWish(productDTO.getProdNo());
-        model.addAttribute("wish" ,wish);
+
+        // 시큐리티 컨텍스트에서 인증된 사용자 정보 가져오기
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        // 인증된 사용자가 있는지 확인
+        if (authentication != null && authentication.isAuthenticated() && !"anonymousUser".equals(authentication.getPrincipal())) {
+            log.info("!!! gggg ");
+            // 인증된 사용자가 있으면 찜 여부 가져오기
+            int wish = wishService.existsWish(productDTO.getProdNo());
+            model.addAttribute("wish", wish);
+        } else {
+            log.info("로그인해야댄 ");
+            model.addAttribute("wish", 0);
+        }
+
         return "/product/view";
     }
 }

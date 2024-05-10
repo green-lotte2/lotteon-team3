@@ -32,7 +32,7 @@
                     <a sec:authorize="hasRole('ROLE_5')" th:href="@{/seller}">판매자</a>
                     <a th:href="@{/member/logout}">로그아웃</a>
                     <a th:href="@{/my/home(uid=${#authentication.principal.member.uid})}">마이페이지</a>
-                    <a th:href="@{/product/cart}">
+                    <a th:href="@{/product/cart(uid=${#authentication.principal.member.uid})}">
                         <i class="fa fa-shopping-cart" aria-hidden="true"></i>&nbsp;장바구니
                     </a>
                     <a th:href="@{/my/wish}">
@@ -53,8 +53,26 @@
     </header>
     <nav class="nav">
         <div>
-            <a th:href="@{/my/home}"><img th:src="@{/my/images/my_logo.jpg}" alt="나의쇼핑정보"></a>
+            <a th:href="@{/my/home(uid=${#authentication.principal.member.uid})}"><img th:src="@{/my/images/my_logo.jpg}" alt="나의쇼핑정보"></a>
             <ol>
+<!--                등급 구간 및 등급별 혜택 안내페이지로 이동하도록 변경 예정-->
+                <li>
+                    <a th:href="@{/my/infoAccessCheck(uid=${#authentication.principal.member.uid})}">나의등급
+                    <span th:if="${#authentication.principal.member.level}==1" class="level">
+                        <img class="levelImg" th:src="@{/my/images/ACE.png}" width="30px" height="30px"><span>[[${#authentication.principal.member.level}]]</span>
+                    </span>
+                    <span th:if="${#authentication.principal.member.level}==2" class="level">
+                        <img class="levelImg" th:src="@{/my/images/GOLD.png}" width="30px" height="30px"><span>[[${#authentication.principal.member.level}]]</span>
+                    </span>
+                    <span th:if="${#authentication.principal.member.level}==3" class="level">
+                        <img class="levelImg" th:src="@{/my/images/VIP.png}" width="30px" height="30px"><span>[[${#authentication.principal.member.level}]]</span>
+                    </span>
+                    <span th:if="${#authentication.principal.member.level}==4" class="level">
+                        <img class="levelImg" th:src="@{/my/images/MVG.png}" width="30px" height="30px"><span>[[${#authentication.principal.member.level}]]</span>
+                    </span>
+                    </a>
+                </li>
+
                 <li><a th:href="@{/my/order(uid=${#authentication.principal.member.uid})}">주문·배송<span class="delivery" id="orderCount"></span></a></li>
                 <li><a th:href="@{/my/coupon(uid=${#authentication.principal.member.uid})}">할인쿠폰<span class="coupon" id="couponCount"></span></a></li>
                 <li><a th:href="@{/my/point(uid=${#authentication.principal.member.uid})}">포인트<span class="point" id="myPoint"></span></a></li>

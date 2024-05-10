@@ -7,44 +7,99 @@
 <section class="cart" layout:fragment="content">
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // 모든 아코디언 버튼 요소 가져오기
-            var accordionButtons = document.querySelectorAll('.accordion-button');
+        window.onload = function () {
+            // 숫자를 3자리마다 콤마를 추가하여 문자열로 반환하는 함수
+            function numberWithCommas(x) {
+                return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            }
 
-            document.querySelectorAll('.number')
-            // 각 아코디언 버튼에 대해 이벤트 리스너 추가
-            accordionButtons.forEach(function (button) {
-                button.addEventListener('click', function () {
-                    // 해당 버튼의 data-bs-target 값을 사용하여 아코디언 컨텐츠 요소 가져오기
-                    var targetId = button.getAttribute('data-bs-target');
-                    var targetContent = document.getElementById(targetId);
-
-                    // 현재 아코디언 상태 확인
-                    var isExpanded = button.getAttribute('aria-expanded') === 'true';
-
-                    // 아코디언 상태 변경
-                    if (isExpanded) {
-                        // 아코디언 닫기
-                        button.setAttribute('aria-expanded', 'false');
-                        targetContent.classList.remove('show');
-                    } else {
-                        // 아코디언 열기
-                        button.setAttribute('aria-expanded', 'true');
-                        targetContent.classList.add('show');
-                    }
-                });
+            document.querySelectorAll('.price').forEach(priceTd => {
+                const price = priceTd.innerText;
+                const commasPrice = numberWithCommas(price);
+                priceTd.innerText = commasPrice;
             });
-        });
+        }
+        let checkedTurn = 0;
+        // 전체 선택 클릭
+        function totalCheck() {
+            const wishCheckBox = document.querySelectorAll('.wishCheck');
+            // 체크한 경우
+            if (checkedTurn === 0) {
+                wishCheckBox.forEach(function (checkbox) {
+                    checkbox.checked = true;
+                });
+                checkedTurn = 1;
+                // 체크 해제한 경우
+            } else {
+                wishCheckBox.forEach(function (checkbox) {
+                    checkbox.checked = false;
+                });
+                checkedTurn = 0;
+            }
+        }
+        // 선택 삭제
+        function deleteChecked(){
+            if (confirm('선택한 상품을 삭제하시겠습니까?')) {
+                const wishCheckBox = document.querySelectorAll('.wishCheck');
+                // 삭제할 찜의 번호를 저장하는 배열
+                let wishNoArray = [];
 
+                // forEach로 순회하며 checked된 찜의 번호 찾기
+                wishCheckBox.forEach(check => {
+
+                    // check된 번호 배열에 저장
+                    if (check.checked) {
+                        wishNoArray.push(check.value);
+                        console.log("!!! : "+ wishNoArray);
+                    }
+                })
+                fetch("/lotteon/wish/delete", {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(wishNoArray)
+                })
+                    .then(response => {
+                        // 새로고침
+                        if (response.ok == true) {
+                            alert('삭제 완료되었습니다.');
+                            setTimeout(function() {
+                                location.reload();
+                            }, 2000);
+                        }
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    });
+            }
+        }
+        // 개별 삭제
+        function deleteWish(button){
+            const wishNo = button.dataset.wish;
+            if (confirm('상품을 삭제하시겠습니까?')) {
+                fetch(`/lotteon/wish/delete/${wishNo}`)
+                    .then(response => {
+                        // 새로고침
+                        if (response.ok == true) {
+                            alert('삭제 완료되었습니다.');
+                            setTimeout(function() {
+                                location.reload();
+                            }, 0);
+                        }
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    });
+            }
+        }
     </script>
     <form class="cartForm" action="#">
         <div class="itemController">
             <div class="checkboxController">
-                <input id="checkboxController" type="checkbox" class="selectAll">
+                <input id="checkboxController" type="checkbox" class="selectAll" onclick="totalCheck()">
                 <label for="checkboxController" class="cur_hand">전체선택</label>
             </div>
             <div class="deleteBtnGroup">
-                <button type="button" class="deleteCartItems">
+                <button type="button" class="deleteCartItems" onclick="deleteChecked()">
                     <span>선택삭제</span>
                 </button>
             </div>
@@ -52,115 +107,46 @@
 
         <div class="tabContentArea"><h3 class="blind">전체</h3>
             <ul class="wishUl">
-                <li class="wishLi">
+                <li class="wishLi" th:each="wish : ${pageResponseDTO.dtoList}">
                     <div class="infoProduct">
-                        <input
-                                type="checkbox"
-                                name="productPick"
-                                title="[메이블루] 라이브 방송 단독 혜택 "
-                                value="productPick-0">
+                        <input class="wishCheck" type="checkbox" name="wishNo" th:value="${wish.wishNo}">
                         <div data-pd-no="LO2242120513"
                              data-spd-nm="[메이블루] 라이브 방송 단독 혜택" data-price="33600" data-slot="1/2"
                              class="productItem large">
                             <div class="productThumb">
-                                <a event_name="select_content"
-                                   data-cmpnt-typ="wil_itemlist"
-                                   data-cmpnt-name="select_img"
-                                   style="cursor: pointer;">
-                                    <img src="https://contents.lotteon.com/itemimage/20240508140153/LO/22/42/12/05/13/bndl_img/LO2242120513_1.jpg"
-                                         alt="[메이블루] 라이브 방송 단독 혜택 " class="loaded">
+                                <a th:href="@{/product/view(prodNo=${wish.productDTO.prodNo},cate1=${wish.productDTO.cate1},cate2=${wish.productDTO.cate2})}" style="cursor: pointer;">
+                                    <img th:src="@{'/prodImg/'+ ${wish.productDTO.thumb1}}" alt="[메이블루] 라이브 방송 단독 혜택 " class="loaded">
                                 </a>
                             </div>
                             <div class="productData">
-                                <a event_name="select_content"
-                                   data-cmpnt-typ="wil_itemlist"
-                                   data-cmpnt-name="select_txt"
-                                   style="cursor: pointer;">
-                                    <p class="productTitle">[메이블루] 라이브 방송 단독 혜택 </p>
+                                <a th:href="@{/product/view(prodNo=${wish.productDTO.prodNo},cate1=${wish.productDTO.cate1},cate2=${wish.productDTO.cate2})}" style="cursor: pointer;">
+                                    <p class="productTitle">[[${wish.productDTO.prodName}]]</p>
                                 </a>
                                 <p class="productPrice">
                                     <span class="productSale">
-                                        <span class="blind">할인률</span>20%
+                                        <span class="blind">할인률</span> [[${wish.productDTO.discount}]] %
                                     </span>
                                     <span class="productPrevPrice">
-                                        <span class="del"><span class="blind">원가</span> 42,000 </span> 원
+                                        <span class="del price"><span class="blind"></span> [[${wish.productDTO.price}]] 원</span>
                                     </span>
                                     <span class="productCurrentPrice">
-                                        <strong>
-                                            <span class="blind">최종가</span>33,600</strong>원~
+                                        <strong class="price">
+                                            <span class="blind price"></span> [[${wish.disPrice}]]</strong>원~
                                     </span>
                                 </p>
                             </div>
                         </div>
                     </div>
                     <div class="infoAction order-2">
-                        <button data-v-472abd5c="" type="button" title="[메이블루] 라이브 방송 단독 혜택  장바구니 담기"
-                                class="cartUnit ico_cart_border" event_name="select_content"
-                                data-cmpnt-typ="wil_itemlist" data-cmpnt-name="cart_select">
-                            <span data-v-472abd5c=""
-                                                                                                  class="icon"
-                                                                                                  style="background-image: url(&quot;//static.lotteon.com/p/mylotte/assets/img/ico_cart_border.svg&quot;);">
-                                <span
-                                data-v-472abd5c="" class="blind">장바구니</span></span></button>
+                        <button type="button" title="[메이블루] 라이브 방송 단독 혜택 "
+                                class="deleteItem" onclick="deleteWish(this)" th:data-wish="${wish.wishNo}"><span class="blind">삭제하기</span></button>
                     </div>
-                    <button type="button" title="[메이블루] 라이브 방송 단독 혜택 "
-                            event_name="remove_from_wishlist" data-cmpnt-typ="wil_itemlist"
-                            data-cmpnt-name="remove_from_wishlist" data-cmpnt-stts="[메이블루] 라이브 방송 단독 혜택 "
-                            class="deleteItem"><span class="blind">삭제하기</span></button>
-                </li>
-                <li class="col-2 withProduct hasDelete">
-                    <div class="infoProduct order-1 hasCheckbox"><input
-                            type="checkbox"
-                            name="productPick"
-                            title="<strong>베베쥬</strong> [5/9단하루특가][베베쥬] 시원하고 예쁜 몸페팬츠 17종 균일가 모음 01.샤인파인몸페팬츠_옐로우 / 110"
-                            value="productPick-1">
-                        <div data-pd-no="LO2285813038"
-                             data-spd-nm="[5/9단하루특가][베베쥬] 시원하고 예쁜 몸페팬츠 17종 균일가 모음" data-price="5990" data-brd-nm="베베쥬"
-                             data-brd-no="P30406" data-slot="2/2" class="productItem large">
-                            <div class="productThumb"><a
-                                    event_name="select_content"
-                                    data-cmpnt-typ="wil_itemlist"
-                                    data-cmpnt-name="select_img"
-                                    style="cursor: pointer;"><img
-
-                                    src="https://contents.lotteon.com/itemimage/20240509105549/LO/22/85/81/30/38/_2/28/58/13/04/0/LO2285813038_2285813040_1.jpg"
-                                    alt="베베쥬 [5/9단하루특가][베베쥬] 시원하고 예쁜 몸페팬츠 17종 균일가 모음 01.샤인파인몸페팬츠_옐로우 / 110"
-                                    class="loaded"></a></div>
-                            <div class="productData"><a
-                                    event_name="select_content"
-                                    data-cmpnt-typ="wil_itemlist"
-                                    data-cmpnt-name="select_txt"
-                                    style="cursor: pointer;"><p
-                                    class="productTitle"><strong>베베쥬</strong> [5/9단하루특가][베베쥬] 시원하고 예쁜
-                                몸페팬츠 17종 균일가 모음 01.샤인파인몸페팬츠_옐로우 / 110</p></a>
-                                <p class="productPrice"><span class="productSale"><span
-                                        class="blind">할인률</span>
-        18%
-      </span><span class="productPrevPrice"><span class="del"><span
-                                        class="blind">원가</span>
-          7,380
-        </span>
-        원
-      </span><span class="productCurrentPrice"><strong><span
-                                        class="blind">최종가</span>5,990</strong>원
-        </span></p></div>
-                        </div>
-                    </div>
-                    <div class="infoAction order-2">
-                        <button data-v-472abd5c="" type="button"
-                                title="베베쥬 [5/9단하루특가][베베쥬] 시원하고 예쁜 몸페팬츠 17종 균일가 모음 01.샤인파인몸페팬츠_옐로우 / 110 장바구니 담기"
-                                class="cartUnit ico_cart_border" event_name="select_content"
-                                data-cmpnt-typ="wil_itemlist" data-cmpnt-name="cart_select"><span data-v-472abd5c=""
-                                                                                                  class="icon"
-                                                                                                  style="background-image: url(&quot;//static.lotteon.com/p/mylotte/assets/img/ico_cart_border.svg&quot;);"><span
-                                data-v-472abd5c="" class="blind">장바구니</span></span></button>
-                    </div>
-                    <button type="button"
-                            title="베베쥬 [5/9단하루특가][베베쥬] 시원하고 예쁜 몸페팬츠 17종 균일가 모음 01.샤인파인몸페팬츠_옐로우 / 110"
-                            event_name="remove_from_wishlist" data-cmpnt-typ="wil_itemlist"
-                            data-cmpnt-name="remove_from_wishlist"
-                            data-cmpnt-stts="<strong>베베쥬</strong> [5/9단하루특가][베베쥬] 시원하고 예쁜 몸페팬츠 17종 균일가 모음 01.샤인파인몸페팬츠_옐로우 / 110"
-                            class="deleteItem"><span class="blind">삭제하기</span></button>
+                    <button type="button" title="[메이블루] 라이브 방송 단독 혜택  장바구니 담기"
+                            class="cartUnit ico_cart_border" >
+                            <span class="icon" >
+                                <span class="blind">장바구니</span>
+                            </span>
+                    </button>
                 </li>
             </ul>
         </div>
