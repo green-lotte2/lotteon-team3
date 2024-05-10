@@ -34,7 +34,7 @@ public class AdminCompanyService {
     private final ArticleRepository articleRepository;
     private final RecruitRepository recruitRepository;
 
-    private ModelMapper modelMapper;
+    private final ModelMapper modelMapper;
 
     @Value("${img.upload.path}")
     private String imgUploadPath;
