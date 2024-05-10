@@ -128,7 +128,7 @@
     -webkit-box-pack: justify;
     -ms-flex-pack: justify;
     justify-content: space-between;
-    width: 70%;
+    width: 100%;
     padding: 0 0 16px;
 }
 
@@ -886,6 +886,9 @@
     line-height: 21px;
     display: flex;
 }
+.productPrice .del {
+    text-decoration: line-through;
+}
 .productSale {
     -webkit-box-ordinal-group: 2;
     order: 1;
@@ -948,6 +951,7 @@
     border: none;
     will-change: transform;
     cursor: pointer;
+    background-color: #ffffff;
 }
 .cartUnit > .icon {
     position: absolute;
@@ -955,11 +959,13 @@
     left: 0;
     width: 100%;
     height: 100%;
+    background-image: url('../images/shopping-cart.png');
     background-position: 50% 50%;
     background-repeat: no-repeat;
-    background-size: 100%;
+    background-size: 95%;
 }
 .deleteItem {
+    float: right;
     margin-left: 40px;
     width: 29px;
     min-width: 29px;
@@ -968,6 +974,7 @@
     background-repeat: no-repeat;
     background-position: 50%;
     background-size: 100% 100%;
+    background-color: #ffffff;
     background-image: url(//static.lotteon.com/p/mylotte/assets/img/icon_delete-item.svg);
 }
 .withProduct {

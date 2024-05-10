@@ -130,6 +130,9 @@ public class AdminOrderService {
                 case "complete":
                     adminPageRequestDTO.setKeyword("처리완료");
                     break;
+                case "done":
+                    adminPageRequestDTO.setKeyword("구매확정");
+                    break;
             }
         }
 
