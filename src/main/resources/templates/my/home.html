@@ -3,7 +3,6 @@
       layout:decorate="~{/layout/myLayout}">
 <main id="myLayout" layout:fragment="content">
     <script th:src="@{/js/myInfo.js}"></script>
-
     <script>
         window.onload = function (){
             // JavaScript를 사용하여 현재 날짜를 가져옴
@@ -51,13 +50,18 @@
 
                 point.querySelectorAll('#state').forEach(function (pointState){
 
-                    if(diffDays>=0){
-                        pointState.innerHTML='';
-                        pointState.innerText='적립';
-                    }else if(diffDays<0){
+                    if(diffDays>1||diffDays===0){
                         pointState.innerHTML='';
                         pointState.innerText='소멸';
                         pointState.style.color = '#999'
+
+                    }else if(diffDays<0){
+                        pointState.innerHTML='';
+                        pointState.innerText='적립';
+                    }else if(diffDays===1){
+                        pointState.innerHTML='';
+                        pointState.innerText='소멸예정';
+                        pointState.style.color = '#ef2a23'
                     }
                 })
             })

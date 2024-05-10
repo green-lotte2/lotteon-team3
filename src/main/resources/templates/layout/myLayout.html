@@ -53,7 +53,7 @@
     </header>
     <nav class="nav">
         <div>
-            <a th:href="@{/my/home}"><img th:src="@{/my/images/my_logo.jpg}" alt="나의쇼핑정보"></a>
+            <a th:href="@{/my/home(uid=${#authentication.principal.member.uid})}"><img th:src="@{/my/images/my_logo.jpg}" alt="나의쇼핑정보"></a>
             <ol>
                 <li><a th:href="@{/my/order(uid=${#authentication.principal.member.uid})}">주문·배송<span class="delivery" id="orderCount"></span></a></li>
                 <li><a th:href="@{/my/coupon(uid=${#authentication.principal.member.uid})}">할인쿠폰<span class="coupon" id="couponCount"></span></a></li>
