@@ -451,6 +451,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
 
         // 정렬 기준에 따라 쿼리 정렬 방식 변경
         OrderSpecifier<?> orderSpecifier;
+
         if (searchPageRequestDTO.getSort().equals("sold")) {
             orderSpecifier = new OrderSpecifier<>(order, qProduct.sold);
         } else if (searchPageRequestDTO.getSort().equals("price")) {
