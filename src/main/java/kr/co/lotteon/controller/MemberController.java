@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import kr.co.lotteon.dto.admin.BannerDTO;
+import kr.co.lotteon.dto.member.CouponDTO;
 import kr.co.lotteon.dto.member.MemberDTO;
 import kr.co.lotteon.entity.member.Terms;
 import kr.co.lotteon.service.admin.BannerService;
@@ -165,6 +166,10 @@ public class MemberController {
 
 
         log.info("PASSWORD "+memberDTO.getPass());
+
+        // 신규 회원시 5천원 할인 쿠폰
+
+
 
         memberDTO.setLevel(1); // 일반회원시 level 1
         memberDTO.setRegip(request.getRemoteAddr());

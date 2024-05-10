@@ -29,7 +29,7 @@ public class QCoupon extends EntityPathBase<Coupon> {
 
     public final NumberPath<Integer> discountPercent = createNumber("discountPercent", Integer.class);
 
-    public final StringPath discountType = createString("discountType");
+    public final NumberPath<Integer> discountType = createNumber("discountType", Integer.class);
 
     public final DateTimePath<java.time.LocalDateTime> expireDate = createDateTime("expireDate", java.time.LocalDateTime.class);
 

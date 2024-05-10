@@ -219,6 +219,7 @@ footer p > strong {
 }
 
 .nav  img {margin-top: 22px;}
+
 .nav  > div > ol {
     float: right;
     width: 400px;
@@ -239,10 +240,10 @@ footer p > strong {
 
 .nav  > div > ol > li:first-child {border-left: none;}
 .nav  > div > ol > li:last-child {border-right: none;}
-.nav  > div > ol > li:nth-child(1) {background-image: url('../my/images/ico_delivery.png');}
-.nav  > div > ol > li:nth-child(2) {background-image: url('../my/images/ico_point.jpg');}
-.nav  > div > ol > li:nth-child(3) {background-image: url('../my/images/ico_coupon.jpg');}
-.nav  > div > ol > li:nth-child(4) {background-image: url('../my/images/ico_qna.png');}
+.nav  > div > ol > li:nth-child(2) {background-image: url('../my/images/ico_delivery.png');}
+.nav  > div > ol > li:nth-child(3) {background-image: url('../my/images/ico_point.jpg');}
+.nav  > div > ol > li:nth-child(4) {background-image: url('../my/images/ico_coupon.jpg');}
+.nav  > div > ol > li:nth-child(5) {background-image: url('../my/images/ico_qna.png');}
 .nav  > div > ol > li > a {
     display: block;
     width: 100%;
@@ -257,6 +258,20 @@ footer p > strong {
     color: #444;
 }
 
+/*나의 등급 아이콘 크기 설정*/
+.nav  > div > ol > li > a > .level {
+    position: relative;
+    margin-top: -10px;
+    top: 0;
+    display: block;
+    color: #444;
+}
+.nav  > div > ol > li > a > .level > span {
+    position: relative;
+    top: 5px;
+    display: block;
+    color: #444;
+}
 #my > div {
     position: relative;
     width: 980px;

@@ -14,7 +14,7 @@ public class CouponDTO {
     private int couponSeq;
     private String uid;
     private String couponName;
-    private String discountType;
+    private int discountType;
     private int discountLimit;
     private int discountMoney;
     private int discountPercent;
