@@ -6,10 +6,13 @@ import kr.co.lotteon.dto.product.*;
 import kr.co.lotteon.service.admin.BannerService;
 import kr.co.lotteon.service.product.CateService;
 import kr.co.lotteon.service.product.ProductService;
+import kr.co.lotteon.service.product.WishService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,6 +25,7 @@ public class MainController {
     private final CateService cateService;
     private final ProductService productService;
     private final BannerService bannerService;
+    private final WishService wishService;
     
     // 메인페이지 매핑
     @GetMapping(value = {"/","/index"})

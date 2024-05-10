@@ -27,7 +27,7 @@ public class PageRequestDTO{
     private int cate3;
 
     @Builder.Default
-    private String how = "DESC";
+    private String how = "ASC";
 
     @Builder.Default
     private String sort = "sold";
@@ -37,8 +37,8 @@ public class PageRequestDTO{
 
     public Pageable getPageable() {
         if (this.how.equals("ASC")) {
-            return PageRequest.of(this.pg - 1, this.size, Sort.by(this.sort).descending());
-        } else {
+            return PageRequest.of(this.pg - 1, this.size, Sort.by(this.sort).ascending());
+        } else  {
             return PageRequest.of(this.pg - 1, this.size, Sort.by(this.sort).descending());
         }
     }

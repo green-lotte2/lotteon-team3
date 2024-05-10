@@ -12,13 +12,12 @@ import kr.co.lotteon.dto.member.point.PointPageResponseDTO;
 import kr.co.lotteon.dto.product.*;
 import kr.co.lotteon.entity.cs.BoardEntity;
 import kr.co.lotteon.entity.member.Coupon;
-import kr.co.lotteon.entity.member.Member;
-import kr.co.lotteon.entity.product.Product;
 import kr.co.lotteon.entity.member.Point;
 
+import kr.co.lotteon.entity.product.Order;
+import kr.co.lotteon.entity.product.OrderItem;
 import kr.co.lotteon.entity.product.Review;
 import kr.co.lotteon.repository.cs.BoardRepository;
-import kr.co.lotteon.repository.member.MemberRepository;
 import kr.co.lotteon.repository.my.CouponRepository;
 import kr.co.lotteon.repository.my.PointRepository;
 import kr.co.lotteon.repository.product.OrderItemRepository;
@@ -29,11 +28,10 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -195,11 +193,83 @@ public class MyService {
 
     }
 
+    // 포인트 적립날짜 최신순 5개 출력
     public List<PointDTO> selectByUidAndDate(String uid){
-        List<Point> points = pointRepository.selectByUidAndDate(uid);
+        List<Point> points = pointRepository.selectPointByUidAndDate(uid);
         log.info("포인트 : "+points);
         return points.stream().map(point -> modelMapper.map(point,PointDTO.class))
                 .collect(Collectors.toList());
+    }
+    
+    // 문의내역 최신순 5개 출력
+    public List<BoardDTO>selectReviewsByUidAndRdate(String uid){
+        List<Tuple> boards = boardRepository.selectReviewsByUidAndRdate(uid);
+        List<BoardDTO> boardDTOS=new ArrayList<>();
+        boards.forEach(tuple -> {
+            BoardEntity board=tuple.get(0,BoardEntity.class);
+            String cateName=tuple.get(1,String.class);
+
+            BoardDTO boardDTO=modelMapper.map(board,BoardDTO.class);
+            boardDTO.setCateName(cateName);
+            boardDTOS.add(boardDTO);
+        });
+        return boardDTOS;
+    }
+    
+    // 리뷰내역 최신순 5개 출력
+    public List<ReviewDTO>selectReviewByRdate(String uid){
+        List<Tuple> reviews=productRepository.selectReviewByRdate(uid);
+        List<ReviewDTO> reviewDTOS=new ArrayList<>();
+        reviews.forEach(tuple -> {
+            Review review=tuple.get(0,Review.class);
+            String prodName=tuple.get(1,String.class);
+            int cate1=tuple.get(2,Integer.class);
+            int cate2=tuple.get(3,Integer.class);
+
+            ReviewDTO reviewDTO=modelMapper.map(review,ReviewDTO.class);
+            reviewDTO.setProdName(prodName);
+            reviewDTO.setCate1(cate1);
+            reviewDTO.setCate2(cate2);
+            reviewDTOS.add(reviewDTO);
+
+        });
+        return reviewDTOS;
+    }
+
+    // 최근 주문내역 최신순 5개 출력
+    public List<OrderItemDTO>selectOrdersByUid(String uid){
+        List<Tuple> orderItems = orderItemRepository.selectOrdersByUid(uid);
+        List<OrderItemDTO> orderItemDTOS=new ArrayList<>();
+        orderItems.forEach(tuple -> {
+            OrderItem orderItem=tuple.get(0,OrderItem.class);
+            String company=tuple.get(1,String.class);
+            String prodName=tuple.get(2,String.class);
+            int price=tuple.get(3,Integer.class); // 상품 개당 가격
+            int discount=tuple.get(4,Integer.class);
+            String thumb3=tuple.get(5,String.class);
+
+            OrderItemDTO orderItemDTO=modelMapper.map(orderItem,OrderItemDTO.class);
+            orderItemDTO.setCompany(company);
+            orderItemDTO.setProdName(prodName);
+            orderItemDTO.setPrice(price);
+            orderItemDTO.setDiscount(discount);
+            orderItemDTO.setThumb3(thumb3);
+
+            // 상품 개별 총 가격(할인적용가) = (count * price) - discount
+            int count=orderItemDTO.getCount();
+            log.info("상품 개수 : "+count);
+            int totalPricePerProduct=(count*price)-discount;
+            log.info("상품 개별 가격(할인 적용 전) : "+count*price);
+            log.info("상품 개별 총 가격(할인 적용 후) : "+totalPricePerProduct);
+
+            orderItemDTO.setTotalPricePerProduct(totalPricePerProduct);
+
+            orderItemDTOS.add(orderItemDTO);
+
+        });
+
+
+        return orderItemDTOS;
     }
 
 

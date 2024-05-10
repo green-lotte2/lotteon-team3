@@ -5,12 +5,15 @@ import jakarta.mail.Message;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.servlet.http.HttpSession;
+import kr.co.lotteon.dto.member.CouponDTO;
 import kr.co.lotteon.dto.member.MemberDTO;
+import kr.co.lotteon.entity.member.Coupon;
 import kr.co.lotteon.entity.member.Member;
 import kr.co.lotteon.entity.member.Terms;
 import kr.co.lotteon.mapper.MemberMapper;
 import kr.co.lotteon.repository.member.MemberRepository;
 import kr.co.lotteon.repository.member.TermsRepository;
+import kr.co.lotteon.repository.my.CouponRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -34,6 +37,7 @@ public class MemberService {
     private final MemberMapper memberMapper;
     private final JavaMailSender javaMailSender;
     private final TermsRepository termsRepository;
+    private final CouponRepository couponRepository;
 
     // 회원 가입 - DB 입력
     public void save(MemberDTO memberDTO){
@@ -42,6 +46,7 @@ public class MemberService {
         Member member = modelMapper.map(memberDTO, Member.class);
         memberRepository.save(member); 
     }
+
 
     public int selectCountMember(String type, String value) {
         return memberMapper.selectCountMember(type, value);

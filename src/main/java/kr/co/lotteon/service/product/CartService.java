@@ -69,6 +69,9 @@ public class CartService {
     // 장바구니 조회하기
     public List<CartInfoDTO> selectCartProduct(String uid){
         List<CartInfoDTO> result = cartRepository.selectCartProduct(uid);
+
+        //String opNos = result.getClass(); for문 돌려서 opNO 뽄아서 option List 넣기
+
         log.info("CartService {}",result);
         return result;
     }

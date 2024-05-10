@@ -120,6 +120,7 @@
                                                 <option value="exchange" >교환요청</option>
                                                 <option value="refund">환불요청</option>
                                                 <option value="complete">처리완료</option>
+                                                <option value="done">구매확정</option>
                                                 </select>`;
                             console.log("noInputTag : " + noInputTag);
                             // 태그 문자열 삽입
@@ -317,6 +318,7 @@
                                             <span th:class="${'statusSpan'+OrderListDTO.orderItemDTO.ordItemno}" th:if="${OrderListDTO.orderItemDTO.ordStatus == '교환요청'}" style="color: #1e3fe3" th:text="${OrderListDTO.orderItemDTO.ordStatus}" th:data-no="${OrderListDTO.orderItemDTO.ordItemno}" onclick="changeStatus(this)"></span>
                                             <span th:class="${'statusSpan'+OrderListDTO.orderItemDTO.ordItemno}" th:if="${OrderListDTO.orderItemDTO.ordStatus == '환불요청'}" style="color: #161875" th:text="${OrderListDTO.orderItemDTO.ordStatus}" th:data-no="${OrderListDTO.orderItemDTO.ordItemno}" onclick="changeStatus(this)"></span>
                                             <span th:class="${'statusSpan'+OrderListDTO.orderItemDTO.ordItemno}" th:if="${OrderListDTO.orderItemDTO.ordStatus == '처리완료'}" style="color: #bd0df4" th:text="${OrderListDTO.orderItemDTO.ordStatus}" th:data-no="${OrderListDTO.orderItemDTO.ordItemno}" onclick="changeStatus(this)"></span>
+                                            <span th:class="${'statusSpan'+OrderListDTO.orderItemDTO.ordItemno}" th:if="${OrderListDTO.orderItemDTO.ordStatus == '구매확정'}" style="color: #bd0df4" th:text="${OrderListDTO.orderItemDTO.ordStatus}" th:data-no="${OrderListDTO.orderItemDTO.ordItemno}" onclick="changeStatus(this)"></span>
                                         </span>
                                     </h2>
                                     <div th:id="'panel'+${loop}" class="accordion-collapse collapse">

@@ -177,7 +177,7 @@
                 // 할인 가격
                 let total =parseInt(totalPrice.textContent.replace(/,/g, ''));
                 let org = parseInt(totalOrg.textContent.replace(/,/g, ''));
-                console.log(total)
+
                 totalDis.innerHTML = "";
                 totalDis.textContent = numberWithCommas(org-total);
 
@@ -192,6 +192,26 @@
                 totalCount.innerHTML = "";
                 totalCount.textContent = productCount+'건';
 
+                var articleArray = [];
+
+                document.querySelectorAll('.prods').forEach(function (prod){
+                    prod.querySelectorAll('.hover-ly').forEach(function (hoverLy) {
+                        var opNo = hoverLy.querySelector('#opNo').value;
+                        var prodNoVal = hoverLy.querySelector('#prodNo').value
+                        var count = hoverLy.querySelector('#count').innerText.split(':')[1];
+                        console.log(opNo);
+                        console.log(prodNoVal);
+                        console.log(count);
+
+                        var article = {
+                            "prodNo": prodNoVal,
+                            "opNo": opNo,
+                            "count": count
+                        };
+                        articleArray.push(article);
+                    });
+                });
+                console.log(articleArray);
                 // 결제하기
                 const btnOrder = document.getElementById('btnOrder');
                 btnOrder.onclick = function (e){
@@ -219,15 +239,76 @@
                         }
                     }
 
-
                     if (!paymentChecked){
                         alert('결제 방법을 선택해주세요.');
                         return;
                     }
 
                     if(confirm('상품을 결제하시겠습니까?')){
-                        //
 
+                        const ordUid = '[[${#authentication.principal.member.uid}]]';
+                        const ordCount = productList.length;
+                        const ordPrice = document.getElementById('totalOrg').innerText.replace(/,/g, '');
+                        const ordDiscount = document.getElementById('totalDis').innerText.replace(/,/g, '');
+                        const ordDelivery = document.getElementById('totalDel').innerText.replace(/,/g, '');
+                        const savePoint = parseInt(document.getElementById('totalPrice').innerText.replace(/,/g, ''))*0.01;
+                        const usedPoint = document.getElementById('totalPoint').innerText.replace(/,/g, '');
+                        const ordTotPrice = document.getElementById('totalPrice').innerText.replace(/,/g, '');
+                        const recipName = document.getElementById('orderUser').value;
+                        const recipHp = document.getElementById('orderHp').value;
+                        const recipZip = document.getElementById('orderZip').value;
+                        const recipAddr1 = document.getElementById('orderAddr1').value;
+                        const recipAddr2 = document.getElementById('orderAddr2').value;
+                        const ordPayment = document.querySelector('input[name=payment]:checked').value;
+                        const disCouponPrice = 0;
+                        const jsonData = {
+                            "ordUid" : ordUid,
+                            "ordCount" : ordCount,
+                            "ordPrice" : ordPrice,
+                            "ordDiscount" : ordDiscount,
+                            "ordDelivery" : ordDelivery,
+                            "usedPoint" : usedPoint,
+                            "savePoint" : savePoint,
+                            "ordTotPrice" : ordTotPrice,
+                            "recipName" : recipName,
+                            "recipHp" : recipHp,
+                            "recipZip" : recipZip,
+                            "recipAddr1" : recipAddr1,
+                            "recipAddr2" : recipAddr2,
+                            "ordPayment" : ordPayment,
+                            "disCouponPrice" : disCouponPrice,
+                            "couponSeq" : 1
+                        };
+
+
+                        console.log(articleArray);
+                        // 주문 DB
+                        fetch('/lotteon/product/order', {
+                            method: 'POST',
+                            headers: {'Content-Type': 'application/json'},
+                            body: JSON.stringify(jsonData)
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                console.log(data.ordNo);
+                                // 주문 상품 DB
+                                fetch(`/lotteon/product/orderItem?ordNo=${data.ordNo}`, {
+                                    method: 'POST',
+                                    headers: {'Content-Type': 'application/json'},
+                                    body:JSON.stringify(articleArray)
+                                })
+                                    .then(response2 => response2.json())
+                                    .then(data2 => {
+                                        console.log(data2);
+                                        window.location.href = '/lotteon/product/complete?ordNo=' + data.ordNo;
+                                    })
+                                    .catch(err => {
+                                        console.error('Error:', err);
+                                    });
+                            })
+                            .catch(err => {
+                                console.error('Error:', err);
+                            });
                     }
 
                 }
@@ -252,13 +333,14 @@
                   <div class="prd-wrap">
                       <h3 class="h4">주문상품 <i class="txt-num">1</i></h3>
                       <div class="orderImg">
-                          <ul th:each="productDTO : ${productDTOS}">
+                          <ul class="prods" th:each="productDTO : ${productDTOS}">
                               <li>
                                   <img th:src="@{|/prodImg/${productDTO.thumb3}|}" th:alt="${productDTO.descript}">
                                   <div class="hover-ly">
                                       <p>[[${productDTO.descript}]]</p>
-                                      <span>수량:[[${productDTO.count}]]</span>
+                                      <span id="count">수량:[[${productDTO.count}]]</span>
                                       <input type="text" id="opNo" name="options" th:value="${productDTO.opNo}">
+                                      <input type="text" id="prodNo" name="options" th:value="${productDTO.prodNo}">
                                       <input type="hidden" id="prodOrgPrice" name="price" th:value="${productDTO.price}">
                                       <input type="hidden" id="prodDisPrice" name="disPrice" th:value="${((100-productDTO.discount)/100.0)*productDTO.price}">
                                   </div>
@@ -340,7 +422,11 @@
                 <!-- 할인정보 -->
                 <article class="discount">
                   <h1>할인정보</h1>
-
+                    <div>
+                        <select name="coupon" class="coupon" id="couponList">
+                            <option selected th:value="0">사용하실 쿠폰을 선택해 주세요.</option>
+                        </select>
+                    </div>
                   <div>
                     <p>현재 포인트 : <span id="myPoint">[[${memberDTO.point}]]</span>점</p>
                     <label>
@@ -357,23 +443,23 @@
                     <div>
                         <span>신용카드</span>
                         <p>
-                            <label><input type="radio" name="payment" value="신용카드결제"/>신용카드 결제</label>
-                            <label><input type="radio" name="payment" value="체크카드결제"/>체크카드 결제</label>
+                            <label><input type="radio" name="payment" value="1"/>신용카드 결제</label>
+                            <label><input type="radio" name="payment" value="2"/>체크카드 결제</label>
                         </p>
                     </div>
                     <div>
                         <span>계좌이체</span>
                         <p>
-                            <label><input type="radio" name="payment" value="계좌이체"/>실시간 계좌이체</label>
-                            <label><input type="radio" name="payment" value="무통장입금 "/>무통장 입금</label>
+                            <label><input type="radio" name="payment" value="3"/>실시간 계좌이체</label>
+                            <label><input type="radio" name="payment" value="4 "/>무통장 입금</label>
                         </p>
                     </div>
                     <div>
                         <span>기타</span>
                         <p>
-                            <label><input type="radio" name="payment" value="휴대폰결제"/>휴대폰결제</label>
+                            <label><input type="radio" name="payment" value="5"/>휴대폰결제</label>
                             <label>
-                                <input type="radio" name="payment" value="카카오페이"/>카카오페이
+                                <input type="radio" name="payment" value="6"/>카카오페이
                                 <img th:src="@{images/ico_kakaopay.gif}" alt="카카오페이"/>
                             </label>                                
                         </p>

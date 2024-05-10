@@ -2,10 +2,8 @@ package kr.co.lotteon.repository.custom;
 
 import com.querydsl.core.Tuple;
 import kr.co.lotteon.dto.admin.AdminBoardPageRequestDTO;
-import kr.co.lotteon.dto.admin.AdminProductPageRequestDTO;
 import kr.co.lotteon.dto.cs.CsPageRequestDTO;
-import kr.co.lotteon.entity.cs.BoardEntity;
-import kr.co.lotteon.entity.product.Product;
+import kr.co.lotteon.entity.product.Review;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -32,4 +30,6 @@ public interface BoardRepositoryCustom {
     // 마이페이지 문의내역 조회
     public Page<Tuple> memberSelectBoards(String uid,CsPageRequestDTO csPageRequestDTO, Pageable pageable);
 
+    // 마이페이지 메인 문의내역 최신 5개 조회
+    public List<Tuple> selectReviewsByUidAndRdate(String uid);
 }

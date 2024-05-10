@@ -1,27 +1,32 @@
 package kr.co.lotteon.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import groovy.lang.Tuple;
 import jakarta.servlet.http.HttpSession;
 import kr.co.lotteon.dto.admin.BannerDTO;
 import kr.co.lotteon.dto.member.MemberDTO;
 import kr.co.lotteon.dto.product.*;
+import kr.co.lotteon.entity.member.Member;
+import kr.co.lotteon.entity.product.OrderItem;
 import kr.co.lotteon.entity.product.Product;
 import kr.co.lotteon.repository.product.Cate1Repository;
+import kr.co.lotteon.security.MyUserDetails;
 import kr.co.lotteon.service.admin.BannerService;
 import kr.co.lotteon.service.member.MemberService;
 import kr.co.lotteon.service.my.MyService;
-import kr.co.lotteon.service.product.CartService;
-import kr.co.lotteon.service.product.CateService;
-import kr.co.lotteon.service.product.OptionService;
-import kr.co.lotteon.service.product.ProductService;
+import kr.co.lotteon.service.product.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.Console;
 import java.util.*;
 
@@ -37,6 +42,7 @@ public class ProductController {
     private final CateService cateService;
     private final OptionService optionService;
     private final MemberService memberService;
+    private final WishService wishService;
 
     // cart 페이지 매핑
     @GetMapping("/product/cart")
@@ -58,7 +64,7 @@ public class ProductController {
 
     // complete(주문 완료) 페이지 매핑
     @GetMapping("/product/complete")
-    public String complete(){
+    public String complete(int ordNo){
         return "/product/complete";
     }
 
@@ -79,7 +85,7 @@ public class ProductController {
         }
 
         model.addAttribute("pageResponseDTO", pageResponseDTO);
-
+        log.info("아아아" + pageResponseDTO);
         // 카테고리 불러오기
         String c1Name = cateService.getc1Name(pageRequestDTO.getCate1());
         String c2Name = cateService.getc2Name(pageRequestDTO.getCate1(), pageRequestDTO.getCate2());
@@ -111,7 +117,7 @@ public class ProductController {
 
     // order 페이지 (cart->order)
     @GetMapping("/order")
-    public String order(@RequestParam String uid, Model model, @RequestParam int[] cartNo){
+    public String order(@RequestParam String uid, Model model, @RequestParam int[] cartNo) throws JsonProcessingException {
 
         List<ProductDTO> productDTOS = productService.selectOrderFromCart(cartNo);
         log.info("컨트롤러 : "+productDTOS);
@@ -126,6 +132,10 @@ public class ProductController {
 
             orderProducts.put(company, companyProducts);
         }*/
+        ObjectMapper objectMapper = new ObjectMapper();
+        String productDTOSJSON = objectMapper.writeValueAsString(productDTOS);
+        model.addAttribute("productDTOSJSON", productDTOSJSON);
+
         model.addAttribute("productDTOS", productDTOS);
         model.addAttribute("memberDTO", memberDTO);
 
@@ -134,7 +144,7 @@ public class ProductController {
     }
 
    @GetMapping("/product/order")
-    public String order(@RequestParam String uid, int prodNo, int count, String opNo, Model model){
+    public String order(@RequestParam String uid, int prodNo, int count, String opNo, Model model) throws JsonProcessingException {
 
 
        log.info("컨트롤러1"+uid);
@@ -150,9 +160,33 @@ public class ProductController {
        model.addAttribute("productDTOS", productDTOS);
        model.addAttribute("memberDTO", memberDTO);
 
+       ObjectMapper objectMapper = new ObjectMapper();
+       String productDTOSJSON = objectMapper.writeValueAsString(productDTOS);
+       model.addAttribute("productDTOSJSON", productDTOSJSON);
+
         return "/product/order";
     }
 
+    @ResponseBody
+    @PostMapping("/product/order")
+    public ResponseEntity<?> order(@RequestBody OrderDTO orderDTO){
+        log.info("오더 서비스 : "+orderDTO);
+        return productService.saveOrder(orderDTO);
+    }
+
+    @ResponseBody
+    @PostMapping("/product/orderItem")
+    public int orderItem(@RequestBody List<OrderItemDTO> orderItemDTOS,
+                         int ordNo,
+                         @AuthenticationPrincipal Object principal) {
+        Member member = ((MyUserDetails) principal).getMember();
+        String uid = member.getUid();
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        log.info("주문번호 : " + ordNo);
+
+        return productService.saveOrderItem(orderItemDTOS, uid, ordNo);
+    }
     // search (상품 검색) 페이지 매핑
     @GetMapping("/product/search")
     public String search(Model model, SearchPageRequestDTO searchPageRequestDTO) {
@@ -165,8 +199,6 @@ public class ProductController {
 
         // 상품가격 조회
         if(!(searchPageRequestDTO.getMin() ==0) || !(searchPageRequestDTO.getMax()==0)){
-            log.info("컨트롤러 금액 최소"+searchPageRequestDTO.getMin());
-            log.info("컨트롤러 금액 최대"+searchPageRequestDTO.getMax());
             SearchPageResponseDTO searchPageResponseDTO = productService.searchProductsPrice(searchPageRequestDTO, searchPageRequestDTO.getMin(), searchPageRequestDTO.getMax());
             model.addAttribute("searchPageResponseDTO", searchPageResponseDTO);
             log.info("가격검색 컨트롤러 : " + searchPageResponseDTO);
@@ -174,18 +206,18 @@ public class ProductController {
         // 상품명 조회
         if (searchKeyword != null && !searchKeyword.isEmpty() && "name".equals(searchType)) {
             // 검색어가 존재하는 경우 상품 검색 실행
-            SearchPageResponseDTO searchPageResponseDTO = productService.searchProducts(searchPageRequestDTO);
+            SearchPageResponseDTO searchPageResponseDTO = productService.searchProductsProdName(searchPageRequestDTO);
             model.addAttribute("searchPageResponseDTO", searchPageResponseDTO);
             log.info("가격없음 컨트롤러 : " + searchPageResponseDTO);
         }
         // 상품설명 조회
         if (searchKeyword != null && !searchKeyword.isEmpty() && "descript".equals(searchType)) {
             // 검색어가 존재하는 경우 상품 검색 실행
-            SearchPageResponseDTO searchPageResponseDTO = productService.searchProducts(searchPageRequestDTO);
+            SearchPageResponseDTO searchPageResponseDTO = productService.searchProductsDescript(searchPageRequestDTO);
             model.addAttribute("searchPageResponseDTO", searchPageResponseDTO);
             log.info("가격없음 컨트롤러 : " + searchPageResponseDTO);
         }
-        // 메인 검색(상품명, 상품설명, 회사명)
+        // 메인 검색
         if (searchKeyword != null && !searchKeyword.isEmpty() && searchType == null) {
             // 검색어가 존재하는 경우 상품 검색 실행
             SearchPageResponseDTO searchPageResponseDTO = productService.searchProducts(searchPageRequestDTO);
@@ -253,6 +285,20 @@ public class ProductController {
         log.info("선택한 상품의 리뷰들 "+productReviewPageResponseDTO);
         model.addAttribute("productReviewPageResponseDTO",productReviewPageResponseDTO);
 
+
+        // 시큐리티 컨텍스트에서 인증된 사용자 정보 가져오기
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        // 인증된 사용자가 있는지 확인
+        if (authentication != null && authentication.isAuthenticated() && !"anonymousUser".equals(authentication.getPrincipal())) {
+            log.info("!!! gggg ");
+            // 인증된 사용자가 있으면 찜 여부 가져오기
+            int wish = wishService.existsWish(productDTO.getProdNo());
+            model.addAttribute("wish", wish);
+        } else {
+            log.info("로그인해야댄 ");
+            model.addAttribute("wish", 0);
+        }
 
         return "/product/view";
     }

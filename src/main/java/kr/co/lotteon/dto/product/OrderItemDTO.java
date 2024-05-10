@@ -21,4 +21,12 @@ public class OrderItemDTO {
     private String opNo;
     private LocalDateTime ordDate;
     private String ordStatus;
+
+    private String company;
+    private String prodName;
+    private int price;
+    private int discount;
+    private String thumb3;
+
+    private int totalPricePerProduct; // 상품 개별 총 가격(할인적용가)
 }

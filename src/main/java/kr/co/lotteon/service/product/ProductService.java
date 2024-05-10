@@ -1,13 +1,12 @@
 package kr.co.lotteon.service.product;
 
 import com.querydsl.core.Tuple;
+import jakarta.transaction.Transactional;
 import kr.co.lotteon.dto.product.*;
-import kr.co.lotteon.entity.product.Cart;
-import kr.co.lotteon.entity.product.Option;
-import kr.co.lotteon.entity.product.Product;
-import kr.co.lotteon.entity.product.Review;
+import kr.co.lotteon.entity.product.*;
 import kr.co.lotteon.mapper.ProductMapper;
 import kr.co.lotteon.repository.product.OptionRepository;
+import kr.co.lotteon.repository.product.OrderItemRepository;
 import kr.co.lotteon.repository.product.OrderRepository;
 import kr.co.lotteon.repository.product.ProductRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +17,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -29,6 +30,7 @@ public class ProductService {
     private final ProductMapper productMapper;
     private final OrderRepository orderRepository;
     private final ModelMapper modelMapper;
+    private final OrderItemRepository orderItemRepository;
 
     private final SqlSession sqlSession;
 
@@ -39,7 +41,10 @@ public class ProductService {
         Pageable pageable = pageRequestDTO.getPageable();
 
         Page<Product> productsPage = productRepository.productList(pageRequestDTO, pageable);
-        log.info("기본 상품 목록 조회 2" + productsPage);
+
+        Optional<Integer> cate1 = Optional.ofNullable(pageRequestDTO.getCate1());
+        Optional<Integer> cate2 = Optional.ofNullable(pageRequestDTO.getCate2());
+        Optional<Integer> cate3 = Optional.ofNullable(pageRequestDTO.getCate3());
 
         // Page<Product>를 List<ProductDTO>로 변환
         List<ProductDTO> productDTOS = productsPage.getContent().stream()
@@ -105,7 +110,7 @@ public class ProductService {
                 .build();
     }
 
-    // 메인 검색(회사명, 상품명, 상품설명)
+    // 메인 검색
     public SearchPageResponseDTO searchProducts(SearchPageRequestDTO searchPageRequestDTO) {
         Page<Tuple> pageProduct = productRepository.searchProducts(searchPageRequestDTO, searchPageRequestDTO.getPageable());
 
@@ -115,10 +120,19 @@ public class ProductService {
                     ProductDTO productDTO = new ProductDTO();
                     productDTO.setProdNo(tuple.get(0, Integer.class)); // 상품 번호
                     productDTO.setProdName(tuple.get(1, String.class)); // 상품명
-                    productDTO.setDiscount(tuple.get(2, Integer.class)); // 상품할인율
-                    productDTO.setPrice(tuple.get(3, Integer.class)); // 상품가격
-                    productDTO.setSeller(tuple.get(4, String.class)); // 상품판매자
-                    // 나머지 필드도 마찬가지로 설정
+                    productDTO.setDescript(tuple.get(2, String.class)); // 상품설명
+                    productDTO.setDiscount(tuple.get(3, Integer.class)); // 상품할인율
+                    productDTO.setPrice(tuple.get(4, Integer.class)); // 상품가격
+                    productDTO.setSeller(tuple.get(5, String.class)); // 상품판매자
+                    productDTO.setDelivery(tuple.get(6, Integer.class)); // 배송
+                    productDTO.setThumb1(tuple.get(7, String.class)); // 썸네일1
+                    productDTO.setSold(tuple.get(8, Integer.class)); // 판매량
+                    productDTO.setScore(tuple.get(9, Integer.class)); // 평점
+                    productDTO.setReview(tuple.get(10, Integer.class)); // 후기
+                    productDTO.setRdate(tuple.get(11, LocalDateTime.class)); // 등록날짜
+                    productDTO.setCate1(tuple.get(12, Integer.class)); // cate1
+                    productDTO.setCate2(tuple.get(13, Integer.class)); // cate2
+                    productDTO.setCate3(tuple.get(14, Integer.class)); // cate3
 
                     return productDTO;
                 })
@@ -143,10 +157,19 @@ public class ProductService {
                     ProductDTO productDTO = new ProductDTO();
                     productDTO.setProdNo(tuple.get(0, Integer.class)); // 상품 번호
                     productDTO.setProdName(tuple.get(1, String.class)); // 상품명
-                    productDTO.setDiscount(tuple.get(2, Integer.class)); // 상품할인율
-                    productDTO.setPrice(tuple.get(3, Integer.class)); // 상품가격
-                    productDTO.setSeller(tuple.get(4, String.class)); // 상품판매자
-                    // 나머지 필드도 마찬가지로 설정
+                    productDTO.setDescript(tuple.get(2, String.class)); // 상품설명
+                    productDTO.setDiscount(tuple.get(3, Integer.class)); // 상품할인율
+                    productDTO.setPrice(tuple.get(4, Integer.class)); // 상품가격
+                    productDTO.setSeller(tuple.get(5, String.class)); // 상품판매자
+                    productDTO.setDelivery(tuple.get(6, Integer.class)); // 배송
+                    productDTO.setThumb1(tuple.get(7, String.class)); // 썸네일1
+                    productDTO.setSold(tuple.get(8, Integer.class)); // 판매량
+                    productDTO.setScore(tuple.get(9, Integer.class)); // 평점
+                    productDTO.setReview(tuple.get(10, Integer.class)); // 후기
+                    productDTO.setRdate(tuple.get(11, LocalDateTime.class)); // 등록날짜
+                    productDTO.setCate1(tuple.get(12, Integer.class)); // cate1
+                    productDTO.setCate2(tuple.get(13, Integer.class)); // cate2
+                    productDTO.setCate3(tuple.get(14, Integer.class)); // cate3
 
                     return productDTO;
                 })
@@ -171,10 +194,19 @@ public class ProductService {
                     ProductDTO productDTO = new ProductDTO();
                     productDTO.setProdNo(tuple.get(0, Integer.class)); // 상품 번호
                     productDTO.setProdName(tuple.get(1, String.class)); // 상품명
-                    productDTO.setDiscount(tuple.get(2, Integer.class)); // 상품할인율
-                    productDTO.setPrice(tuple.get(3, Integer.class)); // 상품가격
-                    productDTO.setSeller(tuple.get(4, String.class)); // 상품판매자
-                    // 나머지 필드도 마찬가지로 설정
+                    productDTO.setDescript(tuple.get(2, String.class)); // 상품설명
+                    productDTO.setDiscount(tuple.get(3, Integer.class)); // 상품할인율
+                    productDTO.setPrice(tuple.get(4, Integer.class)); // 상품가격
+                    productDTO.setSeller(tuple.get(5, String.class)); // 상품판매자
+                    productDTO.setDelivery(tuple.get(6, Integer.class)); // 배송
+                    productDTO.setThumb1(tuple.get(7, String.class)); // 썸네일1
+                    productDTO.setSold(tuple.get(8, Integer.class)); // 판매량
+                    productDTO.setScore(tuple.get(9, Integer.class)); // 평점
+                    productDTO.setReview(tuple.get(10, Integer.class)); // 후기
+                    productDTO.setRdate(tuple.get(11, LocalDateTime.class)); // 등록날짜
+                    productDTO.setCate1(tuple.get(12, Integer.class)); // cate1
+                    productDTO.setCate2(tuple.get(13, Integer.class)); // cate2
+                    productDTO.setCate3(tuple.get(14, Integer.class)); // cate3
 
                     return productDTO;
                 })
@@ -191,13 +223,8 @@ public class ProductService {
 
     // 타입 검색(상품 가격대)
     public SearchPageResponseDTO searchProductsPrice(SearchPageRequestDTO searchPageRequestDTO, int min, int max) {
-        log.info("서비스...1" + min);
-        log.info("서비스...1" + max);
-        log.info("서비스...1" + searchPageRequestDTO.getSearchType());
 
         Page<Tuple> pageProduct = productRepository.searchProductsPrice(searchPageRequestDTO, searchPageRequestDTO.getPageable(), min, max);
-
-        log.info("서비스...2"+pageProduct);
 
         List<ProductDTO> dtoList = pageProduct.getContent().stream()
                 .map(tuple -> {
@@ -205,26 +232,25 @@ public class ProductService {
                     ProductDTO productDTO = new ProductDTO();
                     productDTO.setProdNo(tuple.get(0, Integer.class)); // 상품 번호
                     productDTO.setProdName(tuple.get(1, String.class)); // 상품명
-                    productDTO.setDiscount(tuple.get(2, Integer.class)); // 상품할인율
-                    productDTO.setPrice(tuple.get(3, Integer.class)); // 상품가격
-                    productDTO.setSeller(tuple.get(4, String.class)); // 상품판매자
-                    // 나머지 필드도 마찬가지로 설정
+                    productDTO.setDescript(tuple.get(2, String.class)); // 상품설명
+                    productDTO.setDiscount(tuple.get(3, Integer.class)); // 상품할인율
+                    productDTO.setPrice(tuple.get(4, Integer.class)); // 상품가격
+                    productDTO.setSeller(tuple.get(5, String.class)); // 상품판매자
+                    productDTO.setDelivery(tuple.get(6, Integer.class)); // 배송
+                    productDTO.setThumb1(tuple.get(7, String.class)); // 썸네일1
+                    productDTO.setSold(tuple.get(8, Integer.class)); // 판매량
+                    productDTO.setScore(tuple.get(9, Integer.class)); // 평점
+                    productDTO.setReview(tuple.get(10, Integer.class)); // 후기
+                    productDTO.setRdate(tuple.get(11, LocalDateTime.class)); // 등록날짜
+                    productDTO.setCate1(tuple.get(12, Integer.class)); // cate1
+                    productDTO.setCate2(tuple.get(13, Integer.class)); // cate2
+                    productDTO.setCate3(tuple.get(14, Integer.class)); // cate3
 
-                    log.info("서비스...3"+productDTO);
                     return productDTO;
                 })
                 .collect(Collectors.toList());
 
         int total = (int) pageProduct.getTotalElements();
-
-        log.info("서비스...4"+total);
-
-        SearchPageResponseDTO resultt = SearchPageResponseDTO.builder()
-                .searchPageRequestDTO(searchPageRequestDTO)
-                .dtoList(dtoList)
-                .total(total)
-                .build();
-        log.info("서비스...5"+resultt);
 
         return SearchPageResponseDTO.builder()
                 .searchPageRequestDTO(searchPageRequestDTO)
@@ -267,6 +293,38 @@ public class ProductService {
         Product result = productRepository.findById(prodNo).get();
 
         return modelMapper.map(result, ProductDTO.class);
+    }
+
+    @Transactional
+    public ResponseEntity<?> saveOrder (OrderDTO orderDTO){
+
+        // 적립될 포인트
+        int point = 0;
+
+        // product_order에 넣기
+        Order order = modelMapper.map(orderDTO, Order.class);
+
+        Order saveOrder = orderRepository.save(order);
+
+        log.info("오더서비스 : " + saveOrder.getOrdNo());
+        OrderDTO savedOrderDTO = modelMapper.map(saveOrder, OrderDTO.class);
+
+
+        return ResponseEntity.ok(savedOrderDTO);
+    }
+
+    @Transactional
+    public int saveOrderItem (List<OrderItemDTO> orderItemDTOS, String uid, int ordNo){
+
+        for (OrderItemDTO orderItemDTO : orderItemDTOS) {
+            // 주문 상품 저장
+            OrderItem orderItem = modelMapper.map(orderItemDTO, OrderItem.class);
+            orderItem.setUid(uid);
+            orderItem.setOrdNo(ordNo);
+            orderItemRepository.save(orderItem);
+
+        }
+        return ordNo;
     }
 
     // ========== 메인페이지 ==========
