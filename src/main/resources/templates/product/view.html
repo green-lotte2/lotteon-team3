@@ -362,7 +362,12 @@
 
                         }
                     }
-
+                    function noLogin() {
+                        // 알림창 띄우기
+                        alert('로그인 후에 이용 가능합니다.');
+                        // 로그인 페이지로 이동
+                        window.location.href = '/lotteon/member/login';
+                    }
                 </script>
 
                 <!-- 제목, 페이지 네비게이션 -->
@@ -385,9 +390,12 @@
                         <nav>
                             <h1>[[${productDTO.company}]]</h1>
                             <h2>상품번호&nbsp;:&nbsp;<span>[[${productDTO.prodNo}]]</span></h2>
-                            <span class="wishImg" onclick="changeWish(this)">
+                            <span th:if="${#authorization.expression('isAuthenticated()')}" class="wishImg" onclick="changeWish(this)">
                                 <img th:class="${(wish == 0) ? 'noWish' : 'noWish hidden'}" th:src="@{/images/heart_32.png}">
                                 <img th:class="${(wish == 1) ? 'wish' : 'wish hidden'}" th:src="@{/images/heart_full32.png}">
+                            </span>
+                            <span th:if="${not #authorization.expression('isAuthenticated()')}" class="wishImg" onclick="noLogin()">
+                                <img class="noWish" th:src="@{/images/heart_32.png}">
                             </span>
                         </nav>
                         <nav>
