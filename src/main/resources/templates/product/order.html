@@ -339,8 +339,8 @@
                                   <div class="hover-ly">
                                       <p>[[${productDTO.descript}]]</p>
                                       <span id="count">수량:[[${productDTO.count}]]</span>
-                                      <input type="text" id="opNo" name="options" th:value="${productDTO.opNo}">
-                                      <input type="text" id="prodNo" name="options" th:value="${productDTO.prodNo}">
+                                      <input type="hidden" id="opNo" name="options" th:value="${productDTO.opNo}">
+                                      <input type="hidden" id="prodNo" name="options" th:value="${productDTO.prodNo}">
                                       <input type="hidden" id="prodOrgPrice" name="price" th:value="${productDTO.price}">
                                       <input type="hidden" id="prodDisPrice" name="disPrice" th:value="${((100-productDTO.discount)/100.0)*productDTO.price}">
                                   </div>
