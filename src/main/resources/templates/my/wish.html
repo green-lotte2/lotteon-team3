@@ -19,15 +19,87 @@
                 priceTd.innerText = commasPrice;
             });
         }
+        let checkedTurn = 0;
+        // 전체 선택 클릭
+        function totalCheck() {
+            const wishCheckBox = document.querySelectorAll('.wishCheck');
+            // 체크한 경우
+            if (checkedTurn === 0) {
+                wishCheckBox.forEach(function (checkbox) {
+                    checkbox.checked = true;
+                });
+                checkedTurn = 1;
+                // 체크 해제한 경우
+            } else {
+                wishCheckBox.forEach(function (checkbox) {
+                    checkbox.checked = false;
+                });
+                checkedTurn = 0;
+            }
+        }
+        // 선택 삭제
+        function deleteChecked(){
+            if (confirm('선택한 상품을 삭제하시겠습니까?')) {
+                const wishCheckBox = document.querySelectorAll('.wishCheck');
+                // 삭제할 찜의 번호를 저장하는 배열
+                let wishNoArray = [];
+
+                // forEach로 순회하며 checked된 찜의 번호 찾기
+                wishCheckBox.forEach(check => {
+
+                    // check된 번호 배열에 저장
+                    if (check.checked) {
+                        wishNoArray.push(check.value);
+                        console.log("!!! : "+ wishNoArray);
+                    }
+                })
+                fetch("/lotteon/wish/delete", {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(wishNoArray)
+                })
+                    .then(response => {
+                        // 새로고침
+                        if (response.ok == true) {
+                            alert('삭제 완료되었습니다.');
+                            setTimeout(function() {
+                                location.reload();
+                            }, 2000);
+                        }
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    });
+            }
+        }
+        // 개별 삭제
+        function deleteWish(button){
+            const wishNo = button.dataset.wish;
+            if (confirm('상품을 삭제하시겠습니까?')) {
+                fetch(`/lotteon/wish/delete/${wishNo}`)
+                    .then(response => {
+                        // 새로고침
+                        if (response.ok == true) {
+                            alert('삭제 완료되었습니다.');
+                            setTimeout(function() {
+                                location.reload();
+                            }, 0);
+                        }
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    });
+            }
+        }
     </script>
     <form class="cartForm" action="#">
         <div class="itemController">
             <div class="checkboxController">
-                <input id="checkboxController" type="checkbox" class="selectAll">
+                <input id="checkboxController" type="checkbox" class="selectAll" onclick="totalCheck()">
                 <label for="checkboxController" class="cur_hand">전체선택</label>
             </div>
             <div class="deleteBtnGroup">
-                <button type="button" class="deleteCartItems">
+                <button type="button" class="deleteCartItems" onclick="deleteChecked()">
                     <span>선택삭제</span>
                 </button>
             </div>
@@ -37,7 +109,7 @@
             <ul class="wishUl">
                 <li class="wishLi" th:each="wish : ${pageResponseDTO.dtoList}">
                     <div class="infoProduct">
-                        <input type="checkbox" name="wishNo" th:value="${wish.wishNo}">
+                        <input class="wishCheck" type="checkbox" name="wishNo" th:value="${wish.wishNo}">
                         <div data-pd-no="LO2242120513"
                              data-spd-nm="[메이블루] 라이브 방송 단독 혜택" data-price="33600" data-slot="1/2"
                              class="productItem large">
@@ -67,7 +139,7 @@
                     </div>
                     <div class="infoAction order-2">
                         <button type="button" title="[메이블루] 라이브 방송 단독 혜택 "
-                                class="deleteItem"><span class="blind">삭제하기</span></button>
+                                class="deleteItem" onclick="deleteWish(this)" th:data-wish="${wish.wishNo}"><span class="blind">삭제하기</span></button>
                     </div>
                     <button type="button" title="[메이블루] 라이브 방송 단독 혜택  장바구니 담기"
                             class="cartUnit ico_cart_border" >
