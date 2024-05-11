@@ -71,16 +71,22 @@
         <h3><strong th:text="${searchPageRequestDTO.searchKeyword}"></strong> 검색결과 <em>(총&nbsp;:&nbsp;<span th:text="${searchPageResponseDTO.total}"></span>&nbsp;건)</em></h3>
 
         <form th:action="@{/product/search}" method="get">
+            <input type="hidden" name="sort" value="prodNo">
+            <input type="hidden" name="how" value="DESC">
             <input type="text" name="searchKeyword" th:value="${searchPageRequestDTO.searchKeyword}" />
 
+            <!-- 검색 버튼 -->
             <input type="submit" value="검색"/>
+
+            <!-- 검색 옵션 -->
             <span>
-              <label><input type="checkbox" name="searchType" value="name">상품명</label>
-              <label><input type="checkbox" name="searchType" value="descript">상품설명</label>
-              <label><input type="checkbox" name="searchType" value="price">상품가격</label>
-              <input type="text" name="min"/>원&nbsp;~&nbsp;<input type="text" name="max"/>원
-          </span>
+        <label><input type="checkbox" name="searchType" value="name">상품명</label>
+        <label><input type="checkbox" name="searchType" value="descript">상품설명</label>
+        <label><input type="checkbox" name="searchType" value="price">상품가격</label>
+        <input type="text" name="min"/>원&nbsp;~&nbsp;<input type="text" name="max"/>원
+    </span>
         </form>
+
         <p class="info">
             상세검색을 선택하지 않거나, 상품가격을 입력하지 않으면 현재 결과내에서 검색합니다.<br>
             검색어는 최대 10글자까지, 여러개의 검색어를 공백으로 구분하여 입력 할수 있습니다.
@@ -97,22 +103,121 @@
                 판매많은순
             </a>
 
+            <a th:if="${searchPageRequestDTO.searchType == 'price'}"
+               th:href="@{/product/search(searchKeyword=${searchPageRequestDTO.searchKeyword},searchType=${searchPageRequestDTO.searchType},min=${searchPageRequestDTO.min}, max=${searchPageRequestDTO.max}, sort='sold', how='DESC', pg=1 )}">
+                판매많은순
+            </a>
+
             <a th:if="${searchPageRequestDTO.searchType == 'name,price' or searchPageRequestDTO.searchType == 'descript,price'}"
                th:href="@{/product/search(searchKeyword=${searchPageRequestDTO.searchKeyword},searchType=${searchPageRequestDTO.searchType},min=${searchPageRequestDTO.min}, max=${searchPageRequestDTO.max}, sort='sold', how='DESC', pg=1 )}">
                 판매많은순
             </a>
         </li>
-        <li><a th:href="@{#}">낮은가격순</a></li>
-        <li><a th:href="@{#}">높은가격순</a></li>
-        <li><a th:href="@{#}">평점높은순</a></li>
-        <li><a th:href="@{#}">후기많은순</a></li>
-        <li><a th:href="@{#}">최근등록순</a></li>
+
+        <li>
+            <a th:if="${searchPageRequestDTO.searchType} == null" th:href="@{/product/search(searchKeyword=${searchPageRequestDTO.searchKeyword},sort='price', how='ASC', pg=1 )}">낮은가격순</a>
+
+            <a th:if="${searchPageRequestDTO.searchType == 'name' or searchPageRequestDTO.searchType == 'descript'}"
+               th:href="@{/product/search(searchKeyword=${searchPageRequestDTO.searchKeyword},searchType=${searchPageRequestDTO.searchType},sort='price', how='ASC', pg=1 )}">
+                낮은가격순
+            </a>
+
+            <a th:if="${searchPageRequestDTO.searchType == 'price'}"
+               th:href="@{/product/search(searchKeyword=${searchPageRequestDTO.searchKeyword},searchType=${searchPageRequestDTO.searchType},min=${searchPageRequestDTO.min}, max=${searchPageRequestDTO.max}, sort='price', how='ASC', pg=1 )}">
+                낮은가격순
+            </a>
+
+            <a th:if="${searchPageRequestDTO.searchType == 'name,price' or searchPageRequestDTO.searchType == 'descript,price'}"
+               th:href="@{/product/search(searchKeyword=${searchPageRequestDTO.searchKeyword},searchType=${searchPageRequestDTO.searchType},min=${searchPageRequestDTO.min}, max=${searchPageRequestDTO.max}, sort='price', how='ASC', pg=1 )}">
+                낮은가격순
+            </a>
+        </li>
+
+        <li>
+            <a th:if="${searchPageRequestDTO.searchType} == null" th:href="@{/product/search(searchKeyword=${searchPageRequestDTO.searchKeyword},sort='price', how='DESC', pg=1 )}">높은가격순</a>
+
+            <a th:if="${searchPageRequestDTO.searchType == 'name' or searchPageRequestDTO.searchType == 'descript'}"
+               th:href="@{/product/search(searchKeyword=${searchPageRequestDTO.searchKeyword},searchType=${searchPageRequestDTO.searchType},sort='price', how='DESC', pg=1 )}">
+                높은가격순
+            </a>
+
+            <a th:if="${searchPageRequestDTO.searchType == 'price'}"
+               th:href="@{/product/search(searchKeyword=${searchPageRequestDTO.searchKeyword},searchType=${searchPageRequestDTO.searchType},min=${searchPageRequestDTO.min}, max=${searchPageRequestDTO.max}, sort='price', how='DESC', pg=1 )}">
+                높은가격순
+            </a>
+
+            <a th:if="${searchPageRequestDTO.searchType == 'name,price' or searchPageRequestDTO.searchType == 'descript,price'}"
+               th:href="@{/product/search(searchKeyword=${searchPageRequestDTO.searchKeyword},searchType=${searchPageRequestDTO.searchType},min=${searchPageRequestDTO.min}, max=${searchPageRequestDTO.max}, sort='price', how='DESC', pg=1 )}">
+                높은가격순
+            </a>
+        </li>
+
+        <li>
+            <a th:if="${searchPageRequestDTO.searchType} == null" th:href="@{/product/search(searchKeyword=${searchPageRequestDTO.searchKeyword},sort='score', how='DESC', pg=1 )}">평점높은순</a>
+
+            <a th:if="${searchPageRequestDTO.searchType == 'name' or searchPageRequestDTO.searchType == 'descript'}"
+               th:href="@{/product/search(searchKeyword=${searchPageRequestDTO.searchKeyword},searchType=${searchPageRequestDTO.searchType},sort='score', how='DESC', pg=1 )}">
+                평점높은순
+            </a>
+
+            <a th:if="${searchPageRequestDTO.searchType == 'price'}"
+               th:href="@{/product/search(searchKeyword=${searchPageRequestDTO.searchKeyword},searchType=${searchPageRequestDTO.searchType},min=${searchPageRequestDTO.min}, max=${searchPageRequestDTO.max}, sort='score', how='DESC', pg=1 )}">
+                평점높은순
+            </a>
+
+            <a th:if="${searchPageRequestDTO.searchType == 'name,price' or searchPageRequestDTO.searchType == 'descript,price'}"
+               th:href="@{/product/search(searchKeyword=${searchPageRequestDTO.searchKeyword},searchType=${searchPageRequestDTO.searchType},min=${searchPageRequestDTO.min}, max=${searchPageRequestDTO.max}, sort='score', how='DESC', pg=1 )}">
+                평점높은순
+            </a>
+        </li>
+
+        <li>
+            <a th:if="${searchPageRequestDTO.searchType} == null" th:href="@{/product/search(searchKeyword=${searchPageRequestDTO.searchKeyword},sort='review', how='DESC', pg=1 )}">후기많은순</a>
+
+            <a th:if="${searchPageRequestDTO.searchType == 'name' or searchPageRequestDTO.searchType == 'descript'}"
+               th:href="@{/product/search(searchKeyword=${searchPageRequestDTO.searchKeyword},searchType=${searchPageRequestDTO.searchType},sort='review', how='DESC', pg=1 )}">
+                후기많은순
+            </a>
+
+            <a th:if="${searchPageRequestDTO.searchType == 'price'}"
+               th:href="@{/product/search(searchKeyword=${searchPageRequestDTO.searchKeyword},searchType=${searchPageRequestDTO.searchType},min=${searchPageRequestDTO.min}, max=${searchPageRequestDTO.max}, sort='review', how='DESC', pg=1 )}">
+                후기많은순
+            </a>
+
+            <a th:if="${searchPageRequestDTO.searchType == 'name,price' or searchPageRequestDTO.searchType == 'descript,price'}"
+               th:href="@{/product/search(searchKeyword=${searchPageRequestDTO.searchKeyword},searchType=${searchPageRequestDTO.searchType},min=${searchPageRequestDTO.min}, max=${searchPageRequestDTO.max}, sort='review', how='DESC', pg=1 )}">
+                후기많은순
+            </a>
+        </li>
+
+        <li>
+            <a th:if="${searchPageRequestDTO.searchType} == null" th:href="@{/product/search(searchKeyword=${searchPageRequestDTO.searchKeyword},sort='rdate', how='DESC', pg=1 )}">최근등록순</a>
+
+            <a th:if="${searchPageRequestDTO.searchType == 'name' or searchPageRequestDTO.searchType == 'descript'}"
+               th:href="@{/product/search(searchKeyword=${searchPageRequestDTO.searchKeyword},searchType=${searchPageRequestDTO.searchType},sort='rdate', how='DESC', pg=1 )}">
+                최근등록순
+            </a>
+
+            <a th:if="${searchPageRequestDTO.searchType == 'price'}"
+               th:href="@{/product/search(searchKeyword=${searchPageRequestDTO.searchKeyword},searchType=${searchPageRequestDTO.searchType},min=${searchPageRequestDTO.min}, max=${searchPageRequestDTO.max}, sort='rdate', how='DESC', pg=1 )}">
+                최근등록순
+            </a>
+
+            <a th:if="${searchPageRequestDTO.searchType == 'name,price' or searchPageRequestDTO.searchType == 'descript,price'}"
+               th:href="@{/product/search(searchKeyword=${searchPageRequestDTO.searchKeyword},searchType=${searchPageRequestDTO.searchType},min=${searchPageRequestDTO.min}, max=${searchPageRequestDTO.max}, sort='rdate', how='DESC', pg=1 )}">
+                최근등록순
+            </a>
+        </li>
+
     </ul>
 
     <!-- 검색목록 -->
     <table border="0">
         <tr th:each="product : ${searchPageResponseDTO.dtoList}">
+            <td><input type="text" th:value="${product.prodNo}"/></td>
+            <td><input type="text" th:value="${product.rdate}"/></td>
             <td><a th:href="@{/product/view(prodNo=${product.prodNo},cate1=${product.cate1},cate2=${product.cate2},cate3=${product.cate3})}" class="thumb"><img th:src="@{'/prodImg/'+${product.thumb1}}" alt="상품이미지" width="120" height="120"/></a></td>
+
             <td>
                 <h3 class="name"><a style="font-size: 16px; font-weight: bold;" th:href="@{/product/view(prodNo=${product.prodNo},cate1=${product.cate1},cate2=${product.cate2},cate3=${product.cate3})}" th:text="${product.prodName}"></a></h3>
                 <a href="#" class="desc" th:text="${product.descript}">상품 설명</a>
@@ -138,20 +243,66 @@
         </tr>
     </table>
 
-    <!-- 상품목록 페이지번호 -->
+    <!-- 검색목록 페이지번호 -->
     <div class="paging" th:if="${searchPageResponseDTO.total gt 0}">
-        <span class="prev" th:if="${searchPageResponseDTO.prev}">
-          <a th:href="@{/product/search(searchKeyword=${searchPageRequestDTO.searchKeyword},pg=${searchPageResponseDTO.start - 1})}">&lt;&nbsp;이전</a>
-        </span>
+    <span class="prev" th:if="${searchPageResponseDTO.prev}">
+        <!-- 일반 검색 -->
+        <a th:if="${searchPageRequestDTO.searchType == null}" th:href="@{/product/search(searchKeyword=${searchPageRequestDTO.searchKeyword}, sort=${searchPageRequestDTO.sort}, how=${searchPageRequestDTO.how}, pg=${searchPageResponseDTO.start - 1})}">&lt;&nbsp;이전</a>
+        <!-- name만 선택 -->
+        <a th:if="${searchPageRequestDTO.searchType == 'name'}" th:href="@{/product/search(searchKeyword=${searchPageRequestDTO.searchKeyword}, searchType=${searchPageRequestDTO.searchType}, sort=${searchPageRequestDTO.sort}, how=${searchPageRequestDTO.how}, pg=${searchPageResponseDTO.start - 1})}">&lt;&nbsp;이전</a>
+        <!-- descript만 선택 -->
+        <a th:if="${searchPageRequestDTO.searchType == 'descript'}" th:href="@{/product/search(searchKeyword=${searchPageRequestDTO.searchKeyword}, searchType=${searchPageRequestDTO.searchType}, sort=${searchPageRequestDTO.sort}, how=${searchPageRequestDTO.how}, pg=${searchPageResponseDTO.start - 1})}">&lt;&nbsp;이전</a>
+        <!-- price만 선택 -->
+        <a th:if="${searchPageRequestDTO.searchType == 'price'}" th:href="@{/product/search(searchKeyword=${searchPageRequestDTO.searchKeyword}, searchType=${searchPageRequestDTO.searchType}, min=${searchPageRequestDTO.min}, max=${searchPageRequestDTO.max}, sort=${searchPageRequestDTO.sort}, how=${searchPageRequestDTO.how}, pg=${searchPageResponseDTO.start - 1})}">&lt;&nbsp;이전</a>
+        <!-- name && price 선택 -->
+        <a th:if="${searchPageRequestDTO.searchType != null && searchPageRequestDTO.searchType == 'name,price'}" th:href="@{/product/search(searchKeyword=${searchPageRequestDTO.searchKeyword}, searchType=${searchPageRequestDTO.searchType}, min=${searchPageRequestDTO.min}, max=${searchPageRequestDTO.max}, sort=${searchPageRequestDTO.sort}, how=${searchPageRequestDTO.how}, pg=${searchPageResponseDTO.start - 1})}">&lt;&nbsp;이전</a>
+        <!-- descript && price 선택 -->
+        <a th:if="${searchPageRequestDTO.searchType != null && searchPageRequestDTO.searchType == 'descript,price'}" th:href="@{/product/search(searchKeyword=${searchPageRequestDTO.searchKeyword}, searchType=${searchPageRequestDTO.searchType}, min=${searchPageRequestDTO.min}, max=${searchPageRequestDTO.max}, sort=${searchPageRequestDTO.sort}, how=${searchPageRequestDTO.how}, pg=${searchPageResponseDTO.start - 1})}">&lt;&nbsp;이전</a>
+    </span>
         <span th:each="num : ${#numbers.sequence(searchPageResponseDTO.start, searchPageResponseDTO.end)}" class="num">
-          <a th:classappend="${searchPageResponseDTO.pg eq num ? 'on' : 'off'}" th:href="@{/product/search(searchKeyword=${searchPageRequestDTO.searchKeyword},pg=${num})}">
+            <!-- 일반 검색 -->
+        <a th:classappend="${searchPageResponseDTO.pg eq num ? 'on' : 'off'}" th:if="${searchPageRequestDTO.searchType == null}" th:href="@{/product/search(searchKeyword=${searchPageRequestDTO.searchKeyword}, sort=${searchPageRequestDTO.sort}, how=${searchPageRequestDTO.how}, pg=${num})}">
             [[${num}]]
-          </a>
-        </span>
+        </a>
+            <!-- name만 선택 -->
+        <a th:classappend="${searchPageResponseDTO.pg eq num ? 'on' : 'off'}" th:if="${searchPageRequestDTO.searchType == 'name'}" th:href="@{/product/search(searchKeyword=${searchPageRequestDTO.searchKeyword}, searchType=${searchPageRequestDTO.searchType}, sort=${searchPageRequestDTO.sort}, how=${searchPageRequestDTO.how}, pg=${num})}">
+            [[${num}]]
+        </a>
+            <!-- descript만 선택 -->
+        <a th:classappend="${searchPageResponseDTO.pg eq num ? 'on' : 'off'}" th:if="${searchPageRequestDTO.searchType == 'descript'}" th:href="@{/product/search(searchKeyword=${searchPageRequestDTO.searchKeyword}, searchType=${searchPageRequestDTO.searchType}, sort=${searchPageRequestDTO.sort}, how=${searchPageRequestDTO.how}, pg=${num})}">
+            [[${num}]]
+        </a>
+            <!-- price만 선택 -->
+        <a th:classappend="${searchPageResponseDTO.pg eq num ? 'on' : 'off'}" th:if="${searchPageRequestDTO.searchType == 'price'}" th:href="@{/product/search(searchKeyword=${searchPageRequestDTO.searchKeyword}, searchType=${searchPageRequestDTO.searchType}, min=${searchPageRequestDTO.min}, max=${searchPageRequestDTO.max}, sort=${searchPageRequestDTO.sort}, how=${searchPageRequestDTO.how}, pg=${num})}">
+            [[${num}]]
+        </a>
+            <!-- name && price 선택 -->
+        <a th:classappend="${searchPageResponseDTO.pg eq num ? 'on' : 'off'}" th:if="${searchPageRequestDTO.searchType != null && searchPageRequestDTO.searchType == 'name,price'}" th:href="@{/product/search(searchKeyword=${searchPageRequestDTO.searchKeyword}, searchType=${searchPageRequestDTO.searchType}, min=${searchPageRequestDTO.min}, max=${searchPageRequestDTO.max}, sort=${searchPageRequestDTO.sort}, how=${searchPageRequestDTO.how}, pg=${num})}">
+            [[${num}]]
+        </a>
+            <!-- descript && price 선택 -->
+        <a th:classappend="${searchPageResponseDTO.pg eq num ? 'on' : 'off'}" th:if="${searchPageRequestDTO.searchType != null && searchPageRequestDTO.searchType == 'descript,price'}" th:href="@{/product/search(searchKeyword=${searchPageRequestDTO.searchKeyword}, searchType=${searchPageRequestDTO.searchType}, min=${searchPageRequestDTO.min}, max=${searchPageRequestDTO.max}, sort=${searchPageRequestDTO.sort}, how=${searchPageRequestDTO.how}, pg=${num})}">
+            [[${num}]]
+        </a>
+    </span>
         <span class="next" th:if="${searchPageResponseDTO.next}">
-          <a th:href="@{/product/search(searchKeyword=${searchPageRequestDTO.searchKeyword},pg=${searchPageResponseDTO.end + 1})}">다음&nbsp;&gt;</a>
-        </span>
+        <!-- 일반 검색 -->
+        <a th:if="${searchPageRequestDTO.searchType == null}" th:href="@{/product/search(searchKeyword=${searchPageRequestDTO.searchKeyword}, sort=${searchPageRequestDTO.sort}, how=${searchPageRequestDTO.how}, pg=${searchPageResponseDTO.end + 1})}">다음&nbsp;&gt;</a>
+            <!-- name만 선택 -->
+        <a th:if="${searchPageRequestDTO.searchType == 'name'}" th:href="@{/product/search(searchKeyword=${searchPageRequestDTO.searchKeyword}, searchType=${searchPageRequestDTO.searchType}, sort=${searchPageRequestDTO.sort}, how=${searchPageRequestDTO.how}, pg=${searchPageResponseDTO.end + 1})}">다음&nbsp;&gt;</a>
+            <!-- descript만 선택 -->
+        <a th:if="${searchPageRequestDTO.searchType == 'descript'}" th:href="@{/product/search(searchKeyword=${searchPageRequestDTO.searchKeyword}, searchType=${searchPageRequestDTO.searchType}, sort=${searchPageRequestDTO.sort}, how=${searchPageRequestDTO.how}, pg=${searchPageResponseDTO.end + 1})}">다음&nbsp;&gt;</a>
+            <!-- price만 선택 -->
+        <a th:if="${searchPageRequestDTO.searchType == 'price'}" th:href="@{/product/search(searchKeyword=${searchPageRequestDTO.searchKeyword}, searchType=${searchPageRequestDTO.searchType}, min=${searchPageRequestDTO.min}, max=${searchPageRequestDTO.max}, sort=${searchPageRequestDTO.sort}, how=${searchPageRequestDTO.how}, pg=${searchPageResponseDTO.end + 1})}">다음&nbsp;&gt;</a>
+            <!-- name && price 선택 -->
+        <a th:if="${searchPageRequestDTO.searchType != null && searchPageRequestDTO.searchType == 'name,price'}" th:href="@{/product/search(searchKeyword=${searchPageRequestDTO.searchKeyword}, searchType=${searchPageRequestDTO.searchType}, min=${searchPageRequestDTO.min}, max=${searchPageRequestDTO.max}, sort=${searchPageRequestDTO.sort}, how=${searchPageRequestDTO.how}, pg=${searchPageResponseDTO.end + 1})}">다음&nbsp;&gt;</a>
+            <!-- descript && price 선택 -->
+        <a th:if="${searchPageRequestDTO.searchType != null && searchPageRequestDTO.searchType == 'descript,price'}" th:href="@{/product/search(searchKeyword=${searchPageRequestDTO.searchKeyword}, searchType=${searchPageRequestDTO.searchType}, min=${searchPageRequestDTO.min}, max=${searchPageRequestDTO.max}, sort=${searchPageRequestDTO.sort}, how=${searchPageRequestDTO.how}, pg=${searchPageResponseDTO.end + 1})}">다음&nbsp;&gt;</a>
+
+    </span>
     </div>
+
+
 
     <!-- 검색결과가 없을 때의 메시지 -->
     <div th:if="${searchPageResponseDTO.total eq 0}" style="text-align: center;">
