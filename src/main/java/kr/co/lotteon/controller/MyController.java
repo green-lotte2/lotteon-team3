@@ -2,6 +2,7 @@ package kr.co.lotteon.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.querydsl.core.Tuple;
 import kr.co.lotteon.dto.admin.BannerDTO;
 import kr.co.lotteon.dto.cs.BoardDTO;
 import kr.co.lotteon.dto.cs.CsPageRequestDTO;
@@ -62,7 +63,8 @@ public class MyController {
         log.info("uid : "+uid);
 
         //최근 주문내역 출력
-        List<OrderItemDTO> orderItemDTOS = myService.selectOrdersByUid(uid);
+        List<Map<String, Object>> orderItemDTOS = myService.selectOrdNoAndDate(uid);
+        log.info("orderItemDTOS : "+orderItemDTOS);
         model.addAttribute("orderItemDTOS",orderItemDTOS);
 
         //포인트 출력

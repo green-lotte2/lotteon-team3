@@ -105,16 +105,23 @@
                             </tr>
                             <tr id="order" th:each="order : ${orderItemDTOS}">
                                 <td class="date" id="ordDate">[[${#temporals.format(order.ordDate, 'yyyy-MM-dd')}]]</td>
+
                                 <td class="info">
-                                    <a th:href="@{#}" class="thumb"><img th:src="@{'/prodImg/'+${order.thumb3}}" alt="" style="width: 80px; height: 80px;"></a>
+                                    <a th:each="thumb3 : ${order.thumb3}" th:href="@{#}" class="thumb"><img th:src="@{'/prodImg/'+${thumb3}}" alt="" style="width: 80px; height: 80px;"></a>
+
                                     <ul>
-                                        <li class="company"><a th:href="@{#}">[[${order.company}]]</a></li>
-                                        <li class="prodName"><a th:href="@{#}">[[${order.prodName}]]</a></li>
-                                        <li class="orderNo">수량 : <span class="prodCount">[[${order.count}]]</span>개 / <span >주문번호 : <a th:href="@{#}" class="ordNo">[[${order.ordNo}]]</a></span></li>
-                                        <li class="prodPrice" th:text="${#numbers.formatInteger(order.totalPricePerProduct, 3, 'COMMA')}"></li>
+                                        <li class="company" th:each="company : ${order.company}"><a th:href="@{#}" th:text="${company}"></a></li>
+                                        <li class="prodName" th:each="prodName : ${order.prodName}"><a th:href="@{#}" th:text="${prodName}"></a></li>
+                                        <li class="orderNo">수량 : <span class="prodCount" th:each="count:${order.count}" th:text="${count}"></span>개 / <span >주문번호 : <a th:href="@{#}" class="ordNo">[[${order.ordNo}]]</a></span></li>
+                                        <li class="prodPrice" th:each="price: ${order.price}" th:text="${price}"></li>
                                     </ul>
                                 </td>
-                                <td class="status">[[${order.ordStatus}]]</td>
+
+                                <td class="status">
+                                    <ul>
+                                    <li th:each="status :${order.ordStatus}" th:text="${status}"></li>
+                                    </ul>
+                                </td>
                                 <td class="confirm">
                                     <a th:href="@{#}" class="receive">수취확인</a>
                                     <a th:href="@{#}" class="review">상품평</a>
@@ -122,6 +129,8 @@
                                     <a th:href="@{#}" class="exchange">교환신청</a>
                                 </td>
                             </tr>
+
+
                         </table>
                     </article>
 

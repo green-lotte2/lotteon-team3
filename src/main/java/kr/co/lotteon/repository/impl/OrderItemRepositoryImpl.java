@@ -20,8 +20,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 @Repository
@@ -284,4 +283,50 @@ public class OrderItemRepositoryImpl implements OrderItemRepositoryCustom {
 
         return results.getResults();
     }
+
+    @Override
+    public List<Map<String, Object>> selectOrdNoAndDate(String uid) {
+        List<Tuple> results = jpaQueryFactory
+                .select(
+                        qOrderItem.ordNo,
+                        qOrderItem.ordDate,
+                        Expressions.stringTemplate("GROUP_CONCAT({0})", qProduct.company),
+                        Expressions.stringTemplate("GROUP_CONCAT({0})", qOrderItem.ordStatus),
+                        Expressions.stringTemplate("GROUP_CONCAT({0})", qProduct.prodName),
+                        Expressions.stringTemplate("GROUP_CONCAT({0})", qOrderItem.count),
+                        Expressions.stringTemplate("GROUP_CONCAT({0})", qProduct.price),
+                        Expressions.stringTemplate("GROUP_CONCAT({0})", qProduct.discount),
+                        Expressions.stringTemplate("GROUP_CONCAT({0})", qProduct.thumb3)
+                )
+                .from(qOrderItem)
+                .join(qProduct).on(qOrderItem.prodNo.eq(qProduct.prodNo))
+                .where(qOrderItem.uid.eq(uid))
+                .groupBy(qOrderItem.ordNo, qOrderItem.ordDate)
+                .orderBy(qOrderItem.ordDate.desc())
+                .limit(5)
+                .fetch();
+
+        List<Map<String, Object>> resultMapList = new ArrayList<>();
+        results.forEach(tuple -> {
+            Map<String, Object> orderInfoMap = new LinkedHashMap<>();
+            orderInfoMap.put("ordNo", tuple.get(qOrderItem.ordNo));
+            orderInfoMap.put("ordDate", tuple.get(qOrderItem.ordDate));
+            orderInfoMap.put("company", Arrays.asList(tuple.get(Expressions.stringTemplate("GROUP_CONCAT({0})", qProduct.company)).split(",")));
+            orderInfoMap.put("ordStatus", Arrays.asList(tuple.get(Expressions.stringTemplate("GROUP_CONCAT({0})", qOrderItem.ordStatus)).split(",")));
+            orderInfoMap.put("prodName", Arrays.asList(tuple.get(Expressions.stringTemplate("GROUP_CONCAT({0})", qProduct.prodName)).split(",")));
+            orderInfoMap.put("count", Arrays.asList(tuple.get(Expressions.stringTemplate("GROUP_CONCAT({0})", qOrderItem.count)).split(",")));
+            orderInfoMap.put("price", Arrays.asList(tuple.get(Expressions.stringTemplate("GROUP_CONCAT({0})", qProduct.price)).split(",")));
+            orderInfoMap.put("discount", Arrays.asList(tuple.get(Expressions.stringTemplate("GROUP_CONCAT({0})", qProduct.discount)).split(",")));
+            orderInfoMap.put("thumb3", Arrays.asList(tuple.get(Expressions.stringTemplate("GROUP_CONCAT({0})", qProduct.thumb3)).split(",")));
+
+            resultMapList.add(orderInfoMap);
+        });
+
+        log.info("최근 주문목록impl : " + resultMapList);
+        return resultMapList;
+
+
+    }
+
+
 }

@@ -29,4 +29,9 @@ public class OrderItemDTO {
     private String thumb3;
 
     private int totalPricePerProduct; // 상품 개별 총 가격(할인적용가)
+
+    // 최근 주문 내역 출력용
+    private String strCount;
+    private String strPrice;
+    private String strDiscount;
 }
