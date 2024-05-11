@@ -78,12 +78,13 @@
                     <li><a th:href="@{/my/review(uid=${#authentication.principal.member.uid})}">나의리뷰</a></li>
                     <li><a th:href="@{/my/qna(uid=${#authentication.principal.member.uid})}">문의하기</a></li>
                     <li><a th:href="@{/my/infoAccessCheck(uid=${#authentication.principal.member.uid})}">나의설정</a></li>
+                    <li><a th:href="@{/my/wish}">나의찜</a></li>
                 </ul>
 
                 <section>
-                    <div id="bannerTop" class="on" th:style="${myPageBanners.size() > 0 ? 'background: ' + myPageBanners[0].backcolor + ';' : ''}">
+                    <div id="bannerTop" class="on" th:style="${banners.size() > 0 ? 'background: ' + banners[0].backcolor + ';' : ''}">
                     <!-- 배너 영역 -->
-                    <th:block th:each="banner : ${myPageBanners}">
+                    <th:block th:each="banner : ${banners}">
                         <a th:href="@{${banner.link}}">
                             <img th:src="@{'/prodImg/'+ ${banner.thumb}}" alt="t1" />
                         </a>

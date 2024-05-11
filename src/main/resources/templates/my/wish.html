@@ -91,6 +91,16 @@
                     });
             }
         }
+        // 장바구니 클릭
+        function goView(span) {
+            const prodNo = span.dataset.prod;
+            const cate1 = span.dataset.cate1;
+            const cate2 = span.dataset.cate2;
+            if (confirm(`상품 정보 확인 후 구매해주세요.
+상품 상세 화면으로 이동합니다.`)) {
+                location.href = `/lotteon/product/view?prodNo=${prodNo}&cate1=${cate1}&cate2=${cate2}`;
+            }
+        }
     </script>
     <form class="cartForm" action="#">
         <div class="itemController">
@@ -143,7 +153,7 @@
                     </div>
                     <button type="button" title="[메이블루] 라이브 방송 단독 혜택  장바구니 담기"
                             class="cartUnit ico_cart_border" >
-                            <span class="icon" >
+                            <span class="icon" onclick="goView(this)" th:data-prod="${wish.productDTO.prodNo}" th:data-cate1="${wish.productDTO.cate1}"  th:data-cate2="${wish.productDTO.cate2}">
                                 <span class="blind">장바구니</span>
                             </span>
                     </button>

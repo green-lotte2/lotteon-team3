@@ -50,7 +50,6 @@ import java.util.stream.Collectors;
 @Controller
 public class MyController {
 
-    private final BannerService bannerService;
     private final MemberService memberService;
     private final MyService myService;
     private final AuthenticationManager authenticationManager;
@@ -61,10 +60,6 @@ public class MyController {
     @GetMapping("/my/home")
     public String home(Model model, @RequestParam String uid){
         log.info("uid : "+uid);
-
-        // 마이페이지 배너
-        List<BannerDTO> myPageBanners = bannerService.selectBanners("myPage");
-        model.addAttribute("myPageBanners",myPageBanners);
 
         //최근 주문내역 출력
         List<OrderItemDTO> orderItemDTOS = myService.selectOrdersByUid(uid);
