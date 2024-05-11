@@ -4,6 +4,7 @@
       layout:decorate="~{/layout/productLayout}">
 <head>
     <script>
+
         window.onload = function (){
 
             // 상품명, 상품설명 체크박스
@@ -214,8 +215,6 @@
     <!-- 검색목록 -->
     <table border="0">
         <tr th:each="product : ${searchPageResponseDTO.dtoList}">
-            <td><input type="text" th:value="${product.prodNo}"/></td>
-            <td><input type="text" th:value="${product.rdate}"/></td>
             <td><a th:href="@{/product/view(prodNo=${product.prodNo},cate1=${product.cate1},cate2=${product.cate2},cate3=${product.cate3})}" class="thumb"><img th:src="@{'/prodImg/'+${product.thumb1}}" alt="상품이미지" width="120" height="120"/></a></td>
 
             <td>
@@ -237,8 +236,10 @@
             </td>
             <td>
                 <h4 class="seller"><i class="fas fa-home"></i>&nbsp;<span th:text="${product.seller}">판매자</span></h4>
+                <!--
                 <h5 class="badge power great">판매자등급</h5>
-                <h6 class="rating star3">상품평</h6>
+                <h6 class="rating star3">상품평</h6> 
+                -->
             </td>
         </tr>
     </table>
