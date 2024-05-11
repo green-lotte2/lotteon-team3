@@ -4,593 +4,662 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       layout:decorate="~{/layout/productLayout}">
 
-            <!-- 상품 상세페이지 시작 -->
-            <section class="view" layout:fragment="content">
-                <script>
-                    window.onload= async function (){
+<!-- 상품 상세페이지 시작 -->
+<section class="view" layout:fragment="content">
+    <script>
+        window.onload = async function () {
 
-                        // 숫자를 3자리마다 콤마를 추가하여 문자열로 반환하는 함수
-                        function numberWithCommas(x) {
-                            return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                        }
+            // 숫자를 3자리마다 콤마를 추가하여 문자열로 반환하는 함수
+            function numberWithCommas(x) {
+                return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            }
 
-                        const orgPrice = document.getElementsByClassName('org_price')[0];
-                        // 할인률
-                        const discountDel = orgPrice.getElementsByTagName('span')[0];
-                        const discountText = discountDel.innerText;
-                        const discountValue = discountText.split('%')[0];
-                        let intDiscount = parseInt(discountValue);
+            const orgPrice = document.getElementsByClassName('org_price')[0];
+            // 할인률
+            const discountDel = orgPrice.getElementsByTagName('span')[0];
+            const discountText = discountDel.innerText;
+            const discountValue = discountText.split('%')[0];
+            let intDiscount = parseInt(discountValue);
 
-                        // 상품 원가격
-                        const productPriceSpan = orgPrice.getElementsByTagName('del')[0];
-                        const productPriceText = productPriceSpan.innerText;
-                        let intProductPrice = parseInt(productPriceText);
+            // 상품 원가격
+            const productPriceSpan = orgPrice.getElementsByTagName('del')[0];
+            const productPriceText = productPriceSpan.innerText;
+            let intProductPrice = parseInt(productPriceText);
 
-                        // 상품의 할인된 가격
-                        let discountPrice = intProductPrice * ((100-intDiscount)/100);
+            // 상품의 할인된 가격
+            let discountPrice = intProductPrice * ((100 - intDiscount) / 100);
 
-                        //할인된 가격 표시
-                        const dis_price = document.getElementsByClassName('dis_price')[0];
-                        const dis_priceIns = dis_price.getElementsByTagName('ins')[0];
+            //할인된 가격 표시
+            const dis_price = document.getElementsByClassName('dis_price')[0];
+            const dis_priceIns = dis_price.getElementsByTagName('ins')[0];
 
-                        dis_priceIns.innerText = numberWithCommas(discountPrice);
+            dis_priceIns.innerText = numberWithCommas(discountPrice);
 
-                        // 배송비
-                        const delivery = document.getElementsByClassName('delivery')[0];
+            // 배송비
+            const delivery = document.getElementsByClassName('delivery')[0];
 
-                        deliveryValue = delivery.getAttribute('value');
+            deliveryValue = delivery.getAttribute('value');
 
-                        const deliveryVal = delivery.innerText;
+            const deliveryVal = delivery.innerText;
 
-                        console.log(deliveryVal)
-                        let deliveryInt
-                        if(deliveryVal!=='무료배송'){
-                            const deliveryWon = deliveryVal.split(':')[1];
-                            let deliveryValue = deliveryWon.split('원')[0];
-                            deliveryInt = parseInt(deliveryValue);
-                        }
+            console.log(deliveryVal)
+            let deliveryInt
+            if (deliveryVal !== '무료배송') {
+                const deliveryWon = deliveryVal.split(':')[1];
+                let deliveryValue = deliveryWon.split('원')[0];
+                deliveryInt = parseInt(deliveryValue);
+            }
 
-                        // 총 가격 표시 html
-                        const total = document.getElementsByClassName('total')[0];
-                        const totalSpan = total.getElementsByTagName('span')[0];
+            // 총 가격 표시 html
+            const total = document.getElementsByClassName('total')[0];
+            const totalSpan = total.getElementsByTagName('span')[0];
 
-                        if (discountPrice>=30000){
-                            totalSpan.innerText = numberWithCommas(discountPrice);
-                            console.log(discountPrice)
-                        }else if(discountPrice <= 30000) {
-                            let totalP = discountPrice+deliveryInt
-                            console.log('to' + totalP)
-                            totalSpan.innerText = numberWithCommas(totalP);
-                        }
+            if (discountPrice >= 30000) {
+                totalSpan.innerText = numberWithCommas(discountPrice);
+                console.log(discountPrice)
+            } else if (discountPrice <= 30000) {
+                let totalP = discountPrice + deliveryInt
+                console.log('to' + totalP)
+                totalSpan.innerText = numberWithCommas(totalP);
+            }
 
-                        // 상품 번호
-                        const prodNoAfter = location.href.split('=')[1];
-                        const prodNo = prodNoAfter.split('&')[0];
+            // 상품 번호
+            const prodNoAfter = location.href.split('=')[1];
+            const prodNo = prodNoAfter.split('&')[0];
 
-                        // 옵션 select 요소
-                        const selectOption = document.querySelectorAll('.selectOption');
+            // 옵션 select 요소
+            const selectOption = document.querySelectorAll('.selectOption');
 
-                        let selectedArray = [];
+            let selectedArray = [];
 
-                        // 각 옵션 select 요소에 대해 이벤트 등록
-                        if (selectOption) {
-                            selectOption.forEach(function (select) {
+            // 각 옵션 select 요소에 대해 이벤트 등록
+            if (selectOption) {
+                selectOption.forEach(function (select) {
 
-                                // 옵션 선택시
-                                select.addEventListener('change', async function () {
-                                    let opName = this.value;
+                    // 옵션 선택시
+                    select.addEventListener('change', async function () {
+                        let opName = this.value;
 
-                                    // 상세 select 선택
-                                    const nav = select.closest('nav');
-                                    const selectDetail = nav.querySelector('.selectDetail');
+                        // 상세 select 선택
+                        const nav = select.closest('nav');
+                        const selectDetail = nav.querySelector('.selectDetail');
 
-                                    await fetch(`/lotteon/cart/opValue/${prodNo}/${opName}`)
-                                        .then(response => response.json())
-                                        .then(data => {
-                                            console.log(data);
-                                            let newOption;
-                                            if (data != null) {
-                                                data.forEach(function (obj) {
+                        await fetch(`/lotteon/cart/opValue/${prodNo}/${opName}`)
+                            .then(response => response.json())
+                            .then(data => {
+                                console.log(data);
+                                let newOption;
+                                if (data != null) {
+                                    data.forEach(function (obj) {
 
-                                                    // 새로운 옵션
-                                                    newOption = document.createElement("option");
+                                        // 새로운 옵션
+                                        newOption = document.createElement("option");
 
-                                                    // 동적으로 새로운 밸류, text 만들어주기
-                                                    newOption.textContent = obj.opValue;
-                                                    newOption.value = obj.opNo;
+                                        // 동적으로 새로운 밸류, text 만들어주기
+                                        newOption.textContent = obj.opValue;
+                                        newOption.value = obj.opNo;
 
-                                                    // 옵션을 추가해주기
-                                                    selectDetail.appendChild(newOption);
-                                                });
-                                            }
-
-                                            let stringValue;
-                                            // 선택한 옵션 값
-                                            selectDetail.addEventListener('change', async function () {
-                                                // 선택된 옵션의 value값 배열로 넣기
-                                                if (newOption != null) {
-                                                    selectedArray.push(this.value);
-
-                                                    stringValue = selectedArray.join(',');
-                                                    console.log(stringValue);
-                                                }
-
-                                                // 장바구니 버튼
-                                                const cart = document.getElementsByClassName('cart')[0];
-                                                cart.onclick = async function (e) {
-                                                    e.preventDefault();
-                                                    if (uidValue == null) {
-                                                        location.href = `/lotteon/member/login`;
-
-                                                    } else if (confirm("장바구니에 담으시겠습니까?")) {
-
-                                                        const jsonData = {
-                                                            "prodNo": prodNo,
-                                                            "count": countValue,
-                                                            "uid": uidValue,
-                                                            "opNo": stringValue
-                                                        };
-
-                                                        console.log(jsonData);
-
-                                                        await fetch(`/lotteon/cart/insert`, {
-                                                            method: 'POST',
-                                                            headers: {"Content-Type": "application/json"},
-                                                            body: JSON.stringify(jsonData)
-                                                        })
-                                                            .then(response => response.json())
-                                                            .then(data => {
-                                                                if (data != null) {
-                                                                    if (confirm("장바구니로 이동하시겠습니까?")) {
-                                                                        location.href = `/lotteon/product/cart?uid=` + uidValue;
-                                                                    }
-                                                                } else {
-                                                                    alert("등록에 실패했습니다.");
-                                                                }
-                                                            })
-                                                            .catch((err) => {
-                                                                console.log(err);
-                                                                alert("등록에 실패했습니다.");
-                                                            });
-                                                    }
-
-                                                }
-
-                                                const order = document.getElementsByClassName('order')[0];
-
-                                                order.onclick = function (e){
-                                                    e.preventDefault();
-
-                                                    const jsonData = {
-                                                        "uid" : uidValue,
-                                                        "prodNo" : prodNo,
-                                                        "count" : countValueText,
-                                                        "opNo": stringValue
-                                                    };
-                                                    console.log(jsonData);
-                                                    if (uidValue == null) {
-                                                        location.href = `/lotteon/member/login`;
-
-                                                    }else if (confirm("바로 구매 하시겠습니까?")) {
-                                                        fetch(`/lotteon/product/order?uid=${uidValue}&prodNo=${prodNo}&count=${countValueText}&opNo=${stringValue}`)
-                                                        .then(response=>response.json())
-                                                        .then(data=>{
-                                                            if (data!=null){
-                                                                console.log(data);
-
-                                                            }
-                                                        })
-                                                        .catch((err)=>{
-                                                            location.href=`/lotteon/product/order?uid=${uidValue}&prodNo=${prodNo}&count=${countValueText}&opNo=${stringValue}`})
-                                                    }
-
-                                                }
-
-                                            });
-
-                                        })
-                                        .catch(err => {
-                                            console.log(err)
-                                        });
-
-                                    // 상세 select disabled 삭제
-                                    selectDetail.disabled = false;
-                                });
-                            });
-                        }
-                        // 장바구니 버튼
-                        const cart = document.getElementsByClassName('cart')[0];
-                        cart.onclick = async function (e) {
-                            e.preventDefault();
-                            if (uidValue == null) {
-                                location.href = `/lotteon/member/login`;
-
-                            } else if (confirm("장바구니에 담으시겠습니까?")) {
-
-                                const jsonData = {
-                                    "prodNo": prodNo,
-                                    "count": countValue,
-                                    "uid": uidValue,
-                                };
-
-                                console.log(jsonData);
-
-                                await fetch(`/lotteon/cart/insert`, {
-                                    method: 'POST',
-                                    headers: {"Content-Type": "application/json"},
-                                    body: JSON.stringify(jsonData)
-                                })
-                                    .then(response => response.json())
-                                    .then(data => {
-                                        if (data != null) {
-                                            if (confirm("장바구니로 이동하시겠습니까?")) {
-                                                location.href = `/lotteon/product/cart?uid=` + uidValue;
-                                            }
-                                        } else {
-                                            alert("등록에 실패했습니다.");
-                                        }
-                                    })
-                                    .catch((err) => {
-                                        console.log(err);
-                                        alert("등록에 실패했습니다.");
+                                        // 옵션을 추가해주기
+                                        selectDetail.appendChild(newOption);
                                     });
-                            }
-
-                        }
-
-                        const order = document.getElementsByClassName('order')[0];
-
-                        order.onclick = function (e){
-                            e.preventDefault();
-
-                            const jsonData = {
-                                "uid" : uidValue,
-                                "prodNo" : prodNo,
-                                "count" : countValueText
-                            };
-                            console.log(jsonData);
-                            if (uidValue == null) {
-                                location.href = `/lotteon/member/login`;
-
-                            }else if (confirm("바로 구매 하시겠습니까?")) {
-                                fetch(`/lotteon/product/order?uid=${uidValue}&prodNo=${prodNo}&count=${countValueText}`)
-                                    .then(response=>response.json())
-                                    .then(data=>{
-                                        if (data!=null){
-                                            console.log(data);
-
-                                        }
-                                    })
-                                    .catch((err)=>{
-                                        location.href=`/lotteon/product/order?uid=${uidValue}&prodNo=${prodNo}&count=${countValueText}`})
-                            }
-
-                        }
-
-                        const countDiv = document.getElementsByClassName('count')[0];
-
-                        // 상품수량 감소 버튼
-                        const decrease = countDiv.getElementsByClassName('decrease')[0];
-                        // 상품수량 중가 버튼
-                        const increase = countDiv.getElementsByClassName('increase')[0];
-                        // 상품수량
-                        const count = countDiv.getElementsByClassName('number')[0];
-                        count.value = 1;
-
-                        const countValueText = count.value;
-
-                        let countValue = parseInt(countValueText);
-
-                        decrease.addEventListener('click', await function (){
-                            if (countValue > 1) {
-                                countValue = countValue - 1;
-                                count.value = countValue;
-                                // 30000원 이상 무료배송
-                                if (totalPrice >= 30000) {
-                                    totalSpan.innerText = numberWithCommas(discountPrice * count.value);
-                                } else if (totalPrice <= 30000) {
-                                    let totalPrice = numberWithCommas((discountPrice * count.value) + deliveryInt);
-                                    totalSpan.innerText = totalPrice;
                                 }
 
-                            }else if(countValue <= 1){
-                                alert('최소 구매 수량은 1개 입니다.');
+                                let stringValue;
+                                // 선택한 옵션 값
+                                selectDetail.addEventListener('change', async function () {
+                                    // 선택된 옵션의 value값 배열로 넣기
+                                    if (newOption != null) {
+                                        selectedArray.push(this.value);
+
+                                        stringValue = selectedArray.join(',');
+                                        console.log(stringValue);
+                                    }
+
+                                    // 장바구니 버튼
+                                    const cart = document.getElementsByClassName('cart')[0];
+                                    cart.onclick = async function (e) {
+                                        e.preventDefault();
+                                        if (uidValue == null) {
+                                            location.href = `/lotteon/member/login`;
+
+                                        } else if (confirm("장바구니에 담으시겠습니까?")) {
+
+                                            const jsonData = {
+                                                "prodNo": prodNo,
+                                                "count": countValue,
+                                                "uid": uidValue,
+                                                "opNo": stringValue
+                                            };
+
+                                            console.log(jsonData);
+
+                                            await fetch(`/lotteon/cart/insert`, {
+                                                method: 'POST',
+                                                headers: {"Content-Type": "application/json"},
+                                                body: JSON.stringify(jsonData)
+                                            })
+                                                .then(response => response.json())
+                                                .then(data => {
+                                                    if (data != null) {
+                                                        if (confirm("장바구니로 이동하시겠습니까?")) {
+                                                            location.href = `/lotteon/product/cart?uid=` + uidValue;
+                                                        }
+                                                    } else {
+                                                        alert("등록에 실패했습니다.");
+                                                    }
+                                                })
+                                                .catch((err) => {
+                                                    console.log(err);
+                                                    alert("등록에 실패했습니다.");
+                                                });
+                                        }
+
+                                    }
+
+                                    const order = document.getElementsByClassName('order')[0];
+
+                                    order.onclick = function (e) {
+                                        e.preventDefault();
+
+                                        const jsonData = {
+                                            "uid": uidValue,
+                                            "prodNo": prodNo,
+                                            "count": countValueText,
+                                            "opNo": stringValue
+                                        };
+                                        console.log(jsonData);
+                                        if (uidValue == null) {
+                                            location.href = `/lotteon/member/login`;
+
+                                        } else if (confirm("바로 구매 하시겠습니까?")) {
+                                            fetch(`/lotteon/product/order?uid=${uidValue}&prodNo=${prodNo}&count=${countValueText}&opNo=${stringValue}`)
+                                                .then(response => response.json())
+                                                .then(data => {
+                                                    if (data != null) {
+                                                        console.log(data);
+
+                                                    }
+                                                })
+                                                .catch((err) => {
+                                                    location.href = `/lotteon/product/order?uid=${uidValue}&prodNo=${prodNo}&count=${countValueText}&opNo=${stringValue}`
+                                                })
+                                        }
+
+                                    }
+
+                                });
+
+                            })
+                            .catch(err => {
+                                console.log(err)
+                            });
+
+                        // 상세 select disabled 삭제
+                        selectDetail.disabled = false;
+                    });
+                });
+            }
+            // 장바구니 버튼
+            const cart = document.getElementsByClassName('cart')[0];
+            cart.onclick = async function (e) {
+                e.preventDefault();
+                if (uidValue == null) {
+                    location.href = `/lotteon/member/login`;
+
+                } else if (confirm("장바구니에 담으시겠습니까?")) {
+
+                    const jsonData = {
+                        "prodNo": prodNo,
+                        "count": countValue,
+                        "uid": uidValue,
+                    };
+
+                    console.log(jsonData);
+
+                    await fetch(`/lotteon/cart/insert`, {
+                        method: 'POST',
+                        headers: {"Content-Type": "application/json"},
+                        body: JSON.stringify(jsonData)
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data != null) {
+                                if (confirm("장바구니로 이동하시겠습니까?")) {
+                                    location.href = `/lotteon/product/cart?uid=` + uidValue;
+                                }
+                            } else {
+                                alert("등록에 실패했습니다.");
                             }
-
-
+                        })
+                        .catch((err) => {
+                            console.log(err);
+                            alert("등록에 실패했습니다.");
                         });
+                }
 
-                        increase.addEventListener('click', await function (){
-                            countValue = countValue +1;
-                            count.value = countValue;
+            }
 
-                            // 30000원 이상 무료배송
-                            if(totalPrice>=30000){
-                                let totalPrice = (discountPrice*count.value);
-                                totalSpan.innerText = numberWithCommas(totalPrice);
-                            }else if(totalPrice <= 30000){
-                                let totalPrice = numberWithCommas((discountPrice*count.value)+deliveryInt);
-                                totalSpan.innerText = totalPrice;
+            const order = document.getElementsByClassName('order')[0];
+
+            order.onclick = function (e) {
+                e.preventDefault();
+
+                const jsonData = {
+                    "uid": uidValue,
+                    "prodNo": prodNo,
+                    "count": countValueText
+                };
+                console.log(jsonData);
+                if (uidValue == null) {
+                    location.href = `/lotteon/member/login`;
+
+                } else if (confirm("바로 구매 하시겠습니까?")) {
+                    fetch(`/lotteon/product/order?uid=${uidValue}&prodNo=${prodNo}&count=${countValueText}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data != null) {
+                                console.log(data);
+
                             }
-                        });
+                        })
+                        .catch((err) => {
+                            location.href = `/lotteon/product/order?uid=${uidValue}&prodNo=${prodNo}&count=${countValueText}`
+                        })
+                }
 
-                        let totalPrice = (discountPrice*countValue)+deliveryInt;
-                        console.log('totalPrice : ' + totalPrice);
+            }
 
-                        const uid = document.getElementById('uid')
-                        let uidValue;
+            const countDiv = document.getElementsByClassName('count')[0];
 
-                        if(uid){
-                            uidValue = uid.value;
+            // 상품수량 감소 버튼
+            const decrease = countDiv.getElementsByClassName('decrease')[0];
+            // 상품수량 중가 버튼
+            const increase = countDiv.getElementsByClassName('increase')[0];
+            // 상품수량
+            const count = countDiv.getElementsByClassName('number')[0];
+            count.value = 1;
 
-                        }else{
-                            uidValue = null;
-                        }
-                        console.log(uidValue);
+            const countValueText = count.value;
+
+            let countValue = parseInt(countValueText);
+
+            decrease.addEventListener('click', await function () {
+                if (countValue > 1) {
+                    countValue = countValue - 1;
+                    count.value = countValue;
+                    // 30000원 이상 무료배송
+                    if (totalPrice >= 30000) {
+                        totalSpan.innerText = numberWithCommas(discountPrice * count.value);
+                    } else if (totalPrice <= 30000) {
+                        let totalPrice = numberWithCommas((discountPrice * count.value) + deliveryInt);
+                        totalSpan.innerText = totalPrice;
                     }
-                    // 최상단 이동 (topButton) 함수 //
-                    function movePageTop() {
-                        window.scrollTo(0, 0);
-                    }
 
-                    let wish = [[${wish}]];
-                    let prodNo = [[${productDTO.prodNo}]];
-                    // wish 클릭
-                    async function changeWish(span){
-                        const noWishImg = span.querySelector('.noWish');
-                        const wishImg = span.querySelector('.wish');
+                } else if (countValue <= 1) {
+                    alert('최소 구매 수량은 1개 입니다.');
+                }
 
-                        console.log('wish : '+wish );
 
-                        if(wish == 0){
-                            // 찜 상태로 변경
-                            noWishImg.classList.add('hidden');
-                            wishImg.classList.remove('hidden');
-                            wish += 1;
+            });
 
-                            // 서버 전달
-                            await fetchGet(`/lotteon/wish/${prodNo}/${wish}`)
+            increase.addEventListener('click', await function () {
+                countValue = countValue + 1;
+                count.value = countValue;
 
-                        }else{
-                            // no 찜 상태로 변경
-                            wishImg.classList.add('hidden');
-                            noWishImg.classList.remove('hidden');
-                            wish -= 1;
+                // 30000원 이상 무료배송
+                if (totalPrice >= 30000) {
+                    let totalPrice = (discountPrice * count.value);
+                    totalSpan.innerText = numberWithCommas(totalPrice);
+                } else if (totalPrice <= 30000) {
+                    let totalPrice = numberWithCommas((discountPrice * count.value) + deliveryInt);
+                    totalSpan.innerText = totalPrice;
+                }
+            });
 
-                            // 서버 전달
-                            await fetchGet(`/lotteon/wish/${prodNo}/${wish}`)
+            let totalPrice = (discountPrice * countValue) + deliveryInt;
+            console.log('totalPrice : ' + totalPrice);
 
-                        }
-                    }
-                    function noLogin() {
-                        // 알림창 띄우기
-                        alert('로그인 후에 이용 가능합니다.');
-                        // 로그인 페이지로 이동
-                        window.location.href = '/lotteon/member/login';
-                    }
-                </script>
+            const uid = document.getElementById('uid')
+            let uidValue;
 
-                <!-- 제목, 페이지 네비게이션 -->
-                <nav>
-                    <h1>상품보기</h1>
-                    <p>
-                        HOME > <span>[[${c1Name}]]</span> > <span>[[${c2Name}]]</span> > <strong>[[${c3Name}]]</strong>
-                    </p>
-                </nav>
+            if (uid) {
+                uidValue = uid.value;
 
-                <!-- 상품 전체 정보 내용 -->
-                <article class="info">
-                    <th:block sec:authorize="isAuthenticated()">
-                        <input type="hidden" id="uid" th:value="${#authentication.principal.member.uid}"></input>
-                    </th:block>
-                    <div class="image">
-                        <img th:src="@{|/prodImg/${productDTO.thumb3}|}" alt="상품이미지"/>
-                    </div>
-                    <div class="summary">
-                        <nav>
-                            <h1>[[${productDTO.company}]]</h1>
-                            <h2>상품번호&nbsp;:&nbsp;<span>[[${productDTO.prodNo}]]</span></h2>
-                            <span th:if="${#authorization.expression('isAuthenticated()')}" class="wishImg" onclick="changeWish(this)">
-                                <img th:class="${(wish == 0) ? 'noWish' : 'noWish hidden'}" th:src="@{/images/heart_32.png}">
-                                <img th:class="${(wish == 1) ? 'wish' : 'wish hidden'}" th:src="@{/images/heart_full32.png}">
+            } else {
+                uidValue = null;
+            }
+            console.log(uidValue);
+        }
+
+        // 최상단 이동 (topButton) 함수 //
+        function movePageTop() {
+            window.scrollTo(0, 0);
+        }
+
+        let wish = [[${wish}]];
+        let prodNo = [[${productDTO.prodNo}]];
+
+        // wish 클릭
+        async function changeWish(span) {
+            const noWishImg = span.querySelector('.noWish');
+            const wishImg = span.querySelector('.wish');
+
+            console.log('wish : ' + wish);
+
+            if (wish == 0) {
+                // 찜 상태로 변경
+                noWishImg.classList.add('hidden');
+                wishImg.classList.remove('hidden');
+                wish += 1;
+
+                // 서버 전달
+                await fetchGet(`/lotteon/wish/${prodNo}/${wish}`)
+
+            } else {
+                // no 찜 상태로 변경
+                wishImg.classList.add('hidden');
+                noWishImg.classList.remove('hidden');
+                wish -= 1;
+
+                // 서버 전달
+                await fetchGet(`/lotteon/wish/${prodNo}/${wish}`)
+
+            }
+        }
+
+        function noLogin() {
+            // 알림창 띄우기
+            alert('로그인 후에 이용 가능합니다.');
+            // 로그인 페이지로 이동
+            window.location.href = '/lotteon/member/login';
+        }
+
+        // 스크롤 div 따라다니기
+        window.addEventListener('scroll', function () {
+            const top = window.scrollY || document.documentElement.scrollTop;
+
+            if (top > 1282) {
+                document.querySelector('.stickyTab').classList.remove('unFixTab');
+                document.querySelector('.stickyTab').classList.add('fixTab');
+            } else {
+                document.querySelector('.stickyTab').classList.remove('fixTab');
+                document.querySelector('.stickyTab').classList.add('unFixTab');
+            }
+        });
+
+        // 스크롤 div 클릭
+        function moveScroll(button) {
+            const className = button.dataset.ant;
+            const goTo = document.getElementsByClassName(className)[0];
+            goTo.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start',
+                inline: 'start'
+            });
+        }
+    </script>
+
+    <!-- 제목, 페이지 네비게이션 -->
+    <nav>
+        <h1>상품보기</h1>
+        <p>
+            HOME > <span>[[${c1Name}]]</span> > <span>[[${c2Name}]]</span> > <strong>[[${c3Name}]]</strong>
+        </p>
+    </nav>
+
+    <!-- 상품 전체 정보 내용 -->
+    <article class="info">
+        <th:block sec:authorize="isAuthenticated()">
+            <input type="hidden" id="uid" th:value="${#authentication.principal.member.uid}"></input>
+        </th:block>
+        <div class="image">
+            <img th:src="@{|/prodImg/${productDTO.thumb3}|}" alt="상품이미지"/>
+        </div>
+        <div class="summary">
+            <nav>
+                <h1>[[${productDTO.company}]]</h1>
+                <h2>상품번호&nbsp;:&nbsp;<span>[[${productDTO.prodNo}]]</span></h2>
+                <span th:if="${#authorization.expression('isAuthenticated()')}" class="wishImg"
+                      onclick="changeWish(this)">
+                                <img th:class="${(wish == 0) ? 'noWish' : 'noWish hidden'}"
+                                     th:src="@{/images/heart_32.png}">
+                                <img th:class="${(wish == 1) ? 'wish' : 'wish hidden'}"
+                                     th:src="@{/images/heart_full32.png}">
                             </span>
-                            <span th:if="${not #authorization.expression('isAuthenticated()')}" class="wishImg" onclick="noLogin()">
+                <span th:if="${not #authorization.expression('isAuthenticated()')}" class="wishImg" onclick="noLogin()">
                                 <img class="noWish" th:src="@{/images/heart_32.png}">
                             </span>
-                        </nav>
-                        <nav>
-                            <h3>[[${productDTO.prodName}]]</h3>
-                            <p>[[${productDTO.descript}]]</p>
-                            <h5 class="rating star4"><a th:href="@{#}">상품평보기</a></h5>
-                        </nav>
-                        <nav>
-                            <div class="org_price">
-                                <del>[[${productDTO.price}]]</del>
-                                <span th:text="${productDTO.discount} + '%' "></span>
-                            </div>
-                            <div class="dis_price">
-                                <ins></ins>
-                            </div>
-                        </nav>
-                        <nav>
-                            <span class="delivery" th:value="${productDTO.discount}">[[${'배송비 :' + productDTO.delivery +'원'}]]</span>
-                            <span class="arrival">모레(금) [[${#temporals.format(productDTO.rdate, 'yy-MM-dd')}]] 도착예정</span>
-                            <span class="desc">본 상품은 국내배송만 가능합니다.</span>
-                        </nav>
+            </nav>
+            <nav>
+                <h3>[[${productDTO.prodName}]]</h3>
+                <p>[[${productDTO.descript}]]</p>
+                <h5 class="rating star4"><a th:href="@{#}">상품평보기</a></h5>
+            </nav>
+            <nav>
+                <div class="org_price">
+                    <del>[[${productDTO.price}]]</del>
+                    <span th:text="${productDTO.discount} + '%' "></span>
+                </div>
+                <div class="dis_price">
+                    <ins></ins>
+                </div>
+            </nav>
+            <nav>
+                <span class="delivery"
+                      th:value="${productDTO.discount}">[[${'배송비 :' + productDTO.delivery +'원'}]]</span>
+                <span class="arrival">모레(금) [[${#temporals.format(productDTO.rdate, 'yy-MM-dd')}]] 도착예정</span>
+                <span class="desc">본 상품은 국내배송만 가능합니다.</span>
+            </nav>
 
-                        <!-- 옵션 선택 nav -->
-                        <nav class="selectNav" th:each="option : ${opNames}">
-                            <select class="form-select selectOption" aria-label="Default select example">
-                                <option selected>옵션</option>
-                                <option class="opName" th:value="${option}">[[${option}]]</option>
-                            </select>
-                            <br>
-                            <select class="form-select selectDetail" aria-label="Default select example" disabled>
-                                <option selected>상세</option>
-
-
-                            </select>
-                        </nav>
-
-                        <nav>
-                            <span class="origin">원산지-상세설명 참조</span>
-                        </nav>
+            <!-- 옵션 선택 nav -->
+            <nav class="selectNav" th:each="option : ${opNames}">
+                <select class="form-select selectOption" aria-label="Default select example">
+                    <option selected>옵션</option>
+                    <option class="opName" th:value="${option}">[[${option}]]</option>
+                </select>
+                <br>
+                <select class="form-select selectDetail" aria-label="Default select example" disabled>
+                    <option selected>상세</option>
 
 
-                        <img th:src="@{/images/vip_plcc_banner.png}" alt="100원만 결제해도 1만원 적립!" class="banner" />
+                </select>
+            </nav>
+
+            <nav>
+                <span class="origin">원산지-상세설명 참조</span>
+            </nav>
 
 
-                        <th:block th:each="banner : ${prodBanners}">
-                            <a th:href="@{${banner.link}}">
-                                <img th:src="@{'/prodImg/'+ ${banner.thumb}}" alt="t1"  class="banner" />
-                            </a>
-                        </th:block>
+            <img th:src="@{/images/vip_plcc_banner.png}" alt="100원만 결제해도 1만원 적립!" class="banner"/>
 
-                        <div class="count">
-                            <button class="decrease">-</button>
-                            <input type="text" class="number" name="num" readonly/>
-                            <button class="increase">+</button>
-                        </div>
 
-                        <div class="total">
-                            <span></span>
-                            <em>총 상품금액</em>
-                        </div>
+            <th:block th:each="banner : ${prodBanners}">
+                <a th:href="@{${banner.link}}">
+                    <img th:src="@{'/prodImg/'+ ${banner.thumb}}" alt="t1" class="banner"/>
+                </a>
+            </th:block>
 
-                        <div class="button">
-                            <input type="button" class="cart"  value="장바구니"/>
-                            <input type="button" class="order" value="바로구매하기"/>
-                        </div>
-                    </div>
-                </article>
+            <div class="count">
+                <button class="decrease">-</button>
+                <input type="text" class="number" name="num" readonly/>
+                <button class="increase">+</button>
+            </div>
 
-                <!-- 상품 정보 내용 -->
-                <article class="detail">
-                    <nav>
-                        <h1>상품정보</h1>
-                    </nav>
-                    <!-- 상품상세페이지 이미지 -->
-                    <img th:src="@{|/prodImg/${productDTO.detail}|}" alt="상세페이지1">
-                </article>
+            <div class="total">
+                <span></span>
+                <em>총 상품금액</em>
+            </div>
 
-                <!-- 상품 정보 제공 고시 내용 -->
-                <article class="notice">
-                    <nav>
-                        <h1>상품 정보 제공 고시</h1>
-                        <p>[전자상거래에 관한 상품정보 제공에 관한 고시] 항목에 의거 등록된 정보입니다.</p>
-                    </nav>
-                    <table border="0">
-                        <tr>
-                            <td>상품번호</td>
-                            <td>[[${productDTO.prodNo}]]</td>
-                        </tr>
-                        <tr>
-                            <td>상품상태</td>
-                            <td>[[${productDTO.status}]]</td>
-                        </tr>
-                        <tr>
-                            <td>부가세 면세여부</td>
-                            <td>[[${productDTO.duty}]]</td>
-                        </tr>
-                        <tr>
-                            <td>영수증발행</td>
-                            <td>[[${productDTO.receipt}]]</td>
-                        </tr>
-                        <tr>
-                            <td>사업자구분</td>
-                            <td>[[${productDTO.bizType}]]</td>
-                        </tr>
-                        <tr>
-                            <td>브랜드</td>
-                            <td>[[${productDTO.company}]]</td>
-                        </tr>
-                        <tr>
-                            <td>원산지</td>
-                            <td>[[${productDTO.origin}]]</td>
-                        </tr>
-                    </table>
-                    <table border="0">
-                        <tr>
-                            <td>제품소재</td>
-                            <td>[[${productDTO.descript}]]</td>
-                        </tr>
-                        <tr>
-                            <td>색상</td>
-                            <td>상세정보 직접입력</td>
-                        </tr>
-                        <tr>
-                            <td>치수</td>
-                            <td>상세정보 직접입력</td>
-                        </tr>
-                        <tr>
-                            <td>제조자/수입국</td>
-                            <td>상세정보 직접입력</td>
-                        </tr>
-                        <tr>
-                            <td>제조국</td>
-                            <td>상세정보 직접입력</td>
-                        </tr>
-                        <tr>
-                            <td>취급시 주의사항</td>
-                            <td>상세정보 직접입력</td>
-                        </tr>
-                        <tr>
-                            <td>제조연월</td>
-                            <td>상세정보 직접입력</td>
-                        </tr>
-                        <tr>
-                            <td>품질보증기준</td>
-                            <td>상세정보 직접입력</td>
-                        </tr>
-                        <tr>
-                            <td>A/S 책임자와 전화번호</td>
-                            <td>상세정보 직접입력</td>
-                        </tr>
-                        <tr>
-                            <td>주문후 예상 배송기간</td>
-                            <td>상세정보 직접입력</td>
-                        </tr>
-                        <tr>
-                        <td colspan="2">구매, 교환, 반품, 배송, 설치 등과 관련하여 추가비용, 제한조건 등의 특이사항이 있는 경우</td>
-                        </tr>
-                    </table>
-                    <p class="notice">
-                        소비자가 전자상거래등에서 소비자 보호에 관한 법률 제 17조 제1항 또는 제3항에 따라 청약철회를 하고
-                        동법 제 18조 제1항 에 따라 청약철회한 물품을 판매자에게 반환하였음에도 불구 하고 결제 대금의
-                        환급이 3영업일을 넘게 지연된 경우, 소비자 는 전자상거래등에서 소비자보호에 관한 법률 제18조
-                        제2항 및 동법 시행령 제21조 2에 따라 지연일수에 대하여 전상법 시행령으로 정하는 이율을 곱하여
-                        산정한 지연이자(“지연배상금”)를 신청할 수 있습니다. 아울러, 교환∙반품∙보증 및 결제대금의
-                        환급신청은 [나의쇼핑정보]에서 하실 수 있으며, 자세한 문의는 개별 판매자에게 연락하여 주시기 바랍니다.
-                    </p>
-                </article>
-                
-                <!-- 상품 리뷰 내용 -->
+            <div class="button">
+                <input type="button" class="cart" value="장바구니"/>
+                <input type="button" class="order" value="바로구매하기"/>
+            </div>
+        </div>
+    </article>
 
-                <article class="review">
-                    <nav>
-                        <h1>상품리뷰</h1>
-                    </nav>
-                    <ul th:each="review : ${productReviewPageResponseDTO.dtoList}">
-                        <li>
-                            <div>
-                                <h5 class="rating star4">상품평</h5>
-<!--                                seo******	2018-07-10-->
-                                <span th:text="${review.uid}+' '+${#temporals.format(review.rdate, 'yyyy-MM-dd')}"></span>
-                            </div>
-                            <h3 th:text="${review.optionValue}"></h3>
-                            <h3 th:text="${review.prodName}"></h3>
-                            <p>
-                                가격대비 정말 괜찮은 옷이라 생각되네요 핏은 음...제가 입기엔 어깨선이 맞고 루즈핏이라 하기도 좀 힘드네요.
-                                아주 약간 루즈한정도...?그래도 이만한 옷은 없다고 봅니다 깨끗하고 포장도 괜찮고 다음에도 여기서 판매하는
-                                제품들을 구매하고 싶네요 정말 만족하고 후기 남깁니다 많이 파시길 바래요 ~ ~ ~
-                            </p>
-                        </li>
-                    </ul>
-                    <div class="paging">
+    <!-- 스크롤 탭 -->
+    <div class="stickyTab unFixTab">
+        <div class="scrollTab">
+            <div class="scrollTabInner">
+                <ul class="scrollTabWrapper">
+                    <li data-object="tab_type=detailtab" class="targetTab" data-ant="viewProd"
+                        onclick="moveScroll(this)">
+                        <a><strong>상품정보</strong><!----></a></li>
+                    <li data-object="tab_type=reviewtab&amp;count=36" class="targetTab" data-ant="review"
+                        onclick="moveScroll(this)">
+                        <a><strong>리뷰</strong><span class="count"></span></a></li>
+                    <li data-object="tab_type=qnatab&amp;count=6" class="targetTab" data-ant="productQnaWrap"
+                        onclick="moveScroll(this)">
+                        <a><strong>문의</strong><span class="count"></span></a></li>
+                    <li data-object="tab_type=exreturntab" class="targetTab" data-ant="notice"
+                        onclick="moveScroll(this)"><a><strong>정보 고시</strong><!----></a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- 상품 정보 내용 -->
+    <article class="detail">
+        <nav>
+            <h1 class="viewProd">상품정보</h1>
+        </nav>
+        <!-- 상품상세페이지 이미지 -->
+        <img th:src="@{|/prodImg/${productDTO.detail}|}" alt="상세페이지1">
+    </article>
+
+    <!-- 상품 정보 제공 고시 내용 -->
+    <article class="notice">
+        <nav>
+            <h1>상품 정보 제공 고시</h1>
+            <p>[전자상거래에 관한 상품정보 제공에 관한 고시] 항목에 의거 등록된 정보입니다.</p>
+        </nav>
+        <table border="0">
+            <tr>
+                <td>상품번호</td>
+                <td>[[${productDTO.prodNo}]]</td>
+            </tr>
+            <tr>
+                <td>상품상태</td>
+                <td>[[${productDTO.status}]]</td>
+            </tr>
+            <tr>
+                <td>부가세 면세여부</td>
+                <td>[[${productDTO.duty}]]</td>
+            </tr>
+            <tr>
+                <td>영수증발행</td>
+                <td>[[${productDTO.receipt}]]</td>
+            </tr>
+            <tr>
+                <td>사업자구분</td>
+                <td>[[${productDTO.bizType}]]</td>
+            </tr>
+            <tr>
+                <td>브랜드</td>
+                <td>[[${productDTO.company}]]</td>
+            </tr>
+            <tr>
+                <td>원산지</td>
+                <td>[[${productDTO.origin}]]</td>
+            </tr>
+        </table>
+        <table border="0">
+            <tr>
+                <td>제품소재</td>
+                <td>[[${productDTO.descript}]]</td>
+            </tr>
+            <tr>
+                <td>색상</td>
+                <td>상세정보 직접입력</td>
+            </tr>
+            <tr>
+                <td>치수</td>
+                <td>상세정보 직접입력</td>
+            </tr>
+            <tr>
+                <td>제조자/수입국</td>
+                <td>상세정보 직접입력</td>
+            </tr>
+            <tr>
+                <td>제조국</td>
+                <td>상세정보 직접입력</td>
+            </tr>
+            <tr>
+                <td>취급시 주의사항</td>
+                <td>상세정보 직접입력</td>
+            </tr>
+            <tr>
+                <td>제조연월</td>
+                <td>상세정보 직접입력</td>
+            </tr>
+            <tr>
+                <td>품질보증기준</td>
+                <td>상세정보 직접입력</td>
+            </tr>
+            <tr>
+                <td>A/S 책임자와 전화번호</td>
+                <td>상세정보 직접입력</td>
+            </tr>
+            <tr>
+                <td>주문후 예상 배송기간</td>
+                <td>상세정보 직접입력</td>
+            </tr>
+            <tr>
+                <td colspan="2">구매, 교환, 반품, 배송, 설치 등과 관련하여 추가비용, 제한조건 등의 특이사항이 있는 경우</td>
+            </tr>
+        </table>
+        <p class="notice">
+            소비자가 전자상거래등에서 소비자 보호에 관한 법률 제 17조 제1항 또는 제3항에 따라 청약철회를 하고
+            동법 제 18조 제1항 에 따라 청약철회한 물품을 판매자에게 반환하였음에도 불구 하고 결제 대금의
+            환급이 3영업일을 넘게 지연된 경우, 소비자 는 전자상거래등에서 소비자보호에 관한 법률 제18조
+            제2항 및 동법 시행령 제21조 2에 따라 지연일수에 대하여 전상법 시행령으로 정하는 이율을 곱하여
+            산정한 지연이자(“지연배상금”)를 신청할 수 있습니다. 아울러, 교환∙반품∙보증 및 결제대금의
+            환급신청은 [나의쇼핑정보]에서 하실 수 있으며, 자세한 문의는 개별 판매자에게 연락하여 주시기 바랍니다.
+        </p>
+    </article>
+
+    <!-- 상품 리뷰 내용 -->
+    <article class="review">
+        <nav>
+            <h1>상품리뷰</h1>
+        </nav>
+        <ul th:each="review : ${productReviewPageResponseDTO.dtoList}">
+            <li>
+                <div>
+                    <h5 class="rating star4">상품평</h5>
+                    <!--                                seo******	2018-07-10-->
+                    <span th:text="${review.uid}+' '+${#temporals.format(review.rdate, 'yyyy-MM-dd')}"></span>
+                </div>
+                <h3 th:text="${review.optionValue}"></h3>
+                <h3 th:text="${review.prodName}"></h3>
+                <p>
+                    가격대비 정말 괜찮은 옷이라 생각되네요 핏은 음...제가 입기엔 어깨선이 맞고 루즈핏이라 하기도 좀 힘드네요.
+                    아주 약간 루즈한정도...?그래도 이만한 옷은 없다고 봅니다 깨끗하고 포장도 괜찮고 다음에도 여기서 판매하는
+                    제품들을 구매하고 싶네요 정말 만족하고 후기 남깁니다 많이 파시길 바래요 ~ ~ ~
+                </p>
+            </li>
+        </ul>
+        <ul>
+            <li>
+                <div>
+                    <h5 class="rating star4">상품평</h5>
+                    <!--                                seo******	2018-07-10-->
+                    <span>작성자</span>
+                </div>
+                <h3>옵션값</h3>
+                <h3>리뷰 상품전호</h3>
+                <p>
+                    가격대비 정말 괜찮은 옷이라 생각되네요 핏은 음...제가 입기엔 어깨선이 맞고 루즈핏이라 하기도 좀 힘드네요.
+                    아주 약간 루즈한정도...?그래도 이만한 옷은 없다고 봅니다 깨끗하고 포장도 괜찮고 다음에도 여기서 판매하는
+                    제품들을 구매하고 싶네요 정말 만족하고 후기 남깁니다 많이 파시길 바래요 ~ ~ ~
+                </p>
+            </li>
+        </ul>
+        <!-- 리뷰 페이지 -->
+        <div class="paging">
                         <span class="prev">
                             <a href="#"><&nbsp;이전</a>
                         </span>
-                        <span class="num">
+            <span class="num">
                             <a href="#" class="on">1</a>
                             <a href="#">2</a>
                             <a href="#">3</a>
@@ -599,41 +668,116 @@
                             <a href="#">6</a>
                             <a href="#">7</a>
                         </span>
-                        <span class="next">
+            <span class="next">
                             <a href="#">다음&nbsp;></a>
                         </span>
+        </div>
+    </article><!-- 리뷰 끝 -->
+    <!-- 문의 -->
+    <article class="productQnaWrap">
+        <div class="qnaWrap groupProd">
+            <div class="util">
+                <div class="sum"><strong>Q&amp;A</strong><span></span>
+                </div><!----></div>
+            <ul class="qnaList">
+                <!-- 문의 내용 li 반복 -->
+                <li>
+                    <div class="category">
+                        <span class="classification">기타</span>
+                        <span class="option">옵션 : 1. 구구 크러스트 홈 * 2개 / 1. 구구 크러스트 홈 * 2개 / 5. 위즐 커피초코퍼지 * 2개</span>
                     </div>
-
-                </article>
-                
-            </section>
-            <!-- 상품 상세페이지 끝 -->
-        </main>
-        <footer>
-            <ul>
-              <li><a th:href="@{#}">회사소개</a></li>
-              <li><a th:href="@{#}">서비스이용약관</a></li>
-              <li><a th:href="@{#}">개인정보처리방침</a></li>
-              <li><a th:href="@{#}">전자금융거래약관</a></li>
+                    <div class="question"><p><span> 문의 내용 입니다. 문의 내용 입니다. 문의 내용 입니다. </span><!----></p></div>
+                    <div class="answer">
+                        <a style="cursor: pointer;">
+                            <p>안녕하세요 고객님,
+                                불편을 드려 죄송합니다.
+                                해당 사항 확인을 위해 사진첨부하여 재문의 부탁드립니다.
+                                사진 확인 후 처리 도와드리겠습니다.
+                                감사합니다.</p>
+                            <div class="seller">
+                                <span class="sellerName">주식회사 디씽컴퍼니</span>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="actions">
+                        <span class="time">2023.08.19</span></div>
+                </li>
+                <li>
+                    <div class="category">
+                        <span class="classification">기타</span>
+                        <span class="option">옵션 : 1. 구구 크러스트 홈 * 2개 / 1. 구구 크러스트 홈 * 2개 / 5. 위즐 커피초코퍼지 * 2개</span>
+                    </div>
+                    <div class="question"><p><span> 문의 내용 입니다. 문의 내용 입니다. 문의 내용 입니다. </span><!----></p></div>
+                    <div class="answer">
+                        <a style="cursor: pointer;">
+                            <p>안녕하세요 고객님,
+                                불편을 드려 죄송합니다.
+                                해당 사항 확인을 위해 사진첨부하여 재문의 부탁드립니다.
+                                사진 확인 후 처리 도와드리겠습니다.
+                                감사합니다.</p>
+                            <div class="seller">
+                                <span class="sellerName">주식회사 디씽컴퍼니</span>
+                                <span class="badge orange">판매자</span>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="actions">
+                        <span class="time">2023.08.19</span></div>
+                </li>
             </ul>
-            <div>
-              <p><img th:src="@{/images/footer_logo.png}" alt="로고" /></p>
-              <p>
-                <strong>(주)롯데ON</strong><br />
-                서울특별시 송파구 올림픽로 300 롯데월드타워 26층 (역삼동 강남파이낸스센터)<br />
-                대표이사 : 김사무엘상현, 정준호, 강성현<br />
-                사업자등록번호 : 529-85-00774(롯데쇼핑(주) e커머스사업부)<br />
-                통신판매업 신고 : 서울송파 제0158호<br>
-                호스팅 서비스사업자 : 롯데쇼핑(주) e커머스사업부
-              </p>
-              <p>
-                <strong>고객센터</strong><br />
-                Tel : 1899-7000(유료) (평일 09:00~18:00)<br />
-                Fax : 051-123-4567 | E-mail : lotteon@lotte.net<br />
-              </p>
+            <div class="popToast is-footer" shape="msg"
+                 style="z-index: 0; display: none;">
+                <p class="msg">
+                </p>
             </div>
-          </footer>
-        <button type="button" id="top">상단이동</button>
-    </div>    
+        </div>
+        <!-- 문의 페이지 -->
+        <div class="paging">
+                        <span class="prev">
+                            <a href="#"><&nbsp;이전</a>
+                        </span>
+            <span class="num">
+                            <a href="#" class="on">1</a>
+                            <a href="#">2</a>
+                            <a href="#">3</a>
+                            <a href="#">4</a>
+                            <a href="#">5</a>
+                            <a href="#">6</a>
+                            <a href="#">7</a>
+                        </span>
+            <span class="next">
+                            <a href="#">다음&nbsp;></a>
+                        </span>
+        </div>
+    </article> <!-- 문의 끝 -->
+</section>
+<!-- 상품 상세페이지 끝 -->
+</main>
+<footer>
+    <ul>
+        <li><a th:href="@{#}">회사소개</a></li>
+        <li><a th:href="@{#}">서비스이용약관</a></li>
+        <li><a th:href="@{#}">개인정보처리방침</a></li>
+        <li><a th:href="@{#}">전자금융거래약관</a></li>
+    </ul>
+    <div>
+        <p><img th:src="@{/images/footer_logo.png}" alt="로고"/></p>
+        <p>
+            <strong>(주)롯데ON</strong><br/>
+            서울특별시 송파구 올림픽로 300 롯데월드타워 26층 (역삼동 강남파이낸스센터)<br/>
+            대표이사 : 김사무엘상현, 정준호, 강성현<br/>
+            사업자등록번호 : 529-85-00774(롯데쇼핑(주) e커머스사업부)<br/>
+            통신판매업 신고 : 서울송파 제0158호<br>
+            호스팅 서비스사업자 : 롯데쇼핑(주) e커머스사업부
+        </p>
+        <p>
+            <strong>고객센터</strong><br/>
+            Tel : 1899-7000(유료) (평일 09:00~18:00)<br/>
+            Fax : 051-123-4567 | E-mail : lotteon@lotte.net<br/>
+        </p>
+    </div>
+</footer>
+<button type="button" id="top">상단이동</button>
+</div>
 </body>
 </html>
