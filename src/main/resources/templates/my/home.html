@@ -4,47 +4,45 @@
 <main id="myLayout" layout:fragment="content">
     <script th:src="@{/js/myInfo.js}"></script>
     <script>
-        window.onload = function (){
-            // JavaScript를 사용하여 현재 날짜를 가져옴
-            const currentDate = new Date();
-            // 년도, 월, 일을 가져와서 문자열로 만듦
-            const year = currentDate.getFullYear().toString().slice(-2);
-            const month = ('0' + (currentDate.getMonth() + 1)).slice(-2); // 두 자리수로 만들고 0 삽입
-            const day = ('0' + currentDate.getDate()).slice(-2); // 두 자리수로 만들고 0 삽입 '-' + currentDate.getDate();
+        window.onload = function () {
 
-            const formattedDate = year + month + day;
-            console.log(formattedDate)
+            // 주문번호 생성 주문일자+주문번호
+            document.querySelectorAll('#order').forEach(function (order) {
+                console.log(order);
+                const date=order.querySelector("#ordDate").innerText; // 주문일자
+                const no=order.querySelector(".ordNo").innerText; // 주문번호
+                const paddedOrdNo = ('000' + no).slice(-4); // 주문번호 4자리로 만들기
+                console.log(paddedOrdNo);
 
-            // 주문번호
-            document.querySelectorAll('.ordNo').forEach(function (order){
+                const ordDate=date.replace(/-/g, '').substring(2); // 주문일자 -없애고 년단위 앞 두지리 없애기
+                console.log(ordDate);
 
-                const ordNo = order.innerText;
+                const finalOrdNo=ordDate+paddedOrdNo; // 최종 주문번호
+                console.log(finalOrdNo);
 
-                // 주문 번호를 최대 4자리의 숫자로 만듦
-                const paddedOrdNo = ('000' + ordNo).slice(-4);
+                order.querySelector(".ordNo").innerHTML = "";
+                order.querySelector(".ordNo").textContent = finalOrdNo;
 
-                const finalOrdNo = formattedDate + paddedOrdNo;
-
-                order.innerHTML=""; // html 요소 비우기
-                order.textContent=finalOrdNo; //채우기
-            });
+            })
 
             var strDateP;
             var dateP;
+            const currentDate = new Date();
 
             //포인트 적립 및 소멸 구분
             document.querySelectorAll('#point').forEach(function (point){
 
-               point.querySelectorAll('#pointDate').forEach(function (date){
-                   strDateP=date.innerText;
-                   dateP=new Date(strDateP);
+                point.querySelectorAll('#pointDate').forEach(function (date){
+                    strDateP=date.innerText;
+                    dateP=new Date(strDateP);
 
-               })
+                })
                 console.log("계산전 만료 날짜"+dateP)
                 console.log("현재날짜"+currentDate);
 
                 const timeDiff = currentDate.getTime() - dateP.getTime();
                 const diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
 
                 console.log('현재날짜와 소멸날짜의 차이:', diffDays);
 
@@ -65,7 +63,12 @@
                     }
                 })
             })
+
+
+
+
         }
+
     </script>
         <div id="my">
             <div class="home">
@@ -100,14 +103,14 @@
                                 <th>상태</th>
                                 <th>확인/신청</th>
                             </tr>
-                            <tr th:each="order : ${orderItemDTOS}">
-                                <td class="date">[[${#temporals.format(order.ordDate, 'yyyy-MM-dd')}]]</td>
+                            <tr id="order" th:each="order : ${orderItemDTOS}">
+                                <td class="date" id="ordDate">[[${#temporals.format(order.ordDate, 'yyyy-MM-dd')}]]</td>
                                 <td class="info">
                                     <a th:href="@{#}" class="thumb"><img th:src="@{'/prodImg/'+${order.thumb3}}" alt="" style="width: 80px; height: 80px;"></a>
                                     <ul>
                                         <li class="company"><a th:href="@{#}">[[${order.company}]]</a></li>
                                         <li class="prodName"><a th:href="@{#}">[[${order.prodName}]]</a></li>
-                                        <li class="orderNo">수량 : <span class="prodCount">[[${order.count}]]</span>개 / <span class="ordNo">주문번호 : <a th:href="@{#}">1012211341</a></span></li>
+                                        <li class="orderNo">수량 : <span class="prodCount">[[${order.count}]]</span>개 / <span >주문번호 : <a th:href="@{#}" class="ordNo">[[${order.ordNo}]]</a></span></li>
                                         <li class="prodPrice" th:text="${#numbers.formatInteger(order.totalPricePerProduct, 3, 'COMMA')}"></li>
                                     </ul>
                                 </td>
