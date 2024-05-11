@@ -18,7 +18,14 @@
                     <li><a th:href="@{/my/infoAccessCheck(uid=${#authentication.principal.member.uid})}">나의설정</a></li>                </ul>
 
                 <section>
-                    <a th:href="@{#}"><img th:src="@{/my/images/my_banner1.jpg}" alt="패션, 타운 하나로 끝" class="banner"></a>
+                    <div id="bannerTop" class="on" th:style="${banners.size() > 0 ? 'background: ' + banners[0].backcolor + ';' : ''}">
+                        <!-- 배너 영역 -->
+                        <th:block th:each="banner : ${banners}">
+                            <a th:href="@{${banner.link}}">
+                                <img th:src="@{'/prodImg/'+ ${banner.thumb}}" alt="t1" />
+                            </a>
+                        </th:block>
+                    </div>
 
                     <article>
                         <h3>전체주문내역</h3>
