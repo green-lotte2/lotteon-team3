@@ -11,6 +11,7 @@ import kr.co.lotteon.entity.member.Member;
 import kr.co.lotteon.entity.product.OrderItem;
 import kr.co.lotteon.entity.product.Product;
 import kr.co.lotteon.repository.product.Cate1Repository;
+import kr.co.lotteon.repository.product.OptionRepository;
 import kr.co.lotteon.security.MyUserDetails;
 import kr.co.lotteon.service.admin.BannerService;
 import kr.co.lotteon.service.member.MemberService;
@@ -44,6 +45,7 @@ public class ProductController {
     private final OptionService optionService;
     private final MemberService memberService;
     private final WishService wishService;
+    private final OptionRepository optionRepository;
 
     // cart 페이지 매핑
     @GetMapping("/product/cart")
@@ -145,6 +147,24 @@ public class ProductController {
        log.info("컨트롤러2"+prodNo);
 
        ProductDTO productDTOS = productService.prodToOrder(prodNo);
+       // 옵션 뽑아내기
+       String [] opNoString = opNo.split(",");
+       int[] optionIds = new int[opNoString.length];
+
+       for(int i=0; i<opNoString.length; i++){
+           optionIds[i] = Integer.parseInt(opNoString[i].trim());
+       }
+
+       List<OptionDTO> options = new ArrayList<>();
+       for (int optionNos : optionIds){
+           OptionDTO optionDTO = optionRepository.selectOptionForCart(optionNos);
+
+           if(optionDTO != null){
+               options.add(optionDTO);
+           }
+           productDTOS.setOptionList(options);
+       }
+
        productDTOS.setCount(count);
        productDTOS.setOpNo(opNo);
 
