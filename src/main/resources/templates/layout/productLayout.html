@@ -18,6 +18,12 @@
     <link rel="stylesheet" th:href="@{https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.css}">
     <link rel="stylesheet" th:href="@{/css/common.css}"/>
     <script th:src="@{/product/js/util.js}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // 로그인 상태 확인
+        const isAuthenticated = [[${#authorization.expression('isAuthenticated()')}]];
+    </script>
+    <script th:src="@{/js/sseSeller.js}"></script>
     <link rel="stylesheet" th:href="@{/css/product.css}">
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -68,7 +74,9 @@
             <div>
                 <a th:href="@{/index}"><img th:src="@{/images/header_logo.png}" alt="로고" /></a>
                 <form th:action="@{/product/search}" method="get">
-                    <input type="text" name="searchKeyword" placeholder="검색"/>
+                    <input type="hidden" name="sort" value="prodNo">
+                    <input type="hidden" name="how" value="DESC">
+                    <input type="text" name="searchKeyword" placeholder="검색" />
                     <button><i class="fa fa-search"></i></button>
                 </form>
             </div>

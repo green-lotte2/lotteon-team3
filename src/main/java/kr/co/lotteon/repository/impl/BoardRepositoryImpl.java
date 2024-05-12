@@ -240,6 +240,16 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
         // 페이지 처리용 page 객체 리턴
         return new PageImpl<>(content, pageable, total);
     }
+    // 판매자 상품문의 개수 조회
+    @Override
+    public int countSellerQna(List<Integer> prodNos){
+        return jpaQueryFactory
+                .select(qBoardEntity.count())
+                .from(qBoardEntity)
+                .where(qBoardEntity.prodNo.in(prodNos).and(qBoardEntity.status.contains("검토중")))
+                .fetch().size();
+
+    }
     @Override
         public int countByUidAndStatusIn (String uid, List<String> statusList){
         return (int) jpaQueryFactory
