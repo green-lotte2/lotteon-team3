@@ -289,12 +289,17 @@ public class OrderItemRepositoryImpl implements OrderItemRepositoryCustom {
     @Override
     public List<Tuple> selectOrderComplete(int ordNo) {
 
-        return jpaQueryFactory.select(qProduct.prodName, qProduct.descript, qProduct.company, qProduct.price, qProduct.discount,
-                                        qProduct.thumb3, qProduct.cate1, qProduct.cate2, qProduct.cate3, qOrderItem)
+        log.info("완료 임플111" + ordNo);
+
+        List<Tuple> result = jpaQueryFactory.select(qProduct.prodName, qProduct.descript, qProduct.company, qProduct.price, qProduct.discount,
+                        qProduct.thumb3, qProduct.cate1, qProduct.cate2, qProduct.cate3, qOrderItem)
                 .from(qOrderItem).join(qProduct)
                 .on(qOrderItem.prodNo.eq(qProduct.prodNo))
                 .where(qOrderItem.ordNo.eq(ordNo))
                 .fetch();
+
+        log.info("완료 임플222" + result);
+        return result;
     }
 
 

@@ -4,6 +4,8 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -35,4 +37,7 @@ public class OrderItemDTO {
     private int cate3;
 
     private int totalPricePerProduct; // 상품 개별 총 가격(할인적용가)
+
+    // 옵션 리스트
+    private List<OptionDTO> optionList;
 }

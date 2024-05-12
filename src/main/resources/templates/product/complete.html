@@ -6,7 +6,14 @@
 
             <!-- 결제완료 페이지 시작 -->
             <section class="complete" layout:fragment="content">
-              
+
+              <script>
+                // 최상단 이동 (topButton) 함수 //
+                function movePageTop() {
+                  window.scrollTo(0, 0);
+                }
+              </script>
+
               <!-- 제목, 페이지 네비게이션 -->
               <nav>
                 <h1>주문완료</h1>
@@ -43,6 +50,9 @@
                             [[${orderItem.prodName}]]
                           </a></h2>
                           <p>[[${orderItem.descript}]]</p>
+                          <th:block th:each="option :${orderItem.optionList}">
+                            <span>[[${option.opName}]]:[[${option.opValue}]]</span>
+                          </th:block>
                         </div>
                       </article>
                     </td>

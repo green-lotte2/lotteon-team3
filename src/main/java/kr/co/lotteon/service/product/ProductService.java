@@ -285,6 +285,8 @@ public class ProductService {
 
                         String opNos = productDTO.getOpNo();
                         log.info("오더 조회 서비스 옵션번호 : " + opNos);
+
+                        // 옵션 뽑아내기
                         String[] optionString = opNos.split(",");
                         int[] optionIds = new int[optionString.length];
 
@@ -385,6 +387,28 @@ public class ProductService {
                     orderItemDTO.setCate1(tuple.get(6, Integer.class));
                     orderItemDTO.setCate2(tuple.get(7, Integer.class));
                     orderItemDTO.setCate3(tuple.get(8, Integer.class));
+
+
+                    // 옵션 뽑아내기
+                    if (orderItemDTO.getOpNo() != null){
+                        String[] optionString = orderItemDTO.getOpNo().split(",");
+                        int[] optionIds = new int[optionString.length];
+
+                        for (int i = 0; i < optionString.length; i++) {
+                            optionIds[i] = Integer.parseInt(optionString[i].trim());
+                        }
+
+                        List<OptionDTO> options = new ArrayList<>();
+                        for(int optionNos : optionIds){
+                            OptionDTO option = optionRepository.selectOptionForCart(optionNos);
+
+                            if (option != null){
+                                options.add(option);
+                            }
+                            orderItemDTO.setOptionList(options);
+                        }
+                    }
+
 
                     return orderItemDTO;
                 })
