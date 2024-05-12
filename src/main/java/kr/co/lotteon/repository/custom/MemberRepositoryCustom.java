@@ -25,6 +25,9 @@ public interface MemberRepositoryCustom {
     // 판매자 목록 검색 조회
     public Page<Member> searchSellerList(AdminPageRequestDTO adminPageRequestDTO, Pageable pageable);
 
+    // prodNo로 판매자 조회
+    public String selectUidByProdNo(int prodNo);
+
     // 닉네임 조회
     public Optional<Member> selectMemberByUidAndNickname(String uid, String nick);
 
