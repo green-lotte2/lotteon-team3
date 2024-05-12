@@ -13,6 +13,7 @@ public class SearchPageResponseDTO {
     private int total;
     private int cate1;
     private int cate2;
+    private int cate3;
     private String sort;
     private String how;
 

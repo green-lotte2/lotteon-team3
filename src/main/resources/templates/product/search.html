@@ -219,7 +219,7 @@
 
             <td>
                 <h3 class="name"><a style="font-size: 16px; font-weight: bold;" th:href="@{/product/view(prodNo=${product.prodNo},cate1=${product.cate1},cate2=${product.cate2},cate3=${product.cate3})}" th:text="${product.prodName}"></a></h3>
-                <a href="#" class="desc" th:text="${product.descript}">상품 설명</a>
+                <a th:href="@{/product/view(prodNo=${product.prodNo},cate1=${product.cate1},cate2=${product.cate2},cate3=${product.cate3})}" class="desc" th:text="${product.descript}">상품 설명</a>
             </td>
             <td>
                 <ul>
