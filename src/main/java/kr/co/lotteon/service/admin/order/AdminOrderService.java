@@ -62,7 +62,7 @@ public class AdminOrderService {
                     String strOpNos = orderItemDTO.getOpNo();
                     log.info("strOpNos : " + strOpNos);
 
-                    if(strOpNos != null) {
+                    if(strOpNos != null && !strOpNos.equals("")) {
 
                         // String -> List<Integer>
                         List<Integer> opNos = Arrays.stream(strOpNos.split(","))
@@ -158,7 +158,7 @@ public class AdminOrderService {
                     String strOpNos = orderItemDTO.getOpNo();
                     log.info("strOpNos : " + strOpNos);
 
-                    if(strOpNos != null) {
+                    if(strOpNos != null && !strOpNos.equals("")) {
 
                         // String -> List<Integer>
                         List<Integer> opNos = Arrays.stream(strOpNos.split(","))

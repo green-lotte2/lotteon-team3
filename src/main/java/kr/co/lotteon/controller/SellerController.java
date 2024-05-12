@@ -166,7 +166,7 @@ public class SellerController {
 
         // 로그인 중일 때 해당 사용자 id를 seller에 입력
         MyUserDetails userDetails = (MyUserDetails) authentication.getPrincipal();
-        String sellerId = userDetails.getMember().getName();
+        String sellerId = userDetails.getMember().getNick();
         productDTO.setSeller(sellerId);
         log.info("판매자 상품 등록 Cont 2 sellerId : " + sellerId);
 

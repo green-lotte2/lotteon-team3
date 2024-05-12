@@ -356,7 +356,7 @@ public class SellerService {
                     String strOpNos = orderItemDTO.getOpNo();
                     log.info("strOpNos : " + strOpNos);
 
-                    if(strOpNos != null) {
+                    if(strOpNos != null && !strOpNos.equals("")) {
 
                         // String -> List<Integer>
                         List<Integer> opNos = Arrays.stream(strOpNos.split(","))
@@ -457,7 +457,7 @@ public class SellerService {
                     String strOpNos = orderItemDTO.getOpNo();
                     log.info("strOpNos : " + strOpNos);
 
-                    if(strOpNos != null) {
+                    if(strOpNos != null && !strOpNos.equals("")) {
 
                         // String -> List<Integer>
                         List<Integer> opNos = Arrays.stream(strOpNos.split(","))
@@ -661,7 +661,7 @@ public class SellerService {
 
         // 로그인 중일 때 해당 사용자 id를 seller에 입력
         MyUserDetails userDetails = (MyUserDetails) authentication.getPrincipal();
-        String sellerId = userDetails.getMember().getName();
+        String sellerId = userDetails.getMember().getNick();
 
         return sellerId;
     }

@@ -41,6 +41,7 @@ if (isAuthenticated) {
     };
 
     function displayNotification(message) {
+        console.log("message " + message);
         Swal.fire({
             // toast:true,
             position: 'top',

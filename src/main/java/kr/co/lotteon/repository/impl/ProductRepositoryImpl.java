@@ -259,6 +259,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
     public List<Integer> selectProdNoForQna(String sellerId) {
         // SELECT ProdNo FROM product WHERE seller = ?;
 
+        log.info("aaa : "+sellerId);
         List<Integer> prodNos = jpaQueryFactory
                 .select(qProduct.prodNo)
                 .from(qProduct)
@@ -266,7 +267,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
                 .fetch();
 
         log.info("판매자 상품 번호 All 조회 Impl");
-        ;
+
         return prodNos;
     }
 
