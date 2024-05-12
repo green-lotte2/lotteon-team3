@@ -338,6 +338,9 @@
                                   <img th:src="@{|/prodImg/${productDTO.thumb3}|}" th:alt="${productDTO.descript}">
                                   <div class="hover-ly">
                                       <p>[[${productDTO.descript}]]</p>
+                                      <th:block th:each="option:${productDTO.optionList}">
+                                        <span>[[${option.opName}]]/[[${option.opValue}]]</span>
+                                      </th:block>
                                       <span id="count">수량:[[${productDTO.count}]]</span>
                                       <input type="hidden" id="opNo" name="options" th:value="${productDTO.opNo}">
                                       <input type="hidden" id="prodNo" name="options" th:value="${productDTO.prodNo}">

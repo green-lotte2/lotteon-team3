@@ -135,4 +135,18 @@ public class OptionRepositoryImpl implements OptionRepositoryCustom {
                 .fetch();
     }
 
+    @Override
+    public OptionDTO selectOptionForCart(int opNo) {
+        Option result = jpaQueryFactory.selectFrom(qOption)
+                                            .where(qOption.opNo.eq(opNo))
+                                            .fetchOne();
+
+        log.info("옵션뽑아오기 임플 1: "+result);
+
+        OptionDTO optionDTO = modelMapper.map(result, OptionDTO.class);
+        log.info("옵션뽑아오기 임플 2: "+optionDTO);
+
+        return optionDTO;
+    }
+
 }

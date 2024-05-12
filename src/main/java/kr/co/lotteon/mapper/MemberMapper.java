@@ -8,5 +8,5 @@ import org.apache.ibatis.annotations.Param;
 public interface MemberMapper {
     public int selectCountMember(@Param("type") String type, @Param("value") String value);
     public int countByNameAndEmail(@Param("type")String type,@Param("value")String value,@Param("email")String email);
-
+    public void updateMemberPoint(String uid, int usedPoint);
 }

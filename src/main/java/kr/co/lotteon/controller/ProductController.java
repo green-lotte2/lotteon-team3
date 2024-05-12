@@ -19,6 +19,7 @@ import kr.co.lotteon.service.product.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.Response;
+import org.springframework.boot.Banner;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -60,12 +61,6 @@ public class ProductController {
         log.info("cartProducts: {} ", cartProducts );
 
         return "/product/cart";
-    }
-
-    // complete(주문 완료) 페이지 매핑
-    @GetMapping("/product/complete")
-    public String complete(int ordNo){
-        return "/product/complete";
     }
 
     // list (상품 목록) 페이지 매핑
@@ -146,7 +141,6 @@ public class ProductController {
    @GetMapping("/product/order")
     public String order(@RequestParam String uid, int prodNo, int count, String opNo, Model model) throws JsonProcessingException {
 
-
        log.info("컨트롤러1"+uid);
        log.info("컨트롤러2"+prodNo);
 
@@ -187,6 +181,29 @@ public class ProductController {
 
         return productService.saveOrderItem(orderItemDTOS, uid, ordNo);
     }
+
+    // complete(주문 완료) 페이지 매핑
+    @GetMapping("/product/complete")
+    public String complete(int ordNo, @AuthenticationPrincipal Object principal , Model model){
+
+        // 주문정보 가져오기
+        OrderDTO orderDTO = productService.selectOrder(ordNo);
+        model.addAttribute("orderDTO", orderDTO);
+
+        Member member = ((MyUserDetails) principal).getMember();
+        String uid = member.getUid();
+        MemberDTO memberDTO =memberService.findByUid(uid);
+        log.info("주문 완료1" + memberDTO);
+
+        model.addAttribute("memberDTO", memberDTO);
+
+        List<OrderItemDTO> orderItemDTOS = productService.selectOrderComplete(ordNo);
+        model.addAttribute("orderItemDTOS", orderItemDTOS);
+
+        log.info("주문 완료2" + orderItemDTOS);
+        return "/product/complete";
+    }
+
     // search (상품 검색) 페이지 매핑
     @GetMapping("/product/search")
     public String search(Model model, SearchPageRequestDTO searchPageRequestDTO) {

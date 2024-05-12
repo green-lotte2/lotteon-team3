@@ -284,4 +284,18 @@ public class OrderItemRepositoryImpl implements OrderItemRepositoryCustom {
 
         return results.getResults();
     }
+
+    // 주문 완료 페이지 상품 띄우기
+    @Override
+    public List<Tuple> selectOrderComplete(int ordNo) {
+
+        return jpaQueryFactory.select(qProduct.prodName, qProduct.descript, qProduct.company, qProduct.price, qProduct.discount,
+                                        qProduct.thumb3, qProduct.cate1, qProduct.cate2, qProduct.cate3, qOrderItem)
+                .from(qOrderItem).join(qProduct)
+                .on(qOrderItem.prodNo.eq(qProduct.prodNo))
+                .where(qOrderItem.ordNo.eq(ordNo))
+                .fetch();
+    }
+
+
 }
