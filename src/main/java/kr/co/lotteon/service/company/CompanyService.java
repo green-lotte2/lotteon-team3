@@ -1,7 +1,6 @@
 package kr.co.lotteon.service.company;
 
 import kr.co.lotteon.dto.admin.AdminPageRequestDTO;
-import kr.co.lotteon.dto.admin.AdminProductPageResponseDTO;
 import kr.co.lotteon.dto.admin.ArticleDTO;
 import kr.co.lotteon.dto.company.RecruitDTO;
 import kr.co.lotteon.dto.company.RecruitPageResponseDTO;
@@ -9,14 +8,13 @@ import kr.co.lotteon.dto.company.StoryPageRequestDTO;
 import kr.co.lotteon.dto.company.StoryPageResponseDTO;
 import kr.co.lotteon.entity.admin.Article;
 import kr.co.lotteon.entity.admin.Recruit;
-import kr.co.lotteon.repository.ArticleRepository;
-import kr.co.lotteon.repository.RecruitRepository;
+import kr.co.lotteon.repository.admin.ArticleRepository;
+import kr.co.lotteon.repository.admin.RecruitRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

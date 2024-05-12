@@ -12,6 +12,12 @@
     <script th:src="@{https://kit.fontawesome.com/20962f3e4b.js}" crossorigin="anonymous"></script>
     <script th:src="@{/admin/js/gnb.js}"></script>
     <script th:src="@{/admin/js/util.js}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // 로그인 상태 확인
+        const isAuthenticated = [[${#authorization.expression('isAuthenticated()')}]];
+    </script>
+    <script th:src="@{/js/sseSeller.js}"></script>
     <link rel="stylesheet" th:href="@{https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css}">
     <link rel="stylesheet" th:href="@{https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css}"/>
     <link rel="stylesheet" th:href="@{/css/admin.css}">
