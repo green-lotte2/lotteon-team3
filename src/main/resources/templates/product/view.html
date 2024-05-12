@@ -397,6 +397,33 @@
                 inline: 'start'
             });
         }
+
+        // 모달 띄우기
+        function btnModal(){
+            const modal = document.querySelector(".v--modal-overlay");
+            modal.classList.remove("v--modal-hidden");
+        }
+        // 모달 끄기
+        function closeModal(){
+            const modal = document.querySelector(".v--modal-overlay");
+            modal.classList.add("v--modal-hidden");
+        }
+        // 모달 외부 클릭
+        document.addEventListener("DOMContentLoaded", function() {
+            document.querySelector(".v--modal-overlay").addEventListener('click', function(event) {
+                // 클릭된 요소가 모달 내부인지 확인
+                if (!event.target.closest('.v--modal-box')) {
+                    // 모달 외부를 클릭하면 모달 닫기
+                    closeModal();
+                }
+            });
+        });
+        // 모달 전송
+        function qnaSubmit() {
+            const modal = document.querySelector(".v--modal-overlay");
+
+           const title = "";
+        }
     </script>
 
     <!-- 제목, 페이지 네비게이션 -->
@@ -678,13 +705,14 @@
         <div class="qnaWrap groupProd">
             <div class="util">
                 <div class="sum"><strong>Q&amp;A</strong><span></span>
-                </div><!----></div>
+                </div><!---->
+                <button class="btn-prodQna" onclick="btnModal()">문의하기</button>
+            </div>
             <ul class="qnaList">
                 <!-- 문의 내용 li 반복 -->
                 <li>
                     <div class="category">
                         <span class="classification">기타</span>
-                        <span class="option">옵션 : 1. 구구 크러스트 홈 * 2개 / 1. 구구 크러스트 홈 * 2개 / 5. 위즐 커피초코퍼지 * 2개</span>
                     </div>
                     <div class="question"><p><span> 문의 내용 입니다. 문의 내용 입니다. 문의 내용 입니다. </span><!----></p></div>
                     <div class="answer">
@@ -705,7 +733,6 @@
                 <li>
                     <div class="category">
                         <span class="classification">기타</span>
-                        <span class="option">옵션 : 1. 구구 크러스트 홈 * 2개 / 1. 구구 크러스트 홈 * 2개 / 5. 위즐 커피초코퍼지 * 2개</span>
                     </div>
                     <div class="question"><p><span> 문의 내용 입니다. 문의 내용 입니다. 문의 내용 입니다. </span><!----></p></div>
                     <div class="answer">
@@ -717,7 +744,6 @@
                                 감사합니다.</p>
                             <div class="seller">
                                 <span class="sellerName">주식회사 디씽컴퍼니</span>
-                                <span class="badge orange">판매자</span>
                             </div>
                         </a>
                     </div>
@@ -750,34 +776,72 @@
                         </span>
         </div>
     </article> <!-- 문의 끝 -->
-</section>
-<!-- 상품 상세페이지 끝 -->
-</main>
-<footer>
-    <ul>
-        <li><a th:href="@{#}">회사소개</a></li>
-        <li><a th:href="@{#}">서비스이용약관</a></li>
-        <li><a th:href="@{#}">개인정보처리방침</a></li>
-        <li><a th:href="@{#}">전자금융거래약관</a></li>
-    </ul>
-    <div>
-        <p><img th:src="@{/images/footer_logo.png}" alt="로고"/></p>
-        <p>
-            <strong>(주)롯데ON</strong><br/>
-            서울특별시 송파구 올림픽로 300 롯데월드타워 26층 (역삼동 강남파이낸스센터)<br/>
-            대표이사 : 김사무엘상현, 정준호, 강성현<br/>
-            사업자등록번호 : 529-85-00774(롯데쇼핑(주) e커머스사업부)<br/>
-            통신판매업 신고 : 서울송파 제0158호<br>
-            호스팅 서비스사업자 : 롯데쇼핑(주) e커머스사업부
-        </p>
-        <p>
-            <strong>고객센터</strong><br/>
-            Tel : 1899-7000(유료) (평일 09:00~18:00)<br/>
-            Fax : 051-123-4567 | E-mail : lotteon@lotte.net<br/>
-        </p>
+<!-- 문의 글 작성 모달 -->
+    <div class="v--modal-overlay v--modal-hidden" data-modal="productQnaRegistration">
+        <div class="v--modal-background-click">
+            <div class="v--modal-top-right"></div>
+            <div role="dialog" aria-modal="true" class="v--modal-box popRound" tabindex="0" style="top: 35px; left: 503px; width: 530px; height: auto;">
+                <div class="popContents medium">
+                    <h2 class="popupTitle"><span class="titMiddle">문의하기</span></h2>
+                    <div class="scrollContentWrap" style="max-height: 535px;">
+                        <p class="qnaText">현재 판매자 <strong>‘ [[${productDTO.seller}]] ’</strong> 에게 질문</p>
+                        <div class="informationList">
+                            <ul class="listArea">
+                                <li>
+                                    <div class="item">
+                                        <div class="thumb">
+                                            <a><img th:src="@{|/prodImg/${productDTO.thumb1}|}" alt="상세페이지"></a>
+                                        </div>
+                                        <div class="info">
+                                            <a>
+                                                <div class="title">
+                                                    <strong>[[${productDTO.company}]]</strong>
+                                                    [[${productDTO.prodName}]]
+                                                </div>
+                                                <span><p>[[${productDTO.seller}]]</p></span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="inquiryWrap">
+                            <div class="section titLine">
+                                <h2 class="titMiddle">문의유형</h2>
+                                <select class="form-select" name="cate" id="cateSelect">
+                                    <option value="size">사이즈/용량</option>
+                                    <option value="prodInfo">상품정보</option>
+                                    <option value="etc">기타문의</option>
+                                </select>
+                            </div>
+                            <div class="section titLine">
+                                <h2 class="titMiddle">제목</h2>
+                                <input type="text" class="form-control" name="title" id="titleInput" placeholder="글 제목을 입력해 주세요.">
+                            </div>
+                            <div class="section limitTextParent">
+                                <h2 class="titMiddle">문의내용</h2>
+                                <div class="selectWrap">
+                                    <div class="inputSet">
+                                        <div class="limit large">
+                                            <textarea id="content" placeholder="최소 10자 이상 입력해 주세요. " maxlength="1000"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <ul class="dotList caution">
+                                    <li>연락처, 주민번호 등 개인 정보 기입은 삼가 주시고, <br>개인정보 작성이 불가피할 경우 비밀글로 작성해 주세요.</li>
+                                    <li>개인정보 포함 시 임의로 삭제될 수 있습니다.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 작성, 취소 버튼 -->
+                    <div class="fixingBtn">
+                        <button class="btn-qnaWrite" onclick="qnaSubmit()">작성</button>
+                        <button class="btn-qnaCancel" onclick="closeModal()">취소</button>
+                    </div>
+                    <button type="button" class="guidClose"><span class="hiddenTxt" onclick="closeModal()">닫기</span></button>
+                </div>
+            </div>
+        </div>
     </div>
-</footer>
-<button type="button" id="top">상단이동</button>
-</div>
-</body>
-</html>
+</section>
