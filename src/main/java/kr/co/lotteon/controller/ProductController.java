@@ -285,6 +285,9 @@ public class ProductController {
         log.info("선택한 상품의 리뷰들 "+productReviewPageResponseDTO);
         model.addAttribute("productReviewPageResponseDTO",productReviewPageResponseDTO);
 
+        // Qna 목록 조회
+        ProductQnaPageResponseDTO qnaPageDto = productService.selectQna(productDTO.getProdNo(), productReviewPageRequestDTO);
+        model.addAttribute("qnaPageDto", qnaPageDto);
 
         // 시큐리티 컨텍스트에서 인증된 사용자 정보 가져오기
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

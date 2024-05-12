@@ -2349,8 +2349,17 @@ col {
     font-size: 14px;
     padding: 5px 13px;
 }
-
-
+/* 소식과 이야기 목록 */
+.storyTitle {
+    width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis; /* 텍스트가 넘칠 때 "..."으로 생략 */
+}
+.storyContent {
+    width: 400px;
+    overflow: hidden;
+    text-overflow: ellipsis; /* 텍스트가 넘칠 때 "..."으로 생략 */
+}
 /* 상품상태 수정 모달 */
 #prodStatModal {
     position: fixed;

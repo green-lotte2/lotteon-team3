@@ -2,9 +2,16 @@ package kr.co.lotteon.service.product;
 
 import com.querydsl.core.Tuple;
 import jakarta.transaction.Transactional;
+import kr.co.lotteon.dto.cs.BoardDTO;
+import kr.co.lotteon.dto.cs.BoardTypeDTO;
+import kr.co.lotteon.dto.cs.CommentDTO;
 import kr.co.lotteon.dto.product.*;
+import kr.co.lotteon.entity.cs.BoardEntity;
+import kr.co.lotteon.entity.cs.BoardTypeEntity;
+import kr.co.lotteon.entity.cs.Comment;
 import kr.co.lotteon.entity.product.*;
 import kr.co.lotteon.mapper.ProductMapper;
+import kr.co.lotteon.repository.cs.BoardRepository;
 import kr.co.lotteon.repository.product.OptionRepository;
 import kr.co.lotteon.repository.product.OrderItemRepository;
 import kr.co.lotteon.repository.product.OrderRepository;
@@ -31,6 +38,7 @@ public class ProductService {
     private final OrderRepository orderRepository;
     private final ModelMapper modelMapper;
     private final OrderItemRepository orderItemRepository;
+    private final BoardRepository boardRepository;
 
     private final SqlSession sqlSession;
 
@@ -110,6 +118,42 @@ public class ProductService {
                 .build();
     }
 
+    // 상품 문의 조회 - 상품 보기 페이지
+    public ProductQnaPageResponseDTO selectQna(int prodNo, ProductReviewPageRequestDTO pageRequestDTO){
+        Pageable pageable = pageRequestDTO.getPageable("no");
+        Page<Tuple> result = boardRepository.selectQna(prodNo, pageable);
+
+        List<ProductQnaDTO> dtoList = result.stream()
+                .map(tuple -> {
+                    BoardEntity boardEntity = tuple.get(0, BoardEntity.class);
+                    BoardTypeEntity typeEntity = tuple.get(1, BoardTypeEntity.class);
+                    Comment commentEntity = tuple.get(2, Comment.class);
+
+                    BoardDTO board = modelMapper.map(boardEntity, BoardDTO.class);
+                    BoardTypeDTO type = modelMapper.map(typeEntity, BoardTypeDTO.class);
+
+
+                    ProductQnaDTO productQnaDTO = new ProductQnaDTO();
+                    productQnaDTO.setBoardDTO(board);
+                    productQnaDTO.setBoardTypeDTO(type);
+
+                    if(commentEntity != null) {
+                        CommentDTO comment = modelMapper.map(commentEntity, CommentDTO.class);
+                        productQnaDTO.setCommentDTO(comment);
+                    }
+                    return productQnaDTO;
+
+                })
+                .toList();
+        // total 값
+        int total = (int) result.getTotalElements();
+
+        return ProductQnaPageResponseDTO.builder()
+                .productReviewPageRequestDTO(pageRequestDTO)
+                .dtoList(dtoList)
+                .total(total)
+                .build();
+    }
     // 메인 검색
     public SearchPageResponseDTO searchProducts(SearchPageRequestDTO searchPageRequestDTO) {
         Page<Tuple> pageProduct = productRepository.searchProducts(searchPageRequestDTO, searchPageRequestDTO.getPageable());

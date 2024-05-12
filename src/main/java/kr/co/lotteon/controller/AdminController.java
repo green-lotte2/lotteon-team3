@@ -258,7 +258,14 @@ public class AdminController {
         adminBoardService.adminBoardWrite(boardDTO);
         return "redirect:/admin/cs/list?group="+boardDTO.getGroup();
     }
-    // 관리자 게시글 삭제
+    // 관리자 게시글 삭제 - list
+    @ResponseBody
+    @DeleteMapping("/admin/cs/delete/{bno}")
+    public ResponseEntity<?> delete(@PathVariable("bno") int bno){
+        log.info("관리자 게시글 삭제 Cont 1 : " + bno);
+        return adminBoardService.boardDelete(bno);
+    }
+    // 관리자 게시글 삭제 - view
     @GetMapping("/admin/cs/delete")
     public String boardDelete(int bno, AdminBoardPageRequestDTO adminBoardPageRequestDTO){
         log.info("관리자 게시글 삭제 Cont 1 : " + bno);

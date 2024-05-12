@@ -56,15 +56,15 @@ public class NotificationService {
         }else {
 
             // 연결 요청한 클라이언트의 SseEmitter 객체 생성 후 저장
-            SseEmitter sseEmitter = new SseEmitter(300_000L); // 만료 시간 5분
+            SseEmitter sseEmitter = new SseEmitter(60L * 1000 * 60); // 만료 시간 1시간
             sseEmitters.add(member.getUid(), sseEmitter);
 
             // 해당 판매자의 상품번호 전부 조회
-            List<Integer> prodNos = productRepository.selectProdNoForQna(member.getUid());
-            log.info("상품번호 전부 조회 " + prodNos.toString());
+            List<Integer> prodNos = productRepository.selectProdNoForQna(member.getNick());
+            log.info("상품번호 전부 조회 " + prodNos);
 
-            int count = boardRepository.countSellerQna(prodNos);
-
+            long count = boardRepository.countSellerQna(prodNos);
+            log.info("상품 문의 count : " + count);
             log.info("SSE Service sseEmitters " + sseEmitters);
             try {
             /*
@@ -100,6 +100,7 @@ public class NotificationService {
         log.info("문의 판매자에게 알람 1 ");
         SseEmitter sseEmitter = SseEmitters.sseEmitters.get(sellerId);
         if(sseEmitter != null) {
+            log.info("send to 판매자 sseEmitter : " + sseEmitter.toString());
             try {
                 log.info("send to 판매자 : " + sellerId);
                 // 이벤트 데이터 전송
