@@ -2,7 +2,7 @@ package kr.co.lotteon.service.admin;
 
 import kr.co.lotteon.dto.admin.BannerDTO;
 import kr.co.lotteon.entity.admin.Banner;
-import kr.co.lotteon.repository.BannerRepository;
+import kr.co.lotteon.repository.admin.BannerRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;

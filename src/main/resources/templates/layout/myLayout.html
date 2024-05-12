@@ -15,6 +15,12 @@
     <link rel="stylesheet" th:href="@{/css/my.css}">
     <script th:src="@{/js/myInfo.js}"></script>
     <script th:src="@{/js/changeInfo.js}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // 로그인 상태 확인
+        const isAuthenticated = [[${#authorization.expression('isAuthenticated()')}]];
+    </script>
+    <script th:src="@{/js/sseSeller.js}"></script>
 </head>
 <body>
 <div id="wrapper">
