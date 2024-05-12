@@ -2,7 +2,6 @@ package kr.co.lotteon.service.admin;
 
 import kr.co.lotteon.component.SseEmitters;
 import kr.co.lotteon.entity.member.Member;
-import kr.co.lotteon.repository.admin.SseEmitterRepository;
 import kr.co.lotteon.repository.cs.BoardRepository;
 import kr.co.lotteon.repository.product.ProductRepository;
 import kr.co.lotteon.security.MyUserDetails;
@@ -24,7 +23,6 @@ import java.util.List;
 public class NotificationService {
 
     private final SseEmitters sseEmitters;
-    private final SseEmitterRepository sseEmitterRepository;
     private final BoardRepository boardRepository;
     private final ProductRepository productRepository;
 
@@ -37,7 +35,7 @@ public class NotificationService {
         // 현재 사용자의 SseEmitter가 이미 존재하는지 확인 - confirm창 최초 한번만
         SseEmitter existingEmitter = SseEmitters.sseEmitters.get(member.getUid());
         if (existingEmitter != null) {
-            log.info("User's SseEmitter already exists. Sending 'none' message.");
+            log.info("이미 연결된 사용자입니다.");
             try {
                 existingEmitter.send(SseEmitter.event()
                         .name("connect")
@@ -63,10 +61,6 @@ public class NotificationService {
             /*
                 Emitter를 생성하고 나서 만료 시간까지 아무런 데이터도 보내지 않으면 재연결 요청시 503 Service Unavailable 에러가 발생
                 -> 503 에러 방지를 위한 더미 데이터 전송
-
-            sseEmitter.send(SseEmitter.event()
-                    .name("connect") // 해당 이벤트의 이름 지정 : View(Client)에서 해당 이름으로 이벤트를 받음
-                    .data("connected!"));
             */
                 if (count >= 1) {
                     log.info("서비스 1 : " + count);
@@ -76,7 +70,7 @@ public class NotificationService {
                 } else {
                     log.info("서비스 2 : " + count);
                     sseEmitter.send(SseEmitter.event()
-                            .name("connect") // 해당 이벤트의 이름 지정 : View(Client)에서 해당 이름으로 이벤트를 받음
+                            .name("connect")
                             .data("none"));
                 }
             } catch (IOException e) {
@@ -84,7 +78,7 @@ public class NotificationService {
             }
             log.info("SSE Service 2 ");
 
-            // emitter handling
+            // SseEmitter::complete : 연결 종료
             sseEmitter.onTimeout(sseEmitter::complete);
             sseEmitter.onError((e) -> sseEmitter.complete());
 
@@ -92,22 +86,22 @@ public class NotificationService {
             return ResponseEntity.ok().body(sseEmitter);
         }
     }
-    private void send(Object data, String emitterKey, SseEmitter sseEmitter) {
+    // 문의글 작성되면 해당 판매자에게 알람
+    private void send(String sellerId) {
 
-        Member seller = whoAmI();
-
+        SseEmitter sseEmitter = SseEmitters.sseEmitters.get(sellerId);
         try {
-            log.info("send to client {}:[{}]", emitterKey, data);
+            log.info("send to 판매자 : " + sellerId);
             // 이벤트 데이터 전송
             sseEmitter.send(SseEmitter.event()
-                    .id(emitterKey)
-                    .data(data, MediaType.APPLICATION_JSON));
+                            .name("send")
+                    .data("새로 작성된 상품 문의가 있습니다."));
 
         } catch (IOException | IllegalStateException e) {
             log.error("IOException | IllegalStateException is occurred. ", e);
-            sseEmitterRepository.deleteById(emitterKey);
         }
     }
+
     // 사용자 정보 함수
     public Member whoAmI(){
         // 현재 로그인 중인 사용자 정보 불러오기
