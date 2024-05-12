@@ -755,7 +755,9 @@
                             <a th:href="@{#}">
                               <p class="productDetail">[[${cartProduct.prodName}]]</p>
                             </a>
-                            <div class="optionDiv">[[${cartProduct.opNo}]]</div>
+                            <th:block th:each="option : ${cartProduct.dtoList}">
+                              <div class="optionDiv">[[${option.opName}]]/[[${option.opValue}]]</div>
+                            </th:block>
                             <p class="productDeliveryInfo"> 4/30(화) 이내 도착 </p>
                           </div>
 

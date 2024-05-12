@@ -2,21 +2,22 @@ package kr.co.lotteon.service.product;
 
 import kr.co.lotteon.dto.product.CartDTO;
 import kr.co.lotteon.dto.product.CartInfoDTO;
+import kr.co.lotteon.dto.product.OptionDTO;
 import kr.co.lotteon.entity.product.Cart;
 import kr.co.lotteon.repository.product.CartRepository;
+import kr.co.lotteon.repository.product.OptionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.io.Console;
 import java.util.*;
 
 @Service @Slf4j @RequiredArgsConstructor
 public class CartService {
     private final CartRepository cartRepository;
-
+    private final OptionRepository optionRepository;
     // 카트 넣기
     public void insertCart(CartDTO cartDTO){
         // 장바구니에 해당 상품이 있는지 확인
@@ -70,9 +71,37 @@ public class CartService {
     public List<CartInfoDTO> selectCartProduct(String uid){
         List<CartInfoDTO> result = cartRepository.selectCartProduct(uid);
 
-        //String opNos = result.getClass(); for문 돌려서 opNO 뽄아서 option List 넣기
+        //for문 돌려서 opNO 뽑아서 option List 넣기
+        for(CartInfoDTO cartInfoDTO : result){
+            String opNos = cartInfoDTO.getOpNo();
+            log.info("옵션 뽑아오기 1: "+opNos);
 
-        log.info("CartService {}",result);
+            if (opNos != null && !opNos.isEmpty()) {
+                // ,로 옵션 문자열 분리하기
+                String[] optionString = opNos.split(",");
+                int[] optionIds = new int[optionString.length];
+
+                for (int i = 0; i < optionString.length; i++) {
+                    optionIds[i] = Integer.parseInt(optionString[i].trim());
+                }
+                log.info("옵션뽑아오기 2" + Arrays.toString(optionIds));
+
+                List<OptionDTO> options = new ArrayList<>();
+
+                for(int opNo : optionIds){
+                    OptionDTO option = optionRepository.selectOptionForCart(opNo);
+                    log.info("옵션뽑아오기 3" + option);
+
+                    if (option != null){
+                        options.add(option);
+                    }
+                }
+                cartInfoDTO.setDtoList(options);
+            }
+        }
+
+        log.info("카트 서비스 : " + result);
+
         return result;
     }
 
