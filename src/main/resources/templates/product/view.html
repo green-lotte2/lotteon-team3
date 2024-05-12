@@ -406,6 +406,12 @@
         // 모달 끄기
         function closeModal(){
             const modal = document.querySelector(".v--modal-overlay");
+            const titleInput = document.getElementById('titleInput');
+            const contentInput = document.getElementById('contentInput');
+
+            titleInput.value = "";
+            contentInput.value = "";
+
             modal.classList.add("v--modal-hidden");
         }
         // 모달 외부 클릭
@@ -419,10 +425,26 @@
             });
         });
         // 모달 전송
-        function qnaSubmit() {
+        async function qnaSubmit() {
             const modal = document.querySelector(".v--modal-overlay");
+            const titleInput = document.getElementById('titleInput');
+            const typeSelect = document.getElementById('typeSelect');
+            const contentInput = document.getElementById('contentInput');
 
-           const title = "";
+            const jsonData = {
+                "prodNo" : prodNo,
+                "title" : titleInput.value,
+                "typeNo" : typeSelect.value,
+                "content" : contentInput.value
+            };
+
+            const data = await fetchPost(`/lotteon/cs/prodqna`, jsonData);
+
+            if(data != null){
+                alert('문의가 등록되었습니다.');
+            }
+
+            closeModal();
         }
     </script>
 
@@ -808,10 +830,10 @@
                         <div class="inquiryWrap">
                             <div class="section titLine">
                                 <h2 class="titMiddle">문의유형</h2>
-                                <select class="form-select" name="cate" id="cateSelect">
-                                    <option value="size">사이즈/용량</option>
-                                    <option value="prodInfo">상품정보</option>
-                                    <option value="etc">기타문의</option>
+                                <select class="form-select" name="type" id="typeSelect">
+                                    <option value="17">사이즈/용량</option>
+                                    <option value="18">상품정보</option>
+                                    <option value="19">기타문의</option>
                                 </select>
                             </div>
                             <div class="section titLine">
@@ -823,7 +845,7 @@
                                 <div class="selectWrap">
                                     <div class="inputSet">
                                         <div class="limit large">
-                                            <textarea id="content" placeholder="최소 10자 이상 입력해 주세요. " maxlength="1000"></textarea>
+                                            <textarea id="contentInput" placeholder="최소 10자 이상 입력해 주세요. " maxlength="1000"></textarea>
                                         </div>
                                     </div>
                                 </div>

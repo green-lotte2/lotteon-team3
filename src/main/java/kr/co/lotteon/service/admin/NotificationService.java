@@ -1,17 +1,22 @@
 package kr.co.lotteon.service.admin;
 
 import kr.co.lotteon.component.SseEmitters;
+import kr.co.lotteon.dto.cs.BoardDTO;
+import kr.co.lotteon.entity.cs.BoardEntity;
 import kr.co.lotteon.entity.member.Member;
 import kr.co.lotteon.repository.cs.BoardRepository;
+import kr.co.lotteon.repository.member.MemberRepository;
 import kr.co.lotteon.repository.product.ProductRepository;
 import kr.co.lotteon.security.MyUserDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
@@ -25,6 +30,9 @@ public class NotificationService {
     private final SseEmitters sseEmitters;
     private final BoardRepository boardRepository;
     private final ProductRepository productRepository;
+    private final MemberRepository memberRepository;
+
+    private final ModelMapper modelMapper;
 
     // 로그인 시 최초 연결 요청
     public ResponseEntity<SseEmitter> subscribe() {
@@ -37,6 +45,7 @@ public class NotificationService {
         if (existingEmitter != null) {
             log.info("이미 연결된 사용자입니다.");
             try {
+                log.info("이미 연결된 사용자입니다. 2 ");
                 existingEmitter.send(SseEmitter.event()
                         .name("connect")
                         .data("none"));
@@ -88,20 +97,41 @@ public class NotificationService {
     }
     // 문의글 작성되면 해당 판매자에게 알람
     private void send(String sellerId) {
-
+        log.info("문의 판매자에게 알람 1 ");
         SseEmitter sseEmitter = SseEmitters.sseEmitters.get(sellerId);
-        try {
-            log.info("send to 판매자 : " + sellerId);
-            // 이벤트 데이터 전송
-            sseEmitter.send(SseEmitter.event()
-                            .name("send")
-                    .data("새로 작성된 상품 문의가 있습니다."));
+        if(sseEmitter != null) {
+            try {
+                log.info("send to 판매자 : " + sellerId);
+                // 이벤트 데이터 전송
+                sseEmitter.send(SseEmitter.event()
+                        .name("send")
+                        .data("새로 작성된 상품 문의가 있습니다."));
 
-        } catch (IOException | IllegalStateException e) {
-            log.error("IOException | IllegalStateException is occurred. ", e);
+            } catch (IOException | IllegalStateException e) {
+                log.error("IOException | IllegalStateException is occurred. ", e);
+            }
         }
     }
 
+    // 상품 문의 작성
+    @Transactional
+    public ResponseEntity<?> prodQnaSave(BoardDTO boardDTO){
+
+        log.info("상품 문의 작성 Serv 1 : "+ boardDTO);
+        boardDTO.setUid(whoAmI().getUid());
+        boardDTO.setCate("product");
+        boardDTO.setStatus("검토중");
+        boardDTO.setGroup("qna");
+
+        BoardEntity board = modelMapper.map(boardDTO, BoardEntity.class);
+        boardRepository.save(board);
+        log.info("상품 문의 작성 Serv 2 : "+ board);
+        // 문의 알람 전송
+        String sellerId = memberRepository.selectUidByProdNo(boardDTO.getProdNo());
+        send(sellerId);
+
+        return ResponseEntity.ok().body(board);
+    }
     // 사용자 정보 함수
     public Member whoAmI(){
         // 현재 로그인 중인 사용자 정보 불러오기
