@@ -15,6 +15,7 @@
             }
 
             const orgPrice = document.getElementsByClassName('org_price')[0];
+
             // 할인률
             const discountDel = orgPrice.getElementsByTagName('span')[0];
             const discountText = discountDel.innerText;
@@ -487,7 +488,7 @@
             <nav>
                 <h3>[[${productDTO.prodName}]]</h3>
                 <p>[[${productDTO.descript}]]</p>
-                <h5 class="rating star4"><a th:href="@{#}">상품평보기</a></h5>
+                <h5 class="rating star5"><a th:href="@{#}">상품평보기</a></h5>
             </nav>
             <nav>
                 <div class="org_price">

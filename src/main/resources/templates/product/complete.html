@@ -38,16 +38,65 @@
 
                   // 상품 주문 금액
                   document.querySelectorAll('#prodTotalPrice').forEach(function (price) {
-                    var dis
-                    var org;
 
-                    console.log(price);
-
-
-                    /*price.innerHTML = ""
-                    price.textContent = numberWithCommas(tot);*/
+                    var org = parseInt(price.closest('#prod').querySelector('#prodOrgPrice').innerText.replace(/,/g, ''));
+                    var dis = parseInt(price.closest('#prod').querySelector('#prodDisPrice').innerText.replace(/,/g, ''));
+                    var tot = org-dis;
+                    price.innerHTML = ""
+                    price.textContent = numberWithCommas(tot);
 
                   });
+
+                  const totalOrgPrice = document.getElementById('totalOrgPrice');
+                  const totalDisPrice = document.getElementById('totalDisPrice');
+                  const totalDelPrice = document.getElementById('totalDelPrice');
+                  const totalPrice = document.getElementById('totalPrice');
+
+                  const totalPrice2 = document.getElementById('totalPrice2');
+
+                  // 총 상품금액
+                  var totalValue = 0;
+                  document.querySelectorAll('#prodOrgPrice').forEach(function (price) {
+
+                    var totPrice = parseInt(price.innerText.replace(/,/g, ''));
+                    totalValue += totPrice;
+                    console.log('dkdkdk'+totalValue);
+
+                  });
+                  totalOrgPrice.innerHTML = "";
+                  totalOrgPrice.textContent = numberWithCommas(totalValue);
+
+                  // 총 할인 금액
+                  var totalValue = 0;
+                  document.querySelectorAll('#prodDisPrice').forEach(function (price) {
+
+                    var totPrice = parseInt(price.innerText.replace(/,/g, ''));
+                    totalValue += totPrice;
+                    console.log('dkdkdk'+totalValue);
+
+                  });
+                  totalDisPrice.innerHTML = "";
+                  totalDisPrice.textContent = numberWithCommas(totalValue);
+
+                  // 토탈 가격
+                  var totalValue = 0;
+                  document.querySelectorAll('#prodTotalPrice').forEach(function (price) {
+
+                    var totPrice = parseInt(price.innerText.replace(/,/g, ''));
+                    totalValue += totPrice;
+                    console.log('dkdkdk'+totalValue);
+
+                  });
+                  totalPrice.innerHTML = "";
+                  totalPrice.textContent = numberWithCommas(totalValue);
+
+                  totalPrice2.innerHTML = "";
+                  totalPrice2.textContent = numberWithCommas(totalValue);
+
+
+
+
+
                 }
               </script>
 
@@ -78,7 +127,7 @@
                     <th>수량</th>
                     <th>주문금액</th>
                   </tr>
-                  <tr th:each="orderItem : ${orderItemDTOS}">
+                  <tr id="prod" th:each="orderItem : ${orderItemDTOS}">
                     <td>
                       <article>
                         <img th:src="@{|/prodImg/${orderItem.thumb3}|}" alt="">
