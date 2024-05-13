@@ -23,6 +23,7 @@ import kr.co.lotteon.security.MyUserDetails;
 import kr.co.lotteon.service.admin.BannerService;
 import kr.co.lotteon.service.member.MemberService;
 import kr.co.lotteon.service.my.MyService;
+import kr.co.lotteon.service.product.ReviewService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -58,8 +59,7 @@ public class MyController {
     private final MyService myService;
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
-    private final HandlerMapping resourceHandlerMapping;
-    private String company;
+    private final ReviewService reviewService;
 
 
     // my - home (마이페이지 메인) 페이지 매핑
@@ -108,6 +108,28 @@ public class MyController {
 
         return seller;
 
+
+    }
+    
+    // 수취확인 전 리뷰 작성 확인
+    @ResponseBody
+    @PostMapping("/my/reviewCheck")
+    public String reviewCheck(@RequestBody Map<String, String> request ) {
+        log.info("리뷰확인");
+        String uid = request.get("uid");
+        log.info("입력된 아이디 : "+uid);
+        
+        //수정
+        int count = memberService.countByUidAndEmail(uid,request.get("email"));
+        
+        log.info("일치하는 행의 수 : "+count);
+
+        // 이메일 일치인 경우 success
+        if(count>0){
+            return "success";
+        }else{
+            return "fail";
+        }
 
     }
 
