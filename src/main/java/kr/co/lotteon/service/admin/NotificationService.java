@@ -1,5 +1,7 @@
 package kr.co.lotteon.service.admin;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import kr.co.lotteon.component.SseEmitters;
 import kr.co.lotteon.dto.cs.BoardDTO;
 import kr.co.lotteon.entity.cs.BoardEntity;
@@ -47,8 +49,9 @@ public class NotificationService {
             try {
                 log.info("이미 연결된 사용자입니다. 2 ");
                 existingEmitter.send(SseEmitter.event()
-                        .name("connect")
+                        .name("aa")
                         .data("none"));
+
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -87,6 +90,7 @@ public class NotificationService {
             }
             log.info("SSE Service 2 ");
 
+
             // SseEmitter::complete : 연결 종료
             sseEmitter.onTimeout(sseEmitter::complete);
             sseEmitter.onError((e) -> sseEmitter.complete());
@@ -108,8 +112,10 @@ public class NotificationService {
                         .name("send")
                         .data("새로 작성된 상품 문의가 있습니다."));
 
-            } catch (IOException | IllegalStateException e) {
-                log.error("IOException | IllegalStateException is occurred. ", e);
+            } catch (IllegalStateException e) {
+                log.error("IllegalStateException is occurred. ", e);
+            } catch (IOException e) {
+                log.error("IOException is occurred. ", e);
             }
         }
     }

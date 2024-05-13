@@ -1,5 +1,6 @@
 package kr.co.lotteon.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import kr.co.lotteon.service.admin.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +20,7 @@ public class NotificationController {
 
     // SSE 연결 요청 client -> Server
     @GetMapping(value = "/connect", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public ResponseEntity<SseEmitter> connect() {
+    public ResponseEntity<SseEmitter> connect(HttpServletRequest httpServletRequest) {
         log.info("SSE Controller 1 ");
         return notificationService.subscribe();
     }
