@@ -125,9 +125,13 @@
                 var totalValue =0;
 
                 // 상품 원가격
+
                 document.querySelectorAll('#prodOrgPrice').forEach(function (price){
+
                     const priceValue = parseInt(price.value);
-                    totalValue += priceValue;
+                    var count = parseInt(price.closest('.hover-ly').querySelector('#count').innerText.split(':')[1]);
+
+                    totalValue += priceValue*count;
 
                 });
                 totalOrg.innerHTML = "";
@@ -138,9 +142,11 @@
                 document.querySelectorAll('#prodDisPrice').forEach(function (price){
 
                     const priceValue = parseInt(price.value.split('.')[0]);
-                    totalValue += priceValue;
+                    var count = parseInt(price.closest('.hover-ly').querySelector('#count').innerText.split(':')[1]);
+                    totalValue += priceValue*count;
 
                 });
+
                 totalPrice.innerHTML = "";
                 totalPrice.textContent = numberWithCommas(totalValue);
 

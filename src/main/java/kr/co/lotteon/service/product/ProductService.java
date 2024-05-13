@@ -329,26 +329,28 @@ public class ProductService {
 
                         String opNos = productDTO.getOpNo();
                         log.info("오더 조회 서비스 옵션번호 : " + opNos);
+                        if(opNos != null){
+                            // 옵션 뽑아내기
+                            String[] optionString = opNos.split(",");
+                            int[] optionIds = new int[optionString.length];
 
-                        // 옵션 뽑아내기
-                        String[] optionString = opNos.split(",");
-                        int[] optionIds = new int[optionString.length];
-
-                        for (int i = 0; i < optionString.length; i++) {
-                            optionIds[i] = Integer.parseInt(optionString[i].trim());
-                        }
-                        log.info("오더 조회 서비스 옵션번호2 : " + Arrays.toString(optionIds));
-
-                        List<OptionDTO> options = new ArrayList<>();
-                        for(int optionNos : optionIds){
-                            OptionDTO option = optionRepository.selectOptionForCart(optionNos);
-                            log.info("오더 조회 서비스 옵션번호3 :" + option);
-
-                            if (option != null){
-                                options.add(option);
+                            for (int i = 0; i < optionString.length; i++) {
+                                optionIds[i] = Integer.parseInt(optionString[i].trim());
                             }
-                            productDTO.setOptionList(options);
+                            log.info("오더 조회 서비스 옵션번호2 : " + Arrays.toString(optionIds));
+
+                            List<OptionDTO> options = new ArrayList<>();
+                            for(int optionNos : optionIds){
+                                OptionDTO option = optionRepository.selectOptionForCart(optionNos);
+                                log.info("오더 조회 서비스 옵션번호3 :" + option);
+
+                                if (option != null){
+                                    options.add(option);
+                                }
+                                productDTO.setOptionList(options);
+                            }
                         }
+
 
                         return productDTO;
                     })
@@ -434,7 +436,7 @@ public class ProductService {
 
 
                     // 옵션 뽑아내기
-                    if (orderItemDTO.getOpNo() != null){
+                    if (!orderItemDTO.getOpNo().equals( "")){
                         String[] optionString = orderItemDTO.getOpNo().split(",");
                         int[] optionIds = new int[optionString.length];
 

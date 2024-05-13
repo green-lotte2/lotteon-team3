@@ -147,26 +147,29 @@ public class ProductController {
        log.info("컨트롤러2"+prodNo);
 
        ProductDTO productDTOS = productService.prodToOrder(prodNo);
+
        // 옵션 뽑아내기
-       String [] opNoString = opNo.split(",");
-       int[] optionIds = new int[opNoString.length];
+       if(opNo != null){
+           String [] opNoString = opNo.split(",");
+           int[] optionIds = new int[opNoString.length];
 
-       for(int i=0; i<opNoString.length; i++){
-           optionIds[i] = Integer.parseInt(opNoString[i].trim());
-       }
-
-       List<OptionDTO> options = new ArrayList<>();
-       for (int optionNos : optionIds){
-           OptionDTO optionDTO = optionRepository.selectOptionForCart(optionNos);
-
-           if(optionDTO != null){
-               options.add(optionDTO);
+           for(int i=0; i<opNoString.length; i++){
+               optionIds[i] = Integer.parseInt(opNoString[i].trim());
            }
-           productDTOS.setOptionList(options);
+
+           List<OptionDTO> options = new ArrayList<>();
+           for (int optionNos : optionIds){
+               OptionDTO optionDTO = optionRepository.selectOptionForCart(optionNos);
+
+               if(optionDTO != null){
+                   options.add(optionDTO);
+               }
+               productDTOS.setOptionList(options);
+           }
+           productDTOS.setOpNo(opNo);
        }
 
        productDTOS.setCount(count);
-       productDTOS.setOpNo(opNo);
 
        log.info("아아아3" + productDTOS);
 

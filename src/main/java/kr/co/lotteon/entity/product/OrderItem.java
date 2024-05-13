@@ -29,6 +29,7 @@ public class OrderItem {
     private LocalDateTime ordDate;
     private String ordStatus;
 
+
     @Transient
     private int totalPricePerProduct;
     @Transient
@@ -62,3 +63,4 @@ public class OrderItem {
     }
 
 }
+
