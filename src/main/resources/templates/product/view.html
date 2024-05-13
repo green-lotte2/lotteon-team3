@@ -15,6 +15,7 @@
             }
 
             const orgPrice = document.getElementsByClassName('org_price')[0];
+
             // 할인률
             const discountDel = orgPrice.getElementsByTagName('span')[0];
             const discountText = discountDel.innerText;
@@ -69,7 +70,6 @@
 
             // 옵션 select 요소
             const selectOption = document.querySelectorAll('.selectOption');
-
 
 
             // 각 옵션 select 요소에 대해 이벤트 등록
@@ -403,12 +403,13 @@
         }
 
         // 모달 띄우기
-        function btnModal(){
+        function btnModal() {
             const modal = document.querySelector(".v--modal-overlay");
             modal.classList.remove("v--modal-hidden");
         }
+
         // 모달 끄기
-        function closeModal(){
+        function closeModal() {
             const modal = document.querySelector(".v--modal-overlay");
             const titleInput = document.getElementById('titleInput');
             const contentInput = document.getElementById('contentInput');
@@ -418,9 +419,10 @@
 
             modal.classList.add("v--modal-hidden");
         }
+
         // 모달 외부 클릭
-        document.addEventListener("DOMContentLoaded", function() {
-            document.querySelector(".v--modal-overlay").addEventListener('click', function(event) {
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelector(".v--modal-overlay").addEventListener('click', function (event) {
                 // 클릭된 요소가 모달 내부인지 확인
                 if (!event.target.closest('.v--modal-box')) {
                     // 모달 외부를 클릭하면 모달 닫기
@@ -428,6 +430,7 @@
                 }
             });
         });
+
         // 모달 전송
         async function qnaSubmit() {
             const modal = document.querySelector(".v--modal-overlay");
@@ -436,15 +439,15 @@
             const contentInput = document.getElementById('contentInput');
 
             const jsonData = {
-                "prodNo" : prodNo,
-                "title" : titleInput.value,
-                "typeNo" : typeSelect.value,
-                "content" : contentInput.value
+                "prodNo": prodNo,
+                "title": titleInput.value,
+                "typeNo": typeSelect.value,
+                "content": contentInput.value
             };
 
             const data = await fetchPost(`/lotteon/cs/prodqna`, jsonData);
 
-            if(data != null){
+            if (data != null) {
                 alert('문의가 등록되었습니다.');
             }
 
@@ -487,7 +490,12 @@
             <nav>
                 <h3>[[${productDTO.prodName}]]</h3>
                 <p>[[${productDTO.descript}]]</p>
-                <h5 class="rating star4"><a th:href="@{#}">상품평보기</a></h5>
+                <span class="avgSpan">[[${avg}]] 점</span>
+                <div class="backgroundStar">
+                    <div class="starBox" th:style="'width: '+ ${avg * 20} + 'px'">
+                        <img class="pointOfStar" alt="별" th:src="@{/images/stars_fill.png}" />
+                    </div>
+                </div>
             </nav>
             <nav>
                 <div class="org_price">
@@ -502,7 +510,8 @@
                 <span class="delivery"
                       th:value="${productDTO.discount}">[[${'배송비 :' + productDTO.delivery +'원'}]]</span>
 
-                <span class="arrival" th:text="${#temporals.format(#temporals.createNow().plusDays(2), 'MM-dd')} + ' 도착예정'"></span>
+                <span class="arrival"
+                      th:text="${#temporals.format(#temporals.createNow().plusDays(2), 'MM-dd')} + ' 도착예정'"></span>
                 <span class="desc">본 상품은 국내배송만 가능합니다.</span>
             </nav>
 
@@ -672,53 +681,37 @@
         <nav>
             <h1>상품리뷰</h1>
         </nav>
-        <ul th:each="review : ${productReviewPageResponseDTO.dtoList}">
-            <li>
+        <ul>
+            <li th:each="review : ${pageResponseDTO.dtoList}">
                 <div>
-                    <h5 class="rating star4">상품평</h5>
-                    <span th:text="${review.uid}+' '+${#temporals.format(review.rdate, 'yyyy-MM-dd')}"></span>
+                    <h5 th:class="'rating star'+${review.rating}">상품평</h5>
+                    <span th:text="${review.nick}+' '+${#temporals.format(review.rdate, 'yyyy-MM-dd')}"></span>
                 </div>
-                <h3 th:text="${review.optionValue}"></h3>
+                <th:block th:if="review.optionList != null">
+                    <th:block th:each="option : ${review.optionList}">
+                        <span class="reviewOption" th:text="${option.opValue}"></span>
+                        <strong> / </strong>
+                    </th:block>
+                </th:block>
                 <h3 th:text="${review.prodName}"></h3>
                 <p>
-                    가격대비 정말 괜찮은 옷이라 생각되네요 핏은 음...제가 입기엔 어깨선이 맞고 루즈핏이라 하기도 좀 힘드네요.
-                    아주 약간 루즈한정도...?그래도 이만한 옷은 없다고 봅니다 깨끗하고 포장도 괜찮고 다음에도 여기서 판매하는
-                    제품들을 구매하고 싶네요 정말 만족하고 후기 남깁니다 많이 파시길 바래요 ~ ~ ~
-                </p>
-            </li>
-        </ul>
-        <ul>
-            <li>
-                <div>
-                    <h5 class="rating star4">상품평</h5>
-                    <span>작성자</span>
-                </div>
-                <h3>옵션값</h3>
-                <h3>리뷰 상품번호</h3>
-                <p>
-                    가격대비 정말 괜찮은 옷이라 생각되네요 핏은 음...제가 입기엔 어깨선이 맞고 루즈핏이라 하기도 좀 힘드네요.
-                    아주 약간 루즈한정도...?그래도 이만한 옷은 없다고 봅니다 깨끗하고 포장도 괜찮고 다음에도 여기서 판매하는
-                    제품들을 구매하고 싶네요 정말 만족하고 후기 남깁니다 많이 파시길 바래요 ~ ~ ~
+                    [[${review.content}]]
                 </p>
             </li>
         </ul>
         <!-- 리뷰 페이지 -->
-        <div class="paging">
-                        <span class="prev">
-                            <a href="#"><&nbsp;이전</a>
-                        </span>
-            <span class="num">
-                            <a href="#" class="on">1</a>
-                            <a href="#">2</a>
-                            <a href="#">3</a>
-                            <a href="#">4</a>
-                            <a href="#">5</a>
-                            <a href="#">6</a>
-                            <a href="#">7</a>
-                        </span>
-            <span class="next">
-                            <a href="#">다음&nbsp;></a>
-                        </span>
+        <div class="paging" th:if="${!pageResponseDTO.dtoList.isEmpty()}">
+            <span class="prev" th:if="${pageResponseDTO.prev}">
+                <a th:href="@{/product/view(prodNo=${productDTO.prodNo}, cate1=${productDTO.cate1}, cate2=${productDTO.cate2}, cate3=${productDTO.cate3}, pg=${pageResponseDTO.start - 1})}"><&nbsp;이전</a>
+            </span>
+            <th:block th:each="num:${#numbers.sequence(pageResponseDTO.start, pageResponseDTO.end)}">
+                <span class="num" th:classappend="${num == pageResponseDTO.pg} ? 'on'">
+                    <a th:href="@{/product/view(prodNo=${productDTO.prodNo}, cate1=${productDTO.cate1}, cate2=${productDTO.cate2}, cate3=${productDTO.cate3}, pg=${num})}" th:text="${num}"></a>
+                </span>
+            </th:block>
+            <span class="next" th:if="${pageResponseDTO.next}">
+                <a th:href="@{/product/view(prodNo=${productDTO.prodNo}, cate1=${productDTO.cate1}, cate2=${productDTO.cate2}, cate3=${productDTO.cate3}, pg=${pageResponseDTO.end + 1})}">다음&nbsp;></a>
+            </span>
         </div>
     </article><!-- 리뷰 끝 -->
     <!-- 문의 -->
@@ -733,8 +726,9 @@
                 <!-- 문의 내용 li 반복 -->
                 <li th:each="qna : ${qnaPageDto.dtoList}">
                     <div class="category">
-                        <span class="classification"  th:text="${#strings.substring(qna.boardDTO.uid, 0, 3) + '***'}"></span>
-                        <span class="classification2" >[[${qna.boardTypeDTO.typeName}]]</span>
+                        <span class="classification"
+                              th:text="${#strings.substring(qna.boardDTO.uid, 0, 3) + '***'}"></span>
+                        <span class="classification2">[[${qna.boardTypeDTO.typeName}]]</span>
                     </div>
                     <div class="question"><p><span> [[${qna.boardDTO.content}]]</span><!----></p></div>
                     <div class="answer" th:if="${qna.commentDTO != null}">
@@ -773,11 +767,12 @@
         </div>-->
 
     </article> <!-- 문의 끝 -->
-<!-- 문의 글 작성 모달 -->
+    <!-- 문의 글 작성 모달 -->
     <div class="v--modal-overlay v--modal-hidden" data-modal="productQnaRegistration">
         <div class="v--modal-background-click">
             <div class="v--modal-top-right"></div>
-            <div role="dialog" aria-modal="true" class="v--modal-box popRound" tabindex="0" style="top: 35px; left: 503px; width: 530px; height: auto;">
+            <div role="dialog" aria-modal="true" class="v--modal-box popRound" tabindex="0"
+                 style="top: 35px; left: 503px; width: 530px; height: auto;">
                 <div class="popContents medium">
                     <h2 class="popupTitle"><span class="titMiddle">문의하기</span></h2>
                     <div class="scrollContentWrap" style="max-height: 535px;">
@@ -813,14 +808,16 @@
                             </div>
                             <div class="section titLine">
                                 <h2 class="titMiddle">제목</h2>
-                                <input type="text" class="form-control" name="title" id="titleInput" placeholder="글 제목을 입력해 주세요.">
+                                <input type="text" class="form-control" name="title" id="titleInput"
+                                       placeholder="글 제목을 입력해 주세요.">
                             </div>
                             <div class="section limitTextParent">
                                 <h2 class="titMiddle">문의내용</h2>
                                 <div class="selectWrap">
                                     <div class="inputSet">
                                         <div class="limit large">
-                                            <textarea id="contentInput" placeholder="문의 내용을 입력해 주세요. " maxlength="1000"></textarea>
+                                            <textarea id="contentInput" placeholder="문의 내용을 입력해 주세요. "
+                                                      maxlength="1000"></textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -836,7 +833,8 @@
                         <button class="btn-qnaWrite" onclick="qnaSubmit()">작성</button>
                         <button class="btn-qnaCancel" onclick="closeModal()">취소</button>
                     </div>
-                    <button type="button" class="guidClose"><span class="hiddenTxt" onclick="closeModal()">닫기</span></button>
+                    <button type="button" class="guidClose"><span class="hiddenTxt" onclick="closeModal()">닫기</span>
+                    </button>
                 </div>
             </div>
         </div>

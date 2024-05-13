@@ -11,6 +11,7 @@ import kr.co.lotteon.dto.product.PageRequestDTO;
 import kr.co.lotteon.dto.product.ProductDTO;
 import kr.co.lotteon.dto.product.ProductReviewPageRequestDTO;
 import kr.co.lotteon.dto.product.SearchPageRequestDTO;
+import kr.co.lotteon.entity.member.QMember;
 import kr.co.lotteon.entity.product.*;
 import kr.co.lotteon.repository.custom.ProductRepositoryCustom;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +35,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
     private final QProduct qProduct = QProduct.product;
     private final QOption qOption = QOption.option;
     private final QReview qReview = QReview.review;
+    private final QMember qMember = QMember.member;
     private final QOrderItem qOrderItem=QOrderItem.orderItem;
 
     // 관리자 - 상품 목록 기본 조회
@@ -370,11 +372,11 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
     public Page<Tuple> selectProductReview(int prodNo, ProductReviewPageRequestDTO productReviewPageRequestDTO, Pageable pageable) {
         log.info("상품 리뷰내역 목록 조회 Impl 1 : " + productReviewPageRequestDTO);
         QueryResults<Tuple> results = jpaQueryFactory
-                .select(qReview, qProduct.prodName, qOption.opValue)
+                .select(qReview, qProduct.prodName, qMember.nick , qOrderItem.opNo )
                 .from(qReview)
                 .join(qProduct).on(qReview.prodNo.eq(qProduct.prodNo))
+                .join(qMember).on(qReview.uid.eq(qMember.uid))
                 .join(qOrderItem).on(qReview.ordItemno.eq(qOrderItem.ordItemno))
-                //.join(qOption).on(qOrderItem.opNo.eq(qOption.opNo))
                 .where(qReview.prodNo.eq(prodNo))
                 .orderBy(qReview.rdate.desc()) // rdate를 기준으로 내림차순으로 정렬)
                 .offset(pageable.getOffset())

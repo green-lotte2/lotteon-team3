@@ -398,6 +398,33 @@
     background-position: 36px 0px;
     background-size: auto 100%;
 }
+/* 별점 */
+.starBox {
+    z-index: 1000;
+    margin-right: 10px;
+    height: 19px;
+    overflow: hidden;
+    position: relative;
+}
+
+.pointOfStar {
+    position: relative;
+    left: 0;
+    height: 19px;
+    width: 100px;
+
+}
+
+.backgroundStar {
+    top: 0;
+    left: 0;
+    height: 19px;
+    background-image: url('../images/stars.png'); /* 별 이미지로 설정합니다. */
+    background-repeat: no-repeat;
+    background-size: 100px 19px; /* 이미지의 원래 크기를 설정합니다. */
+}
+
+
 #product h6.rating.star1 {width: 55px;}
 #product h6.rating.star2 {width: 70px;}
 #product h6.rating.star3 {width: 85px;}
@@ -612,7 +639,10 @@
     width: 100%;
 }
 
-#product > .view > .info > .summary * {
+#product > .view > .info > .summary * {}
+#product > .view > .info > .summary .avgSpan {
+    font-size: 15px;
+    font-weight: 500;
 }
 #product > .view > .info > .summary > nav {
     border-bottom: 1px solid #eaeaea;
@@ -1008,6 +1038,8 @@
 #product > .view > .review > ul {
     padding: 10px;
     box-sizing: border-box;
+}
+#product > .view > .review > ul > li > .reviewOption {
 }
 #product > .view > .review > ul > li {
     padding-top: 16px;

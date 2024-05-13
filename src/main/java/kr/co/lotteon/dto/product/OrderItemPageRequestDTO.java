@@ -15,8 +15,8 @@ import org.springframework.stereotype.Component;
 @Data
 @Component
 public class OrderItemPageRequestDTO {
-    private String begin;
-    private String end;
+    private String begin;               // 시작 날짜 선택
+    private String end;                 // 끝 날짜 선택
 
     @Builder.Default
     private int pg =1;                  // 페이지 번호

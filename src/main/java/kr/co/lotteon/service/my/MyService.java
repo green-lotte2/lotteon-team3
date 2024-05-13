@@ -244,17 +244,55 @@ public class MyService {
     public  LinkedHashMap<Integer, List<OrderItemDTO>> selectOrder (String uid){
 
         log.info("주문내역 : "+orderItemRepository.selectOrder(uid).values());
-        
+
         return orderItemRepository.selectOrder(uid);
 
+    }
+
+
+    // 최근 주문내역 최신순 5개 출력
+    public List<OrderItemDTO>selectOrdersByUid(String uid){
+        List<Tuple> orderItems = orderItemRepository.selectOrdersByUid(uid);
+        List<OrderItemDTO> orderItemDTOS=new ArrayList<>();
+        orderItems.forEach(tuple -> {
+            OrderItem orderItem=tuple.get(0,OrderItem.class);
+            String company=tuple.get(1,String.class);
+            String prodName=tuple.get(2,String.class);
+            int price=tuple.get(3,Integer.class); // 상품 개당 가격
+            int discount=tuple.get(4,Integer.class);
+            String thumb3=tuple.get(5,String.class);
+
+            OrderItemDTO orderItemDTO=modelMapper.map(orderItem,OrderItemDTO.class);
+            orderItemDTO.setCompany(company);
+            orderItemDTO.setProdName(prodName);
+            orderItemDTO.setPrice(price);
+            orderItemDTO.setDiscount(discount);
+            orderItemDTO.setThumb3(thumb3);
+
+            // 상품 개별 총 가격(할인적용가) = (count * price) - discount
+            int count=orderItemDTO.getCount();
+            log.info("상품 개수 : "+count);
+            int totalPricePerProduct=(count*price)-discount;
+            log.info("상품 개별 가격(할인 적용 전) : "+count*price);
+            log.info("상품 개별 총 가격(할인 적용 후) : "+totalPricePerProduct);
+
+            orderItemDTO.setTotalPricePerProduct(totalPricePerProduct);
+
+            orderItemDTOS.add(orderItemDTO);
+
+        });
+
+        return orderItemDTOS;
     }
 
 
     // 최근 주문내역 전체 출력
     public OrderItemPageResponseDTO selectWholeOrdersByUid(String uid, Pageable pageable, OrderItemPageRequestDTO orderItemPageRequestDTO){
 
+        // 페이징된 결과와 함께 총 엔티티 수를 함께 반환(전체 페이지 수 계산 가능)
         Page<Tuple> results = orderItemRepository.selectWholeOrdersByUid(uid, pageable, orderItemPageRequestDTO);
 
+        // map 함수를 사용하여 각 Tuple을 OrderItemDTO로 매핑하고, 그 결과를 리스트로 변환
         List<OrderItemDTO> dtoList = results.stream()
                 .map(tuple -> {
                     OrderItem orderItem = tuple.get(0,OrderItem.class);
@@ -273,8 +311,8 @@ public class MyService {
                     orderItemDTO.setThumb3(thumb3);
                     orderItemDTO.setOrdStatus(ordStatus);
 
+                    // 할인 가격으로 정의
                     int totalPrice = orderItemDTO.getPrice() - (orderItemDTO.getPrice() * orderItemDTO.getDiscount() / 100);
-
                     orderItemDTO.setTotalPricePerProduct(totalPrice);
 
                     return orderItemDTO;
@@ -291,7 +329,6 @@ public class MyService {
                 .dtoList(dtoList)
                 .total(total)
                 .build();
-
     }
 
     // 최근 주문내역 날짜 검색 출력
@@ -325,7 +362,6 @@ public class MyService {
                 })
                 .toList();
 
-
         // total 값
         int total = (int) results.getTotalElements();
 
@@ -335,22 +371,8 @@ public class MyService {
                 .dtoList(dtoList)
                 .total(total)
                 .build();
-
     }
 
-    // order 리스트 페이징(전체)
-    public OrderItemPageResponseDTO getOrderListByUid(String uid, OrderItemPageRequestDTO orderItemPageRequestDTO) {
-        Pageable pageable = orderItemPageRequestDTO.getPageable();
-        Page<OrderItem> orderPage = orderItemRepository.findByUidOrderByOrdDateDesc(uid, pageable);
-
-        return new OrderItemPageResponseDTO(
-                orderItemPageRequestDTO,
-                orderPage.getContent().stream()
-                        .map(OrderItem::toDTO)
-                        .collect(Collectors.toList()),
-                (int) orderPage.getTotalElements()
-        );
-    }
 
     // point 리스트 출력(날짜선택)
     public OrderItemPageResponseDTO findOrderList(String uid, OrderItemPageRequestDTO orderItemPageRequestDTO) {
@@ -360,6 +382,7 @@ public class MyService {
         LocalDateTime begin = LocalDateTime.parse(orderItemPageRequestDTO.getBegin() + "T00:00:00", formatter);
 
         LocalDateTime end = LocalDateTime.parse(orderItemPageRequestDTO.getEnd() + "T23:59:59", formatter);
+
         Page<OrderItem> result = orderItemRepository.findByUidAndOrdDateBetweenOrderByOrdDateDesc(uid, begin, end, orderItemPageRequestDTO.getPageable());
 
         List<OrderItemDTO> dtoList = result
