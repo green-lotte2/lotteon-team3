@@ -142,7 +142,7 @@
                                             <img th:src="@{'/prodImg/'+${orderList.thumb3}}" alt="" style="width: 80px; height: 80px;">
                                         </div>
                                         <div class="info">
-                                            <p id="company" class="company"><a th:href="@{#}" th:text="${orderList.company}"></a></p>
+                                            <p class="company" ><a th:href="@{#}" th:text="${orderList.company}"></a></p>
                                             <p class="InfoProdName" th:text="${'상품명'+orderList.prodName}"></p>
                                             <p th:text="${'개수'+orderList.count}"></p>
                                             <p th:text="${'가격'+#numbers.formatInteger(orderList.price,3,'COMMA')}"></p>
