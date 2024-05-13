@@ -90,39 +90,11 @@ public class ProductService {
         productMapper.updateProductHit(prodNo);
     }
 
-    // 상품 리뷰 조회
-    public ProductReviewPageResponseDTO selectProductReview(int prodNo, ProductReviewPageRequestDTO productReviewPageRequestDTO) {
-
-        log.info("상품 리뷰 목록 조회 1" + productReviewPageRequestDTO);
-        Pageable pageable = productReviewPageRequestDTO.getPageable("rdate");
-        Page<Tuple> tuples = productRepository.selectProductReview(prodNo, productReviewPageRequestDTO, pageable);
-        log.info("상품 리뷰 목록 조회 2" + tuples.getContent());
-
-        List<ReviewDTO> reviewDTOS = tuples.getContent().stream()
-                .map(tuple -> {
-                    Review review=tuple.get(0,Review.class);
-                    String prodName=tuple.get(1,String.class);
-                    String optionValue=tuple.get(2,String.class);
-
-                    ReviewDTO reviewDTO=modelMapper.map(review,ReviewDTO.class);
-                    reviewDTO.setProdName(prodName);
-                    reviewDTO.setOptionValue(optionValue);
-                    return reviewDTO;
-                })
-                .toList();
-        log.info("상품 리뷰 목록 조회 3" + reviewDTOS);
-
-        int total = (int) tuples.getTotalElements();
-
-        return ProductReviewPageResponseDTO.builder()
-                .productReviewPageRequestDTO(productReviewPageRequestDTO)
-                .dtoList(reviewDTOS)
-                .total(total)
-                .build();
-    }
 
     // 상품 문의 조회 - 상품 보기 페이지
-    public ProductQnaPageResponseDTO selectQna(int prodNo, ProductReviewPageRequestDTO pageRequestDTO){
+    public ProductQnaPageResponseDTO selectQna(int prodNo){
+        ProductReviewPageRequestDTO pageRequestDTO = new ProductReviewPageRequestDTO();
+
         Pageable pageable = pageRequestDTO.getPageable("no");
         Page<Tuple> result = boardRepository.selectQna(prodNo, pageable);
 
