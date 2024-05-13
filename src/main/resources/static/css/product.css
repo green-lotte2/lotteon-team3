@@ -2013,7 +2013,7 @@
 #product > .complete > .info table tr > td:last-child {
   color:#ff006c;
   font-weight: bold;
-  text-align: right;
+  text-align: center;
 }
 #product > .complete > .info table tr > td > article {
   overflow: hidden;

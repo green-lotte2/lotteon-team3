@@ -27,4 +27,6 @@ public class OrderItem {
     @CreationTimestamp
     private LocalDateTime ordDate;
     private String ordStatus;
+
+
 }
