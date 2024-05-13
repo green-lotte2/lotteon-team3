@@ -118,6 +118,20 @@ public class OrderItemRepositoryImpl implements OrderItemRepositoryCustom {
                 .fetch();
     }
 
+    @Override
+    public List<Tuple> selectOrdersByUid(String uid) {
+        QueryResults<Tuple> results = jpaQueryFactory
+                .select(qOrderItem, qProduct.company, qProduct.prodName, qProduct.price, qProduct.discount, qProduct.thumb3)
+                .from(qOrderItem)
+                .join(qProduct).on(qOrderItem.prodNo.eq(qProduct.prodNo))
+                .where(qOrderItem.uid.eq(uid))
+                .orderBy(qOrderItem.ordDate.desc())
+                .limit(5)
+                .fetchResults();
+
+        return results.getResults();
+    }
+
     // 판매자 주문 현황 리스트 기본 조회
     @Override
     public Page<Tuple> selectOrderList(AdminPageRequestDTO pageRequestDTO, Pageable pageable, List<Integer> prodNos){
