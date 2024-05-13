@@ -33,7 +33,7 @@
             const dis_price = document.getElementsByClassName('dis_price')[0];
             const dis_priceIns = dis_price.getElementsByTagName('ins')[0];
 
-            dis_priceIns.innerText = numberWithCommas(discountPrice);
+            dis_priceIns.innerText = numberWithCommas(parseInt(discountPrice));
 
             // 배송비
             const delivery = document.getElementsByClassName('delivery')[0];
@@ -60,7 +60,7 @@
             } else if (discountPrice <= 30000) {
                 let totalP = discountPrice + deliveryInt
                 console.log('to' + totalP)
-                totalSpan.innerText = numberWithCommas(totalP);
+                totalSpan.innerText = numberWithCommas(parseInt(totalP));
             }
 
             // 상품 번호
@@ -70,7 +70,7 @@
             // 옵션 select 요소
             const selectOption = document.querySelectorAll('.selectOption');
 
-            let selectedArray = [];
+
 
             // 각 옵션 select 요소에 대해 이벤트 등록
             if (selectOption) {
@@ -107,9 +107,13 @@
                                 let stringValue;
                                 // 선택한 옵션 값
                                 selectDetail.addEventListener('change', async function () {
+                                    let selectedArray = [];
                                     // 선택된 옵션의 value값 배열로 넣기
                                     if (newOption != null) {
-                                        selectedArray.push(this.value);
+                                        document.querySelectorAll('.selectDetail').forEach(function (sel) {
+                                            selectedArray.push(sel.value);
+                                        });
+                                        console.log(selectedArray);
 
                                         stringValue = selectedArray.join(',');
                                         console.log(stringValue);
@@ -397,6 +401,56 @@
                 inline: 'start'
             });
         }
+
+        // 모달 띄우기
+        function btnModal(){
+            const modal = document.querySelector(".v--modal-overlay");
+            modal.classList.remove("v--modal-hidden");
+        }
+        // 모달 끄기
+        function closeModal(){
+            const modal = document.querySelector(".v--modal-overlay");
+            const titleInput = document.getElementById('titleInput');
+            const contentInput = document.getElementById('contentInput');
+
+            titleInput.value = "";
+            contentInput.value = "";
+
+            modal.classList.add("v--modal-hidden");
+        }
+        // 모달 외부 클릭
+        document.addEventListener("DOMContentLoaded", function() {
+            document.querySelector(".v--modal-overlay").addEventListener('click', function(event) {
+                // 클릭된 요소가 모달 내부인지 확인
+                if (!event.target.closest('.v--modal-box')) {
+                    // 모달 외부를 클릭하면 모달 닫기
+                    closeModal();
+                }
+            });
+        });
+        // 모달 전송
+        async function qnaSubmit() {
+            const modal = document.querySelector(".v--modal-overlay");
+            const titleInput = document.getElementById('titleInput');
+            const typeSelect = document.getElementById('typeSelect');
+            const contentInput = document.getElementById('contentInput');
+
+            const jsonData = {
+                "prodNo" : prodNo,
+                "title" : titleInput.value,
+                "typeNo" : typeSelect.value,
+                "content" : contentInput.value
+            };
+
+            const data = await fetchPost(`/lotteon/cs/prodqna`, jsonData);
+
+            if(data != null){
+                alert('문의가 등록되었습니다.');
+            }
+
+            closeModal();
+        }
+
     </script>
 
     <!-- 제목, 페이지 네비게이션 -->
@@ -447,7 +501,8 @@
             <nav>
                 <span class="delivery"
                       th:value="${productDTO.discount}">[[${'배송비 :' + productDTO.delivery +'원'}]]</span>
-                <span class="arrival">모레(금) [[${#temporals.format(productDTO.rdate, 'yy-MM-dd')}]] 도착예정</span>
+
+                <span class="arrival" th:text="${#temporals.format(#temporals.createNow().plusDays(2), 'MM-dd')} + ' 도착예정'"></span>
                 <span class="desc">본 상품은 국내배송만 가능합니다.</span>
             </nav>
 
@@ -468,11 +523,6 @@
             <nav>
                 <span class="origin">원산지-상세설명 참조</span>
             </nav>
-
-
-            <img th:src="@{/images/vip_plcc_banner.png}" alt="100원만 결제해도 1만원 적립!" class="banner"/>
-
-
             <th:block th:each="banner : ${prodBanners}">
                 <a th:href="@{${banner.link}}">
                     <img th:src="@{'/prodImg/'+ ${banner.thumb}}" alt="t1" class="banner"/>
@@ -626,7 +676,6 @@
             <li>
                 <div>
                     <h5 class="rating star4">상품평</h5>
-                    <!--                                seo******	2018-07-10-->
                     <span th:text="${review.uid}+' '+${#temporals.format(review.rdate, 'yyyy-MM-dd')}"></span>
                 </div>
                 <h3 th:text="${review.optionValue}"></h3>
@@ -642,11 +691,10 @@
             <li>
                 <div>
                     <h5 class="rating star4">상품평</h5>
-                    <!--                                seo******	2018-07-10-->
                     <span>작성자</span>
                 </div>
                 <h3>옵션값</h3>
-                <h3>리뷰 상품전호</h3>
+                <h3>리뷰 상품번호</h3>
                 <p>
                     가격대비 정말 괜찮은 옷이라 생각되네요 핏은 음...제가 입기엔 어깨선이 맞고 루즈핏이라 하기도 좀 힘드네요.
                     아주 약간 루즈한정도...?그래도 이만한 옷은 없다고 봅니다 깨끗하고 포장도 괜찮고 다음에도 여기서 판매하는
@@ -678,51 +726,35 @@
         <div class="qnaWrap groupProd">
             <div class="util">
                 <div class="sum"><strong>Q&amp;A</strong><span></span>
-                </div><!----></div>
+                </div><!---->
+                <button class="btn-prodQna" onclick="btnModal()">문의하기</button>
+            </div>
             <ul class="qnaList">
                 <!-- 문의 내용 li 반복 -->
-                <li>
+                <li th:each="qna : ${qnaPageDto.dtoList}">
                     <div class="category">
-                        <span class="classification">기타</span>
-                        <span class="option">옵션 : 1. 구구 크러스트 홈 * 2개 / 1. 구구 크러스트 홈 * 2개 / 5. 위즐 커피초코퍼지 * 2개</span>
+                        <span class="classification"  th:text="${#strings.substring(qna.boardDTO.uid, 0, 3) + '***'}"></span>
+                        <span class="classification2" >[[${qna.boardTypeDTO.typeName}]]</span>
                     </div>
-                    <div class="question"><p><span> 문의 내용 입니다. 문의 내용 입니다. 문의 내용 입니다. </span><!----></p></div>
-                    <div class="answer">
+                    <div class="question"><p><span> [[${qna.boardDTO.content}]]</span><!----></p></div>
+                    <div class="answer" th:if="${qna.commentDTO != null}">
                         <a style="cursor: pointer;">
-                            <p>안녕하세요 고객님,
-                                불편을 드려 죄송합니다.
-                                해당 사항 확인을 위해 사진첨부하여 재문의 부탁드립니다.
-                                사진 확인 후 처리 도와드리겠습니다.
-                                감사합니다.</p>
+                            <p>[[${qna.commentDTO.content}]]</p>
                             <div class="seller">
-                                <span class="sellerName">주식회사 디씽컴퍼니</span>
+                                <span class="sellerName">[[${productDTO.seller}]]</span>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="answer" th:if="${qna.commentDTO == null}">
+                        <a style="cursor: pointer;">
+                            <p>아직 답변이 작성되지 않은 문의입니다.</p>
+                            <div class="seller">
+                                <span class="sellerName">Lotte ON</span>
                             </div>
                         </a>
                     </div>
                     <div class="actions">
-                        <span class="time">2023.08.19</span></div>
-                </li>
-                <li>
-                    <div class="category">
-                        <span class="classification">기타</span>
-                        <span class="option">옵션 : 1. 구구 크러스트 홈 * 2개 / 1. 구구 크러스트 홈 * 2개 / 5. 위즐 커피초코퍼지 * 2개</span>
-                    </div>
-                    <div class="question"><p><span> 문의 내용 입니다. 문의 내용 입니다. 문의 내용 입니다. </span><!----></p></div>
-                    <div class="answer">
-                        <a style="cursor: pointer;">
-                            <p>안녕하세요 고객님,
-                                불편을 드려 죄송합니다.
-                                해당 사항 확인을 위해 사진첨부하여 재문의 부탁드립니다.
-                                사진 확인 후 처리 도와드리겠습니다.
-                                감사합니다.</p>
-                            <div class="seller">
-                                <span class="sellerName">주식회사 디씽컴퍼니</span>
-                                <span class="badge orange">판매자</span>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="actions">
-                        <span class="time">2023.08.19</span></div>
+                        <span class="time">[[${#temporals.format(qna.boardDTO.rdate, 'yy-MM-dd')}]]</span></div>
                 </li>
             </ul>
             <div class="popToast is-footer" shape="msg"
@@ -730,54 +762,83 @@
                 <p class="msg">
                 </p>
             </div>
-        </div>
-        <!-- 문의 페이지 -->
-        <div class="paging">
-                        <span class="prev">
-                            <a href="#"><&nbsp;이전</a>
-                        </span>
-            <span class="num">
-                            <a href="#" class="on">1</a>
-                            <a href="#">2</a>
-                            <a href="#">3</a>
-                            <a href="#">4</a>
-                            <a href="#">5</a>
-                            <a href="#">6</a>
-                            <a href="#">7</a>
-                        </span>
-            <span class="next">
-                            <a href="#">다음&nbsp;></a>
-                        </span>
-        </div>
+        </div><!--
+        &lt;!&ndash; 문의 더보기 &ndash;&gt;
+        <div id="buttonDiv" role="status" th:if="${qnaPageDto.last != 1}">
+
+            <span class="btnMoreView" onclick="moreView(this)">
+                <span class="spanMoreView">문의 더보기 + </span>
+                <span class="spinner-border spinner-border" aria-hidden="true" style="visibility: hidden"></span>
+            </span>
+        </div>-->
+
     </article> <!-- 문의 끝 -->
-</section>
-<!-- 상품 상세페이지 끝 -->
-</main>
-<footer>
-    <ul>
-        <li><a th:href="@{#}">회사소개</a></li>
-        <li><a th:href="@{#}">서비스이용약관</a></li>
-        <li><a th:href="@{#}">개인정보처리방침</a></li>
-        <li><a th:href="@{#}">전자금융거래약관</a></li>
-    </ul>
-    <div>
-        <p><img th:src="@{/images/footer_logo.png}" alt="로고"/></p>
-        <p>
-            <strong>(주)롯데ON</strong><br/>
-            서울특별시 송파구 올림픽로 300 롯데월드타워 26층 (역삼동 강남파이낸스센터)<br/>
-            대표이사 : 김사무엘상현, 정준호, 강성현<br/>
-            사업자등록번호 : 529-85-00774(롯데쇼핑(주) e커머스사업부)<br/>
-            통신판매업 신고 : 서울송파 제0158호<br>
-            호스팅 서비스사업자 : 롯데쇼핑(주) e커머스사업부
-        </p>
-        <p>
-            <strong>고객센터</strong><br/>
-            Tel : 1899-7000(유료) (평일 09:00~18:00)<br/>
-            Fax : 051-123-4567 | E-mail : lotteon@lotte.net<br/>
-        </p>
+<!-- 문의 글 작성 모달 -->
+    <div class="v--modal-overlay v--modal-hidden" data-modal="productQnaRegistration">
+        <div class="v--modal-background-click">
+            <div class="v--modal-top-right"></div>
+            <div role="dialog" aria-modal="true" class="v--modal-box popRound" tabindex="0" style="top: 35px; left: 503px; width: 530px; height: auto;">
+                <div class="popContents medium">
+                    <h2 class="popupTitle"><span class="titMiddle">문의하기</span></h2>
+                    <div class="scrollContentWrap" style="max-height: 535px;">
+                        <p class="qnaText">현재 판매자 <strong>‘ [[${productDTO.seller}]] ’</strong> 에게 질문</p>
+                        <div class="informationList">
+                            <ul class="listArea">
+                                <li>
+                                    <div class="item">
+                                        <div class="thumb">
+                                            <a><img th:src="@{|/prodImg/${productDTO.thumb1}|}" alt="상세페이지"></a>
+                                        </div>
+                                        <div class="info">
+                                            <a>
+                                                <div class="title">
+                                                    <strong>[[${productDTO.company}]]</strong>
+                                                    [[${productDTO.prodName}]]
+                                                </div>
+                                                <span><p>[[${productDTO.seller}]]</p></span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="inquiryWrap">
+                            <div class="section titLine">
+                                <h2 class="titMiddle">문의유형</h2>
+                                <select class="form-select" name="type" id="typeSelect">
+                                    <option value="17">사이즈/용량</option>
+                                    <option value="18">상품정보</option>
+                                    <option value="19">기타문의</option>
+                                </select>
+                            </div>
+                            <div class="section titLine">
+                                <h2 class="titMiddle">제목</h2>
+                                <input type="text" class="form-control" name="title" id="titleInput" placeholder="글 제목을 입력해 주세요.">
+                            </div>
+                            <div class="section limitTextParent">
+                                <h2 class="titMiddle">문의내용</h2>
+                                <div class="selectWrap">
+                                    <div class="inputSet">
+                                        <div class="limit large">
+                                            <textarea id="contentInput" placeholder="문의 내용을 입력해 주세요. " maxlength="1000"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <ul class="dotList caution">
+                                    <li>연락처, 주민번호 등 개인 정보 기입은 삼가 주시고, <br>개인정보 작성이 불가피할 경우 비밀글로 작성해 주세요.</li>
+                                    <li>개인정보 포함 시 임의로 삭제될 수 있습니다.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 작성, 취소 버튼 -->
+                    <div class="fixingBtn">
+                        <button class="btn-qnaWrite" onclick="qnaSubmit()">작성</button>
+                        <button class="btn-qnaCancel" onclick="closeModal()">취소</button>
+                    </div>
+                    <button type="button" class="guidClose"><span class="hiddenTxt" onclick="closeModal()">닫기</span></button>
+                </div>
+            </div>
+        </div>
     </div>
-</footer>
-<button type="button" id="top">상단이동</button>
-</div>
-</body>
-</html>
+</section>

@@ -10,4 +10,6 @@ public interface ProductMapper {
     public void updateProductByProdNo(ProductDTO productDTO);
 
     public void updateStatusByProdNo(int prodNo, String status);
+
+    public void updateProductStock(int prodNo, int count);
 }

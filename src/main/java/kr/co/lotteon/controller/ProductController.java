@@ -11,6 +11,7 @@ import kr.co.lotteon.entity.member.Member;
 import kr.co.lotteon.entity.product.OrderItem;
 import kr.co.lotteon.entity.product.Product;
 import kr.co.lotteon.repository.product.Cate1Repository;
+import kr.co.lotteon.repository.product.OptionRepository;
 import kr.co.lotteon.security.MyUserDetails;
 import kr.co.lotteon.service.admin.BannerService;
 import kr.co.lotteon.service.member.MemberService;
@@ -19,6 +20,7 @@ import kr.co.lotteon.service.product.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.Response;
+import org.springframework.boot.Banner;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -43,6 +45,7 @@ public class ProductController {
     private final OptionService optionService;
     private final MemberService memberService;
     private final WishService wishService;
+    private final OptionRepository optionRepository;
 
     // cart 페이지 매핑
     @GetMapping("/product/cart")
@@ -60,12 +63,6 @@ public class ProductController {
         log.info("cartProducts: {} ", cartProducts );
 
         return "/product/cart";
-    }
-
-    // complete(주문 완료) 페이지 매핑
-    @GetMapping("/product/complete")
-    public String complete(int ordNo){
-        return "/product/complete";
     }
 
     // list (상품 목록) 페이지 매핑
@@ -146,13 +143,33 @@ public class ProductController {
    @GetMapping("/product/order")
     public String order(@RequestParam String uid, int prodNo, int count, String opNo, Model model) throws JsonProcessingException {
 
-
        log.info("컨트롤러1"+uid);
        log.info("컨트롤러2"+prodNo);
 
        ProductDTO productDTOS = productService.prodToOrder(prodNo);
+
+       // 옵션 뽑아내기
+       if(opNo != null){
+           String [] opNoString = opNo.split(",");
+           int[] optionIds = new int[opNoString.length];
+
+           for(int i=0; i<opNoString.length; i++){
+               optionIds[i] = Integer.parseInt(opNoString[i].trim());
+           }
+
+           List<OptionDTO> options = new ArrayList<>();
+           for (int optionNos : optionIds){
+               OptionDTO optionDTO = optionRepository.selectOptionForCart(optionNos);
+
+               if(optionDTO != null){
+                   options.add(optionDTO);
+               }
+               productDTOS.setOptionList(options);
+           }
+           productDTOS.setOpNo(opNo);
+       }
+
        productDTOS.setCount(count);
-       productDTOS.setOpNo(opNo);
 
        log.info("아아아3" + productDTOS);
 
@@ -187,6 +204,29 @@ public class ProductController {
 
         return productService.saveOrderItem(orderItemDTOS, uid, ordNo);
     }
+
+    // complete(주문 완료) 페이지 매핑
+    @GetMapping("/product/complete")
+    public String complete(int ordNo, @AuthenticationPrincipal Object principal , Model model){
+
+        // 주문정보 가져오기
+        OrderDTO orderDTO = productService.selectOrder(ordNo);
+        model.addAttribute("orderDTO", orderDTO);
+
+        Member member = ((MyUserDetails) principal).getMember();
+        String uid = member.getUid();
+        MemberDTO memberDTO =memberService.findByUid(uid);
+        log.info("주문 완료1" + memberDTO);
+
+        model.addAttribute("memberDTO", memberDTO);
+
+        List<OrderItemDTO> orderItemDTOS = productService.selectOrderComplete(ordNo);
+        model.addAttribute("orderItemDTOS", orderItemDTOS);
+
+        log.info("주문 완료2" + orderItemDTOS);
+        return "/product/complete";
+    }
+
     // search (상품 검색) 페이지 매핑
     @GetMapping("/product/search")
     public String search(Model model, SearchPageRequestDTO searchPageRequestDTO) {
@@ -285,6 +325,9 @@ public class ProductController {
         log.info("선택한 상품의 리뷰들 "+productReviewPageResponseDTO);
         model.addAttribute("productReviewPageResponseDTO",productReviewPageResponseDTO);
 
+        // Qna 목록 조회
+        ProductQnaPageResponseDTO qnaPageDto = productService.selectQna(productDTO.getProdNo(), productReviewPageRequestDTO);
+        model.addAttribute("qnaPageDto", qnaPageDto);
 
         // 시큐리티 컨텍스트에서 인증된 사용자 정보 가져오기
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

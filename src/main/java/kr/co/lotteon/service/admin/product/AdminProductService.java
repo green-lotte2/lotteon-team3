@@ -543,7 +543,7 @@ public class AdminProductService {
 
         // 로그인 중일 때 해당 사용자 id를 seller에 입력
         MyUserDetails userDetails = (MyUserDetails) authentication.getPrincipal();
-        String sellerId = userDetails.getMember().getName();
+        String sellerId = userDetails.getMember().getNick();
 
         return sellerId;
     }

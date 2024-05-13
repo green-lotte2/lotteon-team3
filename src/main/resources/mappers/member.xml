@@ -35,5 +35,7 @@
         </where>
     </select>
 
-
+    <update id="updateMemberPoint">
+        UPDATE member SET point = point-#{usedPoint} WHERE uid =#{uid};
+    </update>
 </mapper>

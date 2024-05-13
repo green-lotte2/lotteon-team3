@@ -259,6 +259,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
     public List<Integer> selectProdNoForQna(String sellerId) {
         // SELECT ProdNo FROM product WHERE seller = ?;
 
+        log.info("aaa : "+sellerId);
         List<Integer> prodNos = jpaQueryFactory
                 .select(qProduct.prodNo)
                 .from(qProduct)
@@ -266,7 +267,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
                 .fetch();
 
         log.info("판매자 상품 번호 All 조회 Impl");
-        ;
+
         return prodNos;
     }
 
@@ -398,26 +399,29 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
         com.querydsl.core.types.Order order;
         if ("DESC".equals(searchPageRequestDTO.getHow())) {
             order = com.querydsl.core.types.Order.DESC;
-        }else {
+        } else {
             order = com.querydsl.core.types.Order.ASC;
         }
 
         // 정렬 기준에 따라 쿼리 정렬 방식 변경
         OrderSpecifier<?> orderSpecifier;
+
         if (searchPageRequestDTO.getSort().equals("sold")) {
             orderSpecifier = new OrderSpecifier<>(order, qProduct.sold);
         } else if (searchPageRequestDTO.getSort().equals("price")) {
-            orderSpecifier = new OrderSpecifier<>(order, qProduct.price);
+            // 할인된 가격으로 정렬하도록 변경
+            orderSpecifier = new OrderSpecifier<>(order, qProduct.price.subtract(qProduct.price.multiply(qProduct.discount.divide(100))));
         } else if (searchPageRequestDTO.getSort().equals("score")) {
             orderSpecifier = new OrderSpecifier<>(order, qProduct.score);
-        }else if (searchPageRequestDTO.getSort().equals("review")) {
+        } else if (searchPageRequestDTO.getSort().equals("review")) {
             orderSpecifier = new OrderSpecifier<>(order, qProduct.review);
-        }else if (searchPageRequestDTO.getSort().equals("rdate")) {
+        } else if (searchPageRequestDTO.getSort().equals("rdate")) {
             orderSpecifier = new OrderSpecifier<>(order, qProduct.rdate);
         } else {
             // 기본적으로 prodNo로 정렬
             orderSpecifier = qProduct.prodNo.desc();
         }
+
         BooleanExpression expression = qProduct.prodName.containsIgnoreCase(searchKeyword);
 
         QueryResults<Tuple> results = jpaQueryFactory
@@ -435,6 +439,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
 
         return new PageImpl<>(content, pageable, total);
     }
+
 
     // 상품 - 상품이름으로 조회
     @Override
@@ -455,7 +460,8 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
         if (searchPageRequestDTO.getSort().equals("sold")) {
             orderSpecifier = new OrderSpecifier<>(order, qProduct.sold);
         } else if (searchPageRequestDTO.getSort().equals("price")) {
-            orderSpecifier = new OrderSpecifier<>(order, qProduct.price);
+            // 할인된 가격으로 정렬하도록 변경
+            orderSpecifier = new OrderSpecifier<>(order, qProduct.price.subtract(qProduct.price.multiply(qProduct.discount.divide(100))));
         } else if (searchPageRequestDTO.getSort().equals("score")) {
             orderSpecifier = new OrderSpecifier<>(order, qProduct.score);
         }else if (searchPageRequestDTO.getSort().equals("review")) {
@@ -503,7 +509,8 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
         if (searchPageRequestDTO.getSort().equals("sold")) {
             orderSpecifier = new OrderSpecifier<>(order, qProduct.sold);
         } else if (searchPageRequestDTO.getSort().equals("price")) {
-            orderSpecifier = new OrderSpecifier<>(order, qProduct.price);
+            // 할인된 가격으로 정렬하도록 변경
+            orderSpecifier = new OrderSpecifier<>(order, qProduct.price.subtract(qProduct.price.multiply(qProduct.discount.divide(100))));
         } else if (searchPageRequestDTO.getSort().equals("score")) {
             orderSpecifier = new OrderSpecifier<>(order, qProduct.score);
         }else if (searchPageRequestDTO.getSort().equals("review")) {
@@ -554,7 +561,8 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
         if (searchPageRequestDTO.getSort().equals("sold")) {
             orderSpecifier = new OrderSpecifier<>(order, qProduct.sold);
         } else if (searchPageRequestDTO.getSort().equals("price")) {
-            orderSpecifier = new OrderSpecifier<>(order, qProduct.price);
+            // 할인된 가격으로 정렬하도록 변경
+            orderSpecifier = new OrderSpecifier<>(order, qProduct.price.subtract(qProduct.price.multiply(qProduct.discount.divide(100))));
         } else if (searchPageRequestDTO.getSort().equals("score")) {
             orderSpecifier = new OrderSpecifier<>(order, qProduct.score);
         }else if (searchPageRequestDTO.getSort().equals("review")) {

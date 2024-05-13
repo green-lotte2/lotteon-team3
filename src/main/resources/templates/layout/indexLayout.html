@@ -10,11 +10,19 @@
     <link rel="stylesheet" th:href="@{https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css}"/>
     <link rel="stylesheet" th:href="@{https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.css}"/>
     <link rel="stylesheet" th:href="@{/css/common.css}"/>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // 로그인 상태 확인
+        const isAuthenticated = [[${#authorization.expression('isAuthenticated()')}]];
+    </script>
     <script th:src="@{https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js}"></script>
     <script th:src="@{https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js}"></script>
     <script th:src="@{https://kit.fontawesome.com/20962f3e4b.js}" crossorigin="anonymous"></script>
     <script th:src="@{https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.min.js}"></script>
     <script th:src="@{./js/index.js}"></script>
+    <script th:src="@{./js/sseSeller.js}"></script>
+
     <style>
         #bannerTop {
             display: none;
@@ -52,6 +60,8 @@
 
     </style>
     <script>
+
+
         $(function(){
             $('#bannerTop .btnClose').click(function(){
                 $(this).closest('#bannerTop').removeClass('on');
@@ -60,17 +70,30 @@
 
         window.onload = function (){
 
-
             const priceIns = document.querySelectorAll(".dis_price > :first-child");
             priceIns.forEach(price =>{
                 let priceInsValue = price.innerText;
                 var formattedNumber = priceInsValue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','); // "49,770"
                 const formatNumber = formattedNumber.split(".")[0];
-                console.log(formatNumber);
                 price.textContent = formatNumber;
             });
 
-        }
+
+        }/*
+        // sse 연결
+        const eventSource = new EventSource('/lotteon/connect');
+        eventSource.addEventListener("connect", function (e) {
+            console.log("!!! " + event.data);
+            // 받은 데이터를 화면에 출력 - 확인 완
+            // document.getElementById('sse-data').innerHTML += `<p>${event.data}</p>`;
+        });
+
+
+        // 에러 발생 시 처리할 콜백 함수
+        eventSource.onerror = function(error) {
+            console.error('EventSource failed:', error);
+        };
+        */
 
         // 최상단 이동 (topButton) 함수 //
         function movePageTop() {
@@ -131,11 +154,14 @@
                 </th:block>
             </div>
         </div>
+        <div id="sse-data"></div>
         <div class="logo">
             <div>
                 <a th:href="@{/index}"><img th:src="@{/images/header_logo.png}" alt="로고" /></a>
                 <form th:action="@{/product/search}" method="get">
-                    <input type="text" name="searchKeyword" placeholder="검색"/>
+                    <input type="hidden" name="sort" value="prodNo">
+                    <input type="hidden" name="how" value="DESC">
+                    <input type="text" name="searchKeyword" placeholder="검색" />
                     <button><i class="fa fa-search"></i></button>
                 </form>
             </div>

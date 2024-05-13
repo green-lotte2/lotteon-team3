@@ -19,5 +19,8 @@ public interface OptionRepositoryCustom {
     public Map<String, List<Map<String, String>>> adminSelectProdOption(int prodNo);
 
     public List<Option> selectOptionByOpNos(List<Integer> opNos);
+    
+    // 카트 옵션 가져오기
+    public OptionDTO selectOptionForCart(int opNo);
 }
 

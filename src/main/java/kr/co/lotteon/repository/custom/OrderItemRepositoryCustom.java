@@ -3,6 +3,7 @@ package kr.co.lotteon.repository.custom;
 import com.querydsl.core.Tuple;
 import kr.co.lotteon.dto.admin.AdminPageRequestDTO;
 import kr.co.lotteon.dto.product.OrderItemDTO;
+import kr.co.lotteon.dto.product.OrderItemPageRequestDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -43,5 +44,14 @@ public interface OrderItemRepositoryCustom {
     // 마이페이지 home 최근주문내역 최신순 5개 조회
     public LinkedHashMap<Integer, List<OrderItemDTO>> selectOrder(String uid);
 
+    public List<Tuple> selectOrdersByUid(String uid);
+    
+    // 주문 완료 페이지
+    public List<Tuple> selectOrderComplete(int ordNo);
 
+    // 전체주문내역 조회
+    public Page<Tuple> selectWholeOrdersByUid(String uid, Pageable pageable, OrderItemPageRequestDTO orderItemPageRequestDTO);
+
+    public Page<Tuple> selectOrdersByDate(String uid, Pageable pageable, OrderItemPageRequestDTO orderItemPageRequestDTO);
 }
+

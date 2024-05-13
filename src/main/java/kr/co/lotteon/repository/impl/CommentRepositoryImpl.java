@@ -3,6 +3,7 @@ package kr.co.lotteon.repository.impl;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import kr.co.lotteon.entity.cs.Comment;
 import kr.co.lotteon.entity.cs.QComment;
 import kr.co.lotteon.entity.member.QMember;
 import kr.co.lotteon.repository.custom.CommentRepositoryCustom;
@@ -35,6 +36,15 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
                 .fetchResults();
         // List<Tuple> 리턴
         return results.getResults();
+    }
+    // 문의 답변 조회
+    public Comment selectComment(int bno){
+
+        return jpaQueryFactory
+                .select(qComment)
+                .from(qComment)
+                .where(qComment.bno.eq(bno))
+                .fetchOne();
     }
     // 댓글 작성 후 불러오기
     public Tuple selectCommentAndNick(int cno){
