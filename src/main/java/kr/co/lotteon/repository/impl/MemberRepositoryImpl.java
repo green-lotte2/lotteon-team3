@@ -7,6 +7,8 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.co.lotteon.dto.admin.AdminPageRequestDTO;
 import kr.co.lotteon.entity.member.Member;
 import kr.co.lotteon.entity.member.QMember;
+import kr.co.lotteon.entity.product.QOrder;
+import kr.co.lotteon.entity.product.QOrderItem;
 import kr.co.lotteon.entity.product.QProduct;
 import kr.co.lotteon.repository.custom.MemberRepositoryCustom;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +31,8 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
     private final JPAQueryFactory jpaQueryFactory;
     private final QMember qMember = QMember.member;
     private final QProduct qProduct = QProduct.product;
+    private final QOrderItem qOrderItem = QOrderItem.orderItem;
+    private final QOrder qOrder = QOrder.order;
 
     // 월별 가입 count 조회 - 오늘 기준 12개월 전 까지
     @Override
@@ -215,6 +219,22 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
                 .fetchCount();
 
     }
+
+    //판매자 정보 조회
+    @Override
+    public Member selectSellerByCompany(String company) {
+        Member seller = jpaQueryFactory
+                .select(qMember)
+                .from(qMember)
+                .where(qMember.company.eq(company))
+                .fetchOne();
+
+        log.info("seller 정보 : "+seller);
+        return seller;
+    }
+
+
+
 
 
 }

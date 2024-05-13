@@ -37,6 +37,9 @@ public interface MemberRepositoryCustom {
     // 휴대폰 조회
     public int countByUidAndHp(String uid,String hp);
 
+    // 판매자 정보 조회
+    public Member selectSellerByCompany(String company);
+
 
 
 }

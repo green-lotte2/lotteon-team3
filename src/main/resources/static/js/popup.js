@@ -1,9 +1,66 @@
 $(function(){
-    // 판매자 정보 팝업 띄우기
-    $('.info > .company  a').click(function(e) {
+
+    
+    // 판매자 정보 출력
+    async function getSellerInfo(companyTag) {
+        const companyName = document.getElementsByClassName('companyName')[0];
+        const ceo = document.getElementsByClassName('ceo')[0];
+        const tel = document.getElementsByClassName('tel')[0];
+        const fax = document.getElementsByClassName('fax')[0];
+        const email = document.getElementsByClassName('ceo')[0];
+        const bizNum = document.getElementsByClassName('bizNum')[0];
+        const address = document.getElementById('address');
+
+        const company = companyTag.innerText;
+
+        const jsonData = {
+            "company": company
+        };
+
+        try {
+            const response = await fetch('/lotteon/my/sellerInfo', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(jsonData)
+            });
+            const data = await response.json();
+
+            companyName.innerHTML = "";
+            companyName.textContent = data.company;
+
+            ceo.innerHTML = "";
+            ceo.textContent = data.ceo;
+
+            tel.innerHTML = "";
+            tel.textContent = data.tel;
+
+            fax.innerHTML = "";
+            fax.textContent = data.fax;
+
+            email.innerHTML = "";
+            email.textContent = data.email;
+
+            bizNum.innerHTML = "";
+            bizNum.textContent = data.bizRegNum;
+
+            address.innerHTML = "";
+            address.textContent = '[' + data.zip + ']' + data.addr1 + ' ' + data.addr2;
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    $('.info > .company a').click(async function (e) {
         e.preventDefault();
+        const companyTag = $(this).closest('.company')[0];
+        console.log(companyTag);
+
+        await getSellerInfo(companyTag);
+
         $('#popSeller').addClass('on');
     });
+
+
 
 
     // 문의하기 팝업 띄우기
