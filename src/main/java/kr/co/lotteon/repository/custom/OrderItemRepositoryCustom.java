@@ -52,6 +52,7 @@ public interface OrderItemRepositoryCustom {
     // 전체주문내역 조회
     public Page<Tuple> selectWholeOrdersByUid(String uid, Pageable pageable, OrderItemPageRequestDTO orderItemPageRequestDTO);
 
+    // 전체주문내역 검색조회
     public Page<Tuple> selectOrdersByDate(String uid, Pageable pageable, OrderItemPageRequestDTO orderItemPageRequestDTO);
 }
 

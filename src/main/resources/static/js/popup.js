@@ -1,5 +1,4 @@
 $(function(){
-
     // 판매자 정보 팝업 띄우기
     $('.info > .company  a').click(function(e) {
         e.preventDefault();
@@ -34,6 +33,12 @@ $(function(){
 
     // 팝업 닫기
     $('.btnClose').click(function(){
+        $(this).closest('.popup').removeClass('on');
+    });
+
+    // 팝업 닫기
+    $('.btnCancel').click(function(e){
+        e.preventDefault();
         $(this).closest('.popup').removeClass('on');
     });
 

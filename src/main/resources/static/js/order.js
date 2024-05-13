@@ -127,7 +127,7 @@ function updateOrderList(data) {
     <ul>
         <li class="company"><a href="#">${dto.company}</a></li>
         <li class="prodName"><a href="#">${dto.prodName}</a></li>
-        <li class="orderNo">수량(화면 바꼈음) : <span class="prodCount">${dto.count}</span>개 / <span class="ordNo">주문번호 : <a href="#">${dto.ordNo}</a></span></li>
+        <li class="orderNo">수량 : <span class="prodCount">${dto.count}</span>개 / <span class="ordNo">주문번호 : <a href="#">${dto.ordNo}</a></span></li>
         <li class="prodPrice">${dto.totalPricePerProduct.toLocaleString()}</li>
     </ul>
 `;

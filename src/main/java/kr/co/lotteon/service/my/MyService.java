@@ -243,14 +243,21 @@ public class MyService {
         
         return orderItemRepository.selectOrder(uid);
 
+
+        });
+
+        return orderItemDTOS;
+
     }
 
 
     // 최근 주문내역 전체 출력
     public OrderItemPageResponseDTO selectWholeOrdersByUid(String uid, Pageable pageable, OrderItemPageRequestDTO orderItemPageRequestDTO){
 
+        // 페이징된 결과와 함께 총 엔티티 수를 함께 반환(전체 페이지 수 계산 가능)
         Page<Tuple> results = orderItemRepository.selectWholeOrdersByUid(uid, pageable, orderItemPageRequestDTO);
 
+        // map 함수를 사용하여 각 Tuple을 OrderItemDTO로 매핑하고, 그 결과를 리스트로 변환
         List<OrderItemDTO> dtoList = results.stream()
                 .map(tuple -> {
                     OrderItem orderItem = tuple.get(0,OrderItem.class);
@@ -269,8 +276,8 @@ public class MyService {
                     orderItemDTO.setThumb3(thumb3);
                     orderItemDTO.setOrdStatus(ordStatus);
 
+                    // 할인 가격으로 정의
                     int totalPrice = orderItemDTO.getPrice() - (orderItemDTO.getPrice() * orderItemDTO.getDiscount() / 100);
-
                     orderItemDTO.setTotalPricePerProduct(totalPrice);
 
                     return orderItemDTO;
@@ -287,7 +294,6 @@ public class MyService {
                 .dtoList(dtoList)
                 .total(total)
                 .build();
-
     }
 
     // 최근 주문내역 날짜 검색 출력
@@ -321,7 +327,6 @@ public class MyService {
                 })
                 .toList();
 
-
         // total 값
         int total = (int) results.getTotalElements();
 
@@ -331,22 +336,8 @@ public class MyService {
                 .dtoList(dtoList)
                 .total(total)
                 .build();
-
     }
 
-    // order 리스트 페이징(전체)
-    public OrderItemPageResponseDTO getOrderListByUid(String uid, OrderItemPageRequestDTO orderItemPageRequestDTO) {
-        Pageable pageable = orderItemPageRequestDTO.getPageable();
-        Page<OrderItem> orderPage = orderItemRepository.findByUidOrderByOrdDateDesc(uid, pageable);
-
-        return new OrderItemPageResponseDTO(
-                orderItemPageRequestDTO,
-                orderPage.getContent().stream()
-                        .map(OrderItem::toDTO)
-                        .collect(Collectors.toList()),
-                (int) orderPage.getTotalElements()
-        );
-    }
 
     // point 리스트 출력(날짜선택)
     public OrderItemPageResponseDTO findOrderList(String uid, OrderItemPageRequestDTO orderItemPageRequestDTO) {
