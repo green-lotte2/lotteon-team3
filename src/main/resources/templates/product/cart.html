@@ -523,19 +523,31 @@
                      cartDel.textContent = numberWithCommas(footerDelivery);
 
                    });
+                   console.log(checkedBoxes.length);
+                 }
 
+                 function resetPrice(checkbox){
+                   const accordion = checkbox.closest('.accordion-item');
+                   const footer = accordion.querySelector('.cartFooter');
                  }
                  // 회사별 푸터 원가격
                  function updateFooterOrg(){
                    var totalOrg = 0;
+                   var checkBoxesAll = document.querySelectorAll('.checkbox');
                    var checkedBoxes = document.querySelectorAll('.checkbox:checked');
                    var company;
                    var num;
 
                    checkedBoxes.forEach(function (checkbox) {
+
                      console.log(checkbox.closest('.accordion-item').querySelector('.cartFooter'));
-                     company = checkbox.getAttribute('data-company');
+                     if(company !== checkbox.getAttribute('data-company')){
+                       company = checkbox.getAttribute('data-company');
+                       totalOrg = 0;
+                     }
+                     console.log('회사' + company);
                      num = checkbox.getAttribute('data-num');
+
                      // 해당하는 회사의 푸터
                      var footer = document.querySelector('#cartTotalPrice'+company);
                      // 해당하는 회사의 푸터 원가격
@@ -550,11 +562,36 @@
                      // 체크된 원가격 표시하기
                      footerOrg.innerHTML = "";
                      footerOrg.textContent = numberWithCommas(totalOrg)+'원';
+
+                     // 만약
+
                    });
-
-
+                   checkBoxesAll.forEach(function (checkbox) {
+                        resetPrice(checkbox);
+                   });
+                   console.log('체크박스 길이:' + checkedBoxes.length);
                  }
+                  function resetPrice(checkbox){
+                    const accordion = checkbox.closest('.accordion-item');
+                    const cartFooter = accordion.querySelector('.cartFooter');
+                    const checks = accordion.querySelectorAll('.checkbox:checked');
 
+                    const cartPoint = cartFooter.querySelector('.point');
+                    const deliverySpan = cartFooter.querySelector('.deliverySpan');
+                    const discountSpan = cartFooter.querySelector('.discountSpan');
+                    const totalPriceSpan = cartFooter.querySelector('.totalPriceSpan');
+
+                    if(checks.length === 0) {
+                      settingZero(cartPoint);
+                      settingZero(deliverySpan);
+                      settingZero(discountSpan);
+                      settingZero(totalPriceSpan);
+                    }
+                  }
+                  function settingZero(span){
+                    span.innerHTML = "";
+                    span.textContent = 0 + '원';
+                  }
                   // 회사별 푸터 총가격
                   function updateFooterTotal(){
                     var totalOrg = 0;
@@ -563,6 +600,12 @@
                     var num;
 
                     checkedBoxes.forEach(function (checkbox) {
+
+                      if(company !== checkbox.getAttribute('data-company')){
+                        company = checkbox.getAttribute('data-company');
+                        totalOrg = 0;
+                      }
+
                       company = checkbox.getAttribute('data-company');
                       num = checkbox.getAttribute('data-num');
                       // 해당하는 회사의 푸터
@@ -586,6 +629,11 @@
 
                   }
 
+                  function checkboxClick(){
+                    updateFooterDiscount();
+                    updateFooterTotal();
+                    updateFooterOrg();
+                  }
                   // 회사별 푸터 할인가격
                   function updateFooterDiscount(){
                     var totalOrg = 0;
@@ -594,6 +642,12 @@
                     var num;
 
                     checkedBoxes.forEach(function (checkbox) {
+
+                      if(company !== checkbox.getAttribute('data-company')){
+                        company = checkbox.getAttribute('data-company');
+                        totalOrg = 0;
+                      }
+
                       company = checkbox.getAttribute('data-company');
                       num = checkbox.getAttribute('data-num');
                       // 해당하는 회사의 푸터
@@ -663,7 +717,8 @@
                       updateFooterDel();
                       updateFooterTotal();
                       updateFooterDiscount();
-                      updateDelivery()
+                      updateDelivery();
+
                     });
                   });
 

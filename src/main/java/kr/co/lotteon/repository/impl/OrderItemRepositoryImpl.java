@@ -4,8 +4,10 @@ import com.querydsl.core.QueryResults;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.co.lotteon.dto.admin.AdminPageRequestDTO;
+import kr.co.lotteon.dto.product.OrderItemDTO;
 import kr.co.lotteon.dto.product.OrderItemPageRequestDTO;
 import kr.co.lotteon.dto.product.PageRequestDTO;
 import kr.co.lotteon.entity.product.*;
@@ -13,6 +15,7 @@ import kr.co.lotteon.repository.custom.OrderItemRepositoryCustom;
 import kr.co.lotteon.security.MyUserDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -23,6 +26,8 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
@@ -37,6 +42,7 @@ public class OrderItemRepositoryImpl implements OrderItemRepositoryCustom {
     private final QOrder qOrder = QOrder.order;
     private final QProduct qProduct = QProduct.product;
     private final QOption qOption = QOption.option;
+    private final ModelMapper modelMapper;
 
     // 월별 주문 count 조회 - 오늘 기준 12개월 전 까지
     @Override
@@ -276,17 +282,61 @@ public class OrderItemRepositoryImpl implements OrderItemRepositoryCustom {
     }
 
     @Override
-    public List<Tuple> selectOrdersByUid(String uid) {
-        QueryResults<Tuple> results = jpaQueryFactory
-                .select(qOrderItem, qProduct.company, qProduct.prodName, qProduct.price, qProduct.discount, qProduct.thumb3)
-                .from(qOrderItem)
-                .join(qProduct).on(qOrderItem.prodNo.eq(qProduct.prodNo))
-                .where(qOrderItem.uid.eq(uid))
-                .orderBy(qOrderItem.ordDate.desc())
-                .limit(5)
-                .fetchResults();
+    public LinkedHashMap<Integer, List<OrderItemDTO>> selectOrder(String uid) {
 
-        return results.getResults();
+//        사용자의 주문번호 찾기(최신순 3개)
+        List<Integer> selectOrderNo = jpaQueryFactory
+                .select(qOrder.ordNo)
+                .from(qOrder)
+                .where(qOrder.ordUid.eq(uid))
+                .orderBy(qOrder.ordDate.desc())
+                .limit(3)
+                .fetch();
+        log.info("주문번호 조회하기 : " +selectOrderNo);
+
+        LinkedHashMap<Integer, List<OrderItemDTO>> myOrderDetailDTOMap = new LinkedHashMap<>();
+
+        for(Integer ordNo : selectOrderNo){
+            //주문번호를 기준으로 주문한 각각의 상품 찾기
+            List<Tuple> orderItemList = jpaQueryFactory
+                    .select(qOrderItem, qProduct.company, qProduct.prodName, qProduct.thumb3,qProduct.price,qProduct.discount)
+                    .from(qOrderItem)
+                    .join(qProduct)
+                    .on(qOrderItem.prodNo.eq(qProduct.prodNo))
+                    .join(qOrder)
+                    .on(qOrderItem.ordNo.eq(qOrder.ordNo))
+                    .where(qOrderItem.ordNo.eq(ordNo).and(qOrder.ordUid.eq(uid)))
+                    .fetch();
+            log.info("사용자가 주문한 상품 : " +orderItemList);
+
+            List<OrderItemDTO> dtoList = orderItemList.stream()
+                    .map(tuple -> {
+                                OrderItem orderItem = tuple.get(0, OrderItem.class);
+                                String company = tuple.get(1, String.class);
+                                String prodName = tuple.get(2, String.class);
+                                String thumb3 = tuple.get(3, String.class);
+                                int price = tuple.get(4, Integer.class);
+                                int discount = tuple.get(5, Integer.class);
+
+                                int calculatedPrice = (price - discount) * orderItem.getCount();
+
+                                //OrderDetailDTO 로 변환
+                                OrderItemDTO orderItemDTO = modelMapper.map(orderItem, OrderItemDTO.class);
+                                orderItemDTO.setCompany(company);
+                                orderItemDTO.setProdName(prodName);
+                                orderItemDTO.setThumb3(thumb3);
+                                orderItemDTO.setPrice(calculatedPrice);
+                                orderItemDTO.setDiscount(discount);
+
+                                return orderItemDTO;
+                            }
+                    ).toList();
+            myOrderDetailDTOMap.put(ordNo,dtoList);
+        }
+
+        return myOrderDetailDTOMap;
+
+
     }
 
     // 주문 완료 페이지 상품 띄우기

@@ -1,9 +1,10 @@
 $(function(){
     // 판매자 정보 팝업 띄우기
-    $('.latest .info .company > a').click(function(e){
+    $('.info > .company  a').click(function(e) {
         e.preventDefault();
         $('#popSeller').addClass('on');
     });
+
 
     // 문의하기 팝업 띄우기
     $('.btnQuestion').click(function(e){
@@ -29,10 +30,10 @@ $(function(){
         e.preventDefault();
         $('#popReview').addClass('on');
     });
-               
+
     // 팝업 닫기
-    $('.btnClose').click(function(){                
-        $(this).closest('.popup').removeClass('on');                
+    $('.btnClose').click(function(){
+        $(this).closest('.popup').removeClass('on');
     });
 
     // 팝업 닫기
@@ -66,7 +67,7 @@ $(function(){
         e.preventDefault();
         $('#popEmailChange').addClass('on');
     });
-    
+
     // info - 회원 탈퇴 창 띄우기
     $('#btnWithdraw').click(function(e){
         e.preventDefault();

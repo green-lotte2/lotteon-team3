@@ -39,6 +39,7 @@ public class OrderItemDTO {
     private int discount;
     private String thumb3;
 
+
     public OrderItem toEntity(){
         return OrderItem.builder()
                 .ordItemno(ordItemno)
@@ -58,3 +59,4 @@ public class OrderItemDTO {
                 .build();
     }
 }
+

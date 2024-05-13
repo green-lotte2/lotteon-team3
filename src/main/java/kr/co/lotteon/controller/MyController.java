@@ -2,6 +2,7 @@ package kr.co.lotteon.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.querydsl.core.Tuple;
 import kr.co.lotteon.dto.admin.BannerDTO;
 import kr.co.lotteon.dto.cs.BoardDTO;
 import kr.co.lotteon.dto.cs.CsPageRequestDTO;
@@ -63,9 +64,10 @@ public class MyController {
     public String home(Model model, @RequestParam String uid){
         log.info("uid : "+uid);
 
-        //최근 주문내역 출력
-        List<OrderItemDTO> orderItemDTOS = myService.selectOrdersByUid(uid);
-        model.addAttribute("orderItemDTOS",orderItemDTOS);
+        //최근 주문목록 출력
+        LinkedHashMap<Integer, List<OrderItemDTO>> orders = myService.selectOrder(uid);
+        model.addAttribute("orders", orders);
+
 
         //포인트 출력
         List<PointDTO> pointDTOS = myService.selectByUidAndDate(uid);
