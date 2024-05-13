@@ -44,8 +44,7 @@ public interface OrderItemRepositoryCustom {
     // 마이페이지 home 최근주문내역 최신순 5개 조회
     public LinkedHashMap<Integer, List<OrderItemDTO>> selectOrder(String uid);
 
-    public List<Tuple> selectOrdersByUid(String uid);
-    
+
     // 주문 완료 페이지
     public List<Tuple> selectOrderComplete(int ordNo);
 
