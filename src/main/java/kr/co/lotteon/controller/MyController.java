@@ -62,10 +62,10 @@ public class MyController {
     public String home(Model model, @RequestParam String uid){
         log.info("uid : "+uid);
 
-        //최근 주문내역 출력
-        List<Map<String, Object>> orderItemDTOS = myService.selectOrdNoAndDate(uid);
-        log.info("orderItemDTOS : "+orderItemDTOS);
-        model.addAttribute("orderItemDTOS",orderItemDTOS);
+        //최근 주문목록 출력
+        LinkedHashMap<Integer, List<OrderItemDTO>> orders = myService.selectOrder(uid);
+        model.addAttribute("orders", orders);
+
 
         //포인트 출력
         List<PointDTO> pointDTOS = myService.selectByUidAndDate(uid);

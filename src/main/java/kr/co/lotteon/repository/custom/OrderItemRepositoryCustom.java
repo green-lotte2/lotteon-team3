@@ -2,10 +2,12 @@ package kr.co.lotteon.repository.custom;
 
 import com.querydsl.core.Tuple;
 import kr.co.lotteon.dto.admin.AdminPageRequestDTO;
+import kr.co.lotteon.dto.product.OrderItemDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -39,10 +41,7 @@ public interface OrderItemRepositoryCustom {
     public List<Tuple> selectSales(String sellerId);
 
     // 마이페이지 home 최근주문내역 최신순 5개 조회
-    public List<Tuple> selectOrdersByUid(String uid);
-
-    // 마이페이지 최근 주문내역 출력
-    public List<Map<String, Object>> selectOrdNoAndDate(String uid) ;
+    public LinkedHashMap<Integer, List<OrderItemDTO>> selectOrder(String uid);
 
 
 }

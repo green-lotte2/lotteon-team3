@@ -235,12 +235,18 @@ public class MyService {
         });
         return reviewDTOS;
     }
+    // 주문내역 최신순 5개 출력
+    public  LinkedHashMap<Integer, List<OrderItemDTO>> selectOrder (String uid){
 
-    // 최근 주문내역 최신순 5개 출력
-    public List<Map<String, Object>> selectOrdNoAndDate(String uid){
-        log.info("서비스 최근 주문내역: "+orderItemRepository.selectOrdNoAndDate(uid));
-        return orderItemRepository.selectOrdNoAndDate(uid);
+        log.info("주문내역 : "+orderItemRepository.selectOrder(uid).values());
+        
+        return orderItemRepository.selectOrder(uid);
+
     }
+
+
+
+
 
 
 

@@ -4,6 +4,34 @@
 <main id="myLayout" layout:fragment="content">
     <script th:src="@{/js/myInfo.js}"></script>
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 모든 아코디언 버튼 요소 가져오기
+            var accordionButtons = document.querySelectorAll('.accordion-button');
+
+            document.querySelectorAll('.number')
+            // 각 아코디언 버튼에 대해 이벤트 리스너 추가
+            accordionButtons.forEach(function(button) {
+                button.addEventListener('click', function() {
+                    // 해당 버튼의 data-bs-target 값을 사용하여 아코디언 컨텐츠 요소 가져오기
+                    var targetId = button.getAttribute('data-bs-target');
+                    var targetContent = document.getElementById(targetId);
+
+                    // 현재 아코디언 상태 확인
+                    var isExpanded = button.getAttribute('aria-expanded') === 'true';
+
+                    // 아코디언 상태 변경
+                    if (isExpanded) {
+                        // 아코디언 닫기
+                        button.setAttribute('aria-expanded', 'false');
+                        targetContent.classList.remove('show');
+                    } else {
+                        // 아코디언 열기
+                        button.setAttribute('aria-expanded', 'true');
+                        targetContent.classList.add('show');
+                    }
+                });
+            });
+        });
         window.onload = function () {
 
             // 주문번호 생성 주문일자+주문번호
@@ -96,42 +124,42 @@
                     <article class="latest">
                         <h3>최근주문내역</h3>
                         <a th:href="@{/my/order(uid=${#authentication.principal.member.uid})}" class="more">더보기</a>
-                        <table border="0">
-                            <tr>
-                                <th>날짜</th>
-                                <th>상품정보</th>
-                                <th>상태</th>
-                                <th>확인/신청</th>
-                            </tr>
-                            <tr id="order" th:each="order : ${orderItemDTOS}">
-                                <td class="date" id="ordDate">[[${#temporals.format(order.ordDate, 'yyyy-MM-dd')}]]</td>
 
-                                <td class="info">
-                                    <a th:each="thumb3 : ${order.thumb3}" th:href="@{#}" class="thumb"><img th:src="@{'/prodImg/'+${thumb3}}" alt="" style="width: 80px; height: 80px;"></a>
+                        <div th:each="linkedMap, iterStat : ${orders}" class="accordion" id="accordionPanelsStayOpenExample">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button th:id="'accordionButton'+${iterStat.index}" class="accordion-button" type="button" data-bs-toggle="collapse"
+                                            th:data-iter="${iterStat.index}" th:data-bs-target="'panelsStayOpen-collapse'+${iterStat.index}" aria-expanded="true" th:aria-controls="'panelsStayOpen-collapse'+${iterStat.index}">
+                                        <p th:text="${#temporals.format(linkedMap.value.get(0).ordDate, 'yyyy-MM-dd')}"></p>
+                                        <p>주문번호<span th:text="${linkedMap.key}"></span></p>
+                                    </button>
+                                </h2>
 
-                                    <ul>
-                                        <li class="company" th:each="company : ${order.company}"><a th:href="@{#}" th:text="${company}"></a></li>
-                                        <li class="prodName" th:each="prodName : ${order.prodName}"><a th:href="@{#}" th:text="${prodName}"></a></li>
-                                        <li class="orderNo">수량 : <span class="prodCount" th:each="count:${order.count}" th:text="${count}"></span>개 / <span >주문번호 : <a th:href="@{#}" class="ordNo">[[${order.ordNo}]]</a></span></li>
-                                        <li class="prodPrice" th:each="price: ${order.price}" th:text="${price}"></li>
-                                    </ul>
-                                </td>
+                                <div th:id="'panelsStayOpen-collapse'+${iterStat.index}"
+                                     th:data-iter="${iterStat.index}" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingOne">
+                                    <th:block th:each="orderList : ${linkedMap.value}">
+                                        <div>
+                                            <img th:src="@{'/prodImg/'+${orderList.thumb3}}" alt="" style="width: 80px; height: 80px;">
+                                        </div>
+                                        <div class="info">
+                                            <p class="company"><a th:href="@{#}">[[${orderList.company}]]</a></p>
+                                            <p class="InfoProdName" th:text="${'상품명'+orderList.prodName}"></p>
+                                            <p th:text="${'개수'+orderList.count}"></p>
+                                            <p th:text="${'가격'+#numbers.formatInteger(orderList.price,3,'COMMA')}"></p>
+                                        </div>
 
-                                <td class="status">
-                                    <ul>
-                                    <li th:each="status :${order.ordStatus}" th:text="${status}"></li>
-                                    </ul>
-                                </td>
-                                <td class="confirm">
-                                    <a th:href="@{#}" class="receive">수취확인</a>
-                                    <a th:href="@{#}" class="review">상품평</a>
-                                    <a th:href="@{#}" class="refund">반품신청</a>
-                                    <a th:href="@{#}" class="exchange">교환신청</a>
-                                </td>
-                            </tr>
+                                        <div th:text="${orderList.ordStatus}"></div>
+                                        <div class="confirm">
+                                            <a th:href="@{#}" class="receive">수취확인</a>
+                                            <a th:href="@{#}" class="review">상품평</a>
+                                            <a th:href="@{#}" class="refund">반품신청</a>
+                                            <a th:href="@{#}" class="exchange">교환신청</a>
+                                        </div>
+                                    </th:block>
+                                </div>
+                            </div>
 
-
-                        </table>
+                        </div>
                     </article>
 
                     <article class="point">
