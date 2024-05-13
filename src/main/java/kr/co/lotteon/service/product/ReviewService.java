@@ -84,4 +84,9 @@ public class ReviewService {
     public double selectReviewAvg(int prodNo){
         return reviewRepository.selectReviewAvg(prodNo);
     }
+
+    // 구매확정 전 리뷰 조회
+    public int selectReviewCountByUid(String uid,int ordNo,int prodNo){
+        return reviewRepository.selectReviewCountByUid(uid,ordNo,prodNo);
+    }
 }

@@ -55,12 +55,13 @@ $(function(){
         const companyTag = $(this).closest('.company')[0];
         console.log(companyTag);
 
+        const prodNos = $(this).closest('.info')[0];
+        prodNo = prodNos.querySelector('input[type="hidden"]').value;
+
         await getSellerInfo(companyTag);
 
         $('#popSeller').addClass('on');
     });
-
-
 
 
     // 문의하기 팝업 띄우기
@@ -77,58 +78,62 @@ $(function(){
     });
 
     // 수취확인 팝업 띄우기
-    $('.latest .confirm > .receive').click(function(e){
+    $('.latest .confirm > .receive').click(async function (e) {
         e.preventDefault();
+
+        // 리뷰안썼으면 일로 이동
         $('#popReceive').addClass('on');
-    });
+    })
 
-    // 상품평 작성 팝업 띄우기
-    $('.latest .confirm > .review').click(function(e){
-        e.preventDefault();
-        $('#popReview').addClass('on');
-    });
 
-    // 팝업 닫기
-    $('.btnClose').click(function(){
-        $(this).closest('.popup').removeClass('on');
-    });
 
-    // 팝업 닫기
-    $('.btnCancel').click(function(e){
-        e.preventDefault();
-        $(this).closest('.popup').removeClass('on');
-    });
+        // 상품평 작성 팝업 띄우기
+        $('.latest .confirm > .review').click(function (e) {
+            e.preventDefault();
+            $('#popReview').addClass('on');
+        });
 
-    // 상품평 작성 레이팅바 기능
-    $(".my-rating").starRating({
-        starSize: 20,
-        useFullStars: true,
-        strokeWidth: 0,
-        useGradient: false,
-        minRating: 1,
-        ratedColors: ['#ffa400', '#ffa400', '#ffa400', '#ffa400', '#ffa400'],
-        callback: function(currentRating, $el){
-            alert('rated ' + currentRating);
-            console.log('DOM element ', $el);
-        }
-    });
+        // 팝업 닫기
+        $('.btnClose').click(function () {
+            $(this).closest('.popup').removeClass('on');
+        });
 
-    // info - 비밀번호 변경 창 띄우기
-    $('#btnPassChange').click(function(e){
-        e.preventDefault();
-        $('#popPassChange').addClass('on');
-    });
+        // 팝업 닫기
+        $('.btnCancel').click(function (e) {
+            e.preventDefault();
+            $(this).closest('.popup').removeClass('on');
+        });
 
-    // info - 이메일 변경 창 띄우기
-    $('#btnEmailChange').click(function(e){
-        e.preventDefault();
-        $('#popEmailChange').addClass('on');
-    });
+        // 상품평 작성 레이팅바 기능
+        $(".my-rating").starRating({
+            starSize: 20,
+            useFullStars: true,
+            strokeWidth: 0,
+            useGradient: false,
+            minRating: 1,
+            ratedColors: ['#ffa400', '#ffa400', '#ffa400', '#ffa400', '#ffa400'],
+            callback: function (currentRating, $el) {
+                alert('rated ' + currentRating);
+                console.log('DOM element ', $el);
+            }
+        });
 
-    // info - 회원 탈퇴 창 띄우기
-    $('#btnWithdraw').click(function(e){
-        e.preventDefault();
-        $('#popWithdraw').addClass('on');
-    });
+        // info - 비밀번호 변경 창 띄우기
+        $('#btnPassChange').click(function (e) {
+            e.preventDefault();
+            $('#popPassChange').addClass('on');
+        });
 
-});
+        // info - 이메일 변경 창 띄우기
+        $('#btnEmailChange').click(function (e) {
+            e.preventDefault();
+            $('#popEmailChange').addClass('on');
+        });
+
+        // info - 회원 탈퇴 창 띄우기
+        $('#btnWithdraw').click(function (e) {
+            e.preventDefault();
+            $('#popWithdraw').addClass('on');
+        });
+
+    });

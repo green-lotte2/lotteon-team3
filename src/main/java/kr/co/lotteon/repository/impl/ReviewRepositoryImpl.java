@@ -35,4 +35,15 @@ public class ReviewRepositoryImpl implements ReviewRepositoryCustom {
             return 0.0;
         }
     }
+
+    @Override
+    public int selectReviewCountByUid(String uid, int ordNo, int prodNo) {
+        return (int) jpaQueryFactory
+                .select(qReview)
+                .from(qReview)
+                .where(qReview.uid.eq(uid).and(qReview.prodNo.eq(prodNo).and(qReview.ordNo.eq(ordNo))))
+                .fetchCount();
+    }
+
+
 }
