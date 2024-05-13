@@ -19,11 +19,20 @@ public class ReviewRepositoryImpl implements ReviewRepositoryCustom {
     @Override
     public double selectReviewAvg(int prodNo){
 
-        double avg = jpaQueryFactory.select(qReview.rating.avg())
+        long count = jpaQueryFactory.select(qReview.count())
                 .from(qReview)
                 .where(qReview.prodNo.eq(prodNo))
                 .fetchOne();
 
-        return avg;
+        if(count != 0) {
+            double avg = jpaQueryFactory.select(qReview.rating.avg())
+                    .from(qReview)
+                    .where(qReview.prodNo.eq(prodNo))
+                    .fetchOne();
+
+            return avg;
+        }else{
+            return 0.0;
+        }
     }
 }
