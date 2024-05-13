@@ -1417,6 +1417,12 @@
     color: #757575;
 }
 .qnaList .category > .classification {
+    width: 50px;
+    white-space: nowrap;
+    letter-spacing: -.02em;
+
+}
+.qnaList .category > .classification2 {
     white-space: nowrap;
     letter-spacing: -.02em;
 }
