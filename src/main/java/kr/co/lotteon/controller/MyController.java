@@ -315,6 +315,8 @@ public class MyController {
     public String order(@RequestParam String uid, Model model, OrderItemPageRequestDTO orderItemPageRequestDTO){
 
         Pageable pageable = orderItemPageRequestDTO.getPageable();
+
+        // 사용자의 주문 전체를 조회
         OrderItemPageResponseDTO pageResponseDTO = myService.selectWholeOrdersByUid(uid, pageable, orderItemPageRequestDTO);
 
         model.addAttribute("pageResponseDTO",pageResponseDTO);

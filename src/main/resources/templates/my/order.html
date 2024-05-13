@@ -4,21 +4,24 @@
 <main id="myLayout" layout:fragment="content">
     <script th:src="@{/js/myInfo.js}"></script>
     <script th:src="@{/js/order.js}" th:inline="javascript"></script>
+
     <div id="my">
-
-
         <div class="ordered">
             <ul>
                 <span class="menu_else"></span>
-                <li class="on"><a th:href="@{/my/order(uid=${#authentication.principal.member.uid})}">전체주문내역</a></li>
+                <li><a th:href="@{/my/order(uid=${#authentication.principal.member.uid})}">전체주문내역</a></li>
                 <!--<li><a href="./favorite.html">관심상품</a></li>-->
                 <li><a th:href="@{/my/point(uid=${#authentication.principal.member.uid})}">포인트내역</a></li>
                 <li><a th:href="@{/my/coupon(uid=${#authentication.principal.member.uid})}">쿠폰</a></li>
                 <li><a th:href="@{/my/review(uid=${#authentication.principal.member.uid})}">나의리뷰</a></li>
                 <li><a th:href="@{/my/qna(uid=${#authentication.principal.member.uid})}">문의하기</a></li>
-                <li><a th:href="@{/my/infoAccessCheck(uid=${#authentication.principal.member.uid})}">나의설정</a></li>                </ul>
-
+                <li><a th:href="@{/my/infoAccessCheck(uid=${#authentication.principal.member.uid})}">나의설정</a></li>
+                <li><a th:href="@{/my/wish}">나의찜</a></li>
+            </ul>
             <section>
+                <script>
+
+                </script>
                 <div id="bannerTop" class="on" th:style="${banners.size() > 0 ? 'background: ' + banners[0].backcolor + ';' : ''}">
                     <!-- 배너 영역 -->
                     <th:block th:each="banner : ${banners}">
@@ -28,7 +31,7 @@
                     </th:block>
                 </div>
 
-                <article class="order">
+                <article class="latest">
                     <h3>전체주문내역</h3>
 
                     <div class="byDate">
@@ -72,7 +75,6 @@
                                 <a th:href="@{#}" class="exchange">교환신청</a>
                             </td>
                         </tr>
-
                     </table>
 
                     <div class="page">
@@ -97,3 +99,4 @@
         </div>
     </div>
 </main>
+

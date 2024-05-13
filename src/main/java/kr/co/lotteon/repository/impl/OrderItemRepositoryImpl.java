@@ -309,7 +309,6 @@ public class OrderItemRepositoryImpl implements OrderItemRepositoryCustom {
     // my - 오더리스트 전체 출력
     @Override
     public Page<Tuple> selectWholeOrdersByUid(String uid, Pageable pageable, OrderItemPageRequestDTO orderItemPageRequestDTO) {
-        pageable = PageRequest.of(pageable.getPageNumber(), 10); // 한 페이지에 10개씩
 
         QueryResults<Tuple> results = jpaQueryFactory
                 .select(qOrderItem, qProduct.company, qProduct.prodName, qProduct.price, qProduct.discount, qProduct.thumb3, qOrderItem.ordStatus, qOrderItem.ordDate)
@@ -329,14 +328,13 @@ public class OrderItemRepositoryImpl implements OrderItemRepositoryCustom {
     // my - 오더리스트 날짜 출력
     @Override
     public Page<Tuple> selectOrdersByDate(String uid, Pageable pageable, OrderItemPageRequestDTO orderItemPageRequestDTO) {
-        pageable = PageRequest.of(pageable.getPageNumber(), 10); // 한 페이지에 10개씩
 
-// 주어진 문자열의 날짜 형식을 지정합니다.
+        // 주어진 문자열의 날짜 형식을 지정합니다.
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-// 문자열을 LocalDateTime 객체로 파싱합니다.
+
+        // 문자열을 LocalDateTime 객체로 파싱합니다.
         LocalDateTime begin = LocalDate.parse(orderItemPageRequestDTO.getBegin(), formatter).atStartOfDay();
         LocalDateTime end = LocalDate.parse(orderItemPageRequestDTO.getEnd(), formatter).atStartOfDay();
-
 
         QueryResults<Tuple> results = jpaQueryFactory
                 .select(qOrderItem, qProduct.company, qProduct.prodName, qProduct.price, qProduct.discount, qProduct.thumb3, qOrderItem.ordStatus, qOrderItem.ordDate)
