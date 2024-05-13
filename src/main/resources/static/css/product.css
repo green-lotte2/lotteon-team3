@@ -1483,6 +1483,7 @@
 /* 상품 보기 문의 더보기 버튼 */
 
 #buttonDiv {
+    height: 80px;
     text-align: center;
     padding: 5px;
 }
