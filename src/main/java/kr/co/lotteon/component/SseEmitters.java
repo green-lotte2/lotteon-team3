@@ -30,7 +30,7 @@ public class SseEmitters {
         log.info("new emitter added: {}", emitter);
         log.info("emitter list size: {}", sseEmitters.size());
         emitter.onCompletion(() -> {
-            log.info("onCompletion callback");
+            log.info("만료 콜백");
             this.sseEmitters.remove(emitter);    // 만료되면 리스트에서 삭제
         });
         emitter.onTimeout(() -> {
