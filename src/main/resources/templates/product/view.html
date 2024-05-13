@@ -70,7 +70,7 @@
             // 옵션 select 요소
             const selectOption = document.querySelectorAll('.selectOption');
 
-            let selectedArray = [];
+
 
             // 각 옵션 select 요소에 대해 이벤트 등록
             if (selectOption) {
@@ -107,9 +107,13 @@
                                 let stringValue;
                                 // 선택한 옵션 값
                                 selectDetail.addEventListener('change', async function () {
+                                    let selectedArray = [];
                                     // 선택된 옵션의 value값 배열로 넣기
                                     if (newOption != null) {
-                                        selectedArray.push(this.value);
+                                        document.querySelectorAll('.selectDetail').forEach(function (sel) {
+                                            selectedArray.push(sel.value);
+                                        });
+                                        console.log(selectedArray);
 
                                         stringValue = selectedArray.join(',');
                                         console.log(stringValue);
@@ -446,6 +450,7 @@
 
             closeModal();
         }
+
     </script>
 
     <!-- 제목, 페이지 네비게이션 -->
@@ -757,15 +762,15 @@
                 <p class="msg">
                 </p>
             </div>
-        </div>
-        <!-- 문의 더보기 -->
+        </div><!--
+        &lt;!&ndash; 문의 더보기 &ndash;&gt;
         <div id="buttonDiv" role="status" th:if="${qnaPageDto.last != 1}">
 
             <span class="btnMoreView" onclick="moreView(this)">
                 <span class="spanMoreView">문의 더보기 + </span>
                 <span class="spinner-border spinner-border" aria-hidden="true" style="visibility: hidden"></span>
             </span>
-        </div>
+        </div>-->
 
     </article> <!-- 문의 끝 -->
 <!-- 문의 글 작성 모달 -->

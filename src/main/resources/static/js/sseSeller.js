@@ -40,16 +40,15 @@ if (isAuthenticated) {
 
     // 실시간 알람을 받으면
     eventSource.addEventListener('send', function (event) {
+
+        console.log('eventSource listener...1');
+
         const message = event.data;
+
+        console.log('eventSource listener...2 : ' + message);
         // 받은 알림을 화면에 출력
         displayNotification(message);
     });
-    eventSource.onmessage = function(event) {
-        console.log("알람 옴 !!!");
-        const message = event.data;
-        // 받은 알림을 화면에 출력
-        displayNotification(message);
-    };
 
     function displayNotification(message) {
         console.log("message " + message);

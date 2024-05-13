@@ -59,7 +59,7 @@ public class NotificationService {
         }else {
 
             // 연결 요청한 클라이언트의 SseEmitter 객체 생성 후 저장
-            SseEmitter sseEmitter = new SseEmitter(60L * 1000 * 60); // 만료 시간 1시간
+            SseEmitter sseEmitter = new SseEmitter(60L * 1000 * 10); // 만료 시간 10분
             sseEmitters.add(member.getUid(), sseEmitter);
 
             // 해당 판매자의 상품번호 전부 조회
