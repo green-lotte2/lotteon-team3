@@ -1,6 +1,7 @@
 package kr.co.lotteon.service.my;
 
 import com.querydsl.core.Tuple;
+import kr.co.lotteon.dto.admin.AdminBoardPageResponseDTO;
 import kr.co.lotteon.dto.cs.BoardDTO;
 import kr.co.lotteon.dto.cs.CsPageRequestDTO;
 import kr.co.lotteon.dto.cs.CsPageResponseDTO;
@@ -270,6 +271,133 @@ public class MyService {
 
 
         return orderItemDTOS;
+    }
+
+
+    // 최근 주문내역 전체 출력
+    public OrderItemPageResponseDTO selectWholeOrdersByUid(String uid, Pageable pageable, OrderItemPageRequestDTO orderItemPageRequestDTO){
+
+        Page<Tuple> results = orderItemRepository.selectWholeOrdersByUid(uid, pageable, orderItemPageRequestDTO);
+
+        List<OrderItemDTO> dtoList = results.stream()
+                .map(tuple -> {
+                    OrderItem orderItem = tuple.get(0,OrderItem.class);
+                    String company=tuple.get(1,String.class);
+                    String prodName=tuple.get(2,String.class);
+                    int price=tuple.get(3,Integer.class); // 상품 개당 가격
+                    int discount=tuple.get(4,Integer.class);
+                    String thumb3=tuple.get(5,String.class);
+                    String ordStatus=tuple.get(6, String.class);
+
+                    OrderItemDTO orderItemDTO = modelMapper.map(orderItem, OrderItemDTO.class);
+                    orderItemDTO.setCompany(company);
+                    orderItemDTO.setProdName(prodName);
+                    orderItemDTO.setPrice(price);
+                    orderItemDTO.setDiscount(discount);
+                    orderItemDTO.setThumb3(thumb3);
+                    orderItemDTO.setOrdStatus(ordStatus);
+
+                    int totalPrice = orderItemDTO.getPrice() - (orderItemDTO.getPrice() * orderItemDTO.getDiscount() / 100);
+
+                    orderItemDTO.setTotalPricePerProduct(totalPrice);
+
+                    return orderItemDTO;
+
+                })
+                .toList();
+
+        // total 값
+        int total = (int) results.getTotalElements();
+
+        // List<ProductDTO>와 page 정보 리턴
+        return OrderItemPageResponseDTO.builder()
+                .orderItemPageRequestDTO(orderItemPageRequestDTO)
+                .dtoList(dtoList)
+                .total(total)
+                .build();
+
+    }
+
+    // 최근 주문내역 날짜 검색 출력
+    public OrderItemPageResponseDTO selectOrdersByDate(String uid, Pageable pageable, OrderItemPageRequestDTO orderItemPageRequestDTO){
+
+        Page<Tuple> results = orderItemRepository.selectOrdersByDate(uid, pageable , orderItemPageRequestDTO);
+
+        List<OrderItemDTO> dtoList = results.stream()
+                .map(tuple -> {
+                    OrderItem orderItem = tuple.get(0,OrderItem.class);
+                    String company=tuple.get(1,String.class);
+                    String prodName=tuple.get(2,String.class);
+                    int price=tuple.get(3,Integer.class); // 상품 개당 가격
+                    int discount=tuple.get(4,Integer.class);
+                    String thumb3=tuple.get(5,String.class);
+                    String ordStatus=tuple.get(6, String.class);
+
+                    OrderItemDTO orderItemDTO = modelMapper.map(orderItem, OrderItemDTO.class);
+                    orderItemDTO.setCompany(company);
+                    orderItemDTO.setProdName(prodName);
+                    orderItemDTO.setPrice(price);
+                    orderItemDTO.setDiscount(discount);
+                    orderItemDTO.setThumb3(thumb3);
+                    orderItemDTO.setOrdStatus(ordStatus);
+
+                    int totalPrice = orderItemDTO.getPrice() - (orderItemDTO.getPrice() * orderItemDTO.getDiscount() / 100);
+                    orderItemDTO.setTotalPricePerProduct(totalPrice);
+
+                    return orderItemDTO;
+
+                })
+                .toList();
+
+
+        // total 값
+        int total = (int) results.getTotalElements();
+
+        // List<ProductDTO>와 page 정보 리턴
+        return OrderItemPageResponseDTO.builder()
+                .orderItemPageRequestDTO(orderItemPageRequestDTO)
+                .dtoList(dtoList)
+                .total(total)
+                .build();
+
+    }
+
+    // order 리스트 페이징(전체)
+    public OrderItemPageResponseDTO getOrderListByUid(String uid, OrderItemPageRequestDTO orderItemPageRequestDTO) {
+        Pageable pageable = orderItemPageRequestDTO.getPageable();
+        Page<OrderItem> orderPage = orderItemRepository.findByUidOrderByOrdDateDesc(uid, pageable);
+
+        return new OrderItemPageResponseDTO(
+                orderItemPageRequestDTO,
+                orderPage.getContent().stream()
+                        .map(OrderItem::toDTO)
+                        .collect(Collectors.toList()),
+                (int) orderPage.getTotalElements()
+        );
+    }
+
+    // point 리스트 출력(날짜선택)
+    public OrderItemPageResponseDTO findOrderList(String uid, OrderItemPageRequestDTO orderItemPageRequestDTO) {
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+
+        LocalDateTime begin = LocalDateTime.parse(orderItemPageRequestDTO.getBegin() + "T00:00:00", formatter);
+
+        LocalDateTime end = LocalDateTime.parse(orderItemPageRequestDTO.getEnd() + "T23:59:59", formatter);
+        Page<OrderItem> result = orderItemRepository.findByUidAndOrdDateBetweenOrderByOrdDateDesc(uid, begin, end, orderItemPageRequestDTO.getPageable());
+
+        List<OrderItemDTO> dtoList = result
+                .getContent()
+                .stream()
+                .map(entity -> modelMapper.map(entity, OrderItemDTO.class))
+                .toList();
+        int totalElement = (int) result.getTotalElements();
+
+        return OrderItemPageResponseDTO.builder()
+                .orderItemPageRequestDTO(orderItemPageRequestDTO)
+                .dtoList(dtoList)
+                .total(totalElement)
+                .build();
     }
 
 

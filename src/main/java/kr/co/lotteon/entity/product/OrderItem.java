@@ -1,6 +1,7 @@
 package kr.co.lotteon.entity.product;
 
 import jakarta.persistence.*;
+import kr.co.lotteon.dto.product.OrderItemDTO;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -29,4 +30,37 @@ public class OrderItem {
     private String ordStatus;
 
 
+    @Transient
+    private int totalPricePerProduct;
+    @Transient
+    private String company;
+    @Transient
+    private String prodName;
+    @Transient
+    private int price;
+    @Transient
+    private int discount;
+    @Transient
+    private String thumb3;
+
+    public OrderItemDTO toDTO(){
+        return OrderItemDTO.builder()
+                .ordItemno(ordItemno)
+                .ordNo(ordNo)
+                .prodNo(prodNo)
+                .uid(uid)
+                .count(count)
+                .opNo(opNo)
+                .ordDate(ordDate)
+                .ordStatus(ordStatus)
+                .company(company)
+                .prodName(prodName)
+                .price(price)
+                .discount(discount)
+                .thumb3(thumb3)
+                .totalPricePerProduct(totalPricePerProduct)
+                .build();
+    }
+
 }
+

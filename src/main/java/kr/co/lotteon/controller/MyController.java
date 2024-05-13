@@ -17,6 +17,7 @@ import kr.co.lotteon.dto.member.point.PointPageResponseDTO;
 
 import kr.co.lotteon.entity.member.Member;
 import kr.co.lotteon.entity.member.Point;
+import kr.co.lotteon.entity.product.OrderItem;
 import kr.co.lotteon.security.MyUserDetails;
 import kr.co.lotteon.service.admin.BannerService;
 import kr.co.lotteon.service.member.MemberService;
@@ -24,6 +25,7 @@ import kr.co.lotteon.service.my.MyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -310,8 +312,35 @@ public class MyController {
 
     // my - order (나의 전체 주문내역) 페이지 매핑
     @GetMapping("/my/order")
-    public String order(){
+    public String order(@RequestParam String uid, Model model, OrderItemPageRequestDTO orderItemPageRequestDTO){
+
+        Pageable pageable = orderItemPageRequestDTO.getPageable();
+        OrderItemPageResponseDTO pageResponseDTO = myService.selectWholeOrdersByUid(uid, pageable, orderItemPageRequestDTO);
+
+        model.addAttribute("pageResponseDTO",pageResponseDTO);
+
         return "/my/order";
+    }
+
+    // my - point (나의 포인트) 페이지 매핑
+    @GetMapping("/my/orderList")
+    @ResponseBody
+    public ResponseEntity<?> orderList(OrderItemPageRequestDTO orderItemPageRequestDTO, @AuthenticationPrincipal Object principal) {
+        log.info("pointPageRequestDTO................ : " + orderItemPageRequestDTO);
+
+        Member member = ((MyUserDetails) principal).getMember();
+        String uid = member.getUid();
+        Pageable pageable = orderItemPageRequestDTO.getPageable();
+
+        log.info("begin : " + orderItemPageRequestDTO.getBegin());
+        log.info("End : " + orderItemPageRequestDTO.getEnd());
+
+        // PageResponseDTO에 List<OrderItemDTO> 넣기(페이지)
+        OrderItemPageResponseDTO pageResponseDTO = myService.selectOrdersByDate(uid, pageable, orderItemPageRequestDTO);
+
+        log.info("컨트롤러(pageResponseDTO) orderItemPageResponseDTO...: " + pageResponseDTO);
+
+        return ResponseEntity.ok().body(pageResponseDTO);
     }
 
     @GetMapping("/my/point")
@@ -320,6 +349,8 @@ public class MyController {
         model.addAttribute("pointPageResponseDTO", pointPageResponseDTO);
         return "/my/point";
     }
+
+
 
     // my - point (나의 포인트) 페이지 매핑
     @GetMapping("/my/pointList")
