@@ -61,11 +61,13 @@ $(function(){
     });
 
 
-
-
     // 문의하기 팝업 띄우기
     $('.btnQuestion').click(function(e){
         e.preventDefault();
+
+
+
+
         $('.popup').removeClass('on');
         $('#popQuestion').addClass('on');
     });
