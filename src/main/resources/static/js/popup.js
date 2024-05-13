@@ -1,11 +1,10 @@
 $(function(){
 
     // 판매자 정보 팝업 띄우기
-    $('.info > .company  a').click(function(e) {
+    $('.info > .company a').click(function(e) {
         e.preventDefault();
         $('#popSeller').addClass('on');
     });
-
 
     // 문의하기 팝업 띄우기
     $('.btnQuestion').click(function(e){

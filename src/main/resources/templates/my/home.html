@@ -1,6 +1,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{/layout/myLayout}">
+
 <main id="myLayout" layout:fragment="content">
     <script th:src="@{/js/myInfo.js}"></script>
     <script>
@@ -96,7 +97,10 @@
 
 
         }
-
+        // 판매자 정보 팝업 띄우기
+        $('.latest .accordion .accordion-item .info .company a').click(function(e) {
+            alert('눌럿서');
+        });
     </script>
         <div id="my">
             <div class="home">
