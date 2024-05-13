@@ -1,10 +1,12 @@
 package kr.co.lotteon.entity.product;
 
 import jakarta.persistence.*;
+import kr.co.lotteon.dto.product.OptionDTO;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -29,4 +31,12 @@ public class Review {
     private String content;
     private String regip;
     private Integer thumb;
+
+    // join을 위한
+    @Transient
+    private String nick;
+    @Transient
+    private String prodName;
+    @Transient
+    private List<OptionDTO> optionList;
 }
