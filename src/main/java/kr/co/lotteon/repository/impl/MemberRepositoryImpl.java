@@ -7,6 +7,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.co.lotteon.dto.admin.AdminPageRequestDTO;
 import kr.co.lotteon.entity.member.Member;
 import kr.co.lotteon.entity.member.QMember;
+import kr.co.lotteon.entity.product.QProduct;
 import kr.co.lotteon.repository.custom.MemberRepositoryCustom;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +28,7 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
     
     private final JPAQueryFactory jpaQueryFactory;
     private final QMember qMember = QMember.member;
+    private final QProduct qProduct = QProduct.product;
 
     // 월별 가입 count 조회 - 오늘 기준 12개월 전 까지
     @Override
@@ -168,6 +170,19 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
         List<Member> memberList = results.getResults();
         log.info("판매자 목록 (현황) 검색 조회 Impl 3 : " + memberList);
         return new PageImpl<>(memberList, pageable, total);
+    }
+    // prodNo로 seller 판매자 조회
+    @Override
+    public String selectUidByProdNo(int prodNo){
+        log.info("seller 조회 impl 1 ");
+        String sellerId = jpaQueryFactory
+                .select(qMember.uid)
+                .from(qMember)
+                .join(qProduct).on(qProduct.seller.eq(qMember.nick))
+                .where(qProduct.prodNo.eq(prodNo))
+                .fetchOne();
+        log.info("seller 조회 impl 2 " + sellerId);
+        return sellerId;
     }
 
     // 닉네임 조회

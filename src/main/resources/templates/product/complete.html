@@ -6,7 +6,100 @@
 
             <!-- 결제완료 페이지 시작 -->
             <section class="complete" layout:fragment="content">
-              
+
+              <script>
+                // 최상단 이동 (topButton) 함수 //
+                function movePageTop() {
+                  window.scrollTo(0, 0);
+                }
+
+                window.onload = function (){
+
+                  // 숫자를 3자리마다 콤마를 추가하여 문자열로 반환하는 함수
+                  function numberWithCommas(x) {
+                    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                  }
+
+                  // 상품 원금액
+                  document.querySelectorAll('#prodOrgPrice').forEach(function (price) {
+                     var orgPrice = parseInt(price.innerText);
+
+                     price.innerHTML = ""
+                     price.textContent = numberWithCommas(orgPrice);
+                  });
+
+                  // 상품 할인금액
+                  document.querySelectorAll('#prodDisPrice').forEach(function (price) {
+                    var disPrice = parseInt(price.innerText);
+
+                    price.innerHTML = ""
+                    price.textContent = numberWithCommas(disPrice);
+                  });
+
+                  // 상품 주문 금액
+                  document.querySelectorAll('#prodTotalPrice').forEach(function (price) {
+
+                    var org = parseInt(price.closest('#prod').querySelector('#prodOrgPrice').innerText.replace(/,/g, ''));
+                    var dis = parseInt(price.closest('#prod').querySelector('#prodDisPrice').innerText.replace(/,/g, ''));
+                    var tot = org-dis;
+                    price.innerHTML = ""
+                    price.textContent = numberWithCommas(tot);
+
+                  });
+
+                  const totalOrgPrice = document.getElementById('totalOrgPrice');
+                  const totalDisPrice = document.getElementById('totalDisPrice');
+                  const totalDelPrice = document.getElementById('totalDelPrice');
+                  const totalPrice = document.getElementById('totalPrice');
+
+                  const totalPrice2 = document.getElementById('totalPrice2');
+
+                  // 총 상품금액
+                  var totalValue = 0;
+                  document.querySelectorAll('#prodOrgPrice').forEach(function (price) {
+
+                    var totPrice = parseInt(price.innerText.replace(/,/g, ''));
+                    totalValue += totPrice;
+                    console.log('dkdkdk'+totalValue);
+
+                  });
+                  totalOrgPrice.innerHTML = "";
+                  totalOrgPrice.textContent = numberWithCommas(totalValue);
+
+                  // 총 할인 금액
+                  var totalValue = 0;
+                  document.querySelectorAll('#prodDisPrice').forEach(function (price) {
+
+                    var totPrice = parseInt(price.innerText.replace(/,/g, ''));
+                    totalValue += totPrice;
+                    console.log('dkdkdk'+totalValue);
+
+                  });
+                  totalDisPrice.innerHTML = "";
+                  totalDisPrice.textContent = numberWithCommas(totalValue);
+
+                  // 토탈 가격
+                  var totalValue = 0;
+                  document.querySelectorAll('#prodTotalPrice').forEach(function (price) {
+
+                    var totPrice = parseInt(price.innerText.replace(/,/g, ''));
+                    totalValue += totPrice;
+                    console.log('dkdkdk'+totalValue);
+
+                  });
+                  totalPrice.innerHTML = "";
+                  totalPrice.textContent = numberWithCommas(totalValue);
+
+                  totalPrice2.innerHTML = "";
+                  totalPrice2.textContent = numberWithCommas(totalValue);
+
+
+
+
+
+                }
+              </script>
+
               <!-- 제목, 페이지 네비게이션 -->
               <nav>
                 <h1>주문완료</h1>
@@ -34,51 +127,28 @@
                     <th>수량</th>
                     <th>주문금액</th>
                   </tr>
-                  <tr>
+                  <tr id="prod" th:each="orderItem : ${orderItemDTOS}">
                     <td>
                       <article>
-                        <img src="https://via.placeholder.com/80x80" alt="">
+                        <img th:src="@{|/prodImg/${orderItem.thumb3}|}" alt="">
                         <div>
-                          <h2><a href="#">상품명</a></h2>
-                          <p>상품설명</p>
+                          <h2><a th:href="@{/product/view(prodNo=${orderItem.prodNo},cate1=${orderItem.cate1},cate2=${orderItem.cate2},cate3=${orderItem.cate3})}">
+                            [[${orderItem.prodName}]]
+                          </a></h2>
+                          <p>[[${orderItem.descript}]]</p>
+                          <th:block th:each="option :${orderItem.optionList}">
+                            <span>[[${option.opName}]]:[[${option.opValue}]]</span>
+                          </th:block>
                         </div>
                       </article>
                     </td>
-                    <td>17,000원</td>
-                    <td>1,000원</td>
-                    <td>1</td>
-                    <td>16,000원</td>
+                    <td id="prodOrgPrice">[[${orderItem.price}*${orderItem.count}]]</td>
+                    <td id="prodDisPrice"> [[(${orderItem.price} * (${orderItem.discount}/100))*${orderItem.count}]] </td>
+                    <td id="prodCount">[[${orderItem.count}]]</td>
+                    <td id="prodTotalPrice"> </td>
                   </tr>
                   <tr>
-                    <td>
-                      <article>
-                        <img src="https://via.placeholder.com/80x80" alt="">
-                        <div>
-                          <h2><a href="#">상품명</a></h2>
-                          <p>상품설명</p>
-                        </div>
-                      </article>
-                    </td>
-                    <td>17,000원</td>
-                    <td>1,000원</td>
-                    <td>1</td>
-                    <td>16,000원</td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <article>
-                        <img src="https://via.placeholder.com/80x80" alt="">
-                        <div>
-                          <h2><a href="#">상품명</a></h2>
-                          <p>상품설명</p>
-                        </div>
-                      </article>
-                    </td>
-                    <td>17,000원</td>
-                    <td>1,000원</td>
-                    <td>1</td>
-                    <td>16,000원</td>
-                  </tr>
+
                   
                   <tr class="total">
                     <td colspan="4"></td>
@@ -86,19 +156,19 @@
                       <table border="0">
                         <tr>
                           <td>총 상품금액</td>
-                          <td><span>34,000</span>원</td>
+                          <td><span id="totalOrgPrice"></span>원</td>
                         </tr>
                         <tr>
                           <td>총 할인금액</td>
-                          <td><span>-2,000</span>원</td>
+                          <td><span id="totalDisPrice"></span>원</td>
                         </tr>
                         <tr>
                           <td>배송비</td>
-                          <td><span>3,000</span>원</td>
+                          <td><span id="totalDelPrice">0</span>원</td>
                         </tr>
                         <tr>
                           <td>총 결제금액</td>
-                          <td><span>35,000</span>원</td>
+                          <td><span id="totalPrice"></span>원</td>
                         </tr>
                       </table>                      
                     </td>
@@ -112,17 +182,22 @@
                 <table border="0">
                   <tr>
                     <td>주문번호</td>
-                    <td>2008101324568</td>
+                    <td id="orderNo" th:text="${orderDTO.ordNo}"></td>
                     <td rowspan="3">총 결제금액</td>
-                    <td rowspan="3"><span>35,000</span>원</td>
+                    <td rowspan="3"><span id="totalPrice2"> </span>원</td>
                   </tr>
                   <tr>
                     <td>결제방법</td>
-                    <td>신용카드</td>
+                    <td th:if="${orderDTO.ordPayment == 1}">신용카드</td>
+                    <td th:if="${orderDTO.ordPayment == 2}">체크카드</td>
+                    <td th:if="${orderDTO.ordPayment == 3}">계좌이체</td>
+                    <td th:if="${orderDTO.ordPayment == 4}">무통장 입금</td>
+                    <td th:if="${orderDTO.ordPayment == 5}">휴대폰 결제</td>
+                    <td th:if="${orderDTO.ordPayment == 6}">카카오 페이</td>
                   </tr>
                   <tr>
                     <td>주문자/연락처</td>
-                    <td>홍길동/010-1234-1234</td>
+                    <td>[[${memberDTO.name}]]/[[${memberDTO.hp}]]</td>
                   </tr>
                 </table>
               </article>
@@ -133,20 +208,20 @@
                 <table border="0">
                   <tr>
                     <td>수취인</td>
-                    <td>홍길동</td>                    
+                    <td>[[${orderDTO.recipName}]]</td>
                     <td>주문자 정보</td>
                   </tr>
                   <tr>
                     <td>연락처</td>
-                    <td>010-1234-1234</td>
+                    <td>[[${orderDTO.recipHp}]]</td>
                     <td rowspan="2">
-                      홍길동<br/>
-                      010-1234-1234
+                      [[${orderDTO.recipName}]]<br/>
+                      [[${orderDTO.recipHp}]]
                     </td>
                   </tr>
                   <tr>
                     <td>배송지 주소</td>
-                    <td>부산광역시 강남구 대연동 123 10층</td>
+                    <td>[[${orderDTO.recipAddr1}]]</td>
                   </tr>
                 </table>
               </article>

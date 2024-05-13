@@ -14,10 +14,19 @@
                     <li><a th:href="@{/my/review(uid=${#authentication.principal.member.uid})}">나의리뷰</a></li>
                     <li><a th:href="@{/my/qna(uid=${#authentication.principal.member.uid})}">문의하기</a></li>
                     <li><a th:href="@{/my/infoAccessCheck(uid=${#authentication.principal.member.uid})}">나의설정</a></li>
+                    <li><a th:href="@{/my/wish}">나의찜</a></li>
                 </ul>
 
                 <section>
-                    <article> <a th:href="@{#}"><img th:src="@{/my/images/my_banner1.jpg}" alt="패션, 타운 하나로 끝" class="banner"></a>
+                    <article>
+                        <div id="bannerTop" class="on" th:style="${banners.size() > 0 ? 'background: ' + banners[0].backcolor + ';' : ''}">
+                            <!-- 배너 영역 -->
+                            <th:block th:each="banner : ${banners}">
+                                <a th:href="@{${banner.link}}">
+                                    <img th:src="@{'/prodImg/'+ ${banner.thumb}}" alt="t1" />
+                                </a>
+                            </th:block>
+                        </div>
                         <h3>쿠폰</h3>
 
                         <p>고객님께서 보유하고 있는 할인쿠폰을 확인하세요! 상품구매 시 더욱 저렴하게 구매할 수 있습니다.</p>

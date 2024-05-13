@@ -6,6 +6,7 @@ import kr.co.lotteon.dto.cs.*;
 import kr.co.lotteon.entity.cs.BoardCateEntity;
 import kr.co.lotteon.entity.cs.Comment;
 import kr.co.lotteon.repository.cs.BoardRepository;
+import kr.co.lotteon.service.admin.NotificationService;
 import kr.co.lotteon.service.admin.cs.AdminCommentService;
 import kr.co.lotteon.service.cs.CsCateService;
 import kr.co.lotteon.service.cs.CsService;
@@ -30,6 +31,7 @@ public class CsController {
     private final BoardRepository boardRepository;
     private final FileService fileService;
     private final AdminCommentService adminCommentService;
+    private final NotificationService notificationService;
 
     // cs index
     @GetMapping(value = {"/cs","/cs/index"})
@@ -298,7 +300,13 @@ public class CsController {
         return csService.deleteComment(cno);
     }
 
-
+    // 상품 문의
+    @ResponseBody
+    @PostMapping("/cs/prodqna")
+    public ResponseEntity<?> prodQna(@RequestBody BoardDTO boardDTO){
+        log.info("상품 문의");
+        return notificationService.prodQnaSave(boardDTO);
+    }
 
 
 }

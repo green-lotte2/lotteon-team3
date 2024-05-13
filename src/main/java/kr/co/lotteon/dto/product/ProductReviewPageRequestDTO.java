@@ -13,6 +13,9 @@ import org.springframework.data.domain.Sort;
 @Builder
 public class ProductReviewPageRequestDTO {
     @Builder.Default
+    private int no = 1;
+
+    @Builder.Default
     private int pg = 1;
     @Builder.Default
     private int size = 10;

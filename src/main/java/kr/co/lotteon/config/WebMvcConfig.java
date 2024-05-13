@@ -1,6 +1,8 @@
 package kr.co.lotteon.config;
 
 import kr.co.lotteon.interceptor.AppInfoInterceptor;
+import kr.co.lotteon.interceptor.MyBannerInterceptor;
+import kr.co.lotteon.service.admin.BannerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -13,6 +15,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Autowired
     private AppInfo appInfo;
+
+    @Autowired
+    private BannerService bannerService;
 
     // ====== 배포시엔 해당 어노테이션 사용 ======
     @Value("${myServerProd.static-resources-path}")
@@ -39,6 +44,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new AppInfoInterceptor(appInfo));
-    }
 
+
+        // myPage 배너 Interceptor 추가
+        registry.addInterceptor(new MyBannerInterceptor(bannerService))
+                .addPathPatterns("/my/**");
+    }
 }

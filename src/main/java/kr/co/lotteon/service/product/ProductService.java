@@ -2,9 +2,18 @@ package kr.co.lotteon.service.product;
 
 import com.querydsl.core.Tuple;
 import jakarta.transaction.Transactional;
+import kr.co.lotteon.dto.cs.BoardDTO;
+import kr.co.lotteon.dto.cs.BoardTypeDTO;
+import kr.co.lotteon.dto.cs.CommentDTO;
 import kr.co.lotteon.dto.product.*;
+import kr.co.lotteon.entity.cs.BoardEntity;
+import kr.co.lotteon.entity.cs.BoardTypeEntity;
+import kr.co.lotteon.entity.cs.Comment;
 import kr.co.lotteon.entity.product.*;
+import kr.co.lotteon.mapper.MemberMapper;
 import kr.co.lotteon.mapper.ProductMapper;
+import kr.co.lotteon.repository.cs.BoardRepository;
+import kr.co.lotteon.repository.my.CouponRepository;
 import kr.co.lotteon.repository.product.OptionRepository;
 import kr.co.lotteon.repository.product.OrderItemRepository;
 import kr.co.lotteon.repository.product.OrderRepository;
@@ -17,8 +26,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.io.Console;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -31,7 +40,9 @@ public class ProductService {
     private final OrderRepository orderRepository;
     private final ModelMapper modelMapper;
     private final OrderItemRepository orderItemRepository;
-
+    private final BoardRepository boardRepository;
+    private final CouponRepository couponRepository;
+    private final MemberMapper memberMapper;
     private final SqlSession sqlSession;
 
     // 기본 상품 목록 조회
@@ -110,6 +121,42 @@ public class ProductService {
                 .build();
     }
 
+    // 상품 문의 조회 - 상품 보기 페이지
+    public ProductQnaPageResponseDTO selectQna(int prodNo, ProductReviewPageRequestDTO pageRequestDTO){
+        Pageable pageable = pageRequestDTO.getPageable("no");
+        Page<Tuple> result = boardRepository.selectQna(prodNo, pageable);
+
+        List<ProductQnaDTO> dtoList = result.stream()
+                .map(tuple -> {
+                    BoardEntity boardEntity = tuple.get(0, BoardEntity.class);
+                    BoardTypeEntity typeEntity = tuple.get(1, BoardTypeEntity.class);
+                    Comment commentEntity = tuple.get(2, Comment.class);
+
+                    BoardDTO board = modelMapper.map(boardEntity, BoardDTO.class);
+                    BoardTypeDTO type = modelMapper.map(typeEntity, BoardTypeDTO.class);
+
+
+                    ProductQnaDTO productQnaDTO = new ProductQnaDTO();
+                    productQnaDTO.setBoardDTO(board);
+                    productQnaDTO.setBoardTypeDTO(type);
+
+                    if(commentEntity != null) {
+                        CommentDTO comment = modelMapper.map(commentEntity, CommentDTO.class);
+                        productQnaDTO.setCommentDTO(comment);
+                    }
+                    return productQnaDTO;
+
+                })
+                .toList();
+        // total 값
+        int total = (int) result.getTotalElements();
+
+        return ProductQnaPageResponseDTO.builder()
+                .productReviewPageRequestDTO(pageRequestDTO)
+                .dtoList(dtoList)
+                .total(total)
+                .build();
+    }
     // 메인 검색
     public SearchPageResponseDTO searchProducts(SearchPageRequestDTO searchPageRequestDTO) {
         Page<Tuple> pageProduct = productRepository.searchProducts(searchPageRequestDTO, searchPageRequestDTO.getPageable());
@@ -276,39 +323,75 @@ public class ProductService {
                         Product product = tuple.get(2, Product.class);
 
                         ProductDTO productDTO = modelMapper.map(product, ProductDTO.class);
+
                         productDTO.setCount(count);
                         productDTO.setOpNo(opNo);
+
+                        String opNos = productDTO.getOpNo();
+                        log.info("오더 조회 서비스 옵션번호 : " + opNos);
+                        if(opNos != null){
+                            // 옵션 뽑아내기
+                            String[] optionString = opNos.split(",");
+                            int[] optionIds = new int[optionString.length];
+
+                            for (int i = 0; i < optionString.length; i++) {
+                                optionIds[i] = Integer.parseInt(optionString[i].trim());
+                            }
+                            log.info("오더 조회 서비스 옵션번호2 : " + Arrays.toString(optionIds));
+
+                            List<OptionDTO> options = new ArrayList<>();
+                            for(int optionNos : optionIds){
+                                OptionDTO option = optionRepository.selectOptionForCart(optionNos);
+                                log.info("오더 조회 서비스 옵션번호3 :" + option);
+
+                                if (option != null){
+                                    options.add(option);
+                                }
+                                productDTO.setOptionList(options);
+                            }
+                        }
+
+
                         return productDTO;
                     })
                     .collect(Collectors.toList());
             log.info("오더 조회 서비스 3"+mappedProductDTOs);
-            
+
             // 선언해둔 productDTOS에 모두 덮어씌우기
             productDTOS.addAll(mappedProductDTOs);
         }
         return productDTOS;
     }
 
+    // 상품보기에서 바로 주문
     public ProductDTO prodToOrder(int prodNo){
         Product result = productRepository.findById(prodNo).get();
 
         return modelMapper.map(result, ProductDTO.class);
     }
 
+    // product_order 테이블에 저장, memberPoint에 적립
     @Transactional
     public ResponseEntity<?> saveOrder (OrderDTO orderDTO){
 
         // 적립될 포인트
-        int point = 0;
+        int savePoint = orderDTO.getSavePoint();
+        // 사용한 포인트
+        int usedPoint = orderDTO.getUsedPoint();
+        // 구매한 회원 아이디
+        String uid = orderDTO.getOrdUid();
 
         // product_order에 넣기
         Order order = modelMapper.map(orderDTO, Order.class);
-
         Order saveOrder = orderRepository.save(order);
-
         log.info("오더서비스 : " + saveOrder.getOrdNo());
+        log.info("오더서비스 사용 포인트 : " + saveOrder.getUsedPoint());
         OrderDTO savedOrderDTO = modelMapper.map(saveOrder, OrderDTO.class);
 
+        // 사용한 포인트만큼 포인트 감소
+        if (saveOrder.getUsedPoint()>0){
+            memberMapper.updateMemberPoint(uid, usedPoint);
+        }
 
         return ResponseEntity.ok(savedOrderDTO);
     }
@@ -323,10 +406,71 @@ public class ProductService {
             orderItem.setOrdNo(ordNo);
             orderItemRepository.save(orderItem);
 
+            // 상품 수량 감소
+            productMapper.updateProductStock(orderItemDTO.getProdNo(), orderItemDTO.getCount());
         }
         return ordNo;
     }
 
+    // 주문 완료 페이지
+    public List<OrderItemDTO> selectOrderComplete(int orderNo){
+        log.info("주문완료 서비스..1 "+orderNo);
+        List<Tuple> orderItemTuple= orderItemRepository.selectOrderComplete(orderNo);
+
+        log.info("주문완료 서비스..2"+orderItemTuple);
+        List<OrderItemDTO> result = orderItemTuple.stream()
+                .map(tuple -> {
+
+                    OrderItem orderItem = tuple.get(9, OrderItem.class);
+
+                    OrderItemDTO orderItemDTO = modelMapper.map(orderItem, OrderItemDTO.class);
+                    orderItemDTO.setProdName(tuple.get(0, String.class));
+                    orderItemDTO.setDescript(tuple.get(1, String.class));
+                    orderItemDTO.setCompany(tuple.get(2, String.class));
+                    orderItemDTO.setPrice(tuple.get(3, Integer.class));
+                    orderItemDTO.setDiscount(tuple.get(4, Integer.class));
+                    orderItemDTO.setThumb3(tuple.get(5, String.class));
+                    orderItemDTO.setCate1(tuple.get(6, Integer.class));
+                    orderItemDTO.setCate2(tuple.get(7, Integer.class));
+                    orderItemDTO.setCate3(tuple.get(8, Integer.class));
+
+
+                    // 옵션 뽑아내기
+                    if (!orderItemDTO.getOpNo().equals( "")){
+                        String[] optionString = orderItemDTO.getOpNo().split(",");
+                        int[] optionIds = new int[optionString.length];
+
+                        for (int i = 0; i < optionString.length; i++) {
+                            optionIds[i] = Integer.parseInt(optionString[i].trim());
+                        }
+
+                        List<OptionDTO> options = new ArrayList<>();
+                        for(int optionNos : optionIds){
+                            OptionDTO option = optionRepository.selectOptionForCart(optionNos);
+
+                            if (option != null){
+                                options.add(option);
+                            }
+                            orderItemDTO.setOptionList(options);
+                        }
+                    }
+
+
+                    return orderItemDTO;
+                })
+                .collect(Collectors.toList());
+
+        log.info("주문완료 서비스..3"+result);
+
+        return result;
+    }
+
+    // 주문완료 주문정보 가져오기
+    public OrderDTO selectOrder (int ordNo){
+         Optional<Order> order = orderRepository.findById(ordNo);
+
+        return modelMapper.map(order, OrderDTO.class);
+    }
     // ========== 메인페이지 ==========
     // 최신상품
     public List<ProductDTO> bestProductMain(){return productRepository.bestProductMain();}

@@ -2,6 +2,7 @@ package kr.co.lotteon.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.querydsl.core.Tuple;
 import kr.co.lotteon.dto.admin.BannerDTO;
 import kr.co.lotteon.dto.cs.BoardDTO;
 import kr.co.lotteon.dto.cs.CsPageRequestDTO;
@@ -17,6 +18,7 @@ import kr.co.lotteon.dto.member.point.PointPageResponseDTO;
 
 import kr.co.lotteon.entity.member.Member;
 import kr.co.lotteon.entity.member.Point;
+import kr.co.lotteon.entity.product.OrderItem;
 import kr.co.lotteon.security.MyUserDetails;
 import kr.co.lotteon.service.admin.BannerService;
 import kr.co.lotteon.service.member.MemberService;
@@ -24,6 +26,7 @@ import kr.co.lotteon.service.my.MyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -50,7 +53,6 @@ import java.util.stream.Collectors;
 @Controller
 public class MyController {
 
-    private final BannerService bannerService;
     private final MemberService memberService;
     private final MyService myService;
     private final AuthenticationManager authenticationManager;
@@ -62,13 +64,10 @@ public class MyController {
     public String home(Model model, @RequestParam String uid){
         log.info("uid : "+uid);
 
-        // 마이페이지 배너
-        List<BannerDTO> myPageBanners = bannerService.selectBanners("myPage");
-        model.addAttribute("myPageBanners",myPageBanners);
+        //최근 주문목록 출력
+        LinkedHashMap<Integer, List<OrderItemDTO>> orders = myService.selectOrder(uid);
+        model.addAttribute("orders", orders);
 
-        //최근 주문내역 출력
-        List<OrderItemDTO> orderItemDTOS = myService.selectOrdersByUid(uid);
-        model.addAttribute("orderItemDTOS",orderItemDTOS);
 
         //포인트 출력
         List<PointDTO> pointDTOS = myService.selectByUidAndDate(uid);
@@ -315,8 +314,37 @@ public class MyController {
 
     // my - order (나의 전체 주문내역) 페이지 매핑
     @GetMapping("/my/order")
-    public String order(){
+    public String order(@RequestParam String uid, Model model, OrderItemPageRequestDTO orderItemPageRequestDTO){
+
+        Pageable pageable = orderItemPageRequestDTO.getPageable();
+
+        // 사용자의 주문 전체를 조회
+        OrderItemPageResponseDTO pageResponseDTO = myService.selectWholeOrdersByUid(uid, pageable, orderItemPageRequestDTO);
+
+        model.addAttribute("pageResponseDTO",pageResponseDTO);
+
         return "/my/order";
+    }
+
+    // my - point (나의 포인트) 페이지 매핑
+    @GetMapping("/my/orderList")
+    @ResponseBody
+    public ResponseEntity<?> orderList(OrderItemPageRequestDTO orderItemPageRequestDTO, @AuthenticationPrincipal Object principal) {
+        log.info("pointPageRequestDTO................ : " + orderItemPageRequestDTO);
+
+        Member member = ((MyUserDetails) principal).getMember();
+        String uid = member.getUid();
+        Pageable pageable = orderItemPageRequestDTO.getPageable();
+
+        log.info("begin : " + orderItemPageRequestDTO.getBegin());
+        log.info("End : " + orderItemPageRequestDTO.getEnd());
+
+        // PageResponseDTO에 List<OrderItemDTO> 넣기(페이지)
+        OrderItemPageResponseDTO pageResponseDTO = myService.selectOrdersByDate(uid, pageable, orderItemPageRequestDTO);
+
+        log.info("컨트롤러(pageResponseDTO) orderItemPageResponseDTO...: " + pageResponseDTO);
+
+        return ResponseEntity.ok().body(pageResponseDTO);
     }
 
     @GetMapping("/my/point")
@@ -325,6 +353,8 @@ public class MyController {
         model.addAttribute("pointPageResponseDTO", pointPageResponseDTO);
         return "/my/point";
     }
+
+
 
     // my - point (나의 포인트) 페이지 매핑
     @GetMapping("/my/pointList")

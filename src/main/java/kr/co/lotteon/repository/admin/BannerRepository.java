@@ -1,4 +1,4 @@
-package kr.co.lotteon.repository;
+package kr.co.lotteon.repository.admin;
 
 import kr.co.lotteon.dto.admin.BannerDTO;
 import kr.co.lotteon.entity.admin.Banner;

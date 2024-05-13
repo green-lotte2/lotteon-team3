@@ -1040,27 +1040,27 @@
     margin-top: 10px;
 }
 
-#product > .view > .review > .paging {
+#product > .view .paging {
     width: 100%;
     padding: 30px 0;
     text-align: center;
 }
 
-#product > .view > .review > .paging > .prev {}
-#product > .view > .review > .paging > .next {}
-#product > .view > .review > .paging > .num {}
+#product > .view .paging > .prev {}
+#product > .view .paging > .next {}
+#product > .view .paging > .num {}
 
-#product > .view > .review > .paging > span > a {
+#product > .view .paging > span > a {
     color: #777;
     font-size: 11px;
     letter-spacing: -1px;
 }
 
-#product > .view > .review > .paging > span > a:hover {
+#product > .view .paging > span > a:hover {
     text-decoration: underline;
 }
 
-#product > .view > .review > .paging > .num > a {
+#product > .view .paging > .num > a {
     display: inline-block;
     min-width: 14px;
     margin: 0 2px;
@@ -1072,16 +1072,174 @@
     text-align: center;
     text-decoration: none;
 }
-#product > .view > .review > .paging > .num > a:hover {
+#product > .view .paging > .num > a:hover {
     border: 1px solid #454c5f;
     text-decoration: none;
 }
-#product > .view > .review > .paging > .num > a.on {
+#product > .view .paging > .num > a.on {
     color: #fe434c;
     font-weight: bold;
 }
 
+/* 주문 상세 view 글쓰기 버튼 */
+.btn-prodQna {
+    width: 100px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    cursor: pointer;
+    height: 40px;
+    text-align: center;
+    border: none;
+    background-size: 300% 100%;
+    border-radius: 50px;
+    -webkit-transition: all .4s ease-in-out;
+    transition: all .4s ease-in-out;
+}
 
+.btn-prodQna:hover {
+    background-position: 100% 0;
+    moz-transition: all .4s ease-in-out;
+    -o-transition: all .4s ease-in-out;
+    -webkit-transition: all .4s ease-in-out;
+    transition: all .4s ease-in-out;
+}
+
+.btn-prodQna:focus {
+    outline: none;
+}
+
+.btn-prodQna {
+    background-image: linear-gradient(
+            to right,
+            #eb3941,
+            #f15e64,
+            #e14e53,
+            #e2373f
+    );
+}
+/* 작성 완료 버튼 */
+.btn-qnaWrite {
+    width: 100px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    cursor: pointer;
+    height: 40px;
+    text-align: center;
+    border: none;
+    background-size: 300% 100%;
+    border-radius: 50px;
+    -webkit-transition: all .4s ease-in-out;
+    transition: all .4s ease-in-out;
+}
+
+.btn-qnaWrite:hover {
+    background-position: 100% 0;
+    moz-transition: all .4s ease-in-out;
+    -o-transition: all .4s ease-in-out;
+    -webkit-transition: all .4s ease-in-out;
+    transition: all .4s ease-in-out;
+}
+
+.btn-qnaWrite:focus {
+    outline: none;
+}
+
+.btn-qnaWrite {
+    background-image: linear-gradient(
+            to right,
+            #eb3941,
+            #f15e64,
+            #e14e53,
+            #e2373f
+    );
+}
+/* 작성 취소 버튼 */
+.btn-qnaCancel {
+    width: 100px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    cursor: pointer;
+    height: 40px;
+    text-align: center;
+    border: none;
+    background-size: 300% 100%;
+    border-radius: 50px;
+    -webkit-transition: all .4s ease-in-out;
+    transition: all .4s ease-in-out;
+}
+
+.btn-qnaCancel:hover {
+    background-position: 100% 0;
+    moz-transition: all .4s ease-in-out;
+    -o-transition: all .4s ease-in-out;
+    -webkit-transition: all .4s ease-in-out;
+    transition: all .4s ease-in-out;
+}
+
+.btn-qnaCancel:focus {
+    outline: none;
+}
+
+.btn-qnaCancel {
+    background-image: linear-gradient(
+            to right,
+            #8b8888,
+            #5f5c5c,
+            #87797a,
+            #a7a1a1
+    );
+}
+
+/* 주문 상세 view scroll div */
+.stickyTab {
+    float: left;
+    width: 953px;
+    height: 70px;
+    background: #fff;
+}
+.unFixTab {
+    position: static !important;
+}
+.fixTab {
+    z-index: 500;
+    position: fixed;
+    top: 0px;
+}
+.scrollTab {
+    padding: 0 84px;
+}
+.scrollTabInner{
+    display: flex;
+    -webkit-box-pack: center;
+    justify-content: center;
+}
+.scrollTabWrapper{
+    width: 100%;
+    -webkit-box-pack: justify;
+    justify-content: space-between;
+    display: flex;
+}
+.scrollTab li.customActive a {
+    font-weight: 700;
+    color: #333;
+    border-bottom: 3px solid #333;
+}
+.scrollTab li a {
+    position: relative;
+    display: block;
+    padding: 20px 0;
+    font-size: 20px;
+    line-height: 28px;
+    white-space: nowrap;
+    cursor: pointer;
+    color: #757575;
+}
+.scrollTab li a  > strong {
+ font-size: 20px;
+}
 /* 장바구니 */
 #product > .cart {}
 #product > .cart > form > input[name=del] {
@@ -1215,6 +1373,344 @@
   margin-top: 10px;
 }
 
+/* 상품 보기 view 문의 */
+.productQnaWrap {
+    position: relative;
+    padding-top: 100px;
+    margin-top: -10px;
+}
+.qnaWrap {
+
+}
+.qnaWrap > .util {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    -webkit-box-align: center;
+    align-items: center;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #333;
+    justify-content: space-between;
+}
+.qnaWrap > .util > .sum {
+
+}
+.qnaWrap > .util > .sum > strong {
+    display: inline-block;
+    font-size: 21px;
+    line-height: 1.36;
+}
+.qnaWrap > .qnaList {
+
+}
+.qnaWrap > .qnaList > li {
+    padding: 20px 0;
+    border-bottom: 1px solid #eee;
+}
+.qnaWrap > .qnaList .category {
+    position: relative;
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+    font-size: 14px;
+    line-height: 1.57;
+    color: #757575;
+}
+.qnaList .category > .classification {
+    width: 50px;
+    white-space: nowrap;
+    letter-spacing: -.02em;
+
+}
+.qnaList .category > .classification2 {
+    white-space: nowrap;
+    letter-spacing: -.02em;
+}
+.qnaList .category > .option {
+    position: relative;
+    margin-left: 6px;
+    padding-left: 6px;
+}
+.qnaList .question {
+    padding-top: 8px;
+}
+.qnaList .question > p {
+    font-size: 15px;
+    line-height: 1.47;
+    word-break: break-all;
+}
+.qnaList .question > p > span {
+    font-size: 15px;
+    font-weight: 520;
+    line-height: 1.47;
+    word-break: break-all;
+}
+.qnaList .answer {
+    position: relative;
+    display: block;
+    margin: 9px 0 0 6px;
+    padding: 17px 18px 19px 21px;
+    border-radius: 0 10px 10px 10px;
+    background-color: #f8f8f8;
+}
+.qnaList .answer > a {
+    display: block;
+}
+.qnaList .answer > a > p {
+    display: inline;
+    font-size: 15px;
+    line-height: 1.47;
+    word-break: break-all;
+}
+.qnaList .answer .seller {
+    margin-top: 10px;
+}
+.seller > .sellerName {
+    display: inline-block;
+    padding-right: 4px;
+    font-size: 14px;
+    color: #757575;
+    line-height: 1.57;
+    letter-spacing: -.02em;
+    vertical-align: middle;
+}
+.qnaList .actions {
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+    padding-top: 20px;
+}
+.qnaList .actions .time {
+    margin-left: auto;
+    font-size: 13px;
+    line-height: 1.46;
+    color: #999;
+}
+/* 상품 보기 문의 더보기 버튼 */
+
+#buttonDiv {
+    height: 80px;
+    text-align: center;
+    padding: 5px;
+}
+#buttonDiv > .btnMoreView {
+    position: relative;
+    padding: 12px 24px;
+    color: #F0F4F9;
+    font-weight: bold;
+    font-size: 17px;
+    background-color: #E30613;
+    border-radius: 50px 50px 50px 50px;
+}
+#buttonDiv > .btnMoreView > .spinner-border {
+    position: absolute;
+    left: 43%;
+    top: 30%;
+    margin: inherit;
+    --bs-spinner-width: 1.5rem;
+    --bs-spinner-height: 1.5rem;
+}
+#buttonDiv > .btnMoreView > .spanMoreView{
+    color: #F0F4F9;
+    font-weight: bold;
+    font-size: 17px;
+}
+#buttonDiv > .btnMoreView:hover {
+    cursor: pointer;
+}
+/* 상품 보기 view 문의 모달 */
+.v--modal-hidden {
+    display: none;
+}
+.v--modal-overlay {
+    position: fixed;
+    box-sizing: border-box;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.2);
+    z-index: 999;
+    opacity: 1;
+}
+.v--modal-overlay {
+    bottom: 0;
+    height: auto;
+    background: rgba(0, 0, 0, .4) !important;
+}
+.v--modal-overlay div.v--modal-background-click {
+    height: 100%;
+    overflow: auto;
+}
+ .v--modal-overlay .v--modal-background-click {
+     width: 100%;
+     min-height: 100%;
+     height: auto;
+ }
+.v--modal-top-right {
+    display: block;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+.v--modal-overlay .v--modal-box {
+    top: 35px;
+    left: 503px;
+    width: 530px;
+    z-index: 99999;
+    height: auto;
+    position: relative;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+.popContents {
+    position: relative;
+    border-radius: 20px;
+    background: #fff;
+    text-align: center;
+    padding: 0 0;
+}
+.popContents .popupTitle {
+    text-align: left;
+    padding: 30px 0 18px 30px;
+    border-bottom: 1px solid #eee;
+}
+.popContents .popupTitle .titMiddle {
+    margin-bottom: 0;
+    font-size: 20px;
+    line-height: 1.4;
+    letter-spacing: -.06em;
+}
+.popContents.medium .scrollContentWrap {
+    height: 100%;
+    max-height: 535px;
+    overflow-y: auto;
+    padding: 0 30px 2px;
+    text-align: left;
+}
+.qnaText {
+    font-size: 14px;
+    line-height: 50px;
+    color: #757575;
+    letter-spacing: -.03em;
+    text-align: center;
+    background-color: #f5f5f5;
+    padding: 0 30px;
+    margin: 0 -30px 20px;
+}
+.qnaText strong {
+    color: #333;
+}.informationList .listArea li .item {
+     display: flex;
+     align-items: center; /* 요소들을 수직 정렬합니다. */
+ }
+
+.informationList .listArea li .item .thumb {
+    width: 100px;
+    height: 100px;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.informationList .listArea li .item .thumb a {
+    display: block;
+}
+
+.informationList .listArea li .item .thumb a > img {
+    width: 100px;
+    height: 100px;
+}
+
+.informationList .listArea li .item .info {
+    margin-left: 20px; /* thumb과 info 사이의 간격을 설정합니다. */
+}
+.popContents > .guidClose {
+    border: none;
+    position: absolute;
+    right: 21px;
+    top: 21px;
+    width: 18px;
+    height: 18px;
+    background: url(//static.lotteon.com/p/product/assets/img/btn_popup_close.svg) no-repeat 50%;
+}
+.popContents > .guidClose > .hiddenTxt {
+    overflow: hidden;
+    display: inline-block;
+    border: 0;
+    margin: 0;
+    width: 1px;
+    height: 1px;
+    clip: rect(1px, 1px, 1px, 1px);
+    clip-path: inset(50%);
+    position: absolute;
+    top: 0 !important;
+    left: 0 !important;
+}
+.inquiryWrap{
+    border-top: 1px solid #eee;
+    margin-top: 20px;
+}
+.popContents .section {
+    margin-bottom: 20px;
+}
+.inquiryWrap .titMiddle {
+    font-size: 18px;
+    line-height: 1.4;
+    margin-top: 30px;
+    letter-spacing: -.029em;
+    margin-bottom: 12px;
+}
+.inquiryWrap > .limitTextParent {}
+.inquiryWrap > .limitTextParent > .titMiddle {
+    font-size: 18px;
+    line-height: 1.4;
+    margin-top: 30px;
+    letter-spacing: -.029em;
+    margin-bottom: 12px;
+}
+.inquiryWrap > .limitTextParent > .selectWrap {}
+.inquiryWrap > .limitTextParent > .selectWrap > .inputSet {
+    position: relative;
+}
+.inquiryWrap .inputSet > .limit {
+    width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+
+}
+.inquiryWrap .inputSet > .limit > textarea {
+    width: 100%;
+    height: 208px;
+    border: 0;
+    resize: none;
+    padding: 10px 12px;
+    color: #212121;
+    font-size: 14px;
+    line-height: 20px;
+}
+.inquiryWrap > .limitTextParent > .caution {
+    padding-top: 0 !important;
+    border-top: 0 !important;
+    margin: 20px 0 0 0;
+    padding: 0;
+    text-align: left;
+}
+.inquiryWrap > .limitTextParent > .caution > li:first-child {
+    margin-top: 0;
+}
+.inquiryWrap > .limitTextParent > .caution > li {
+    position: relative;
+    padding-left: 13px;
+    font-size: 13px;
+    line-height: 19px;
+    letter-spacing: -.02em;
+    margin-top: 5px;
+
+}
+.popContents.medium .scrollContentWrap+.fixingBtn {
+    margin-top: -2px;
+    padding: 28px 30px;
+}
 /* 주문결제 */
 #product > .order {}
 #product > .order input[name=del] {
@@ -1524,7 +2020,7 @@
 #product > .complete > .info table tr > td:last-child {
   color:#ff006c;
   font-weight: bold;
-  text-align: right;
+  text-align: center;
 }
 #product > .complete > .info table tr > td > article {
   overflow: hidden;

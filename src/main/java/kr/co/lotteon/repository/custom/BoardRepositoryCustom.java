@@ -18,12 +18,12 @@ public interface BoardRepositoryCustom {
     public Page<Tuple> searchBoardsByGroup(AdminBoardPageRequestDTO pageRequestDTO, Pageable pageable, String group);
 
     public Page<Tuple> searchBoardsByCate(AdminBoardPageRequestDTO pageRequestDTO, Pageable pageable, String group, String cate);
-
+    public Page<Tuple> selectQna(int prodNo, Pageable pageable);
     // 판매자 게시글 조회
     public Page<Tuple> selectBoardBySeller(AdminBoardPageRequestDTO pageRequestDTO, Pageable pageable, List<Integer> prodNos );
     public Page<Tuple> searchBoardBySellerAndCate(AdminBoardPageRequestDTO pageRequestDTO, Pageable pageable, List<Integer> prodNos, String cate);
     public Page<Tuple> searchBoardsBySellerAndKeyword(AdminBoardPageRequestDTO pageRequestDTO, Pageable pageable, List<Integer> prodNos);
-
+    public long countSellerQna(List<Integer> prodNos);
     // myInfo 문의내역 수 출력
     public int countByUidAndStatusIn (String uid, List<String> statusList);
 

@@ -90,8 +90,8 @@
             <th scope="row" th:if="${article.cate2 == 'pressRelease'}">보도자료</th>
             <th scope="row" th:if="${article.cate2 == 'esg'}">ESG</th>
             <td th:text="${article.ano}"></td>
-            <td th:text="${article.title}"></td>
-            <td th:text="${article.content}"></td>
+            <td class="storyTitle" th:text="${article.title}"></td>
+            <td class="storyContent" th:text="${article.content}"></td>
             <td th:text="${#temporals.format(article.rdate, 'yyyy-MM-dd')}"></td>
             <td>
                 <button type="button" class="btn btn-secondary" th:data-src="@{'/prodImg/'+${article.thumb}}"
@@ -110,22 +110,22 @@
     <nav aria-label="Page navigation example" th:if="${!pageResponseDTO.dtoList.isEmpty()}">
         <ul class="pagination">
             <li class="page-item">
-                <a class="page-link" th:href="@{/admin/company/recruit(pg=${pageResponseDTO.start - 1})}" aria-label="Previous"  th:if="${pageResponseDTO.keyword == null}" >
+                <a class="page-link" th:href="@{/admin/company/story(pg=${pageResponseDTO.start - 1})}" aria-label="Previous"  th:if="${pageResponseDTO.keyword == null}" >
                     <span aria-hidden="true">&laquo;</span>
                 </a>
-                <a class="page-link" th:href="@{/admin/company/recruit(pg=${pageResponseDTO.start - 1}, type=${pageResponseDTO.type}, keyword=${pageResponseDTO.keyword})}" aria-label="Previous"  th:if="${pageResponseDTO.keyword != null}" >
+                <a class="page-link" th:href="@{/admin/company/story(pg=${pageResponseDTO.start - 1}, type=${pageResponseDTO.type}, keyword=${pageResponseDTO.keyword})}" aria-label="Previous"  th:if="${pageResponseDTO.keyword != null}" >
                     <span aria-hidden="true">&laquo;</span>
                 </a>
             </li>
             <th:block th:each="num:${#numbers.sequence(pageResponseDTO.start, pageResponseDTO.end)}">
-                <li class="page-item"><a class="page-link" th:href="@{/admin/company/recruit(pg=${num})}" th:if="${pageResponseDTO.keyword == null}">[[${num}]]</a></li>
-                <li class="page-item"><a class="page-link" th:href="@{/admin/company/recruit(pg=${num}, type=${pageResponseDTO.type}, keyword=${pageResponseDTO.keyword})}" th:if="${pageResponseDTO.keyword != null}">[[${num}]]</a></li>
+                <li class="page-item"><a class="page-link" th:href="@{/admin/company/story(pg=${num})}" th:if="${pageResponseDTO.keyword == null}">[[${num}]]</a></li>
+                <li class="page-item"><a class="page-link" th:href="@{/admin/company/story(pg=${num}, type=${pageResponseDTO.type}, keyword=${pageResponseDTO.keyword})}" th:if="${pageResponseDTO.keyword != null}">[[${num}]]</a></li>
             </th:block>
             <li class="page-item">
-                <a th:if="${pageResponseDTO.keyword == null}" class="page-link"  th:href="@{/admin/company/recruit(pg=${pageResponseDTO.end + 1})}" aria-label="Next">
+                <a th:if="${pageResponseDTO.keyword == null}" class="page-link"  th:href="@{/admin/company/story(pg=${pageResponseDTO.end + 1})}" aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>
                 </a>
-                <a th:if="${pageResponseDTO.keyword != null}" class="page-link"  th:href="@{/admin/company/recruit(pg=${pageResponseDTO.end + 1}, type=${pageResponseDTO.type}, keyword=${pageResponseDTO.keyword})}" aria-label="Next">
+                <a th:if="${pageResponseDTO.keyword != null}" class="page-link"  th:href="@{/admin/company/story(pg=${pageResponseDTO.end + 1}, type=${pageResponseDTO.type}, keyword=${pageResponseDTO.keyword})}" aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>
                 </a>
             </li>

@@ -1,24 +1,19 @@
 package kr.co.lotteon.service.admin;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.querydsl.core.Tuple;
 import kr.co.lotteon.dto.admin.*;
 import kr.co.lotteon.dto.cs.BoardCateDTO;
 import kr.co.lotteon.dto.cs.BoardDTO;
 import kr.co.lotteon.dto.cs.BoardFileDTO;
 import kr.co.lotteon.dto.cs.BoardTypeDTO;
-import kr.co.lotteon.dto.member.MemberDTO;
 import kr.co.lotteon.dto.product.*;
-import kr.co.lotteon.entity.admin.Banner;
 import kr.co.lotteon.entity.cs.BoardCateEntity;
 import kr.co.lotteon.entity.cs.BoardEntity;
 import kr.co.lotteon.entity.cs.BoardTypeEntity;
-import kr.co.lotteon.entity.member.Member;
-import kr.co.lotteon.entity.member.Terms;
 import kr.co.lotteon.entity.product.*;
 import kr.co.lotteon.mapper.OrderItemMapper;
 import kr.co.lotteon.mapper.ProductMapper;
-import kr.co.lotteon.repository.BannerRepository;
+import kr.co.lotteon.repository.admin.BannerRepository;
 import kr.co.lotteon.repository.cs.BoardCateRepository;
 import kr.co.lotteon.repository.cs.BoardFileRepository;
 import kr.co.lotteon.repository.cs.BoardRepository;
@@ -34,7 +29,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -42,7 +36,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.beans.Transient;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -363,7 +356,7 @@ public class SellerService {
                     String strOpNos = orderItemDTO.getOpNo();
                     log.info("strOpNos : " + strOpNos);
 
-                    if(strOpNos != null) {
+                    if(strOpNos != null && !strOpNos.equals("")) {
 
                         // String -> List<Integer>
                         List<Integer> opNos = Arrays.stream(strOpNos.split(","))
@@ -464,7 +457,7 @@ public class SellerService {
                     String strOpNos = orderItemDTO.getOpNo();
                     log.info("strOpNos : " + strOpNos);
 
-                    if(strOpNos != null) {
+                    if(strOpNos != null && !strOpNos.equals("")) {
 
                         // String -> List<Integer>
                         List<Integer> opNos = Arrays.stream(strOpNos.split(","))
@@ -668,7 +661,7 @@ public class SellerService {
 
         // 로그인 중일 때 해당 사용자 id를 seller에 입력
         MyUserDetails userDetails = (MyUserDetails) authentication.getPrincipal();
-        String sellerId = userDetails.getMember().getName();
+        String sellerId = userDetails.getMember().getNick();
 
         return sellerId;
     }

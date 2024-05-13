@@ -729,15 +729,16 @@ footer p > strong {
     text-align: center;
 }
 
-#my > .ordered > section > article > .page > a {
+#my > .ordered > section > article > .page > span > a {
     display: inline-block;
     width: 19px;
     height: 19px;
     box-sizing: border-box;
     vertical-align: top;
     color: #777;
+    text-decoration: none; /* 링크 밑줄 제거 */
 }
-#my > .ordered > section > article > .page > a.on {
+#my > .ordered > section > article > .page > span > a.on {
     font-weight: bold;
     color: #1179ea;
 }
@@ -751,6 +752,36 @@ footer p > strong {
     background: url('../my/images/my_sprites2.png') no-repeat -120px -300px;
     font-size: 0;
 }
+
+#my > .ordered > section > article > .page > span.prev > a {
+    background: url('../my/images/my_sprites2.png') no-repeat 0 -300px;
+    display: inline-block;
+    width: 19px;
+    height: 19px;
+    box-sizing: border-box;
+    vertical-align: top;
+    color: transparent; /* 텍스트 감춤 */
+    text-indent: -9999px; /* 텍스트 감춤 */
+    overflow: hidden; /* 텍스트 감춤 */
+}
+
+#my > .ordered > section > article > .page > span.next > a {
+    background: url('../my/images/my_sprites2.png') no-repeat -120px -300px;
+    display: inline-block;
+    width: 19px;
+    height: 19px;
+    box-sizing: border-box;
+    vertical-align: top;
+    color: transparent; /* 텍스트 감춤 */
+    text-indent: -9999px; /* 텍스트 감춤 */
+    overflow: hidden; /* 텍스트 감춤 */
+}
+
+#my > .ordered > section > article > .page > span.num > a.on {
+    font-weight: bold;
+    color: #1179ea;
+}
+
 /* my - point(포인트내역) */
 #my > .point > section > article > .byDate {
     width: 100%;

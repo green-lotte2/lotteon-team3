@@ -9,6 +9,7 @@ import kr.co.lotteon.dto.cs.CsPageRequestDTO;
 import kr.co.lotteon.entity.cs.QBoardCateEntity;
 import kr.co.lotteon.entity.cs.QBoardEntity;
 import kr.co.lotteon.entity.cs.QBoardTypeEntity;
+import kr.co.lotteon.entity.cs.QComment;
 import kr.co.lotteon.entity.member.QMember;
 import kr.co.lotteon.repository.custom.BoardRepositoryCustom;
 import lombok.RequiredArgsConstructor;
@@ -31,9 +32,11 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
     private final QBoardTypeEntity qBoardTypeEntity = QBoardTypeEntity.boardTypeEntity;
     private final QMember qMember = QMember.member;
 
+    private final QComment qComment = QComment.comment;
+
     // 관리자 인덱스 글 목록 조회 (최신순 5개)
     @Override
-    public List<Tuple> adminSelectBoards(String group){
+    public List<Tuple> adminSelectBoards(String group) {
 
         QueryResults<Tuple> results = jpaQueryFactory
                 .select(qBoardEntity, qBoardTypeEntity.typeName)
@@ -70,6 +73,7 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
         // 페이지 처리용 page 객체 리턴
         return new PageImpl<>(content, pageable, total);
     }
+
     // 관리자 게시판관리 글 목록 검색 조회 (type, keyword)
     @Override
     public Page<Tuple> searchBoardsByGroup(AdminBoardPageRequestDTO pageRequestDTO, Pageable pageable, String group) {
@@ -80,21 +84,21 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
         BooleanExpression expression = null;
 
         // 검색 종류에 따른 where절 표현식 생성
-        if(type.equals("title")){
+        if (type.equals("title")) {
             expression = qBoardEntity.group.eq(group).and(qBoardEntity.title.contains(keyword));
             log.info("제목 검색 : " + expression);
 
-        }else if(type.equals("content")){
+        } else if (type.equals("content")) {
             expression = qBoardEntity.group.eq(group).and(qBoardEntity.content.contains(keyword));
             log.info("내용 검색 : " + expression);
 
-        }else if(type.equals("title_content")){
+        } else if (type.equals("title_content")) {
             BooleanExpression titleContains = qBoardEntity.group.eq(group).and(qBoardEntity.title.contains(keyword));
             BooleanExpression contentContains = qBoardEntity.group.eq(group).and(qBoardEntity.content.contains(keyword));
             expression = qBoardEntity.group.eq(group).and(titleContains).or(contentContains);
             log.info("제목+내용 검색 : " + expression);
 
-        }else if(type.equals("nick")){
+        } else if (type.equals("nick")) {
             expression = qBoardEntity.group.eq(group).and(qMember.nick.contains(keyword));
             log.info("작성자 검색 : " + expression);
         }
@@ -110,7 +114,7 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetchResults();
-        log.info("키워드 검색 5 "+results.getResults().toString());
+        log.info("키워드 검색 5 " + results.getResults().toString());
         List<Tuple> content = results.getResults();
         log.info("키워드 검색 6 ");
         long total = results.getTotal();
@@ -118,6 +122,7 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
         // 페이지 처리용 page 객체 리턴
         return new PageImpl<>(content, pageable, total);
     }
+
     // 관리자 게시판관리 글 목록 카테고리 검색 조회 (type, cate)
     @Override
     public Page<Tuple> searchBoardsByCate(AdminBoardPageRequestDTO pageRequestDTO, Pageable pageable, String group, String cate) {
@@ -146,8 +151,9 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
         // 페이지 처리용 page 객체 리턴
         return new PageImpl<>(content, pageable, total);
     }
+
     // 판매자 상품문의 기본 조회
-    public Page<Tuple> selectBoardBySeller(AdminBoardPageRequestDTO pageRequestDTO, Pageable pageable, List<Integer> prodNos ){
+    public Page<Tuple> selectBoardBySeller(AdminBoardPageRequestDTO pageRequestDTO, Pageable pageable, List<Integer> prodNos) {
         log.info("상품문의 기본 조회 Impl 1 : " + prodNos);
 
         QueryResults<Tuple> results = jpaQueryFactory
@@ -169,8 +175,9 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
         // 페이지 처리용 page 객체 리턴
         return new PageImpl<>(content, pageable, total);
     }
+
     // 판매자 상품문의 검색 조회 (type, cate)
-    public Page<Tuple> searchBoardBySellerAndCate(AdminBoardPageRequestDTO pageRequestDTO, Pageable pageable, List<Integer> prodNos, String cate){
+    public Page<Tuple> searchBoardBySellerAndCate(AdminBoardPageRequestDTO pageRequestDTO, Pageable pageable, List<Integer> prodNos, String cate) {
         log.info("상품문의 검색 조회 Impl 1 : " + prodNos);
         log.info("상품문의 검색 조회 impl 2 : " + pageRequestDTO.getKeyword());
         log.info("상품문의 검색 조회 impl 3 cate : " + cate);
@@ -193,8 +200,9 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
         // 페이지 처리용 page 객체 리턴
         return new PageImpl<>(content, pageable, total);
     }
+
     // 판매자 상품문의 검색 조회 (type, Keyword)
-    public Page<Tuple> searchBoardsBySellerAndKeyword(AdminBoardPageRequestDTO pageRequestDTO, Pageable pageable, List<Integer> prodNos){
+    public Page<Tuple> searchBoardsBySellerAndKeyword(AdminBoardPageRequestDTO pageRequestDTO, Pageable pageable, List<Integer> prodNos) {
         log.info("키워드 검색 impl 1 : " + pageRequestDTO.getKeyword());
         String type = pageRequestDTO.getType();
         String keyword = pageRequestDTO.getKeyword();
@@ -202,21 +210,21 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
         BooleanExpression expression = null;
 
         // 검색 종류에 따른 where절 표현식 생성
-        if(type.equals("title")){
+        if (type.equals("title")) {
             expression = qBoardEntity.prodNo.in(prodNos).and(qBoardEntity.title.contains(keyword));
             log.info("제목 검색 : " + expression);
 
-        }else if(type.equals("content")){
+        } else if (type.equals("content")) {
             expression = qBoardEntity.prodNo.in(prodNos).and(qBoardEntity.content.contains(keyword));
             log.info("내용 검색 : " + expression);
 
-        }else if(type.equals("title_content")){
+        } else if (type.equals("title_content")) {
             BooleanExpression titleContains = qBoardEntity.prodNo.in(prodNos).and(qBoardEntity.title.contains(keyword));
             BooleanExpression contentContains = qBoardEntity.prodNo.in(prodNos).and(qBoardEntity.content.contains(keyword));
             expression = qBoardEntity.prodNo.in(prodNos).and(titleContains).or(contentContains);
             log.info("제목+내용 검색 : " + expression);
 
-        }else if(type.equals("nick")){
+        } else if (type.equals("nick")) {
             expression = qBoardEntity.prodNo.in(prodNos).and(qMember.nick.contains(keyword));
             log.info("작성자 검색 : " + expression);
         }
@@ -232,7 +240,7 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetchResults();
-        log.info("키워드 검색 5 "+results.getResults().toString());
+        log.info("키워드 검색 5 " + results.getResults().toString());
         List<Tuple> content = results.getResults();
         log.info("키워드 검색 6 ");
         long total = results.getTotal();
@@ -240,8 +248,20 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
         // 페이지 처리용 page 객체 리턴
         return new PageImpl<>(content, pageable, total);
     }
+
+    // 판매자 상품문의 개수 조회
     @Override
-        public int countByUidAndStatusIn (String uid, List<String> statusList){
+    public long countSellerQna(List<Integer> prodNos) {
+        return jpaQueryFactory
+                .select(qBoardEntity)
+                .from(qBoardEntity)
+                .where(qBoardEntity.prodNo.in(prodNos).and(qBoardEntity.status.contains("검토중")))
+                .fetchCount();
+
+    }
+
+    @Override
+    public int countByUidAndStatusIn(String uid, List<String> statusList) {
         return (int) jpaQueryFactory
                 .select(qBoardEntity)
                 .from(qBoardEntity)
@@ -249,11 +269,12 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
                         .and(qBoardEntity.status.in(statusList)))
                 .fetchCount();
     }
+
     @Override
-    public Page<Tuple> memberSelectBoards(String uid,CsPageRequestDTO csPageRequestDTO, Pageable pageable){
+    public Page<Tuple> memberSelectBoards(String uid, CsPageRequestDTO csPageRequestDTO, Pageable pageable) {
         log.info("마이페이지 문의내역 목록 조회 Impl 1 : " + csPageRequestDTO);
         QueryResults<Tuple> results = jpaQueryFactory
-                .select(qBoardEntity,qCateEntity.cateName)
+                .select(qBoardEntity, qCateEntity.cateName)
                 .from(qBoardEntity)
                 .where(
                         qBoardEntity.uid.eq(uid),
@@ -293,9 +314,31 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
                 .fetchResults();
         return results.getResults();
 
-
-
     }
+
+    // 상품 보기 문의, 답변 조회
+    public Page<Tuple> selectQna(int prodNo, Pageable pageable) {
+        log.info("문의 조회 impl 1 : " + prodNo);
+        QueryResults<Tuple> results = jpaQueryFactory
+                .select(qBoardEntity, qBoardTypeEntity, qComment)
+                .from(qBoardEntity)
+                .join(qBoardTypeEntity).on(qBoardEntity.typeNo.eq(qBoardTypeEntity.typeNo))
+                .leftJoin(qComment).on(qBoardEntity.bno.eq(qComment.bno))
+                .where(qBoardEntity.prodNo.eq(prodNo))
+                .orderBy(qBoardEntity.bno.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetchResults();
+
+        List<Tuple> content = results.getResults();
+        log.info("문의 조회 impl 3 : " + content);
+        long total = results.getTotal();
+        log.info("문의 조회 impl 4 : " + total);
+
+        // 페이지 처리용 page 객체 리턴
+        return new PageImpl<>(content, pageable, total);
     }
+
+}
 
 
