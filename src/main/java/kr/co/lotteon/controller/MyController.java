@@ -39,6 +39,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.HandlerMapping;
 
 
 import java.text.SimpleDateFormat;
@@ -57,6 +58,8 @@ public class MyController {
     private final MyService myService;
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
+    private final HandlerMapping resourceHandlerMapping;
+    private String company;
 
 
     // my - home (마이페이지 메인) 페이지 매핑
@@ -86,8 +89,26 @@ public class MyController {
         MemberDTO memberDTO = memberService.findByUid(uid);
         model.addAttribute("memberDTO",memberDTO);
 
-
         return "/my/home";
+    }
+
+
+    // 판매자 정보 팝업 출력
+    @PostMapping("/my/sellerInfo")
+    @ResponseBody
+    public MemberDTO getSellerInfo(@RequestBody Map<String, String> request){
+        String company = request.get("company");
+
+        log.info("판매자 : "+company);
+
+        MemberDTO seller = myService.selectSellerByCompany(company);
+
+        log.info("판매자 정보 확인 : "+seller);
+
+
+        return seller;
+
+
     }
 
     // my - info (나의 설정) 페이지 매핑

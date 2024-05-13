@@ -7,18 +7,21 @@ import kr.co.lotteon.dto.cs.CsPageRequestDTO;
 import kr.co.lotteon.dto.cs.CsPageResponseDTO;
 import kr.co.lotteon.dto.member.CouponDTO;
 
+import kr.co.lotteon.dto.member.MemberDTO;
 import kr.co.lotteon.dto.member.point.PointDTO;
 import kr.co.lotteon.dto.member.point.PointPageRequestDTO;
 import kr.co.lotteon.dto.member.point.PointPageResponseDTO;
 import kr.co.lotteon.dto.product.*;
 import kr.co.lotteon.entity.cs.BoardEntity;
 import kr.co.lotteon.entity.member.Coupon;
+import kr.co.lotteon.entity.member.Member;
 import kr.co.lotteon.entity.member.Point;
 
 import kr.co.lotteon.entity.product.Order;
 import kr.co.lotteon.entity.product.OrderItem;
 import kr.co.lotteon.entity.product.Review;
 import kr.co.lotteon.repository.cs.BoardRepository;
+import kr.co.lotteon.repository.member.MemberRepository;
 import kr.co.lotteon.repository.my.CouponRepository;
 import kr.co.lotteon.repository.my.PointRepository;
 import kr.co.lotteon.repository.product.OrderItemRepository;
@@ -47,6 +50,7 @@ public class MyService {
     private final BoardRepository boardRepository;
     private final PointRepository pointRepository;
     private final ProductRepository productRepository;
+    private final MemberRepository memberRepository;
     public List<CouponDTO> findCouponsByUid(String uid){
         log.info("내 쿠폰"+couponRepository.findCouponsByUid(uid));
         List<Coupon> result=couponRepository.findCouponsByUid(uid);
@@ -370,6 +374,16 @@ public class MyService {
                 .dtoList(dtoList)
                 .total(totalElement)
                 .build();
+    }
+
+    // 판매자 정보 출력
+    public MemberDTO selectSellerByCompany(String company){
+        Member seller = memberRepository.selectSellerByCompany(company);
+        MemberDTO sellerInfo = modelMapper.map(seller, MemberDTO.class);
+
+        log.info("판매자 정보 DTO : "+sellerInfo);
+        return sellerInfo;
+
     }
 
 
