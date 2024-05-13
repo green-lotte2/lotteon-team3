@@ -97,6 +97,7 @@
             })
 
             var prodNo;
+
             $('.info > .company a').click(function (e) {
                 e.preventDefault();
 
@@ -127,18 +128,18 @@
                 console.log('내용 ' + content.value);
                 console.log('상품번호 ' + prodNo);
 
-                const jsonData = {
+                const jsonDatas = {
                     "prodNo": prodNo,
                     "title": title.value,
                     "typeNo": type,
                     "content": content.value
                 };
-                console.log(jsonData);
+                console.log(jsonDatas);
 
                 await fetch('/lotteon/cs/prodqna', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify(jsonData)
+                    body: JSON.stringify(jsonDatas)
                 }).then(response => response.json())
                     .then(data => {
                         console.log(data);
