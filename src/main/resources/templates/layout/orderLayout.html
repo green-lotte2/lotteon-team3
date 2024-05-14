@@ -70,19 +70,19 @@
         <div>
             <a th:href="@{/my/home(uid=${#authentication.principal.member.uid})}"><img th:src="@{/my/images/my_logo.jpg}" alt="나의쇼핑정보"></a>
             <ol>
-<!--                등급 구간 및 등급별 혜택 안내페이지로 이동하도록 변경 예정-->
+                <!--                등급 구간 및 등급별 혜택 안내페이지로 이동하도록 변경 예정-->
                 <li>
                     <a th:href="@{/my/infoAccessCheck(uid=${#authentication.principal.member.uid})}">나의등급
-                    <span th:if="${#authentication.principal.member.level}==1" class="level">
+                        <span th:if="${#authentication.principal.member.level}==1" class="level">
                         <img class="levelImg" th:src="@{/my/images/ACE.png}" width="30px" height="30px"><span>[[${#authentication.principal.member.level}]]</span>
                     </span>
-                    <span th:if="${#authentication.principal.member.level}==2" class="level">
+                        <span th:if="${#authentication.principal.member.level}==2" class="level">
                         <img class="levelImg" th:src="@{/my/images/GOLD.png}" width="30px" height="30px"><span>[[${#authentication.principal.member.level}]]</span>
                     </span>
-                    <span th:if="${#authentication.principal.member.level}==3" class="level">
+                        <span th:if="${#authentication.principal.member.level}==3" class="level">
                         <img class="levelImg" th:src="@{/my/images/VIP.png}" width="30px" height="30px"><span>[[${#authentication.principal.member.level}]]</span>
                     </span>
-                    <span th:if="${#authentication.principal.member.level}==4" class="level">
+                        <span th:if="${#authentication.principal.member.level}==4" class="level">
                         <img class="levelImg" th:src="@{/my/images/MVG.png}" width="30px" height="30px"><span>[[${#authentication.principal.member.level}]]</span>
                     </span>
                     </a>
@@ -127,7 +127,7 @@
                 <strong>[[${appInfo.name}]]-[[${appInfo.version}]]</strong>
             </p>
         </div>
-  </footer>
+    </footer>
 
     <!-- 주문상세 팝업 -->
     <div id="popOrder" class="popup">
@@ -207,51 +207,51 @@
     <!-- 주문상세 팝업 끝 -->
 
     <!-- 상품평쓰기 팝업 -->
+    <th:block th:if="${pageResponseDTO.dtoList} != null">
+        <th:block th:each="order, index : ${pageResponseDTO.dtoList}">
+            <div th:id="popReview+${index.index}" class="popup" >
+                <div>
+                    <nav>
+                        <h1>상품평 작성하기</h1>
+                        <button class="btnClose">X</button>
+                    </nav>
+                    <section>
+                        <form action="#">
+                            <table border="0">
+                                <input type="hidden" th:value="${index.index}">
+                                <input type="hidden" th:value="${order.ordNo}" th:class="ordNo+${index.index}">
+                                <input type="hidden" th:value="${order.prodNo}" th:class="prodNo+${index.index}">
+                                <input type="hidden" th:value="${order.ordItemno}" th:class="ordItemno+${index.index}">
+                                <tr>
+                                    <th>상품명</th>
+                                    <td class="productName">[[${order.prodName}]]</td>
+                                </tr>
+                                <tr>
+                                    <th>만족도</th>
+                                    <td class="rating">
+                                        <div class="my-rating" th:id="rating+${index.index}"></div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>내용</th>
+                                    <td class="review">
+                                        <textarea th:class="content+${index.index}" name="review" placeholder="내용입력"></textarea>
+                                    </td>
+                                </tr>
+                            </table>
+                            <p>
+                                ※ 상품평을 작성하시면 구매확정 포인트와 더불어 추가 포인트를 지급합니다.
+                            </p>
 
-    <th:block>
-        <div class="popup" >
-            <div>
-                <nav>
-                    <h1>상품평 작성하기</h1>
-                    <button class="btnClose">X</button>
-                </nav>
-                <section>
-                    <form action="#">
-                        <table border="0">
-                            <input type="hidden" >
-                            <input type="hidden">
-                            <input type="hidden">
-                            <input type="hidden">
-                            <tr>
-                                <th>상품명</th>
-                                <td class="productName">[[${order.prodName}]]</td>
-                            </tr>
-                            <tr>
-                                <th>만족도</th>
-                                <td class="rating">
-                                    <div class="my-rating"></div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>내용</th>
-                                <td class="review">
-                                    <textarea  name="review" placeholder="내용입력"></textarea>
-                                </td>
-                            </tr>
-                        </table>
-                        <p>
-                            ※ 상품평을 작성하시면 구매확정 포인트와 더불어 추가 포인트를 지급합니다.
-                        </p>
-
-                        <div>
-                            <input type="submit" class="btnPositive" value="작성완료"/>
-                            <button class="btnNegative btnCancel">취소</button>
-                        </div>
-                    </form>
-                </section>
+                            <div>
+                                <input type="submit" th:id="btnSubmit+${index.index}" class="btnPositive" value="작성완료"/>
+                                <button class="btnNegative btnCancel">취소</button>
+                            </div>
+                        </form>
+                    </section>
+                </div>
             </div>
-        </div>
-    </th:block>
+        </th:block>
 
 
 

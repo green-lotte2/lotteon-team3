@@ -45,6 +45,7 @@ public class ProductController {
     private final OptionService optionService;
     private final MemberService memberService;
     private final WishService wishService;
+    private final ReviewService reviewService;
     private final OptionRepository optionRepository;
 
     // cart 페이지 매핑
@@ -319,15 +320,20 @@ public class ProductController {
         model.addAttribute("opNames", opNames);
 
         // 리뷰 가져오기
-        ProductReviewPageResponseDTO productReviewPageResponseDTO = productService.selectProductReview(productDTO.getProdNo(), productReviewPageRequestDTO);
+        ProductReviewPageResponseDTO pageResponseDTO = reviewService.selectProductReview(productDTO.getProdNo(), productReviewPageRequestDTO);
         log.info("선택한 상품 : "+productDTO.getProdNo());
-        log.info("테스트 : "+productService.selectProductReview(2,productReviewPageRequestDTO));
-        log.info("선택한 상품의 리뷰들 "+productReviewPageResponseDTO);
-        model.addAttribute("productReviewPageResponseDTO",productReviewPageResponseDTO);
+        log.info("선택한 상품의 리뷰들 "+pageResponseDTO);
+        model.addAttribute("pageResponseDTO",pageResponseDTO);
 
         // Qna 목록 조회
-        ProductQnaPageResponseDTO qnaPageDto = productService.selectQna(productDTO.getProdNo(), productReviewPageRequestDTO);
+        ProductQnaPageResponseDTO qnaPageDto = productService.selectQna(productDTO.getProdNo());
         model.addAttribute("qnaPageDto", qnaPageDto);
+
+        // review Avg 가져오기
+        double result = reviewService.selectReviewAvg(productDTO.getProdNo());
+        double avg = Math.round(result * 10) / 10.0;
+        model.addAttribute("avg", avg);
+        log.info("avg : "+avg);
 
         // 시큐리티 컨텍스트에서 인증된 사용자 정보 가져오기
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

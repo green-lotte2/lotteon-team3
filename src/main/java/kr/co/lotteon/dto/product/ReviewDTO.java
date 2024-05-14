@@ -4,6 +4,7 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -21,9 +22,13 @@ public class ReviewDTO {
     private int rating;
     private int cate1;
     private int cate2;
-    private String prodName;
     private LocalDateTime rdate;
     private String content;
     private String regip;
     private Integer thumb;
+
+    // join을 위한
+    private String nick;
+    private String prodName;
+    private List<OptionDTO> optionList;
 }

@@ -3,6 +3,7 @@ package kr.co.lotteon.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.querydsl.core.Tuple;
+import jakarta.servlet.http.HttpServletRequest;
 import kr.co.lotteon.dto.admin.BannerDTO;
 import kr.co.lotteon.dto.cs.BoardDTO;
 import kr.co.lotteon.dto.cs.CsPageRequestDTO;
@@ -23,11 +24,13 @@ import kr.co.lotteon.security.MyUserDetails;
 import kr.co.lotteon.service.admin.BannerService;
 import kr.co.lotteon.service.member.MemberService;
 import kr.co.lotteon.service.my.MyService;
+import kr.co.lotteon.service.product.ReviewService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -39,6 +42,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.HandlerMapping;
 
 
 import java.text.SimpleDateFormat;
@@ -57,6 +61,7 @@ public class MyController {
     private final MyService myService;
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
+    private final ReviewService reviewService;
 
 
     // my - home (마이페이지 메인) 페이지 매핑
@@ -86,8 +91,54 @@ public class MyController {
         MemberDTO memberDTO = memberService.findByUid(uid);
         model.addAttribute("memberDTO",memberDTO);
 
-
         return "/my/home";
+    }
+
+
+    // 판매자 정보 팝업 출력
+    @PostMapping("/my/sellerInfo")
+    @ResponseBody
+    public MemberDTO getSellerInfo(@RequestBody Map<String, String> request){
+        String company = request.get("company");
+
+        log.info("판매자 : "+company);
+
+        MemberDTO seller = myService.selectSellerByCompany(company);
+
+        log.info("판매자 정보 확인 : "+seller);
+
+        return seller;
+
+    }
+    
+    // 수취확인 전 리뷰 작성 확인
+    @ResponseBody
+    @PostMapping("/my/reviewCheck")
+    public String reviewCheck(@RequestBody Map<String, String> request ) {
+        log.info("리뷰확인");
+        String uid = request.get("uid");
+        log.info("입력된 아이디 : "+uid);
+
+        String strOrdNo = request.get("ordNo");
+        int ordNo = Integer.parseInt(strOrdNo);
+        log.info("입력된 주문번호 : "+ordNo);
+
+        String strProdNo = request.get("prodNo");
+        int prodNo=Integer.parseInt(strProdNo);
+        log.info("입력된 제품번호 : "+prodNo);
+        
+        //수정
+        int count = reviewService.selectReviewCountByUid(uid,ordNo,prodNo);
+        
+        log.info("일치하는 행의 수 : "+count);
+
+        // 사용자가 쓴 리뷰가 있는경우
+        if(count>0){
+            return "success";
+        }else{
+            return "fail";
+        }
+
     }
 
     // my - info (나의 설정) 페이지 매핑
@@ -312,7 +363,7 @@ public class MyController {
         }
     }
 
-    // my - order (나의 전체 주문내역) 페이지 매핑
+    // my - order 전체주문내역
     @GetMapping("/my/order")
     public String order(@RequestParam String uid, Model model, OrderItemPageRequestDTO orderItemPageRequestDTO){
 
@@ -323,14 +374,14 @@ public class MyController {
 
         model.addAttribute("pageResponseDTO",pageResponseDTO);
 
+        log.info("주문 아이템 내역 : " + pageResponseDTO);
         return "/my/order";
     }
 
-    // my - point (나의 포인트) 페이지 매핑
+    // my - order 전체주문내역(날짜별 조회)
     @GetMapping("/my/orderList")
     @ResponseBody
     public ResponseEntity<?> orderList(OrderItemPageRequestDTO orderItemPageRequestDTO, @AuthenticationPrincipal Object principal) {
-        log.info("pointPageRequestDTO................ : " + orderItemPageRequestDTO);
 
         Member member = ((MyUserDetails) principal).getMember();
         String uid = member.getUid();
@@ -347,6 +398,7 @@ public class MyController {
         return ResponseEntity.ok().body(pageResponseDTO);
     }
 
+    // my - point 전체포인트내역
     @GetMapping("/my/point")
     public String point(@RequestParam String uid, Model model, PointPageRequestDTO pointPageRequestDTO) {
         PointPageResponseDTO pointPageResponseDTO = myService.getPointListByUid(uid, pointPageRequestDTO);
@@ -446,4 +498,18 @@ public class MyController {
         return "/my/review";
     }
 
+    @ResponseBody
+    @PostMapping("/my/review/write")
+    public ResponseEntity<?> reviewWrite(@RequestBody ReviewDTO reviewDTO, HttpServletRequest request, @AuthenticationPrincipal Object principal){
+
+        String regip = request.getRemoteAddr();
+        reviewDTO.setRegip(regip);
+        Member member = ((MyUserDetails) principal).getMember();
+        String uid = member.getUid();
+
+        reviewDTO.setUid(uid);
+        myService.writeReview(reviewDTO);
+
+        return ResponseEntity.status(HttpStatus.OK).body(reviewDTO);
+    }
 }
