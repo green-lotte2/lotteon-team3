@@ -78,14 +78,60 @@ $(function(){
     });
 
     // 수취확인 팝업 띄우기
-    $('.latest .confirm > .receive').click(async function (e) {
-        e.preventDefault();
+    const accordion = document.getElementsByClassName('accordion-item');
+    for(let i=0; i< accordion.length; i++){
+        const receiveId = '#receive'+i;
+        const popReceiveId = '#popReceive'+i;
+        const prodNoId = '.prodNo'+i;
+        const ordNoId = '.ordNo'+i;
+        const uidId = '.uid'+i;
+        const reviewCheck='#reviewCheck'+i;
 
-        // 리뷰안썼으면 일로 이동
-        $('#popReceive').addClass('on');
-    })
 
+        $(reviewCheck).click(async function (e) {
 
+            e.preventDefault();
+
+            const prodNo = document.querySelector(prodNoId).value;
+            console.log('제품번호' + prodNo);
+
+            const ordNo = document.querySelector(ordNoId).value;
+            console.log('주문번호' + ordNo);
+
+            const uid = document.querySelector(uidId).value;
+            console.log('고객아이디' + uid);
+
+            const jsonData = {
+                "prodNo": prodNo,
+                "ordNo": ordNo,
+                "uid": uid
+            }
+            console.log(jsonData);
+
+            await fetch('/lotteon/my/reviewCheck', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(jsonData)
+            }).then(response => response.text())
+                .then(data => {
+                    if (data == 'success') {
+                        alert('구매확정이 완료되었습니다.')
+                        location.href = `/lotteon/my/home?uid=${uid}`;
+
+                    } else {
+                        alert('리뷰작성해주세요');
+                        $('#popReview').addClass('on');
+                    }
+                })
+        })
+
+        $('.latest .confirm >' +receiveId).click(async function (e) {
+            e.preventDefault();
+
+            $(popReceiveId).addClass('on');
+        })
+
+    }
 
         // 상품평 작성 팝업 띄우기
         $('.latest .confirm > .review').click(function (e) {

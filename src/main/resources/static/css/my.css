@@ -286,6 +286,7 @@ footer p > strong {
     height: auto;
     border: 1px solid #e70000;
     box-sizing: border-box;
+    padding-left: 0;
 }
 
 #my > div > ul > li {
