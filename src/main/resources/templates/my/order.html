@@ -2,8 +2,6 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{/layout/myLayout}">
 <main id="myLayout" layout:fragment="content">
-    <script th:src="@{/js/myInfo.js}"></script>
-    <script th:src="@{/js/order.js}" th:inline="javascript"></script>
 
     <div id="my">
         <div class="ordered">
@@ -56,7 +54,7 @@
                             <th>상태</th>
                             <th>확인/신청</th>
                         </tr>
-                        <tr th:each="order : ${pageResponseDTO.dtoList}">
+                        <tr th:each="order,index : ${pageResponseDTO.dtoList}">
                             <td class="date">[[${#temporals.format(order.ordDate, 'yyyy-MM-dd')}]]</td>
                             <td class="info">
                                 <a th:href="@{#}" class="thumb"><img th:src="@{'/prodImg/'+${order.thumb3}}" alt="" style="width: 80px; height: 80px;"></a>
@@ -70,7 +68,7 @@
                             <td class="status">[[${order.ordStatus}]]</td>
                             <td class="confirm">
                                 <a th:href="@{#}" class="receive">수취확인</a>
-                                <a th:href="@{#}" class="review">상품평</a>
+                                <a th:href="@{#}" class="review" th:id="review+${index.index}">상품평</a>
                                 <a th:href="@{#}" class="refund">반품신청</a>
                                 <a th:href="@{#}" class="exchange">교환신청</a>
                             </td>
@@ -99,4 +97,6 @@
         </div>
     </div>
 </main>
+
+
 
