@@ -1,5 +1,11 @@
 /* member 공통 */
-
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap');
+/* 초기화 */
+* {
+  margin: 0;
+  padding: 0;
+  font-family: "Noto Sans KR", sans-serif;
+}
 /* 소셜로그인 */
 .login> .kakao> img{
   width: 40px;
@@ -160,7 +166,7 @@ header {
 }
 #member > .login > form > span a {
   display: inline-block;
-  height: 13px;
+  height: 19px;
   margin: 0;
   padding: 0 6px;
   color: #676767;

@@ -60,7 +60,8 @@
                               <div class="card-body">
                                   <a th:href="@{/product/view(prodNo=${product.prodNo},cate1=${product.cate1},cate2=${product.cate2})}" class="thumb">
                                       <h5 class="seller" th:text=" '[' + ${product.company}+ ']'"></h5> <h6></h6>
-                                    <p class="card-text">[[${product.descript}]]</p>
+                                    <p class="card-text" th:if="${product.descript != ''}">[[${product.descript}]]</p>
+                                    <p class="card-text" th:if="${product.descript == ''}">&emsp;</p>
                                     <p>[[${product.price}]]원</p>
                                     <ul>
                                       <li><ins class="dis-price">[[${product.price}]]</ins></li>

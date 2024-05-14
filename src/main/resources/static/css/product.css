@@ -1,10 +1,30 @@
 /* 내가 추가한 CSS */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap');
+/* 초기화 */
+* {
+    margin: 0;
+    padding: 0;
+    font-size: 14px;
+    font-family: "Noto Sans KR", sans-serif;
+}
+
+.row {
+    --bs-gutter-x: -1.5rem;
+}
+
 .card {
+    width: 23% !important;
+    height: 418px; !important;
     margin-bottom: 20px;
     transition : transform 0.3s;
 }
+.card .card-body .card-text{
+    height: 21px;
+}
 .card:hover{
     transform : scale(1.02);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* 그림자 추가 */
+    transition: box-shadow 0.3s ease; /* 그림자 변경을 부드럽게 전환 */
 }
 .itemController {
     display: -webkit-box;
@@ -1353,7 +1373,7 @@
   right: 0px;
   top:0px;
   width: 280px;
-  height: 380px;
+  height: 390px;
   padding: 20px;
   margin-top: 12px;
   background: #fff;
