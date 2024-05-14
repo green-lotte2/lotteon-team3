@@ -100,7 +100,28 @@ function updatePagination(data) {
                                 <a href="#" onclick="tableReload(${data.end + 1}); return false;">다음</a>
                             </span>`;
     }
+
+    // 조회된 데이터가 없는 경우 메시지를 추가하고, 데이터가 있는 경우 메시지를 제거합니다.
+    const pointTable = document.querySelector('.pointList');
+    const tableHeader = `
+                        <tr>
+                            <th>적립날짜</th>
+                            <th>구분</th>
+                            <th>주문번호</th>
+                            <th>적립금액</th>
+                            <th>비고</th>
+                            <th>유효기간</th>
+                        </tr>`;
+
+    if (data.dtoList.length === 0) {
+        pointTable.innerHTML = `<tr>
+                                    <td colspan="6" style="text-align: center;">조회된 포인트 내역이 없습니다.</td>
+                                </tr>`;
+    } else {
+        pointTable.innerHTML = tableHeader; // 조회된 데이터가 있을 경우 테이블 헤더를 추가합니다.
+    }
 }
+
 
 
 // 리스트 업데이트 함수
@@ -110,15 +131,45 @@ function updatePointList(data) {
     while (pointList.rows.length > 1) {
         pointList.deleteRow(1);
     }
+    const currentDate = new Date();
+
     data.dtoList.forEach(dto => {
+// 날짜 문자열을 ISO 8601 형식으로 변환
+        let dateString = `${dto.pointDate[0]}-${dto.pointDate[1].toString().padStart(2, '0')}-${dto.pointDate[2].toString().padStart(2, '0')}T${dto.pointDate[3]}:${dto.pointDate[4]}:${dto.pointDate[5]}`;
+
+        console.log("계산전 만료 날짜"+dateString);
+
+// 새로운 Date 객체 생성
+        let dateP = new Date(dateString);
+
+        console.log("계산전 만료 날짜"+dateP);
+        console.log("현재날짜"+currentDate);
+
+
+        const timeDiff = currentDate.getTime() - dateP.getTime();
+        const diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+        console.log('현재날짜와 소멸날짜의 차이:', diffDays);
+
         // 새로운 <tr> 요소를 생성하여 테이블에 추가
         let newRow = pointList.insertRow(-1);
-        newRow.insertCell(0).textContent = dto.currentDate.substring(0, 10);
-        newRow.insertCell(1).textContent = dto.usecase;
+        newRow.insertCell(0).textContent = `${dto.currentDate[0]}-${dto.currentDate[1].toString().padStart(2, '0')}-${dto.currentDate[2].toString().padStart(2, '0')}`;
+
+
+        if(diffDays>1||diffDays===0){
+            newRow.insertCell(1).textContent = '소멸';
+            newRow.cells[1].style.color = '#999'
+        }else if(diffDays<0){
+            newRow.insertCell(1).textContent = '적립';
+        }else if(diffDays===1){
+            newRow.insertCell(1).textContent = '소멸예정';
+            newRow.cells[1].style.color = '#ef2a23'
+        }
+
         newRow.insertCell(2).textContent = dto.ordNo;
         newRow.insertCell(3).textContent = dto.point;
-        newRow.insertCell(4).textContent = dto.descript;
-        newRow.insertCell(5).textContent = dto.pointDate.substring(0, 10);
+        newRow.insertCell(4).textContent = dto.usecase;
+        newRow.insertCell(5).textContent = `${dto.pointDate[0]}-${dto.pointDate[1].toString().padStart(2, '0')}-${dto.pointDate[2].toString().padStart(2, '0')}`;
     });
 }
 
