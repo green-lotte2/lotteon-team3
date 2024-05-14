@@ -107,9 +107,7 @@ public class MyController {
 
         log.info("판매자 정보 확인 : "+seller);
 
-
         return seller;
-
 
     }
     
@@ -120,13 +118,21 @@ public class MyController {
         log.info("리뷰확인");
         String uid = request.get("uid");
         log.info("입력된 아이디 : "+uid);
+
+        String strOrdNo = request.get("ordNo");
+        int ordNo = Integer.parseInt(strOrdNo);
+        log.info("입력된 주문번호 : "+ordNo);
+
+        String strProdNo = request.get("prodNo");
+        int prodNo=Integer.parseInt(strProdNo);
+        log.info("입력된 제품번호 : "+prodNo);
         
         //수정
-        int count = memberService.countByUidAndEmail(uid,request.get("email"));
+        int count = reviewService.selectReviewCountByUid(uid,ordNo,prodNo);
         
         log.info("일치하는 행의 수 : "+count);
 
-        // 이메일 일치인 경우 success
+        // 사용자가 쓴 리뷰가 있는경우
         if(count>0){
             return "success";
         }else{
