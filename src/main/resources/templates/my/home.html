@@ -152,45 +152,6 @@
 
 
             })
-
-
-
-            // const reviewCheck=document.getElementById('reviewCheck');
-            // reviewCheck.addEventListener('click',async function (e) {
-            //
-            //     e.preventDefault();
-            //
-            //     const uid = document.getElementById('uid');
-            //     console.log(uid.value);
-            //     console.log(prodNo);
-
-                //  추가로 데이터에 prodNo와 ordNo 필요
-                // const jsonData = {
-                //     "uid": uid.value
-                // };
-                // console.log(jsonData)
-
-                // await fetch('/lotteon/my/reviewCheck', {
-                //     method: 'POST',
-                //     headers: {'Content-Type': 'application/json'},
-                //     body: JSON.stringify(jsonData)
-                // })
-                //     .then(response => response.json())
-                //     .then(data => {
-                //         console.log(data);
-                //
-                //
-                //     });
-                // 리뷰없는경우
-
-
-
-            // })
-
-
-
-
-
         }
     </script>
         <div id="my">
@@ -225,10 +186,10 @@
                                 <h2 class="accordion-header">
                                     <button th:id="'accordionButton'+${iterStat.index}" class="accordion-button" type="button" data-bs-toggle="collapse"
                                             th:data-iter="${iterStat.index}" th:data-bs-target="'panelsStayOpen-collapse'+${iterStat.index}" aria-expanded="true" th:aria-controls="'panelsStayOpen-collapse'+${iterStat.index}">
-                                        <!--
+
                                         <p th:text="${#temporals.format(linkedMap.value.get(0).ordDate, 'yyyy-MM-dd')}"></p>
-                                        -->
-                                        <p class="ordNo">주문번호<span th:text="${linkedMap.key}"></span></p>
+
+                                        <p class="ordNo">주문번호<a th:id="ordNo+${iterStat.index}" th:href="@{#}" th:text="${linkedMap.key}"></a></p>
                                     </button>
                                 </h2>
 
@@ -465,9 +426,9 @@
     <!-- 수취확인 팝업 -->
     <th:block th:each="linkedMap,index:${orders}">
     <div th:id="popReceive+${index.index}" class="popup" th:each="orderList : ${linkedMap.value}">
-        <input type="text" th:value="${orderList.prodNo}" th:class="prodNo+${index.index}">
-        <input type="text" th:value="${orderList.ordNo}" th:class="ordNo+${index.index}">
-        <input type="text" th:value="${orderList.uid}" th:class="uid+${index.index}">
+        <input type="hidden" th:value="${orderList.prodNo}" th:class="prodNo+${index.index}">
+        <input type="hidden" th:value="${orderList.ordNo}" th:class="ordNo+${index.index}">
+        <input type="hidden" th:value="${orderList.uid}" th:class="uid+${index.index}">
         <div>
             <nav>
                 <h1>수취확인</h1>
@@ -529,4 +490,38 @@
         </div>
     </div>
     <!-- 상품평쓰기 팝업 끝 -->
+    <!-- 주문상세 팝업 -->
+    <div th:id="popOrder+${iterStat.index}" class="popup" th:each="linkedMap, iterStat : ${orders}">
+        <th:block th:each="orderList : ${linkedMap.value}">
+        <input type="text" th:value="${orderList.ordNo}" th:class="ordNos+${iterStat.index}">
+        <input type="text" th:value="${orderList.uid}" th:class="uid+${iterStat.index}">
+        <div>
+            <nav>
+                <h1>주문상세</h1>
+                <button class="btnClose">X</button>
+            </nav>
+            <section>
+                <article class="delivery">
+                    <h3>배송정보</h3>
+                    <table border="0">
+                        <tr>
+                            <th>주문자</th>
+                            <td class="name">홍길동</td>
+                        </tr>
+                        <tr>
+                            <th>연락처</th>
+                            <td class="hp">010-1234-1001</td>
+                        </tr>
+                        <tr>
+                            <th>배송지</th>
+                            <td class="address">[210**] 부산광역시 부산진구 대연동 121 10층 1004호</td>
+                        </tr>
+                    </table>
+                </article>
+            </section>
+        </div>
+        </th:block>
+    </div>
+    <!-- 주문상세 팝업 끝 -->
+
 </main>

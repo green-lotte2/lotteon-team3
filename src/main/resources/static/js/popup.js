@@ -71,15 +71,39 @@ $(function(){
         $('#popQuestion').addClass('on');
     });
 
-    // 주문상세 팝업 띄우기
-    $('.latest .info .orderNo > a').click(function(e){
-        e.preventDefault();
-        $('#popOrder').addClass('on');
-    });
+
+    const accordion = document.getElementsByClassName('accordion-item');
+    for(let i=0; i< accordion.length; i++) {
+        const ordTag = '#ordNo' + i;
+        const popOrderId = '#popOrder' + i;
+        const uidId = '.uid' + i;
+        const ordNoId = '.ordNos' + i;
+
+
+        console.log(ordTag)
+        console.log(popOrderId)
+        console.log(uidId)
+        console.log(ordNoId)
+
+        // 주문상세 팝업 띄우기
+        $('.latest .accordion-item .accordion-button .ordNo a').click(function (e) {
+            e.preventDefault();
+            $('#popOrder').addClass('on');
+
+
+        });
+    }
+
+
+
+
+
+
+
 
     // 수취확인 팝업 띄우기
-    const accordion = document.getElementsByClassName('accordion-item');
-    for(let i=0; i< accordion.length; i++){
+    const accordions = document.getElementsByClassName('accordion-item');
+    for(let i=0; i< accordions.length; i++){
         const receiveId = '#receive'+i;
         const popReceiveId = '#popReceive'+i;
         const prodNoId = '.prodNo'+i;
