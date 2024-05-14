@@ -1,8 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap');
 /* 내가 넣은 css */
-
-.hit:hover{
-  transfrom : scale(1.02);
-}
 .recommend{
 
 }
@@ -12,11 +9,12 @@
 .discount{
 
 }
-/* 초기화 */
+
 * {
   margin: 0;
   padding: 0;
-  font: normal 12px "Noto Sans CJK KR";
+  font-size: 14px;
+  font-family: "Noto Sans KR", sans-serif;
 }
 
 ul,
@@ -140,10 +138,11 @@ header > .menu > div {
 
 header > .menu > div > ul {
   display: inline-block;
-  margin-top: 16px;
+  margin-top: 12px;
 }
 header > .menu > div > ul:nth-child(1) {
   float: left;
+
 }
 header > .menu > div > ul:nth-child(2) {
   float: right;
@@ -454,9 +453,7 @@ main > section > section > article p {
   white-space: nowrap;
   overflow: hidden;
 }
-main > section > section > article > a:hover > p {
-  text-decoration: underline;
-}
+
 
 main > section > section > article del::after {
   content: "원";
@@ -503,12 +500,19 @@ main > section > .slider > .bx-wrapper {
   background: #fff;
 }
 
+.prodList:hover{
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* 그림자 추가 */
+  transition: box-shadow 0.3s ease; /* 그림자 변경을 부드럽게 전환 */
+}
 main > section > .hit {
   margin-bottom: 20px;
   transition : transform 0.3s;
 }
 main > section > .hit :hover {
   transform : scale(1.02);
+}
+main > section > .hit >  h3:hover {
+  transform : none;
 }
 main > section > .recommend {
   margin-bottom: 20px;
@@ -517,6 +521,9 @@ main > section > .recommend {
 main > section > .recommend :hover{
   transform : scale(1.02);
 }
+main > section > .recommend >  h3:hover {
+  transform : none;
+}
 main > section > .new {
   margin-bottom: 20px;
   transition : transform 0.3s;
@@ -524,12 +531,18 @@ main > section > .new {
 main > section > .new :hover{
   transform : scale(1.02);
 }
+main > section > .new >  h3:hover {
+  transform : none;
+}
 main > section > .discount {
   margin-bottom: 20px;
   transition : transform 0.3s;
 }
 main > section > .discount :hover{
   transform : scale(1.02);
+}
+main > section > .discount >  h3:hover {
+  transform : none;
 }
 
 /* 푸터영역 */
