@@ -159,7 +159,7 @@ $(function(){
 
         // 리뷰안썼으면 일로 이동
         $('#popReceive').addClass('on');
-    })
+
     // 상품평 작성 레이팅바 기능
     $(".my-rating").starRating({
         starSize: 5,
