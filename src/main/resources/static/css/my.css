@@ -1726,3 +1726,26 @@ footer p > strong {
     margin-left: 32px;
 }
 
+.accordion-header p {
+    margin-top: 10px;
+    margin-left: 30px;
+    margin-bottom: 1rem;
+    font-size: 20px;
+    color: #EF2A23;
+    font-weight: bold;
+}
+
+.accordion-button > .ordNo a  {
+    margin-top: 20px;
+    margin-left: 30px;
+    margin-bottom: 1rem;
+    font-size: 20px;
+    color: #EF2A23;
+    font-weight: bold;
+}
+.accordion-button::after {
+    flex-shrink: 1;
+    margin-left: 411px;
+    content: "";
+
+}
