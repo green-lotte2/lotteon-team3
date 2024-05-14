@@ -68,6 +68,18 @@ public class AdminCompanyService {
                 .total(total)
                 .build();
     }
+    // 관리자 회사소개 글 수정
+    @Transactional
+    public void modifyArticle(ArticleDTO articleDTO){
+
+        Article article = articleRepository.findById(articleDTO.getAno()).get();
+
+        article.setContent(articleDTO.getContent());
+        article.setCate2(articleDTO.getCate2());
+
+        articleRepository.save(article);
+
+    }
     // 관리자 회사 소개 글쓰기
     public void insertArticle(MultipartFile thumb336, ArticleDTO articleDTO){
         log.info("회사 소개 글쓰기 Serv 1 : " + thumb336);

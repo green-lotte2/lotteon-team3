@@ -12,13 +12,13 @@
       }
     }
     // 폼 전송
-    function btnWrite(button){
+    function btnWrite(){
       const writeForm = document.getElementById('writeForm');
       writeForm.submit();
     }
     // 취소
     function btnCancel(button){
-      const cate1 = [[${cate1}]];
+      const cate1 = button.dataset.cate;
       location.href = `/lotteon/admin/company/`+cate1;
     }
     document.addEventListener("DOMContentLoaded", function() {
@@ -40,6 +40,7 @@
       <article>
         <form id="writeForm" th:action="@{/admin/company/modify}" method="POST" enctype="multipart/form-data">
           <input type="hidden" name="cate1" readonly th:value="${article.cate1}" />
+          <input type="hidden" name="ano" readonly th:value="${article.ano}" />
           <input th:if="${article.cate1 == 'recruit'}" type="hidden" name="cate2" value="recruit" />
           <table>
             <tr th:if="${article.cate1 == 'story'}" >
@@ -71,24 +72,10 @@
                 <textarea name="content" placeholder="내용을 입력하세요." th:if="${article.cate1 == 'recruit'}"  th:text="${article.content}"></textarea>
               </td>
             </tr>
-            <tr th:if="${article.cate1 == 'story'}">
-              <td>파일</td>
-              <td>
-                <span>크기 336 x 230</span>
-                <input style="margin-top: 12px;" type="file" name="thumb336" onchange="handleFileSelect(this)" accept="image/*"/>
-              </td>
-            </tr>
-            <tr th:if="${article.cate1 == 'recruit'}" style="visibility: hidden">
-              <td>파일</td>
-              <td>
-                <span>크기 336 x 230</span>
-                <input style="margin-top: 12px;" type="file" name="thumb336" onchange="handleFileSelect(this)" accept="image/*"/>
-              </td>
-            </tr>
           </table>
           <div class="btnDiv">
-            <button type="button" class="btn btn-secondary" onclick="btnWrite(this)">글쓰기</button>
-            <button type="button" class="btn btn-secondary" onclick="btnCancel(this)">취소</button>
+            <button type="button" class="btn btn-secondary" onclick="btnWrite(this)">수정</button>
+            <button type="button" class="btn btn-secondary" onclick="btnCancel(this)" th:data-cate="${article.cate1}">취소</button>
           </div>
         </form>
       </article>

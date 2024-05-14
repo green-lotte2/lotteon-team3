@@ -456,6 +456,12 @@ public class AdminController {
         model.addAttribute("article", article);
         return "/admin/company/modify";
     }
+    // 관리자 회사소개 글 수정 매핑
+    @PostMapping("/admin/company/modify")
+    public String companyWrite(ArticleDTO articleDTO){
+        adminCompanyService.modifyArticle(articleDTO);
+        return "redirect:/admin/company/" + articleDTO.getCate1();
+    }
 
     // 관리자 회사소개 삭제
     @GetMapping("/admin/company/delete/{ano}")
