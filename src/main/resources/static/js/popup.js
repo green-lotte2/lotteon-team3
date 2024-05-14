@@ -179,6 +179,7 @@ $(function(){
         }
     });
 
+    // 리뷰 작성
     const info = document.getElementsByClassName('info');
     for (let i = 0; i < info.length; i++) {
         // 상품평 작성 팝업 띄우기
