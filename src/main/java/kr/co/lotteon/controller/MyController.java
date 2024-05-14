@@ -3,6 +3,7 @@ package kr.co.lotteon.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.querydsl.core.Tuple;
+import jakarta.servlet.http.HttpServletRequest;
 import kr.co.lotteon.dto.admin.BannerDTO;
 import kr.co.lotteon.dto.cs.BoardDTO;
 import kr.co.lotteon.dto.cs.CsPageRequestDTO;
@@ -29,6 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -366,6 +368,7 @@ public class MyController {
 
         model.addAttribute("pageResponseDTO",pageResponseDTO);
 
+        log.info("주문 아이템 내역 : " + pageResponseDTO);
         return "/my/order";
     }
 
@@ -489,4 +492,18 @@ public class MyController {
         return "/my/review";
     }
 
+    @ResponseBody
+    @PostMapping("/my/review/write")
+    public ResponseEntity<?> reviewWrite(@RequestBody ReviewDTO reviewDTO, HttpServletRequest request, @AuthenticationPrincipal Object principal){
+
+        String regip = request.getRemoteAddr();
+        reviewDTO.setRegip(regip);
+        Member member = ((MyUserDetails) principal).getMember();
+        String uid = member.getUid();
+
+        reviewDTO.setUid(uid);
+        myService.writeReview(reviewDTO);
+
+        return ResponseEntity.status(HttpStatus.OK).body(reviewDTO);
+    }
 }

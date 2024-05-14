@@ -26,6 +26,7 @@ import kr.co.lotteon.repository.my.CouponRepository;
 import kr.co.lotteon.repository.my.PointRepository;
 import kr.co.lotteon.repository.product.OrderItemRepository;
 import kr.co.lotteon.repository.product.ProductRepository;
+import kr.co.lotteon.repository.product.ReviewRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -51,6 +52,8 @@ public class MyService {
     private final PointRepository pointRepository;
     private final ProductRepository productRepository;
     private final MemberRepository memberRepository;
+    private final ReviewRepository reviewRepository;
+
     public List<CouponDTO> findCouponsByUid(String uid){
         log.info("내 쿠폰"+couponRepository.findCouponsByUid(uid));
         List<Coupon> result=couponRepository.findCouponsByUid(uid);
@@ -410,7 +413,10 @@ public class MyService {
     }
 
 
-
+    public void writeReview(ReviewDTO reviewDTO){
+        Review review = modelMapper.map(reviewDTO, Review.class);
+        reviewRepository.save(review);
+    }
 
 
 
