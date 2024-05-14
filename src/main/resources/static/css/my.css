@@ -1667,3 +1667,62 @@ footer p > strong {
     margin: 10px auto;
     cursor: pointer;
 }
+
+.accordion{
+    display: inline-block;
+    width: 820px;
+    margin-bottom: 20px;
+}
+
+.accordion-button{
+    height: 66px;
+    background-color: transparent;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -.5px;
+    color: #333;
+    vertical-align: middle;
+    padding-left: 1px;
+}
+
+
+
+.accordion-button > .ordNo *  {
+    width: 18px;
+    height: 18px;
+    margin: 24px 9px 22px 10px;
+    vertical-align: top;
+}
+
+.accordion-button:not(.collapsed) {
+    background-color: transparent;
+}
+.accordion-collapse {
+    display: flex;
+    align-items: center;
+    line-height: 1;
+    font-family: NotoSansKR, Malgun Gothic, arial, sans-serif;
+    height: 143px;
+    position: relative;
+    letter-spacing: -.02em;
+}
+.accordion-collapse >.info{
+    margin-left: 51px;
+    position: relative;
+}
+.accordion-collapse > .status{
+    margin-left: 120px;
+    position: relative;
+}
+.accordion-collapse > .confirm{
+    margin-left: 77px;
+    position: relative;
+}
+
+
+.accordion-collapse  img {
+    width: 80px;
+    height: auto;
+    margin-left: 32px;
+}
+
