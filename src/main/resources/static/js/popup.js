@@ -1,6 +1,5 @@
 $(function(){
 
-    
     // 판매자 정보 출력
     async function getSellerInfo(companyTag) {
         const companyName = document.getElementsByClassName('companyName')[0];
@@ -122,6 +121,7 @@ $(function(){
             const ordNo = document.querySelector(ordNoId).value;
             console.log('주문번호' + ordNo);
 
+
             const uid = document.querySelector(uidId).value;
             console.log('고객아이디' + uid);
 
@@ -157,11 +157,90 @@ $(function(){
 
     }
 
+        // 리뷰안썼으면 일로 이동
+        $('#popReceive').addClass('on');
+    })
+    // 상품평 작성 레이팅바 기능
+    $(".my-rating").starRating({
+        starSize: 5,
+        useFullStars: true,
+        strokeWidth: 0,
+        useGradient: false,
+        minRating: 1,
+        ratedColors: ['#ffa400', '#ffa400', '#ffa400', '#ffa400', '#ffa400'],
+        callback: function (currentRating, $el) {
+            alert('별점 ' + currentRating);
+            console.log('DOM element ', $el);
+
+            const myrating = document.getElementsByClassName('my-rating');
+            for(const rating of myrating){
+                rating.dataset.rating = currentRating;
+            }
+        }
+    });
+
+    const info = document.getElementsByClassName('info');
+    for (let i = 0; i < info.length; i++) {
         // 상품평 작성 팝업 띄우기
-        $('.latest .confirm > .review').click(function (e) {
+        const reviewId = '#review'+i; // 리뷰 아이디 생성
+        const popReview = '#popReview'+i; // 리뷰 아이디 생성
+
+        const ordNoId = '.ordNo'+i;
+        const prodNoId = '.prodNo'+i;
+        const ordItemnoId = '.ordItemno'+i;
+        const contentId = '.content'+i;
+
+
+        const btnSubmitId = '#btnSubmit'+i;
+        const ratingId = '#rating'+i;
+
+        $('.latest .confirm >'+ reviewId).click(function (e) {
             e.preventDefault();
-            $('#popReview').addClass('on');
+            $(popReview).addClass('on');
+
+            const btnSubmit = document.querySelector(btnSubmitId);
+
+
+            btnSubmit.onclick = function (e){
+                e.preventDefault();
+
+                // json 데이터 만들기
+                const ordNo = document.querySelector(ordNoId).value;
+                const prodNo = document.querySelector(prodNoId).value;
+                const ordItemno = document.querySelector(ordItemnoId).value;
+                const content = document.querySelector(contentId).value;
+
+                const ratingElement = document.querySelector(ratingId);
+                const ratingValue = ratingElement.getAttribute('data-rating');
+
+                console.log(content);
+                const jsonData = {
+                    "ordNo": ordNo,
+                    "prodNo" :prodNo,
+                    "ordItemno" : ordItemno,
+                    "rating" : ratingValue,
+                    "content" : content
+                };
+
+                fetch('/lotteon/my/review/write', {
+                    method: 'POST',
+                    headers: {"Content-type":"application/json"},
+                    body: JSON.stringify(jsonData)})
+                .then(response => response.json())
+                .then(data => {
+                    if (data!=null){
+                        alert('작성되었습니다!');
+                        location.reload();
+                    }
+                })
+                .catch((err)=>{
+                    console.log(err);
+                });
+            }
         });
+    }
+
+
 
         // 팝업 닫기
         $('.btnClose').click(function () {
@@ -174,19 +253,6 @@ $(function(){
             $(this).closest('.popup').removeClass('on');
         });
 
-        // 상품평 작성 레이팅바 기능
-        $(".my-rating").starRating({
-            starSize: 20,
-            useFullStars: true,
-            strokeWidth: 0,
-            useGradient: false,
-            minRating: 1,
-            ratedColors: ['#ffa400', '#ffa400', '#ffa400', '#ffa400', '#ffa400'],
-            callback: function (currentRating, $el) {
-                alert('rated ' + currentRating);
-                console.log('DOM element ', $el);
-            }
-        });
 
         // info - 비밀번호 변경 창 띄우기
         $('#btnPassChange').click(function (e) {

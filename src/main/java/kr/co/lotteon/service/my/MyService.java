@@ -26,6 +26,7 @@ import kr.co.lotteon.repository.my.CouponRepository;
 import kr.co.lotteon.repository.my.PointRepository;
 import kr.co.lotteon.repository.product.OrderItemRepository;
 import kr.co.lotteon.repository.product.ProductRepository;
+import kr.co.lotteon.repository.product.ReviewRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -51,6 +52,8 @@ public class MyService {
     private final PointRepository pointRepository;
     private final ProductRepository productRepository;
     private final MemberRepository memberRepository;
+    private final ReviewRepository reviewRepository;
+
     public List<CouponDTO> findCouponsByUid(String uid){
         log.info("내 쿠폰"+couponRepository.findCouponsByUid(uid));
         List<Coupon> result=couponRepository.findCouponsByUid(uid);
@@ -373,32 +376,6 @@ public class MyService {
                 .build();
     }
 
-
-    // point 리스트 출력(날짜선택)
-    public OrderItemPageResponseDTO findOrderList(String uid, OrderItemPageRequestDTO orderItemPageRequestDTO) {
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
-
-        LocalDateTime begin = LocalDateTime.parse(orderItemPageRequestDTO.getBegin() + "T00:00:00", formatter);
-
-        LocalDateTime end = LocalDateTime.parse(orderItemPageRequestDTO.getEnd() + "T23:59:59", formatter);
-
-        Page<OrderItem> result = orderItemRepository.findByUidAndOrdDateBetweenOrderByOrdDateDesc(uid, begin, end, orderItemPageRequestDTO.getPageable());
-
-        List<OrderItemDTO> dtoList = result
-                .getContent()
-                .stream()
-                .map(entity -> modelMapper.map(entity, OrderItemDTO.class))
-                .toList();
-        int totalElement = (int) result.getTotalElements();
-
-        return OrderItemPageResponseDTO.builder()
-                .orderItemPageRequestDTO(orderItemPageRequestDTO)
-                .dtoList(dtoList)
-                .total(totalElement)
-                .build();
-    }
-
     // 판매자 정보 출력
     public MemberDTO selectSellerByCompany(String company){
         Member seller = memberRepository.selectSellerByCompany(company);
@@ -410,7 +387,10 @@ public class MyService {
     }
 
 
-
+    public void writeReview(ReviewDTO reviewDTO){
+        Review review = modelMapper.map(reviewDTO, Review.class);
+        reviewRepository.save(review);
+    }
 
 
 

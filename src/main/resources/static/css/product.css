@@ -410,6 +410,7 @@
 .pointOfStar {
     position: relative;
     left: 0;
+    bottom: 1px;
     height: 19px;
     width: 100px;
 

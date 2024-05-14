@@ -3,6 +3,7 @@ package kr.co.lotteon.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.querydsl.core.Tuple;
+import jakarta.servlet.http.HttpServletRequest;
 import kr.co.lotteon.dto.admin.BannerDTO;
 import kr.co.lotteon.dto.cs.BoardDTO;
 import kr.co.lotteon.dto.cs.CsPageRequestDTO;
@@ -29,6 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -361,7 +363,7 @@ public class MyController {
         }
     }
 
-    // my - order (나의 전체 주문내역) 페이지 매핑
+    // my - order 전체주문내역
     @GetMapping("/my/order")
     public String order(@RequestParam String uid, Model model, OrderItemPageRequestDTO orderItemPageRequestDTO){
 
@@ -372,14 +374,14 @@ public class MyController {
 
         model.addAttribute("pageResponseDTO",pageResponseDTO);
 
+        log.info("주문 아이템 내역 : " + pageResponseDTO);
         return "/my/order";
     }
 
-    // my - point (나의 포인트) 페이지 매핑
+    // my - order 전체주문내역(날짜별 조회)
     @GetMapping("/my/orderList")
     @ResponseBody
     public ResponseEntity<?> orderList(OrderItemPageRequestDTO orderItemPageRequestDTO, @AuthenticationPrincipal Object principal) {
-        log.info("pointPageRequestDTO................ : " + orderItemPageRequestDTO);
 
         Member member = ((MyUserDetails) principal).getMember();
         String uid = member.getUid();
@@ -396,6 +398,7 @@ public class MyController {
         return ResponseEntity.ok().body(pageResponseDTO);
     }
 
+    // my - point 전체포인트내역
     @GetMapping("/my/point")
     public String point(@RequestParam String uid, Model model, PointPageRequestDTO pointPageRequestDTO) {
         PointPageResponseDTO pointPageResponseDTO = myService.getPointListByUid(uid, pointPageRequestDTO);
@@ -495,4 +498,18 @@ public class MyController {
         return "/my/review";
     }
 
+    @ResponseBody
+    @PostMapping("/my/review/write")
+    public ResponseEntity<?> reviewWrite(@RequestBody ReviewDTO reviewDTO, HttpServletRequest request, @AuthenticationPrincipal Object principal){
+
+        String regip = request.getRemoteAddr();
+        reviewDTO.setRegip(regip);
+        Member member = ((MyUserDetails) principal).getMember();
+        String uid = member.getUid();
+
+        reviewDTO.setUid(uid);
+        myService.writeReview(reviewDTO);
+
+        return ResponseEntity.status(HttpStatus.OK).body(reviewDTO);
+    }
 }

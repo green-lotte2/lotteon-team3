@@ -228,3 +228,4 @@ function getFirstAndLastDate(year, month) {
         lastDate: lastDay
     };
 }
+

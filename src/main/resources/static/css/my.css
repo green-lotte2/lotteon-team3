@@ -456,12 +456,18 @@ footer p > strong {
 
 #my > .home > section > article > table .rating {
     display: block;
-    width: 84px;
+    width: 5px;
     height: 20px;
     font-size: 0px;
     background-image: url('../my/images/my_rating_star.png');
     background-repeat: no-repeat;
     background-position: 36px 0px;
+}
+
+.my-rating svg {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
 }
 #my > .home > section > article > table .rating.star1 {background-position: 0 -40px;}
 #my > .home > section > article > table .rating.star2 {background-position: 0 -80px;}

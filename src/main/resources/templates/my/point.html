@@ -16,19 +16,6 @@
             const formattedDate = year + month + day;
             console.log(formattedDate)
 
-            // 주문번호
-            document.querySelectorAll('.ordNo').forEach(function (order){
-
-                const ordNo = order.innerText;
-
-                // 주문 번호를 최대 4자리의 숫자로 만듦
-                const paddedOrdNo = ('000' + ordNo).slice(-4);
-
-                const finalOrdNo = formattedDate + paddedOrdNo;
-
-                order.innerHTML=""; // html 요소 비우기
-                order.textContent=finalOrdNo; //채우기
-            });
 
             var strDateP;
             var dateP;
@@ -111,7 +98,7 @@
                     <table class="pointList" border="0">
                         <thead>
                         <tr>
-                            <th>날짜</th>
+                            <th>적립날짜</th>
                             <th>구분</th>
                             <th>주문번호</th>
                             <th>적립금액</th>
