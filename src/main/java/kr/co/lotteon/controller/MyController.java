@@ -355,7 +355,7 @@ public class MyController {
         }
     }
 
-    // my - order (나의 전체 주문내역) 페이지 매핑
+    // my - order 전체주문내역
     @GetMapping("/my/order")
     public String order(@RequestParam String uid, Model model, OrderItemPageRequestDTO orderItemPageRequestDTO){
 
@@ -369,11 +369,10 @@ public class MyController {
         return "/my/order";
     }
 
-    // my - point (나의 포인트) 페이지 매핑
+    // my - order 전체주문내역(날짜별 조회)
     @GetMapping("/my/orderList")
     @ResponseBody
     public ResponseEntity<?> orderList(OrderItemPageRequestDTO orderItemPageRequestDTO, @AuthenticationPrincipal Object principal) {
-        log.info("pointPageRequestDTO................ : " + orderItemPageRequestDTO);
 
         Member member = ((MyUserDetails) principal).getMember();
         String uid = member.getUid();
@@ -390,6 +389,7 @@ public class MyController {
         return ResponseEntity.ok().body(pageResponseDTO);
     }
 
+    // my - point 전체포인트내역
     @GetMapping("/my/point")
     public String point(@RequestParam String uid, Model model, PointPageRequestDTO pointPageRequestDTO) {
         PointPageResponseDTO pointPageResponseDTO = myService.getPointListByUid(uid, pointPageRequestDTO);
