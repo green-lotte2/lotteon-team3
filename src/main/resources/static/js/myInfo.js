@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', async function() {
-    console.log("들어왔냐");
     fetch('/lotteon/my/myInfo')
 
         .then(response => {
