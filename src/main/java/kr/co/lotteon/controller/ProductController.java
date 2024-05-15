@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import groovy.lang.Tuple;
 import jakarta.servlet.http.HttpSession;
 import kr.co.lotteon.dto.admin.BannerDTO;
+import kr.co.lotteon.dto.member.CouponDTO;
 import kr.co.lotteon.dto.member.MemberDTO;
 import kr.co.lotteon.dto.product.*;
 import kr.co.lotteon.entity.member.Member;
@@ -138,6 +139,13 @@ public class ProductController {
         model.addAttribute("memberDTO", memberDTO);
 
         //log.info("맵:"+orderProducts);
+        
+        // 쿠폰 가져오기
+        List<CouponDTO> couponDTOS = productService.selectsCouponsNotUse(uid);
+        log.info("서비스 : " + couponDTOS);
+
+        model.addAttribute("couponDTOS", couponDTOS);
+
         return "/product/order";
     }
 
@@ -181,6 +189,12 @@ public class ProductController {
        ObjectMapper objectMapper = new ObjectMapper();
        String productDTOSJSON = objectMapper.writeValueAsString(productDTOS);
        model.addAttribute("productDTOSJSON", productDTOSJSON);
+
+       // 쿠폰 가져오기
+       List<CouponDTO> couponDTOS = productService.selectsCouponsNotUse(uid);
+       log.info("서비스 : " + couponDTOS);
+
+       model.addAttribute("couponDTOS", couponDTOS);
 
         return "/product/order";
     }
@@ -265,6 +279,17 @@ public class ProductController {
             model.addAttribute("searchPageResponseDTO", searchPageResponseDTO);
             log.info("가격없음 컨트롤러 : " + searchPageResponseDTO);
         }
+
+        // 카테 리스트 가져오기
+        List<Cate1DTO> cate1DTOS = cateService.getCate1List();
+        List<Cate2DTO> cate2DTOS = cateService.getCate2List();
+        List<Cate3DTO> cate3DTOS = cateService.getCate3List();
+
+        // 카테 리스트 참조
+        model.addAttribute("cate1DTOS", cate1DTOS);
+        model.addAttribute("cate2DTOS", cate2DTOS);
+        model.addAttribute("cate3DTOS", cate3DTOS);
+
         return "/product/search";
     }
 
