@@ -4,9 +4,7 @@
       layout:decorate="~{/layout/productLayout}">
 <head>
     <script>
-
-        window.onload = function (){
-
+        window.onload = function () {
             // 상품명, 상품설명 체크박스
             const nameCheckbox = document.querySelector('input[name="searchType"][value="name"]');
             const descriptCheckbox = document.querySelector('input[name="searchType"][value="descript"]');
@@ -16,6 +14,8 @@
             const minPriceInput = document.querySelector('input[name="min"]');
             // 최대 가격 입력 필드
             const maxPriceInput = document.querySelector('input[name="max"]');
+            // 검색어 입력 필드
+            const searchKeywordInput = document.querySelector('input[name="searchKeyword"]');
 
             // 초기에는 입력 필드 비활성화 및 검색 버튼 비활성화
             minPriceInput.disabled = true;
@@ -49,8 +49,40 @@
                     maxPriceInput.disabled = true;
                 }
             });
+
+            // 검색어 입력 필드의 입력 제한
+            searchKeywordInput.addEventListener('input', function () {
+                const value = this.value;
+                // 입력된 값이 10글자를 초과하는 경우 잘라내기
+                if (value.length > 10) {
+                    this.value = value.slice(0, 10);
+                    alert('검색어는 10글자 이하로 입력하세요.');
+                }
+            });
+        };
+
+        function validateSearch() {
+            const searchKeywordInput = document.getElementById('searchKeyword');
+            const priceCheckbox = document.getElementById('priceCheckbox');
+            const minPriceInput = document.getElementById('minPrice');
+            const maxPriceInput = document.getElementById('maxPrice');
+
+            if (priceCheckbox.checked && (minPriceInput.value === '' || maxPriceInput.value === '')) {
+                alert("가격을 입력해주세요.");
+                return false; // 폼 제출을 막습니다.
+            }
+
+            if (searchKeywordInput.value.trim().length > 10) {
+                alert("검색어는 최대 10글자까지 입력할 수 있습니다.");
+                searchKeywordInput.value = searchKeywordInput.value.trim().substring(0, 10); // 10글자 이후의 문자를 잘라냅니다.
+            }
+
+            return true; // 검색을 진행합니다.
         }
+
+
     </script>
+
 
 
 
@@ -71,21 +103,22 @@
     <div class="group">
         <h3><strong th:text="${searchPageRequestDTO.searchKeyword}"></strong> 검색결과 <em>(총&nbsp;:&nbsp;<span th:text="${searchPageResponseDTO.total}"></span>&nbsp;건)</em></h3>
 
-        <form th:action="@{/product/search}" method="get">
+        <form th:action="@{/product/search}" method="get" onsubmit="return validateSearch()">
             <input type="hidden" name="sort" value="prodNo">
             <input type="hidden" name="how" value="DESC">
-            <input type="text" name="searchKeyword" th:value="${searchPageRequestDTO.searchKeyword}" />
+            <input type="text" name="searchKeyword" id="searchKeyword" th:value="${searchPageRequestDTO.searchKeyword}" />
 
             <!-- 검색 버튼 -->
-            <input type="submit" value="검색"/>
+            <input type="submit" value="검색" onclick="return validateSearch()"/>
 
             <!-- 검색 옵션 -->
             <span>
-        <label><input type="checkbox" name="searchType" value="name">상품명</label>
-        <label><input type="checkbox" name="searchType" value="descript">상품설명</label>
-        <label><input type="checkbox" name="searchType" value="price">상품가격</label>
-        <input type="text" name="min"/>원&nbsp;~&nbsp;<input type="text" name="max"/>원
-    </span>
+    <label><input type="checkbox" name="searchType" value="name">상품명</label>
+    <label><input type="checkbox" name="searchType" value="descript">상품설명</label>
+    <label><input type="checkbox" name="searchType" value="price" id="priceCheckbox">상품가격</label>
+    <input type="text" name="min" id="minPrice"/>원&nbsp;~&nbsp;<input type="text" name="max" id="maxPrice"/>원
+</span>
+
         </form>
 
         <p class="info">
