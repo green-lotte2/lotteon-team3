@@ -5,11 +5,14 @@ import jakarta.transaction.Transactional;
 import kr.co.lotteon.dto.cs.BoardDTO;
 import kr.co.lotteon.dto.cs.BoardTypeDTO;
 import kr.co.lotteon.dto.cs.CommentDTO;
+import kr.co.lotteon.dto.member.CouponDTO;
 import kr.co.lotteon.dto.product.*;
 import kr.co.lotteon.entity.cs.BoardEntity;
 import kr.co.lotteon.entity.cs.BoardTypeEntity;
 import kr.co.lotteon.entity.cs.Comment;
+import kr.co.lotteon.entity.member.Coupon;
 import kr.co.lotteon.entity.product.*;
+import kr.co.lotteon.mapper.CouponMapper;
 import kr.co.lotteon.mapper.MemberMapper;
 import kr.co.lotteon.mapper.ProductMapper;
 import kr.co.lotteon.repository.cs.BoardRepository;
@@ -20,6 +23,7 @@ import kr.co.lotteon.repository.product.OrderRepository;
 import kr.co.lotteon.repository.product.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.session.SqlSession;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -43,6 +47,7 @@ public class ProductService {
     private final BoardRepository boardRepository;
     private final CouponRepository couponRepository;
     private final MemberMapper memberMapper;
+    private final CouponMapper couponMapper;
     private final SqlSession sqlSession;
 
     // 기본 상품 목록 조회
@@ -352,6 +357,8 @@ public class ProductService {
         int usedPoint = orderDTO.getUsedPoint();
         // 구매한 회원 아이디
         String uid = orderDTO.getOrdUid();
+        // 사용한 쿠폰 번호
+        int couponSeq = orderDTO.getCouponSeq();
 
         // product_order에 넣기
         Order order = modelMapper.map(orderDTO, Order.class);
@@ -363,6 +370,11 @@ public class ProductService {
         // 사용한 포인트만큼 포인트 감소
         if (saveOrder.getUsedPoint()>0){
             memberMapper.updateMemberPoint(uid, usedPoint);
+        }
+        
+        // 쿠폰 사용하기
+        if(orderDTO.getDisCouponPrice()>0){
+            couponMapper.updateUseYn(couponSeq);
         }
 
         return ResponseEntity.ok(savedOrderDTO);
@@ -442,6 +454,22 @@ public class ProductService {
          Optional<Order> order = orderRepository.findById(ordNo);
 
         return modelMapper.map(order, OrderDTO.class);
+    }
+    
+    // 쿠폰 정보 가져오기
+    public List<CouponDTO> selectsCouponsNotUse(String uid){
+
+        List<Coupon> coupons = couponRepository.findCouponsByUid(uid);
+        List<CouponDTO> result = null;
+        if (!coupons.isEmpty()){
+           result =  couponRepository
+                                    .selectsCouponsNotUse(uid)
+                                    .stream()
+                                    .map(dto->modelMapper.map(dto, CouponDTO.class))
+                                    .collect(Collectors.toList());
+        }
+        log.info("쿠폰서비스 : " + result);
+        return result;
     }
     // ========== 메인페이지 ==========
     // 최신상품

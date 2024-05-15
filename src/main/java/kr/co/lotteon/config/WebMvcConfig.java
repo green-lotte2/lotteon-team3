@@ -20,15 +20,15 @@ public class WebMvcConfig implements WebMvcConfigurer {
     private BannerService bannerService;
 
     // ====== 배포시엔 해당 어노테이션 사용 ======
-    @Value("${myServerProd.static-resources-path}")
+    //@Value("${myServerProd.static-resources-path}")
     // ====== 개발시엔 해당 어노테이션 사용 ======
-    //@Value("${localProd.static-resources-pathProd}")
+    @Value("${localProd.static-resources-pathProd}")
     private String staticServerPathProd;
 
     // ====== 배포시엔 해당 어노테이션 사용 ======
-    @Value("${MyServerImg.static-resources-pathImg}")
+    //@Value("${MyServerImg.static-resources-pathImg}")
     // ====== 개발시엔 해당 어노테이션 사용 ======
-    //@Value("${localImg.static-resources-pathImg}")
+    @Value("${localImg.static-resources-pathImg}")
     private String staticServerPathImg;
 
     @Override

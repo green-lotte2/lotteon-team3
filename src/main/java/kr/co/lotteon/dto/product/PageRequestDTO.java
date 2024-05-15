@@ -18,7 +18,7 @@ public class PageRequestDTO{
     private int pg = 1;
 
     @Builder.Default
-    private int size=40;
+    private int size=16;
 
     private int cate1;
 
