@@ -1,11 +1,79 @@
 /* 내가 추가한 CSS */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap');
+/* 초기화 */
+* {
+    margin: 0;
+    padding: 0;
+    font-size: 14px;
+    font-family: "Noto Sans KR", sans-serif;
+}
+
+ul{
+    padding-left: 0rem;
+}
+.row {
+    --bs-gutter-x: -1.5rem;
+}
+
+
 .card {
+    display: block;
+    width: 23% !important;
+    height: 400px !important; ;
     margin-bottom: 20px;
     transition : transform 0.3s;
+    padding: 10px;
+    box-sizing: border-box;
+}
+.card .card-body .card-text{
+    height: 21px;
 }
 .card:hover{
     transform : scale(1.02);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* 그림자 추가 */
+    transition: box-shadow 0.3s ease; /* 그림자 변경을 부드럽게 전환 */
 }
+
+.card>.card-body >a {
+    text-decoration: none; /* 링크 밑줄 제거 */
+}
+.card>.card-body >ul {
+    padding-left: 0rem;
+}
+
+.seller {
+    font-size: 18px; /* 판매자 이름 사이즈 */
+    margin-bottom: 10px; /* 판매자 이름과 설명 사이 여백 */
+}
+
+.card-text {
+    display: inline-block;
+    font-size: 16px; /* 설명 텍스트 사이즈 */
+    margin-bottom: 30px;
+}
+
+.price {
+    font-size: 20px; /* 가격 사이즈 */
+    font-weight: bold; /* 가격 굵게 */
+}
+
+.discount {
+    color: #dc3545; /* 할인 색상 */
+}
+
+.org-price {
+    color: #888; /* 할인 전 가격 색상 */
+    text-decoration: line-through; /* 할인 전 가격에 중간선 */
+}
+.org-price :after{
+    content: "↓";
+}
+.free-delivery {
+    color: #28a745; /* 무료배송 문구 색상 */
+    font-style: italic; /* 무료배송 문구 이탤릭체 */
+}
+
+
 .itemController {
     display: -webkit-box;
     display: -ms-flexbox;
@@ -1353,7 +1421,7 @@
   right: 0px;
   top:0px;
   width: 280px;
-  height: 380px;
+  height: 390px;
   padding: 20px;
   margin-top: 12px;
   background: #fff;

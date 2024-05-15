@@ -189,7 +189,9 @@
 
                                         <p th:text="${#temporals.format(linkedMap.value.get(0).ordDate, 'yyyy-MM-dd')}"></p>
 
-                                        <p class="ordNo">주문번호<a th:id="ordNo+${iterStat.index}" th:href="@{#}" th:text="${linkedMap.key}"></a></p>
+                                        <p class="ordNo">
+                                            주문번호<a th:id="ordNo+${iterStat.index}" th:href="@{#}" th:text="${linkedMap.key}"></a>
+                                        </p>
                                     </button>
                                 </h2>
 
@@ -198,18 +200,18 @@
                                     <th:block th:each="orderList : ${linkedMap.value}">
                                         <input type="hidden" th:value="${orderList.uid}" id="uid">
                                         <div>
-                                            <img th:src="@{'/prodImg/'+${orderList.thumb3}}" alt="" style="width: 80px; height: 80px;">
+                                            <img th:src="@{'/prodImg/'+${orderList.thumb3}}" alt="">
                                         </div>
 
                                         <div class="info">
                                             <input type="hidden" th:value="${orderList.prodNo}" id="prodNo">
                                             <p class="company" ><a th:href="@{#}" th:text="${orderList.company}"></a></p>
-                                            <p class="InfoProdName" th:text="${'상품명'+orderList.prodName}"></p>
-                                            <p th:text="${'개수'+orderList.count}"></p>
-                                            <p th:text="${'가격'+#numbers.formatInteger(orderList.price,3,'COMMA')}"></p>
+                                            <p class="InfoProdName" th:text="${orderList.prodName}"></p>
+                                            <p th:text="${orderList.count}+개"></p>
+                                            <p th:text="${#numbers.formatInteger(orderList.price,3,'COMMA')}+원"></p>
                                         </div>
 
-                                        <div th:text="${orderList.ordStatus}"></div>
+                                        <div class="status" th:text="${orderList.ordStatus}"></div>
                                         <div class="confirm">
                                             <a th:href="@{#}" class="receive" th:id="receive+${iterStat.index}">수취확인</a>
                                             <a th:href="@{#}" class="review">상품평</a>

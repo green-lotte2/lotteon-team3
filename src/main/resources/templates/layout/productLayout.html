@@ -42,6 +42,22 @@
                 }
             });
         });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // 검색어 입력 필드 선택
+            var searchKeywordInput = document.querySelector('input[name="searchKeyword"]');
+
+            // 입력 필드의 입력 이벤트 감지
+            searchKeywordInput.addEventListener('input', function () {
+                const value = this.value;
+                // 입력된 값이 10글자를 초과하는 경우 잘라내기
+                if (value.length > 10) {
+                    this.value = value.slice(0, 10);
+                    // 사용자에게 경고 메시지 표시 (선택사항)
+                    alert('검색어는 10글자 이하로 입력하세요.');
+                }
+            });
+        });
     </script>
 
 </head>
@@ -91,11 +107,8 @@
                     <li><a th:href="@{/product/list}">할인상품</a></li>
                 </ul>
                 <ul>
-                    <li><a th:href="@{#}">쿠폰존</a></li>
-                    <li><a th:href="@{#}">사용후기</a></li>
-                    <li><a th:href="@{#}">개인결제</a></li>
-                    <li><a th:href="@{#}">고객센터</a></li>
-                    <li><a th:href="@{#}">FAQ</a></li>
+                    <li><a th:href="@{/cs/index}">고객센터</a></li>
+                    <li><a th:href="@{/cs/faq/list(group='faq',cate='member')}">FAQ</a></li>
                 </ul>
             </div>
         </div>

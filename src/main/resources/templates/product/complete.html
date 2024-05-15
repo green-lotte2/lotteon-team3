@@ -51,16 +51,17 @@
                   const totalDisPrice = document.getElementById('totalDisPrice');
                   const totalDelPrice = document.getElementById('totalDelPrice');
                   const totalPrice = document.getElementById('totalPrice');
-
+                  const couponDisPrice = document.getElementById('couponDisPrice');
+                  var couponValue = parseInt(couponDisPrice.innerText);
                   const totalPrice2 = document.getElementById('totalPrice2');
 
-                  // 총 상품금액
+                  couponDisPrice.innerText = numberWithCommas(couponDisPrice.innerText);
+                  // 총 상품 원금액
                   var totalValue = 0;
                   document.querySelectorAll('#prodOrgPrice').forEach(function (price) {
 
                     var totPrice = parseInt(price.innerText.replace(/,/g, ''));
                     totalValue += totPrice;
-                    console.log('dkdkdk'+totalValue);
 
                   });
                   totalOrgPrice.innerHTML = "";
@@ -72,7 +73,7 @@
 
                     var totPrice = parseInt(price.innerText.replace(/,/g, ''));
                     totalValue += totPrice;
-                    console.log('dkdkdk'+totalValue);
+
 
                   });
                   totalDisPrice.innerHTML = "";
@@ -84,14 +85,14 @@
 
                     var totPrice = parseInt(price.innerText.replace(/,/g, ''));
                     totalValue += totPrice;
-                    console.log('dkdkdk'+totalValue);
+
 
                   });
                   totalPrice.innerHTML = "";
-                  totalPrice.textContent = numberWithCommas(totalValue);
+                  totalPrice.textContent = numberWithCommas(totalValue-couponValue);
 
                   totalPrice2.innerHTML = "";
-                  totalPrice2.textContent = numberWithCommas(totalValue);
+                  totalPrice2.textContent = numberWithCommas(totalValue-couponValue);
 
 
 
@@ -145,6 +146,7 @@
                     <td id="prodOrgPrice">[[${orderItem.price}*${orderItem.count}]]</td>
                     <td id="prodDisPrice"> [[(${orderItem.price} * (${orderItem.discount}/100))*${orderItem.count}]] </td>
                     <td id="prodCount">[[${orderItem.count}]]</td>
+                    <input id="disCouponPrice" type="hidden" th:value="${orderDTO.disCouponPrice}">
                     <td id="prodTotalPrice"> </td>
                   </tr>
                   <tr>
@@ -165,6 +167,10 @@
                         <tr>
                           <td>배송비</td>
                           <td><span id="totalDelPrice">0</span>원</td>
+                        </tr>
+                        <tr th:if="${orderDTO.disCouponPrice != 0}">
+                          <td>쿠폰 사용금액</td>
+                          <td><span>-</span><span id="couponDisPrice" th:text="${orderDTO.disCouponPrice}"></span>원</td>
                         </tr>
                         <tr>
                           <td>총 결제금액</td>

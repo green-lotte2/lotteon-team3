@@ -137,6 +137,27 @@
                 totalOrg.innerHTML = "";
                 totalOrg.textContent = numberWithCommas(totalValue)
 
+                const btnCoupon = document.getElementsByClassName('selectCoupon')[0];
+                btnCoupon.onclick = function (e){
+                    e.preventDefault();
+                    getSelectedCoupon();
+                }
+
+                var couponSeq;
+                var disCouponPrice;
+
+                function getSelectedCoupon() {
+                    var selectElement = document.getElementById("couponList");
+
+                    couponSeq = selectElement.value;
+                    disCouponPrice = parseInt(selectElement.innerText.split(":")[2]);
+                    console.log("선택된 쿠폰의 값:", couponSeq);
+                    console.log("선택된 쿠폰의 할인가격:", disCouponPrice);
+
+                    totalPrice.innerHTML = "";
+                    totalPrice.textContent = numberWithCommas(totalValue-disCouponPrice);
+                }
+
                 // 상품 총 가격
                 totalValue =0;
                 document.querySelectorAll('#prodDisPrice').forEach(function (price){
@@ -217,7 +238,8 @@
                         articleArray.push(article);
                     });
                 });
-                console.log(articleArray);
+
+
                 // 결제하기
                 const btnOrder = document.getElementById('btnOrder');
                 btnOrder.onclick = function (e){
@@ -266,7 +288,6 @@
                         const recipAddr1 = document.getElementById('orderAddr1').value;
                         const recipAddr2 = document.getElementById('orderAddr2').value;
                         const ordPayment = document.querySelector('input[name=payment]:checked').value;
-                        const disCouponPrice = 0;
                         const jsonData = {
                             "ordUid" : ordUid,
                             "ordCount" : ordCount,
@@ -283,7 +304,7 @@
                             "recipAddr2" : recipAddr2,
                             "ordPayment" : ordPayment,
                             "disCouponPrice" : disCouponPrice,
-                            "couponSeq" : 1
+                            "couponSeq" : couponSeq
                         };
 
 
@@ -436,7 +457,11 @@
                     <div>
                         <select name="coupon" class="coupon" id="couponList">
                             <option selected th:value="0">사용하실 쿠폰을 선택해 주세요.</option>
+                            <option th:value="${coupon.couponSeq}" th:if="${not #lists.isEmpty(couponDTOS)}" th:each="coupon : ${couponDTOS}"  th:text="'쿠폰명 : ' + ${coupon.couponName} + '    ' + '할인금액 : ' + ${coupon.discountMoney}">
+                                [[${coupon.discountMoney}]]
+                            </option>
                         </select>
+                        <button th:class="selectCoupon">선택된 쿠폰 가져오기</button>
                     </div>
                   <div>
                     <p>현재 포인트 : <span id="myPoint">[[${memberDTO.point}]]</span>점</p>

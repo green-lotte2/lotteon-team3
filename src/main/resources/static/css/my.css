@@ -1,10 +1,12 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap');
 /* 초기화 */
 * {
     margin: 0;
     padding: 0;
-    font: normal 12px "Noto Sans CJK KR";
+    font-size: 14px;
+    font-family: "Noto Sans KR", sans-serif;
 }
-
 ul, ol {
     list-style: none;
 }
@@ -456,14 +458,19 @@ footer p > strong {
 
 #my > .home > section > article > table .rating {
     display: block;
-    width: 5px;
+    width: 85px;
     height: 20px;
     font-size: 0px;
     background-image: url('../my/images/my_rating_star.png');
     background-repeat: no-repeat;
     background-position: 36px 0px;
 }
-
+.my-rating {
+    height: 20px;
+}
+.jq-star {
+    width: 20px !important;
+}
 .my-rating svg {
     display: inline-block;
     width: 20px;
@@ -1666,4 +1673,86 @@ footer p > strong {
     color: white;
     margin: 10px auto;
     cursor: pointer;
+}
+
+.accordion{
+    display: inline-block;
+    width: 820px;
+    margin-bottom: 20px;
+}
+
+.accordion-button{
+    height: 66px;
+    background-color: transparent;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -.5px;
+    color: #333;
+    vertical-align: middle;
+    padding-left: 1px;
+}
+
+
+
+.accordion-button > .ordNo *  {
+    width: 18px;
+    height: 18px;
+    margin: 24px 9px 22px 10px;
+    vertical-align: top;
+}
+
+.accordion-button:not(.collapsed) {
+    background-color: transparent;
+}
+.accordion-collapse {
+    display: flex;
+    align-items: center;
+    line-height: 1;
+    font-family: NotoSansKR, Malgun Gothic, arial, sans-serif;
+    height: 143px;
+    position: relative;
+    letter-spacing: -.02em;
+}
+.accordion-collapse >.info{
+    margin-left: 51px;
+    position: relative;
+}
+.accordion-collapse > .status{
+    margin-left: 120px;
+    position: relative;
+}
+.accordion-collapse > .confirm{
+    margin-left: 77px;
+    position: relative;
+}
+
+
+.accordion-collapse  img {
+    width: 80px;
+    height: auto;
+    margin-left: 32px;
+}
+
+.accordion-header p {
+    margin-top: 10px;
+    margin-left: 30px;
+    margin-bottom: 1rem;
+    font-size: 20px;
+    color: #EF2A23;
+    font-weight: bold;
+}
+
+.accordion-button > .ordNo a  {
+    margin-top: 20px;
+    margin-left: 30px;
+    margin-bottom: 1rem;
+    font-size: 20px;
+    color: #EF2A23;
+    font-weight: bold;
+}
+.accordion-button::after {
+    flex-shrink: 1;
+    margin-left: 411px;
+    content: "";
+
 }

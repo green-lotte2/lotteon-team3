@@ -5,7 +5,27 @@
 
             <section class="list" layout:fragment="content">
               <!-- 제목, 페이지 네비게이션 -->
+              <script>
+                  window.onload = function (){
 
+                      // 숫자를 3자리마다 콤마를 추가하여 문자열로 반환하는 함수
+                      function numberWithCommas(x) {
+                          return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                      }
+
+                      document.querySelectorAll(".dis-price").forEach(function (price){
+                        const disPrice = price.innerText.split('.')[0];
+                        price.innerHTML = "";
+                        price.textContent = numberWithCommas(disPrice)+'원';
+                      });
+
+                      document.querySelectorAll('.org-price').forEach(function (price){
+                          price.textContent = numberWithCommas(price.innerText);
+                      });
+
+
+                  }
+              </script>
               <nav>
                 <h1>상품목록</h1>
                   <p th:if="c3Name == null">HOME > <span>[[${c1Name}]]</span> > <strong>[[${c2Name}]]</strong> ></p>
@@ -60,15 +80,19 @@
                               <div class="card-body">
                                   <a th:href="@{/product/view(prodNo=${product.prodNo},cate1=${product.cate1},cate2=${product.cate2})}" class="thumb">
                                       <h5 class="seller" th:text=" '[' + ${product.company}+ ']'"></h5> <h6></h6>
-                                    <p class="card-text">[[${product.descript}]]</p>
-                                    <p>[[${product.price}]]원</p>
-                                    <ul>
-                                      <li><ins class="dis-price">[[${product.price}]]</ins></li>
-                                      <li>
-                                        <span class="discount">[[${product.discount}]]% 할인</span>
-                                        <del class="org-price">[[${product.price}]]</del>
+                                    <p class="card-text" th:if="${product.descript != ''}">[[${product.descript}]]</p>
+                                    <p class="card-text" th:if="${product.descript == ''}">&emsp;</p>
+                                    <ul class="ull">
+                                      <li th:if="${product.discount}!=0" class="dis_li">
+                                          <span class="discount">[[${product.discount}]]% 할인</span>
+                                          <del class="org-price">[[${product.price}]]</del>
                                       </li>
-                                      <li><span class="free-delivery">무료배송</span></li>
+                                      <li><ins class="dis-price">[[${((100-product.discount)/100.0)*product.price}]]</ins></li>
+
+                                      <li>
+                                          <span th:if="${product.delivery != 0}" class="free-delivery">배송비 [[${product.delivery}]] 원</span>
+                                          <span th:if="${product.delivery == 0}" class="free-delivery">무료배송</span>
+                                      </li>
                                     </ul>
                                   </a>
                               </div>
