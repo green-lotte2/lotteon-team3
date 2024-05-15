@@ -104,7 +104,26 @@ function updatePagination(data) {
                                 <a href="#" onclick="tableReload(${data.end + 1}); return false;">다음</a>
                             </span>`;
     }
+
+    // 조회된 데이터가 없는 경우 메시지를 추가하고, 데이터가 있는 경우 메시지를 제거합니다.
+    const orderTable = document.querySelector('.orderList');
+    const tableHeader = `
+                        <tr>
+                            <th>날짜</th>
+                            <th>상품정보</th>
+                            <th>상태</th>
+                            <th>확인/신청</th>
+                        </tr>`;
+
+    if (data.dtoList.length === 0) {
+        orderTable.innerHTML = `<tr>
+                                    <td colspan="4" style="text-align: center;">조회된 포인트 내역이 없습니다.</td>
+                                </tr>`;
+    } else {
+        orderTable.innerHTML = tableHeader; // 조회된 데이터가 있을 경우 테이블 헤더를 추가합니다.
+    }
 }
+
 
 
 // 리스트 업데이트 함수
