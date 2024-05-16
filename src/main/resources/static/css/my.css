@@ -1716,6 +1716,8 @@ footer p > strong {
 .accordion-collapse >.info{
     margin-left: 51px;
     position: relative;
+    display: flex;
+    flex-direction: column;
 }
 .accordion-collapse > .status{
     margin-left: 120px;
@@ -1754,5 +1756,99 @@ footer p > strong {
     flex-shrink: 1;
     margin-left: 411px;
     content: "";
+
+}
+
+.accordion-body {
+    display: flex;
+    align-items: center;
+    line-height: 1;
+    font-family: NotoSansKR, Malgun Gothic, arial, sans-serif;
+    height: 143px;
+    position: relative;
+    letter-spacing: -.02em;
+}
+
+.accordion-body >.info{
+    display: contents;
+    position: relative;
+}
+
+.accordion-body > .info > .options {
+    color: #757575;
+
+}
+
+.accordion-body > .info > .options > p{
+    margin-right: 10px;
+    margin-left: 10px;
+}
+
+.accordion-body img {
+    width: 80px;
+    height: auto;
+    margin-right: 10px;
+}
+.accordion-body >.status{
+    margin-left: 50px;
+}
+.accordion-body .confirm{
+    margin-left: 150px;
+}
+.accordion-body .confirm > a{
+    display: block;
+    width: 90px;
+    height: 19px;
+    background-image: url(../my/images/my_sprites.png);
+    font-size: 0;
+}
+.accordion-body .confirm > .receive{
+    background-position: -369px -179px;
+}.accordion-body .confirm > .review{
+    background-position: -369px -202px;
+}
+.accordion-body .confirm > .refund{
+      margin-top: 2px;
+      font-family: '돋움';
+      font-size: 11px;
+      color: #676767;
+      text-indent: 5px;
+      line-height: 19px;
+      background-position: -500px -399px;
+}
+.accordion-body .confirm > .exchange{
+    margin-top: 2px;
+    font-family: '돋움';
+    font-size: 11px;
+    color: #676767;
+    text-indent: 5px;
+    line-height: 19px;
+    background-position: -500px -399px;
+}
+
+.accordion-body .productDetail{
+    font-size: 16px;
+    line-height: 22px;
+    letter-spacing: -.32px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    word-wrap: break-word;
+    white-space: normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0;
+}
+.accordion-body .productDetail2{
+    font-size: 16px;
+    line-height: 22px;
+    letter-spacing: -.32px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    word-wrap: break-word;
+    white-space: normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
 
 }

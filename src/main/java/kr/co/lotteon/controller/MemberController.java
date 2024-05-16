@@ -64,7 +64,7 @@ public class MemberController {
     }
 
     // register 페이지 매핑
-    @GetMapping("/member/register")
+    @PostMapping("/member/join")
     public String register(Model model, String type,String location){
 
         log.info("회원가입 type = "+type);
@@ -192,7 +192,8 @@ public class MemberController {
     public String registerSeller(MemberDTO memberDTO,HttpServletRequest request){
         memberDTO.setRegip(request.getRemoteAddr());
         memberDTO.setLevel(5); // 일반회원시 level 5
-        memberDTO.setName(memberDTO.getName());//사용자 이름을 회사명으로 설정
+        memberDTO.setName(memberDTO.getCompany());
+        memberDTO.setNick(memberDTO.getCompany());
         memberService.save(memberDTO);
 
         return "redirect:/member/login?success=200";

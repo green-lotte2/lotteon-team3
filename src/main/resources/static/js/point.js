@@ -202,6 +202,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const date5 = document.querySelector('.date_5ea');
     const today = new Date();
 
+    date5.innerHTML = "";
+
     for (let i = 0; i < 5; i++) {
         let currentMonth = today.getMonth() - i + 1;
         let currentYear = today.getFullYear();
@@ -210,6 +212,7 @@ document.addEventListener('DOMContentLoaded', function() {
             currentMonth += 12;
             currentYear--;
         }
+
         date5.innerHTML += `<li><a href="#" class="datePick" onclick="changeMonth(this, ${currentMonth}, ${currentYear}); return false;"><em>${currentMonth}</em>월</a></li>`;
     }
 

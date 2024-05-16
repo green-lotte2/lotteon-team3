@@ -21,7 +21,7 @@
     <script th:src="@{https://kit.fontawesome.com/20962f3e4b.js}" crossorigin="anonymous"></script>
     <script th:src="@{https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.min.js}"></script>
     <script th:src="@{./js/index.js}"></script>
-    <script th:src="@{./js/sseSeller.js}"></script>
+    <!--<script th:src="@{./js/sseSeller.js}"></script>-->
 
     <style>
         #bannerTop {
@@ -171,11 +171,11 @@
         <div class="menu">
             <div>
                 <ul>
-                    <li><a th:href="@{/product/list}">히트상품</a></li>
-                    <li><a th:href="@{/product/list}">추천상품</a></li>
-                    <li><a th:href="@{/product/list}">최신상품</a></li>
-                    <li><a th:href="@{/product/list}">인기상품</a></li>
-                    <li><a th:href="@{/product/list}">할인상품</a></li>
+                    <li><a th:href="@{/product/list2(type='hit')}">히트상품</a></li>
+                    <li><a th:href="@{/product/list2(type='recommend')}">추천상품</a></li>
+                    <li><a th:href="@{/product/list2(type='recent')}">최신상품</a></li>
+                    <li><a th:href="@{/product/list2(type='best')}">인기상품</a></li>
+                    <li><a th:href="@{/product/list2(type='discount')}">할인상품</a></li>
                 </ul>
                 <ul>
                     <li><a th:href="@{/cs/notice/list(group='notice', cate='null')}">공지사항</a></li>

@@ -58,8 +58,15 @@ public class SecurityConfig {
         ///////////배포전 인가 수정하기/////////
         httpSecurity.authorizeHttpRequests(authorize -> authorize
                                                         .requestMatchers("/").permitAll()
-                                                        //.requestMatchers("/member/**").permitAll()
-                                                        //.requestMatchers("/admin/**").hasAuthority("ADMIN")
+                                                        .requestMatchers("/member/**").permitAll()
+                                                        .requestMatchers("/seller/**").hasAuthority("ROLE_5")
+                                                        .requestMatchers("/my/**").hasAnyAuthority("ROLE_1","ROLE_2","ROLE_3","ROLE_4","ROLE_5","ROLE_6","ROLE_7")
+                                                        .requestMatchers("/product/cart/**").hasAnyAuthority("ROLE_1","ROLE_2","ROLE_3","ROLE_4","ROLE_5","ROLE_6","ROLE_7")
+                                                        .requestMatchers("/product/cart/**","/order/**" ).hasAnyAuthority("ROLE_1","ROLE_2","ROLE_3","ROLE_4","ROLE_5","ROLE_6","ROLE_7")
+                                                        .requestMatchers("/product/complete/**").hasAnyAuthority("ROLE_1","ROLE_2","ROLE_3","ROLE_4","ROLE_5","ROLE_6","ROLE_7")
+                                                        .requestMatchers("/admin/images/**").hasAnyAuthority("ROLE_7","ROLE_5")
+                                                        .requestMatchers("/admin/js/**").hasAnyAuthority("ROLE_7","ROLE_5")
+                                                        .requestMatchers("/admin/**").hasAuthority("ROLE_7")
                                                         .anyRequest().permitAll());
 
         // 사이트 위변조 방지 설정

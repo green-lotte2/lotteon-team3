@@ -144,7 +144,7 @@ $(function(){
 
                     } else {
                         alert('리뷰작성해주세요');
-                        $('#popReview').addClass('on');
+                        location.reload();
                     }
                 })
         })
