@@ -64,6 +64,8 @@ public class SecurityConfig {
                                                         .requestMatchers("/product/cart/**").hasAnyAuthority("ROLE_1","ROLE_2","ROLE_3","ROLE_4","ROLE_5","ROLE_6","ROLE_7")
                                                         .requestMatchers("/product/cart/**","/order/**" ).hasAnyAuthority("ROLE_1","ROLE_2","ROLE_3","ROLE_4","ROLE_5","ROLE_6","ROLE_7")
                                                         .requestMatchers("/product/complete/**").hasAnyAuthority("ROLE_1","ROLE_2","ROLE_3","ROLE_4","ROLE_5","ROLE_6","ROLE_7")
+                                                        .requestMatchers("/admin/images/**").hasAnyAuthority("ROLE_7","ROLE_5")
+                                                        .requestMatchers("/admin/js/**").hasAnyAuthority("ROLE_7","ROLE_5")
                                                         .requestMatchers("/admin/**").hasAuthority("ROLE_7")
                                                         .anyRequest().permitAll());
 

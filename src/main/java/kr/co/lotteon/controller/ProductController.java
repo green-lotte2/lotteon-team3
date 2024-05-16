@@ -376,4 +376,38 @@ public class ProductController {
 
         return "/product/view";
     }
+
+
+    @GetMapping("/product/list2")
+    public String productList2(String type, Model model){
+
+        List<ProductDTO> productDTOS = new ArrayList<>();
+        if(type.equals("hit")){
+            productDTOS = productService.hitProductMain();
+        }if(type.equals("recommend")){
+            productDTOS = productService.recommendProductMain();
+        }if(type.equals("recent")){
+            productDTOS = productService.recentProductMain();
+        }if(type.equals("best")){
+            productDTOS = productService.bestProductMain2();
+        }if(type.equals("discount")){
+            productDTOS = productService.discountProductMain();
+        }
+
+        // 카테 리스트 가져오기
+        List<Cate1DTO> cate1DTOS = cateService.getCate1List();
+        List<Cate2DTO> cate2DTOS = cateService.getCate2List();
+        List<Cate3DTO> cate3DTOS = cateService.getCate3List();
+
+        // 카테 리스트 참조
+        model.addAttribute("cate1DTOS", cate1DTOS);
+        model.addAttribute("cate2DTOS", cate2DTOS);
+        model.addAttribute("cate3DTOS", cate3DTOS);
+
+        model.addAttribute("type", type);
+        model.addAttribute("productDTOS", productDTOS);
+
+        return "/product/list2";
+    }
+
 }

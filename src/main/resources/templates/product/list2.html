@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/productLayout}">
+<head>
+    <script>
+
+        window.onload = function () {
+
+            // 숫자를 3자리마다 콤마를 추가하여 문자열로 반환하는 함수
+            function numberWithCommas(x) {
+                return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            }
+
+            // 할인된 가격
+            document.querySelectorAll('.dis-price').forEach(function (e){
+                var price = parseInt(e.innerText.split(".")[0]);
+
+                e.innerHTML = "";
+                e.textContent = numberWithCommas(price);
+            });
+
+            // 원가격
+            document.querySelectorAll('.org-price').forEach(function (e){
+                var price = parseInt(e.innerText.split(".")[0]);
+
+                e.innerHTML = "";
+                e.textContent = numberWithCommas(price);
+            });
+
+            // 배송비
+            document.querySelectorAll('.delivery').forEach(function (e){
+                var price = parseInt(e.innerText);
+
+                e.innerHTML = "";
+                e.textContent = numberWithCommas(price)+'원';
+            });
+        }
+    </script>
+
+
+
+
+</head>
+<body>
+<!-- 상품검색 화면 시작 -->
+<section class="search" layout:fragment="content">
+
+    <!-- 제목, 페이지 네비게이션 -->
+    <nav>
+        <!--/*@thymesVar id="hit" type=""*/-->
+        <h1 th:if="${type=='hit'}">히트 상품 </h1>
+        <h1 th:if="${type=='recommend'}">추천 상품 </h1>
+        <h1 th:if="${type=='recent'}">최신 상품 </h1>
+        <h1 th:if="${type=='best'}">인기 상품 </h1>
+        <h1 th:if="${type=='discount'}">할인 상품 </h1>
+
+        <p  th:if="${type=='hit'}">
+            HOME > <strong>히트 상품</strong>
+        </p>
+        <p  th:if="${type=='recommend'}">
+            HOME > <strong>추천 상품</strong>
+        </p>
+        <p  th:if="${type=='recent'}">
+            HOME > <strong>최신 상품</strong>
+        </p>
+        <p  th:if="${type=='best'}">
+            HOME > <strong>인기 상품</strong>
+        </p>
+        <p  th:if="${type=='discount'}">
+            HOME > <strong>할인 상품</strong>
+        </p>
+    </nav>
+
+    <table border="0">
+        <tr th:each="product:${productDTOS}">
+            <td><a th:href="@{/product/view(prodNo=${product.prodNo},cate1=${product.cate1},cate2=${product.cate2},cate3=${product.cate3})}"
+                   class="thumb"><img th:src="@{'/prodImg/'+${product.thumb3}}" alt="상품이미지" width="120" height="120"/></a></td>
+
+            <td>
+                <h3 class="name">
+                    <a style="font-size: 16px; font-weight: bold;" th:href="@{/product/view(prodNo=${product.prodNo},cate1=${product.cate1},cate2=${product.cate2},cate3=${product.cate3})}">[[${product.prodName}]]</a>
+                </h3>
+
+                <span class="desc">
+                    [[${product.descript}]]
+                </span>
+            </td>
+            <td>
+                <ul>
+                    <li><ins class="dis-price">[[${((100-product.discount)/100.0)*product.price}]]</ins></li>
+                    <li>
+                        <del class="org-price">[[${product.price}]]</del>
+                        <span class="discount">[[${product.discount}]]%</span>
+                    </li>
+                    <li>
+                        <span th:if="${product.delivery == 0}" class="free-delivery">무료배송</span>
+                        <span class="delivery" th:if="${product.delivery != 0}" >[[${product.delivery}]]</span>
+                    </li>
+                </ul>
+            </td>
+            <td>
+                <h4 class="seller"><i class="fas fa-home"></i>[[${product.company}]]</span></h4>
+                <!--
+                <h5 class="badge power great">판매자등급</h5>
+                <h6 class="rating star3">상품평</h6>
+                -->
+            </td>
+        </tr>
+    </table>
+
+
+</section>
+<!-- 상품검색 화면 끝 -->
+
+<footer>
+    <ul>
+        <li><a href="#">회사소개</a></li>
+        <li><a href="#">서비스이용약관</a></li>
+        <li><a href="#">개인정보처리방침</a></li>
+        <li><a href="#">전자금융거래약관</a></li>
+    </ul>
+    <div>
+        <p><img src="../images/footer_logo.png" alt="로고" /></p>
+        <p>
+            <strong>(주)롯데ON</strong><br />
+            서울특별시 송파구 올림픽로 300 롯데월드타워 26층 (역삼동 강남파이낸스센터)<br />
+            대표이사 : 김사무엘상현, 정준호, 강성현<br />
+            사업자등록번호 : 529-85-00774(롯데쇼핑(주) e커머스사업부)<br />
+            통신판매업 신고 : 서울송파 제0158호<br>
+            호스팅 서비스사업자 : 롯데쇼핑(주) e커머스사업부
+        </p>
+        <p>
+            <strong>고객센터</strong><br />
+            Tel : 1899-7000(유료) (평일 09:00~18:00)<br />
+            Fax : 051-123-4567 | E-mail : lotteon@lotte.net<br />
+        </p>
+    </div>
+</footer>
+<button type="button" id="top">상단이동</button>
+</body>
+</html>

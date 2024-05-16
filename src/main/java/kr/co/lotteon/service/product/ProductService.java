@@ -474,6 +474,7 @@ public class ProductService {
     // ========== 메인페이지 ==========
     // 최신상품
     public List<ProductDTO> bestProductMain(){return productRepository.bestProductMain();}
+    public List<ProductDTO> bestProductMain2(){return productRepository.bestProductMain2();}
     public List<ProductDTO> recentProductMain(){return productRepository.recentProductMain();}
     public List<ProductDTO> discountProductMain(){return productRepository.discountProductMain();}
     public List<ProductDTO> hitProductMain(){return productRepository.hitProductMain();}

@@ -289,6 +289,20 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<ProductDTO> bestProductMain2() {
+        // SELECT * FROM PRODUCT ORDER BY sold DESC LIMIT 5
+        List<Product> products = jpaQueryFactory.selectFrom(qProduct)
+                .where(qProduct.status.eq("새상품"))
+                .orderBy(qProduct.sold.desc())
+                .limit(8)
+                .fetch();
+
+        return products.stream()
+                .map(product -> modelMapper.map(product, ProductDTO.class))
+                .collect(Collectors.toList());
+    }
+
     // 최신상품
     @Override
     public List<ProductDTO> recentProductMain() {
