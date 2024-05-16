@@ -17,6 +17,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -164,19 +167,28 @@ public class MemberController {
     @PostMapping("/member/register")
     public String register(MemberDTO memberDTO, HttpServletRequest request){
 
-        log.info("!!!!!!!!!!!!!!!!!");
+        LocalDateTime currentDate = LocalDateTime.now();
+        // 현재 날짜에서 5일을 더해서 만료 날짜 설정
+        LocalDateTime expireDateTime = currentDate.plusDays(5);
+
         log.info("PASSWORD "+memberDTO.getPass());
 
         // 신규 회원시 5천원 할인 쿠폰
-
-
+        CouponDTO couponDTO = new CouponDTO();
+        couponDTO.setUid(memberDTO.getUid());
+        couponDTO.setDiscountLimit(5000);
+        couponDTO.setDiscountMoney(5000);
+        couponDTO.setCouponName("신규 회원 5000원 쿠폰");
+        couponDTO.setExpireDate(expireDateTime);
+        couponDTO.setDiscountType(30000);
+        couponDTO.setUseYn("Y");
 
         memberDTO.setLevel(1); // 일반회원시 level 1
         memberDTO.setRegip(request.getRemoteAddr());
         memberDTO.setLocation(memberDTO.getLocation());
 
         log.info("memberDTO"+memberDTO);
-        memberService.save(memberDTO);
+        memberService.saveMember(memberDTO, couponDTO);
 
         return "redirect:/member/login?success=200";
     }

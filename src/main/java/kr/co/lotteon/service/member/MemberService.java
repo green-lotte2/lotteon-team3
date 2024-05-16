@@ -5,6 +5,7 @@ import jakarta.mail.Message;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.servlet.http.HttpSession;
+import jakarta.transaction.Transactional;
 import kr.co.lotteon.dto.member.CouponDTO;
 import kr.co.lotteon.dto.member.MemberDTO;
 import kr.co.lotteon.entity.member.Coupon;
@@ -40,14 +41,28 @@ public class MemberService {
     private final CouponRepository couponRepository;
 
     // 회원 가입 - DB 입력
+    @Transactional
+    public void saveMember(MemberDTO memberDTO, CouponDTO couponDTO){
+        // 비밀번호 암호화
+        memberDTO.setPass(passwordEncoder.encode(memberDTO.getPass()));
+        Member member = modelMapper.map(memberDTO, Member.class);
+        memberRepository.save(member);
+
+        // 가입시 쿠폰
+        Coupon coupon = modelMapper.map(couponDTO, Coupon.class);
+        couponRepository.save(coupon);
+    }
     public void save(MemberDTO memberDTO){
         // 비밀번호 암호화
         memberDTO.setPass(passwordEncoder.encode(memberDTO.getPass()));
         Member member = modelMapper.map(memberDTO, Member.class);
-        memberRepository.save(member); 
+        memberRepository.save(member);
     }
 
+    // 가입시 쿠폰
+    public void insertCoupon (CouponDTO couponDTO){
 
+    }
     public int selectCountMember(String type, String value) {
         return memberMapper.selectCountMember(type, value);
     }

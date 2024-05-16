@@ -6,7 +6,7 @@
 <mapper namespace="kr.co.lotteon.mapper.CouponMapper">
 
     <update id="updateUseYn">
-        update member_coupon set useYn ='Y' where couponSeq=#{couponSeq}
+        update member_coupon set useYn ='N' where couponSeq=#{couponSeq}
     </update>
 
 </mapper>
