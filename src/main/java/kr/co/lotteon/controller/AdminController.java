@@ -52,7 +52,7 @@ public class AdminController {
     private final ObjectMapper objectMapper;
 
     ////////////////  index  ///////////////////////////////////////////////////
-    // admin index 페이지 매핑 + seller index 페이지 매핑 (return에 if하면 새로고침...?)
+    // admin index 페이지 매핑 + seller index 페이지 매핑
     @GetMapping(value = {"/admin","/admin/index"})
     public String admin(Model model){
         // 공지사항 조회

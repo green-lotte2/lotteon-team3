@@ -156,7 +156,7 @@
                             <th:block th:each="notice, loop : ${noticeList}">
                             <div>
                                 <a th:href="@{/cs/notice/view}"><span>[ [[${notice.typeName}]] ]</span> [[${notice.title}]]</a>
-                                <span th:text="${#temporals.format(notice.rdate, 'yyyy-MM-dd HH:mm')}"></span>
+                                <span th:text="${#temporals.format(notice.rdate, 'yyyy-MM-dd')}"></span>
                             </div>
                             </th:block>
                         </article>
@@ -168,7 +168,7 @@
                             <th:block th:each="qna, loop : ${qnaList}">
                                 <div>
                                     <a th:href="@{/cs/qna/view}"><span>[ [[${qna.typeName}]] ]</span> [[${qna.title}]]</a>
-                                    <span th:text="${#temporals.format(qna.rdate, 'yyyy-MM-dd HH:mm')}"></span>
+                                    <span th:text="${#temporals.format(qna.rdate, 'yyyy-MM-dd')}"></span>
                                 </div>
                             </th:block>
                         </article>
