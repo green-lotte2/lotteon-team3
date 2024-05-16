@@ -157,6 +157,7 @@
                                     <td th:text="${member.nick}"></td>
                                     <td th:if="${member.gender == 'M'}">남성</td>
                                     <td th:if="${member.gender == 'F'}">여성</td>
+                                    <td th:if="${member.gender == null}">정보없음</td>
                                     <td th:text="${member.level}"></td>
                                     <td th:text="${member.point}"></td>
                                     <td th:text="${#temporals.format(member.rdate, 'yyyy-MM-dd')}"></td>
