@@ -279,6 +279,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
     public List<ProductDTO> bestProductMain() {
         // SELECT * FROM PRODUCT ORDER BY sold DESC LIMIT 5
         List<Product> products = jpaQueryFactory.selectFrom(qProduct)
+                .where(qProduct.status.eq("새상품"))
                 .orderBy(qProduct.sold.desc())
                 .limit(5)
                 .fetch();
@@ -293,6 +294,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
     public List<ProductDTO> recentProductMain() {
         // SELECT * FROM PRODUCT ORDER BY rdate DESC LIMIT 8
         List<Product> products = jpaQueryFactory.selectFrom(qProduct)
+                .where(qProduct.status.eq("새상품"))
                 .orderBy(qProduct.rdate.desc())
                 .limit(8)
                 .fetch();
@@ -307,6 +309,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
     public List<ProductDTO> discountProductMain() {
         // SELECT * FROM PRODUCT ORDER BY discount DESC LIMIT 8
         List<Product> products = jpaQueryFactory.selectFrom(qProduct)
+                .where(qProduct.status.eq("새상품"))
                 .orderBy(qProduct.discount.desc())
                 .limit(8)
                 .fetch();
@@ -320,6 +323,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
     public List<ProductDTO> hitProductMain() {
         // SELECT * FROM PRODUCT ORDER BY discount DESC LIMIT 8
         List<Product> products = jpaQueryFactory.selectFrom(qProduct)
+                .where(qProduct.status.eq("새상품"))
                 .orderBy(qProduct.hit.desc())
                 .limit(8)
                 .fetch();
@@ -334,6 +338,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
     public List<ProductDTO> recommendProductMain() {
         // SELECT * FROM PRODUCT ORDER BY score DESC LIMIT 8
         List<Product> products = jpaQueryFactory.selectFrom(qProduct)
+                .where(qProduct.status.eq("새상품"))
                 .orderBy(qProduct.score.desc())
                 .limit(8)
                 .fetch();
