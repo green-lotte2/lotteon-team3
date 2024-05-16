@@ -35,8 +35,10 @@ public interface ProductRepositoryCustom {
     
     // 베스트 상품
     public List<ProductDTO> bestProductMain();
-    
-    // 베스트 상품
+    //인기 상품
+    public List<ProductDTO> bestProductMain2();
+
+    // 최신 상품
     public List<ProductDTO> recentProductMain();
     
     // 할인상품

@@ -74,14 +74,17 @@
 
     <table border="0">
         <tr th:each="product:${productDTOS}">
-            <td><a th:href="@{/product/list(cate1=${product.cate1},cate2=${product.cate2},cate3=${product.cate3})}"
+            <td><a th:href="@{/product/view(prodNo=${product.prodNo},cate1=${product.cate1},cate2=${product.cate2},cate3=${product.cate3})}"
                    class="thumb"><img th:src="@{'/prodImg/'+${product.thumb3}}" alt="상품이미지" width="120" height="120"/></a></td>
 
             <td>
-                <h3 class="name"><a style="font-size: 16px; font-weight: bold;" th:href="@{#}"></a>[[${product.prodName}]]</h3>
-                <a th:href="@{/product/list(cate1=${product.cate1},cate2=${product.cate2},cate3=${product.cate3})}" class="desc">
+                <h3 class="name">
+                    <a style="font-size: 16px; font-weight: bold;" th:href="@{/product/view(prodNo=${product.prodNo},cate1=${product.cate1},cate2=${product.cate2},cate3=${product.cate3})}">[[${product.prodName}]]</a>
+                </h3>
+
+                <span class="desc">
                     [[${product.descript}]]
-                </a>
+                </span>
             </td>
             <td>
                 <ul>
