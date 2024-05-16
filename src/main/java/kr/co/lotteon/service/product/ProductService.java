@@ -357,9 +357,13 @@ public class ProductService {
         int usedPoint = orderDTO.getUsedPoint();
         // 구매한 회원 아이디
         String uid = orderDTO.getOrdUid();
-        // 사용한 쿠폰 번호
-        int couponSeq = orderDTO.getCouponSeq();
 
+        if(orderDTO.getCouponSeq() != null) {
+            // 사용한 쿠폰 번호
+            int couponSeq = orderDTO.getCouponSeq();
+            // 쿠폰 사용하기
+            couponMapper.updateUseYn(couponSeq);
+        }
         // product_order에 넣기
         Order order = modelMapper.map(orderDTO, Order.class);
         Order saveOrder = orderRepository.save(order);
@@ -370,11 +374,6 @@ public class ProductService {
         // 사용한 포인트만큼 포인트 감소
         if (saveOrder.getUsedPoint()>0){
             memberMapper.updateMemberPoint(uid, usedPoint);
-        }
-        
-        // 쿠폰 사용하기
-        if(orderDTO.getDisCouponPrice()>0){
-            couponMapper.updateUseYn(couponSeq);
         }
 
         return ResponseEntity.ok(savedOrderDTO);
@@ -388,6 +387,7 @@ public class ProductService {
             OrderItem orderItem = modelMapper.map(orderItemDTO, OrderItem.class);
             orderItem.setUid(uid);
             orderItem.setOrdNo(ordNo);
+            orderItem.setOrdStatus("배송준비");
             orderItemRepository.save(orderItem);
 
             // 상품 수량 감소
