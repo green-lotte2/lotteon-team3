@@ -22,7 +22,7 @@ public class CouponRepositoryImpl implements CouponRepositoryCustom {
     @Override
     public List<Coupon> selectsCouponsNotUse(String uid) {
         List<Coupon> result = jpaQueryFactory.select(qCoupon).from(qCoupon)
-                                            .where(qCoupon.uid.eq(uid).and(qCoupon.useYn.eq("N")))
+                                            .where(qCoupon.uid.eq(uid).and(qCoupon.useYn.eq("Y")))
                                             .fetch();
         log.info("임플 : " + result);
         return result;
