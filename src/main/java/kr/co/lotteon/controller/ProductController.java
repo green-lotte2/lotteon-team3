@@ -376,4 +376,28 @@ public class ProductController {
 
         return "/product/view";
     }
+
+
+    @GetMapping("/product/list2")
+    public String productList2(String type, Model model){
+
+        List<ProductDTO> productDTOS = new ArrayList<>();
+        if(type.equals("hit")){
+            productDTOS = productService.hitProductMain();
+        }if(type.equals("recommend")){
+            productDTOS = productService.recommendProductMain();
+        }if(type.equals("recent")){
+            productDTOS = productService.recentProductMain();
+        }if(type.equals("best")){
+            productDTOS = productService.bestProductMain();
+        }if(type.equals("discount")){
+            productDTOS = productService.discountProductMain();
+        }
+
+        model.addAttribute("type", type);
+        model.addAttribute("productDTOS", productDTOS);
+        log.info("상푸푸푸ㅜ@@" + productDTOS);
+        return "/product/list2";
+    }
+
 }
