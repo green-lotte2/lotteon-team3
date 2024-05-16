@@ -449,6 +449,7 @@ public class AdminController {
         return "redirect:/admin/company/recruit";
     }
 
+   
     // 관리자 회사소개 글 수정 매핑
     @GetMapping("/admin/company/modify/{ano}")
     public String companyWrite(Model model, @PathVariable("ano") int ano){
