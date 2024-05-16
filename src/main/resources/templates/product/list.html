@@ -28,7 +28,7 @@
               </script>
               <nav>
                 <h1>상품목록</h1>
-                  <p th:if="c3Name == null">HOME > <span>[[${c1Name}]]</span> > <strong>[[${c2Name}]]</strong> ></p>
+                  <p>HOME > <span>[[${c1Name}]]</span> > <span th:if="${c2Name != null}">[[${c2Name}]]</span> > <strong th:if="${c3Name != null}">[[${c3Name}]</strong></p>
               </nav>
 
               <!-- 정렬 메뉴 -->

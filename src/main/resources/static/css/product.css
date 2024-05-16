@@ -790,7 +790,9 @@ ul{
     display: block;
     color: #aaa;
 }
-
+.row > .card img {
+    height: 212px;
+}
 
 #product > .view > .info > .summary .card > i {
     display: inline-block;

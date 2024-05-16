@@ -169,7 +169,7 @@
                     <span>[[${productDTO.discount}]]%</span>
                 </div>
                 <div class="dis_price">
-                    <ins>27,000</ins>
+                    <ins>[[${productDTO.price - (productDTO.price * productDTO.discount / 100)}]]</ins>
                 </div>
             </nav>
             <nav th:if="${productDTO.delivery} == 0">
