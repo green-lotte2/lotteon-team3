@@ -71,10 +71,11 @@ header > .logo > div {
   margin: 0 auto;
 }
 header > .logo > div > a {
-  display: inline-block;
+  display: contents;
   margin-top: 30px;
 }
 header > .logo img {
+  padding-top: 30px;
   width: 185px;
   vertical-align: bottom;
   margin-right: 10px;
