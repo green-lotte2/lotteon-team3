@@ -64,7 +64,7 @@ public class MemberController {
     }
 
     // register 페이지 매핑
-    @GetMapping("/member/register")
+    @PostMapping("/member/join")
     public String register(Model model, String type,String location){
 
         log.info("회원가입 type = "+type);

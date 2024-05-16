@@ -7,11 +7,13 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.co.lotteon.dto.admin.AdminPageRequestDTO;
+import kr.co.lotteon.dto.product.OptionDTO;
 import kr.co.lotteon.dto.product.OrderItemDTO;
 import kr.co.lotteon.dto.product.OrderItemPageRequestDTO;
 import kr.co.lotteon.dto.product.PageRequestDTO;
 import kr.co.lotteon.entity.product.*;
 import kr.co.lotteon.repository.custom.OrderItemRepositoryCustom;
+import kr.co.lotteon.repository.product.OptionRepository;
 import kr.co.lotteon.security.MyUserDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,7 +45,7 @@ public class OrderItemRepositoryImpl implements OrderItemRepositoryCustom {
     private final QProduct qProduct = QProduct.product;
     private final QOption qOption = QOption.option;
     private final ModelMapper modelMapper;
-
+    private final OptionRepository optionRepository;
     // 월별 주문 count 조회 - 오늘 기준 12개월 전 까지
     @Override
     public List<Tuple> selectOrderForChart(){
@@ -342,6 +344,26 @@ public class OrderItemRepositoryImpl implements OrderItemRepositoryCustom {
                                 orderItemDTO.setPrice(calculatedPrice);
                                 orderItemDTO.setDiscount(discount);
 
+
+                        // 옵션 뽑아내기
+                        if (!orderItemDTO.getOpNo().equals( "")){
+                            String[] optionString = orderItemDTO.getOpNo().split(",");
+                            int[] optionIds = new int[optionString.length];
+
+                            for (int i = 0; i < optionString.length; i++) {
+                                optionIds[i] = Integer.parseInt(optionString[i].trim());
+                            }
+
+                            List<OptionDTO> options = new ArrayList<>();
+                            for(int optionNos : optionIds){
+                                OptionDTO option = optionRepository.selectOptionForCart(optionNos);
+
+                                if (option != null){
+                                    options.add(option);
+                                }
+                                orderItemDTO.setOptionList(options);
+                            }
+                        }
                                 return orderItemDTO;
                             }
                     ).toList();

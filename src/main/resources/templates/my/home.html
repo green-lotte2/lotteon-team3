@@ -45,7 +45,7 @@
                 const paddedOrdNo = ('000' + no).slice(-4); // 주문번호 4자리로 만들기
                 console.log(paddedOrdNo);
 
-                const ordDate=date.replace(/-/g, '').substring(2); // 주문일자 -없애고 년단위 앞 두지리 없애기
+                const ordDate=date.replace(/-/g, '').substring(2); // 주문일자 -없애고 년단위 앞 두자리 없애기
                 console.log(ordDate);
 
                 const finalOrdNo=ordDate+paddedOrdNo; // 최종 주문번호
@@ -177,6 +177,8 @@
                         </a>
                     </th:block>
                     </div>
+
+
                     <article class="latest">
                         <h3>최근주문내역</h3>
                         <a th:href="@{/my/order(uid=${#authentication.principal.member.uid})}" class="more">더보기</a>
@@ -194,21 +196,29 @@
                                         </p>
                                     </button>
                                 </h2>
-
+                                <!-- 내용 -->
                                 <div th:id="'panelsStayOpen-collapse'+${iterStat.index}"
-                                     th:data-iter="${iterStat.index}" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingOne">
-                                    <th:block th:each="orderList : ${linkedMap.value}">
+                                     th:data-iter="${iterStat.index}" class=" collapse show" aria-labelledby="panelsStayOpen-headingOne">
+                                    <div th:each="orderList : ${linkedMap.value}" class="accordion-body">
                                         <input type="hidden" th:value="${orderList.uid}" id="uid">
                                         <div>
-                                            <img th:src="@{'/prodImg/'+${orderList.thumb3}}" alt="">
+                                            <img th:src="@{'/prodImg/'+${orderList.thumb3}}" style="width: 80px; height: auto;" alt="">
                                         </div>
 
                                         <div class="info">
                                             <input type="hidden" th:value="${orderList.prodNo}" id="prodNo">
+                                            <div class="productDetail">
                                             <p class="company" ><a th:href="@{#}" th:text="${orderList.company}"></a></p>
                                             <p class="InfoProdName" th:text="${orderList.prodName}"></p>
+                                            </div>
+                                            <div class="options" th:each="options : ${orderList.optionList}">
+                                                <p>[[${options.opName}]]</p><br>
+                                                <p>[[${options.opValue}]]</p>
+                                            </div>
+                                            <div class="productDetail2" >
                                             <p th:text="${orderList.count}+개"></p>
                                             <p th:text="${#numbers.formatInteger(orderList.price,3,'COMMA')}+원"></p>
+                                            </div>
                                         </div>
 
                                         <div class="status" th:text="${orderList.ordStatus}"></div>
@@ -218,7 +228,7 @@
                                             <a th:href="@{#}" class="refund">반품신청</a>
                                             <a th:href="@{#}" class="exchange">교환신청</a>
                                         </div>
-                                    </th:block>
+                                    </div>
                                 </div>
                             </div>
 
