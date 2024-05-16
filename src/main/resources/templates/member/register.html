@@ -8,7 +8,7 @@
                 <nav>
                     <h1>일반 회원가입</h1>
                 </nav>
-				<form method="POST" name="registerForm">
+				<form th:action="@{/member/register}" method="POST" name="registerForm">
 					<input type="hidden" th:name="type" th:value="${type}">
 					<section>
 						<table>

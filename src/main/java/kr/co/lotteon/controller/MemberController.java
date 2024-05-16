@@ -164,7 +164,7 @@ public class MemberController {
     @PostMapping("/member/register")
     public String register(MemberDTO memberDTO, HttpServletRequest request){
 
-
+        log.info("!!!!!!!!!!!!!!!!!");
         log.info("PASSWORD "+memberDTO.getPass());
 
         // 신규 회원시 5천원 할인 쿠폰
