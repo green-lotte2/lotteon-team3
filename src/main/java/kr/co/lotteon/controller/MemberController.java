@@ -192,7 +192,8 @@ public class MemberController {
     public String registerSeller(MemberDTO memberDTO,HttpServletRequest request){
         memberDTO.setRegip(request.getRemoteAddr());
         memberDTO.setLevel(5); // 일반회원시 level 5
-        memberDTO.setName(memberDTO.getName());//사용자 이름을 회사명으로 설정
+        memberDTO.setName(memberDTO.getCompany());
+        memberDTO.setNick(memberDTO.getCompany());
         memberService.save(memberDTO);
 
         return "redirect:/member/login?success=200";
