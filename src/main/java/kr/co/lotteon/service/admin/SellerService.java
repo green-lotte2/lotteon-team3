@@ -143,6 +143,7 @@ public class SellerService {
 
         // 현재 로그인 중인 사용자 정보 불러오기
         String sellerId = whoAmI();
+        log.info("sellerId : "+sellerId);
 
         // 해당 판매자의 상품번호 전부 조회
         List<Integer> prodNos = productRepository.selectProdNoForQna(sellerId);
