@@ -103,6 +103,23 @@
     </script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // 검색 양식 선택
+            var searchForm = document.querySelector('form');
+            // 검색 양식 제출 이벤트
+            searchForm.addEventListener('submit', function(event) {
+                // 입력된 검색어 확인
+                var searchKeyword = searchForm.elements['searchKeyword'].value.trim();
+                // 검색어가 비어 있는 경우
+                if (searchKeyword === '') {
+                    // 경고창 표시
+                    alert('검색어를 입력하세요.');
+                    // 이벤트 기본 동작(페이지 이동) 중단
+                    event.preventDefault();
+                }
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
             // 검색어 입력 필드 선택
             var searchKeywordInput = document.querySelector('input[name="searchKeyword"]');
 
