@@ -175,14 +175,14 @@ public class MyController {
 
     @PostMapping("/my/infoAccessCheck")
     @ResponseBody
-    public boolean infoAccessCheck(@RequestBody Map<String, String> request ) {
+    public boolean infoAccessCheck(@RequestBody MemberDTO request ) {
 
         log.info("나의 설정 들어가기");
-        String uid = request.get("uid");
-        log.info("아이디 : "+request.get("uid"));
+        String uid = request.getUid();
+        log.info("아이디 : "+request.getUid());
 
-        String pass = request.get("pass");
-        log.info("입력한 비번 : "+request.get("pass"));
+        String pass = request.getPass();
+        log.info("입력한 비번 : "+request.getPass());
 
 
         MemberDTO memberDTO = memberService.findByUid(uid);

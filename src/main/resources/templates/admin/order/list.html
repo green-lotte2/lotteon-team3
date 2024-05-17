@@ -9,7 +9,7 @@
                         let ordCt = document.getElementById('orderChart');
 
                         // 주문 데이터 가져오기
-                        const response = await fetch('/lotteon/seller/orderChart');
+                        const response = await fetch('/lotteon/admin/orderChart');
                         const dataText = await response.text(); // JSON 형식의 문자열을 가져옴
                         console.log("주문 데이터 dataText : " + dataText);
                         let total = 0;
