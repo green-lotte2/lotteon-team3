@@ -256,16 +256,43 @@
             </td>
             <td>
                 <ul>
-                    <li><ins class="dis-price" th:text="${product.price - (product.price * product.discount / 100)}"></ins></li>
                     <li>
-                        <del class="org-price" th:text="${product.price}"></del>
+                        <ins class="dis-price">
+                            <script th:inline="javascript">
+                                /*<![CDATA[*/
+                                var discountPrice = /*[[${product.price - (product.price * product.discount / 100)}]]*/ '';
+                                var formattedDiscountPrice = discountPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                                document.write(formattedDiscountPrice);
+                                /*]]>*/
+                            </script>
+                        </ins>
+                    </li>
+                    <li>
+                        <del class="org-price">
+                            <script th:inline="javascript">
+                                /*<![CDATA[*/
+                                var originalPrice = /*[[${product.price}]]*/ '';
+                                var formattedOriginalPrice = originalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                                document.write(formattedOriginalPrice);
+                                /*]]>*/
+                            </script>
+                        </del>
                         <span class="discount" th:text="${product.discount} + '%'"></span>
                     </li>
                     <li>
                         <span th:if="${product.delivery == 0 }" class="free-delivery">무료배송</span>
-                        <span th:if="${product.delivery != 0 }" >배송비 : [[${product.delivery}]]</span>
+                        <span th:if="${product.delivery != 0 }">
+            <script th:inline="javascript">
+                /*<![CDATA[*/
+                var delivery = /*[[${product.delivery}]]*/ '';
+                var formattedDelivery = delivery.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                document.write('배송비 : ' + formattedDelivery);
+                /*]]>*/
+            </script>
+        </span>
                     </li>
                 </ul>
+
             </td>
             <td>
                 <h4 class="seller"><i class="fas fa-home"></i>&nbsp;<span th:text="${product.seller}">판매자</span></h4>
