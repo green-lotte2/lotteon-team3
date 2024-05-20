@@ -34,7 +34,7 @@ window.onload = function() {
 
             await fetch('/lotteon/my/infoAccessCheck', {
                 method: 'POST',
-                headers: {'Content-Type': 'application/json'},
+                headers: {"Content-type":"application/json"},
                 body: JSON.stringify(jsonData)
             })
                 .then(response => response.json())

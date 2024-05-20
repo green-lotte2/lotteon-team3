@@ -12,7 +12,7 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     password: Qwer1234!
-    url: jdbc:mysql://3.35.92.212/lotte
+    url: jdbc:mysql://43.200.6.91/lotte
     username: team3
     hikari:
       poolName: Hikari
